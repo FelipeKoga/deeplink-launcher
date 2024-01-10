@@ -1,3 +1,5 @@
+@file:OptIn(ExperimentalFoundationApi::class, ExperimentalFoundationApi::class)
+
 package dev.koga.deeplinklauncher.android.home
 
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -48,16 +50,28 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import cafe.adriel.voyager.core.screen.Screen
+import cafe.adriel.voyager.navigator.LocalNavigator
+import cafe.adriel.voyager.navigator.currentOrThrow
 import dev.koga.deeplinklauncher.LaunchDeepLink
 import dev.koga.deeplinklauncher.LaunchDeepLinkResult
 import dev.koga.deeplinklauncher.android.R
 import dev.koga.deeplinklauncher.android.home.component.DeepLinkDetailsBottomSheet
 import dev.koga.deeplinklauncher.android.home.component.DeepLinkInputContent
+import dev.koga.deeplinklauncher.android.settings.SettingsScreen
 import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
+object HomeScreen : Screen {
+    @Composable
+    override fun Content() {
+        HomeScreenContent()
+    }
+}
+
+
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeScreen() {
+private fun HomeScreenContent() {
     val context = LocalContext.current
 
     val launchDeepLink = remember {
@@ -95,6 +109,8 @@ fun HomeScreen() {
         mutableStateOf(false)
     }
 
+    val navigator = LocalNavigator.currentOrThrow
+
     if (deepLinkDetails != null) {
         DeepLinkDetailsBottomSheet(deepLink = deepLinkDetails!!) {
             deepLinkDetails = null
@@ -122,6 +138,7 @@ fun HomeScreen() {
                 },
                 actions = {
                     FilledTonalIconButton(onClick = {
+//                        navigator.push(ImportExportScreen)
                     }) {
                         Icon(
                             painter = painterResource(id = R.drawable.ic_round_import_export_24),
@@ -132,7 +149,7 @@ fun HomeScreen() {
 
 
                     FilledTonalIconButton(onClick = {
-
+                        navigator.push(SettingsScreen)
                     }) {
                         Icon(
                             imageVector = Icons.Rounded.Settings,
@@ -267,7 +284,6 @@ fun HomeScreen() {
 
 }
 
-
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun DeepLinkItem(deepLink: String, onClick: (String) -> Unit, onLongClick: (String) -> Unit) {
@@ -318,6 +334,6 @@ private val deepLinkSamples = listOf<String>(
 
 @Preview
 @Composable
-fun HomeScreenPreview() {
-    HomeScreen()
+fun HomeScreenContentPreview() {
+    HomeScreenContent()
 }
