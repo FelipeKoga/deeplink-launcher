@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.defaultMinSize
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -28,7 +29,9 @@ import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Delete
+import androidx.compose.material.icons.rounded.Favorite
 import androidx.compose.material.icons.rounded.KeyboardArrowRight
+import androidx.compose.material.icons.rounded.Settings
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -43,6 +46,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -84,7 +88,7 @@ fun MainContent() {
         mutableStateOf("")
     }
 
-    var result by rememberSaveable {
+    var result by remember {
         mutableStateOf<LaunchDeepLinkResult?>(null)
     }
 
@@ -103,16 +107,54 @@ fun MainContent() {
         },
     )
 
+    var showBottomSheet by remember {
+        mutableStateOf(false)
+    }
+
+    if (showBottomSheet) {
+        ModalBottomSheet(
+            modifier = Modifier.fillMaxHeight(.8f),
+            onDismissRequest = { showBottomSheet = false }
+        ) {
+            Column {
+            }
+        }
+    }
+
     BottomSheetScaffold(
         topBar = {
-            MediumTopAppBar(title = {
-                Text(
-                    text = "Deeplink Launcher",
-                    style = MaterialTheme.typography.headlineSmall.copy(
-                        fontWeight = FontWeight.Bold
+            TopAppBar(
+                title = {
+                    Text(
+                        text = "Deeplink Launcher",
+                        style = MaterialTheme.typography.titleMedium.copy(
+                            fontWeight = FontWeight.Bold
+                        )
                     )
-                )
-            })
+                },
+                actions = {
+                    FilledTonalIconButton(onClick = {
+                        showBottomSheet = true
+                    }) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.ic_round_import_export_24),
+                            contentDescription = "",
+                            modifier = Modifier.size(18.dp),
+                        )
+                    }
+
+
+                    FilledTonalIconButton(onClick = {
+
+                    }) {
+                        Icon(
+                            imageVector = Icons.Rounded.Settings,
+                            contentDescription = "Delete",
+                            modifier = Modifier.size(18.dp),
+                        )
+                    }
+
+                })
         },
         scaffoldState = bottomSheetScaffoldState,
         sheetContainerColor = MaterialTheme.colorScheme.background,
@@ -177,7 +219,17 @@ fun MainContent() {
                             pagerState.animateScrollToPage(HomeTabPage.HISTORY.ordinal)
                         }
                     },
-                    text = { Text(text = "History") }
+                    text = {
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Icon(
+                                painter = painterResource(id = R.drawable.ic_round_history_24),
+                                contentDescription = null,
+                                modifier = Modifier.size(16.dp),
+                            )
+                            Spacer(modifier = Modifier.width(8.dp))
+                            Text(text = "History")
+                        }
+                    }
                 )
                 Tab(
                     selected = pagerState.currentPage == HomeTabPage.FAVORITES.ordinal,
@@ -187,7 +239,17 @@ fun MainContent() {
                         }
 
                     },
-                    text = { Text(text = "Favorites") }
+                    text = {
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Icon(
+                                imageVector = Icons.Rounded.Favorite,
+                                contentDescription = null,
+                                modifier = Modifier.size(16.dp),
+                            )
+                            Spacer(modifier = Modifier.width(8.dp))
+                            Text(text = "Favorites")
+                        }
+                    }
                 )
                 Tab(
                     selected = pagerState.currentPage == HomeTabPage.FOLDERS.ordinal,
@@ -196,7 +258,17 @@ fun MainContent() {
                             pagerState.animateScrollToPage(HomeTabPage.FOLDERS.ordinal)
                         }
                     },
-                    text = { Text(text = "Folders") }
+                    text = {
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Icon(
+                                painter = painterResource(id = R.drawable.ic_round_folder_24),
+                                contentDescription = null,
+                                modifier = Modifier.size(16.dp),
+                            )
+                            Spacer(modifier = Modifier.width(8.dp))
+                            Text(text = "Folders")
+                        }
+                    }
 
                 )
             }
@@ -307,7 +379,7 @@ private val deepLinkSamples = listOf(
     "https://www.google.com/search?q=android&tbm=isch&hl=ja&safe=active",
     "https://www.google.com/se",
 
-)
+    )
 
 @Preview(showBackground = true)
 @Composable
