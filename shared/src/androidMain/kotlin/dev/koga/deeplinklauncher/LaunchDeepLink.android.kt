@@ -7,8 +7,14 @@ import android.net.Uri
 actual class LaunchDeepLink(
     private val context: Context
 ) {
-    actual fun launch(url: String) {
-        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
-        context.startActivity(intent)
+    actual fun launch(url: String): LaunchDeepLinkResult {
+        return try {
+            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+            context.startActivity(intent)
+            LaunchDeepLinkResult.Success(url)
+        } catch (e: Throwable) {
+            LaunchDeepLinkResult.Failure(e)
+        }
+
     }
 }

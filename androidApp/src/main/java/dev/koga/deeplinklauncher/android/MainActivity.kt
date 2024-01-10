@@ -3,8 +3,12 @@ package dev.koga.deeplinklauncher.android
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -15,13 +19,18 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.Delete
+import androidx.compose.material.icons.rounded.KeyboardArrowRight
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -29,11 +38,17 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import dev.koga.deeplinklauncher.LaunchDeepLink
+import dev.koga.deeplinklauncher.LaunchDeepLinkResult
+import dev.koga.deeplinklauncher.android.theme.AppTheme
 import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
@@ -52,7 +67,10 @@ class MainActivity : ComponentActivity() {
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
+@OptIn(
+    ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class,
+    ExperimentalComposeUiApi::class
+)
 @Composable
 fun MainContent() {
 
@@ -66,9 +84,13 @@ fun MainContent() {
         mutableStateOf("")
     }
 
+    var result by rememberSaveable {
+        mutableStateOf<LaunchDeepLinkResult?>(null)
+    }
+
     val bottomSheetScaffoldState = rememberBottomSheetScaffoldState(
         bottomSheetState = rememberStandardBottomSheetState(
-            initialValue = SheetValue.Expanded
+            initialValue = SheetValue.Expanded,
         )
     )
 
@@ -81,44 +103,64 @@ fun MainContent() {
         },
     )
 
-    LaunchedEffect(pagerState.currentPage) {
-
-    }
-
     BottomSheetScaffold(
         topBar = {
-            CenterAlignedTopAppBar(title = {
-                Text(text = "Deeplink Launcher")
+            MediumTopAppBar(title = {
+                Text(
+                    text = "Deeplink Launcher",
+                    style = MaterialTheme.typography.headlineSmall.copy(
+                        fontWeight = FontWeight.Bold
+                    )
+                )
             })
         },
         scaffoldState = bottomSheetScaffoldState,
+        sheetContainerColor = MaterialTheme.colorScheme.background,
         sheetContent = {
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(24.dp),
             ) {
-                OutlinedTextField(
+                TextField(
                     value = deepLinkText,
                     modifier = Modifier
                         .defaultMinSize(minHeight = 80.dp)
-                        .fillMaxWidth(),
+                        .fillMaxWidth()
+                        .clip(RoundedCornerShape(12.dp)),
                     onValueChange = {
                         deepLinkText = it
                     },
                     placeholder = {
                         Text(text = "Insert the deeplink here...")
-                    }
+                    },
+                    colors = TextFieldDefaults.textFieldColors(
+                        containerColor = MaterialTheme.colorScheme.surface,
+                        focusedIndicatorColor = Color.Transparent,
+                        unfocusedIndicatorColor = Color.Transparent,
+                        disabledIndicatorColor = Color.Transparent,
+                        errorIndicatorColor = Color.Transparent,
+                    ),
                 )
 
                 Spacer(modifier = Modifier.height(24.dp))
                 Button(
                     onClick = {
-                        launchDeepLink.launch(deepLinkText)
+                        result = launchDeepLink.launch(deepLinkText)
                     },
-                    modifier = Modifier.align(Alignment.CenterHorizontally)
+                    enabled = deepLinkText.isNotBlank(),
+                    modifier = Modifier
+                        .align(Alignment.CenterHorizontally)
+                        .fillMaxWidth(.6f)
                 ) {
                     Text(text = "Launch")
+                }
+
+                AnimatedVisibility(
+                    visible = result is LaunchDeepLinkResult.Failure,
+                    modifier = Modifier.padding(top = 12.dp)
+                ) {
+                    Text(text = "Something went wrong. Check if the deeplink \"${deepLinkText}\" is valid.")
                 }
 
             }
@@ -159,17 +201,19 @@ fun MainContent() {
                 )
             }
 
-            HorizontalPager(state = pagerState) { page ->
+            HorizontalPager(state = pagerState, modifier = Modifier.fillMaxSize()) { page ->
                 when (page) {
                     HomeTabPage.HISTORY.ordinal -> {
                         LazyColumn(
                             modifier = Modifier
                                 .padding(contentPadding)
                                 .fillMaxSize(),
-                            contentPadding = PaddingValues(24.dp)
+                            contentPadding = PaddingValues(bottom = 240.dp)
                         ) {
                             items(deepLinkSamples) {
-                                DeepLinkItem(it)
+                                DeepLinkItem(it) {
+                                    result = launchDeepLink.launch(it)
+                                }
                             }
                         }
                     }
@@ -182,7 +226,9 @@ fun MainContent() {
                             contentPadding = PaddingValues(24.dp)
                         ) {
                             items(deepLinkSamples) {
-                                DeepLinkItem(it)
+                                DeepLinkItem(it) {
+                                    result = launchDeepLink.launch(it)
+                                }
                             }
                         }
                     }
@@ -195,28 +241,15 @@ fun MainContent() {
                             contentPadding = PaddingValues(24.dp)
                         ) {
                             items(deepLinkSamples) {
-                                DeepLinkItem(it)
+                                DeepLinkItem(it) {
+                                    result = launchDeepLink.launch(it)
+                                }
                             }
                         }
                     }
                 }
             }
         }
-
-//        LazyColumn(
-//            modifier = Modifier
-//                .padding(contentPadding)
-//                .fillMaxSize(),
-//            contentPadding = PaddingValues(24.dp)
-//        ) {
-//            item {
-//                Text(text = "History", style = MaterialTheme.typography.labelLarge)
-//            }
-//
-//            items(deepLinkSamples) {
-//                DeepLinkItem(it)
-//            }
-//        }
     }
 
 }
@@ -229,16 +262,40 @@ enum class HomeTabPage {
 }
 
 @Composable
-fun DeepLinkItem(deepLink: String) {
-    Row(
+fun DeepLinkItem(deepLink: String, onClick: (String) -> Unit) {
+    Column(
         modifier = Modifier
             .fillMaxWidth()
-            .heightIn(min = 48.dp)
-            .padding(vertical = 8.dp),
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically
+            .clickable { onClick(deepLink) }
     ) {
-        Text(text = deepLink)
+
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 12.dp, vertical = 24.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                text = deepLink,
+                style = MaterialTheme.typography.bodyMedium.copy(
+                    fontWeight = FontWeight.Normal
+                ),
+                modifier = Modifier.weight(1f)
+            )
+
+            Spacer(modifier = Modifier.width(12.dp))
+
+            Icon(
+                imageVector = Icons.Rounded.KeyboardArrowRight,
+                contentDescription = "Delete",
+                modifier = Modifier.size(18.dp),
+                tint = MaterialTheme.colorScheme.onSurface
+            )
+        }
+
+
+        Divider(modifier = Modifier.background(MaterialTheme.colorScheme.onSurface.copy(0.1f)))
     }
 }
 
@@ -248,7 +305,8 @@ private val deepLinkSamples = listOf(
     "https://www.google.com/search?q=android&tbm=isch",
     "https://www.google.com/search?q=android&tbm=isch&hl=ja",
     "https://www.google.com/search?q=android&tbm=isch&hl=ja&safe=active",
-    "https://www.google.com/se"
+    "https://www.google.com/se",
+
 )
 
 @Preview(showBackground = true)
