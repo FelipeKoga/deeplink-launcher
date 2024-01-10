@@ -18,6 +18,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 
 @Composable
@@ -54,7 +55,19 @@ fun DeepLinkInputContent(
             ),
         )
 
+        AnimatedVisibility(
+            visible = errorMessage != null,
+        ) {
+            Text(text = errorMessage.orEmpty(),
+                modifier = Modifier.padding(top = 8.dp),
+                style = MaterialTheme.typography.labelMedium.copy(
+                    color = MaterialTheme.colorScheme.error,
+                    fontWeight = FontWeight.Bold
+                ))
+        }
+
         Spacer(modifier = Modifier.height(24.dp))
+
         Button(
             onClick = launch,
             enabled = value.isNotBlank(),
@@ -65,12 +78,7 @@ fun DeepLinkInputContent(
             Text(text = "Launch")
         }
 
-        AnimatedVisibility(
-            visible = errorMessage != null,
-            modifier = Modifier.padding(top = 12.dp)
-        ) {
-            Text(text = "Something went wrong. Check if the deeplink \"${value}\" is valid.")
-        }
+
 
     }
 }
