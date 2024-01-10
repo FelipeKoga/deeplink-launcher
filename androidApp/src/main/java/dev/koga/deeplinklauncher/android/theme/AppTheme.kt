@@ -19,13 +19,14 @@ fun AppTheme(
         darkColorScheme(
             primary = Color.White,
             secondary = Color.DarkGray,
-            tertiary = Color.Blue
+            tertiary = Color.Blue,
+            background = Color(red = 28, green = 27, blue = 31)
         )
     } else {
         lightColorScheme(
             primary = Color.Black,
             secondary = Color.Black,
-            tertiary = Color.Black
+            tertiary = Color.Black,
         )
     }
 
