@@ -50,6 +50,10 @@ dependencies {
     implementation(libs.voyager.transitions)
     implementation(libs.voyager.koin)
     implementation(libs.voyager.tab.navigator)
+    implementation(libs.voyager.koin)
+
+    implementation(libs.koin.android)
+    implementation(libs.koin.androidx.compose)
 
     debugImplementation(libs.compose.ui.tooling)
 }

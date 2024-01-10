@@ -1,0 +1,35 @@
+CREATE TABLE deeplink(
+  id TEXT NOT NULL PRIMARY KEY,
+  link TEXT NOT NULL,
+  name TEXT,
+  description TEXT,
+  createdAt INTEGER NOT NULL,
+  updatedAt INTEGER,
+  folderId TEXT,
+  FOREIGN KEY(folderId) REFERENCES folder(id)
+);
+
+CREATE TABLE folder (
+    id TEXT PRIMARY KEY,
+    name TEXT UNIQUE,
+    description TEXT,
+    color TEXT
+);
+
+
+insertDeeplink:
+INSERT INTO deeplink (id, link, name, description, createdAt, updatedAt)
+VALUES (?, ?, ?, ?, ?, ?);
+
+insertFolder:
+INSERT INTO folder (id, name, description, color)
+VALUES (?, ?, ?, ?);
+
+selectDeeplinks:
+SELECT * FROM deeplink;
+
+selectAllDeepLinks:
+SELECT deeplink.*, folder.*
+FROM deeplink
+LEFT JOIN folder ON deeplink.folderId = folder.id
+ORDER BY createdAt;

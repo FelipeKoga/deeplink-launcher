@@ -37,6 +37,8 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.rememberBottomSheetScaffoldState
 import androidx.compose.material3.rememberStandardBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -51,14 +53,17 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
+import cafe.adriel.voyager.koin.getNavigatorScreenModel
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
+import dev.koga.deeplinklauncher.HomeScreenModel
 import dev.koga.deeplinklauncher.LaunchDeepLink
 import dev.koga.deeplinklauncher.LaunchDeepLinkResult
 import dev.koga.deeplinklauncher.android.R
 import dev.koga.deeplinklauncher.android.home.component.DeepLinkDetailsBottomSheet
 import dev.koga.deeplinklauncher.android.home.component.DeepLinkInputContent
 import dev.koga.deeplinklauncher.android.settings.SettingsScreen
+import dev.koga.deeplinklauncher.model.DeepLink
 import kotlinx.coroutines.launch
 
 object HomeScreen : Screen {
@@ -72,6 +77,7 @@ object HomeScreen : Screen {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun HomeScreenContent() {
+
     val context = LocalContext.current
 
     val launchDeepLink = remember {
@@ -111,6 +117,9 @@ private fun HomeScreenContent() {
 
     val navigator = LocalNavigator.currentOrThrow
 
+    val screenModel = navigator.getNavigatorScreenModel<HomeScreenModel>()
+
+    val deepLinks by screenModel.deeplinks.collectAsState()
     if (deepLinkDetails != null) {
         DeepLinkDetailsBottomSheet(deepLink = deepLinkDetails!!) {
             deepLinkDetails = null
@@ -124,6 +133,11 @@ private fun HomeScreenContent() {
         }
     }
 
+    LaunchedEffect(result) {
+        if (result is LaunchDeepLinkResult.Success) {
+            screenModel.insertDeepLink(deepLinkText)
+        }
+    }
 
     BottomSheetScaffold(
         topBar = {
@@ -251,14 +265,14 @@ private fun HomeScreenContent() {
                                 .fillMaxSize(),
                             contentPadding = PaddingValues(bottom = 240.dp)
                         ) {
-                            items(deepLinkSamples) {
+                            items(deepLinks) {
                                 DeepLinkItem(
                                     it,
                                     onClick = {
-                                        launchDeepLink.launch(it)
+                                        launchDeepLink.launch(it.link)
                                     },
                                     onLongClick = {
-                                        deepLinkDetails = it
+                                        deepLinkDetails = it.link
                                         scope.launch {
                                             if (bottomSheetScaffoldState.bottomSheetState.currentValue == SheetValue.Expanded) {
                                                 bottomSheetScaffoldState.bottomSheetState.partialExpand()
@@ -286,7 +300,7 @@ private fun HomeScreenContent() {
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun DeepLinkItem(deepLink: String, onClick: (String) -> Unit, onLongClick: (String) -> Unit) {
+fun DeepLinkItem(deepLink: DeepLink, onClick: (DeepLink) -> Unit, onLongClick: (DeepLink) -> Unit) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -304,7 +318,7 @@ fun DeepLinkItem(deepLink: String, onClick: (String) -> Unit, onLongClick: (Stri
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                text = deepLink,
+                text = deepLink.link,
                 style = MaterialTheme.typography.bodyMedium.copy(
                     fontWeight = FontWeight.Normal
                 ),
