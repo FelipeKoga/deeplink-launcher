@@ -42,7 +42,7 @@ fun DeepLinkInputContent(
                 .clip(RoundedCornerShape(12.dp)),
             onValueChange = onValueChange,
             placeholder = {
-                Text(text = "Insert the deeplink here...")
+                Text(text = "Enter your deeplink here")
             },
             colors = TextFieldDefaults.colors(
                 focusedContainerColor = MaterialTheme.colorScheme.surface,
