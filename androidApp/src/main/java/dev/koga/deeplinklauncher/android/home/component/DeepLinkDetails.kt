@@ -138,7 +138,6 @@ fun DetailsContentPreview() {
                 name = null,
                 description = null,
                 createdAt = 2731,
-                updatedAt = null,
                 isFavorite = false,
                 folder = null
             ),

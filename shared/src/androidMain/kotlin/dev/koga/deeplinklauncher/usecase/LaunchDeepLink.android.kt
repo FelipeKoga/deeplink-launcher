@@ -1,4 +1,4 @@
-package dev.koga.deeplinklauncher
+package dev.koga.deeplinklauncher.usecase
 
 import android.content.Context
 import android.content.Intent

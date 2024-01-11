@@ -29,7 +29,6 @@ class DeepLinkRepository(
                         name = data.name,
                         description = data.description,
                         createdAt = data.createdAt,
-                        updatedAt = data.updatedAt,
                         isFavorite = data.isFavorite == 1L,
                         folder = data.folderId?.let {  folderId ->
                             Folder(
@@ -57,7 +56,6 @@ class DeepLinkRepository(
                         name = data.name,
                         description = data.description,
                         createdAt = data.createdAt,
-                        updatedAt = data.updatedAt,
                         isFavorite = data.isFavorite == 1L,
                         folder = data.folderId?.let {  folderId ->
                             Folder(
@@ -89,7 +87,6 @@ class DeepLinkRepository(
                 name = deepLink.name,
                 description = deepLink.description,
                 createdAt = deepLink.createdAt,
-                updatedAt = deepLink.updatedAt,
                 isFavorite = if (deepLink.isFavorite) 1L else 0L,
                 folderId = deepLink.folder?.id
             )

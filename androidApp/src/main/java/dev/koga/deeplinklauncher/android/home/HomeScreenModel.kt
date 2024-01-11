@@ -2,36 +2,35 @@ package dev.koga.deeplinklauncher.android.home
 
 import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.screenModelScope
-import dev.koga.deeplinklauncher.LaunchDeepLink
-import dev.koga.deeplinklauncher.LaunchDeepLinkResult
+import dev.koga.deeplinklauncher.usecase.LaunchDeepLink
+import dev.koga.deeplinklauncher.usecase.LaunchDeepLinkResult
 import dev.koga.deeplinklauncher.model.DeepLink
-import dev.koga.deeplinklauncher.model.Folder
 import dev.koga.deeplinklauncher.repository.DeepLinkRepository
+import dev.koga.deeplinklauncher.repository.FolderRepository
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.firstOrNull
-import kotlinx.coroutines.flow.flatMap
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.util.UUID
-import kotlin.random.Random
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class HomeScreenModel(
-    private val repository: DeepLinkRepository,
+    private val deepLinkRepository: DeepLinkRepository,
+    private val folderRepository: FolderRepository,
     private val launchDeepLink: LaunchDeepLink,
 ) : ScreenModel {
 
     val searchText = MutableStateFlow("")
 
     val deepLinks = searchText.flatMapLatest {
-        repository.getAllDeepLinks(it)
+        deepLinkRepository.getAllDeepLinks(it)
     }.stateIn(
         scope = screenModelScope,
         started = SharingStarted.WhileSubscribed(),
@@ -41,6 +40,12 @@ class HomeScreenModel(
     val favoriteDeepLinks = deepLinks.mapLatest { deepLinks ->
         deepLinks.filter(DeepLink::isFavorite)
     }.stateIn(
+        scope = screenModelScope,
+        started = SharingStarted.WhileSubscribed(),
+        initialValue = emptyList()
+    )
+
+    val folders = folderRepository.getFolders().stateIn(
         scope = screenModelScope,
         started = SharingStarted.WhileSubscribed(),
         initialValue = emptyList()
@@ -71,20 +76,14 @@ class HomeScreenModel(
 
     private fun insertDeepLink(link: String) {
         screenModelScope.launch {
-            repository.insertDeeplink(
+            deepLinkRepository.insertDeeplink(
                 DeepLink(
                     id = UUID.randomUUID().toString(),
                     link = link,
                     name = null,
                     description = null,
                     createdAt = System.currentTimeMillis(),
-                    updatedAt = null,
-                    folder = Folder(
-                        id = UUID.randomUUID().toString(),
-                        name = "Folder ${Random.nextInt()}",
-                        description = null,
-                        color = null
-                    ),
+                    folder = null,
                     isFavorite = false
                 )
             )
@@ -94,7 +93,7 @@ class HomeScreenModel(
     fun launchDeepLink() = screenModelScope.launch {
         val link = deepLinkText.value
 
-        val deepLink = repository.getDeepLinkByLink(link).firstOrNull()
+        val deepLink = deepLinkRepository.getDeepLinkByLink(link).firstOrNull()
 
         if (deepLink != null) {
             launchDeepLink(deepLink)
@@ -125,7 +124,7 @@ class HomeScreenModel(
         selectedDeepLinkId.update { null }
 
         screenModelScope.launch {
-            repository.deleteDeeplink(deepLink)
+            deepLinkRepository.deleteDeeplink(deepLink)
         }
     }
 
@@ -138,7 +137,7 @@ class HomeScreenModel(
         val deepLink = selectedDeepLink.value ?: return
 
         screenModelScope.launch {
-            repository.toggleFavoriteDeepLink(
+            deepLinkRepository.toggleFavoriteDeepLink(
                 deepLinkId = deepLink.id,
                 isFavorite = !deepLink.isFavorite
             )

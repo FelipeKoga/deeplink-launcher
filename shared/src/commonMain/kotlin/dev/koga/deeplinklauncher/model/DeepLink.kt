@@ -6,7 +6,6 @@ data class DeepLink(
     val name: String?,
     val description: String?,
     val createdAt: Long,
-    val updatedAt: Long?,
     val isFavorite: Boolean,
     val folder: Folder?
 )

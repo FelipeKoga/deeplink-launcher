@@ -4,7 +4,6 @@ CREATE TABLE deeplink(
   name TEXT,
   description TEXT,
   createdAt INTEGER NOT NULL,
-  updatedAt INTEGER,
   folderId TEXT,
   isFavorite INTEGER DEFAULT 0,
   FOREIGN KEY(folderId) REFERENCES folder(id)
@@ -12,7 +11,7 @@ CREATE TABLE deeplink(
 
 CREATE TABLE folder (
     id TEXT PRIMARY KEY,
-    name TEXT UNIQUE,
+    name TEXT UNIQUE NOT NULL,
     description TEXT,
     color TEXT
 );
@@ -32,8 +31,8 @@ favoriteDeepLinkById:
 UPDATE deeplink SET isFavorite = ? WHERE id = ?;
 
 upsertDeeplink:
-INSERT OR REPLACE INTO deeplink (id, link, name, description, createdAt, updatedAt, isFavorite, folderId)
-VALUES (?, ?, ?, ?, ?, ?, ?, ?);
+INSERT OR REPLACE INTO deeplink (id, link, name, description, createdAt, isFavorite, folderId)
+VALUES (?, ?, ?, ?, ?, ?, ?);
 
 getDeepLinkByLink:
 SELECT d.*, f.*

@@ -1,10 +1,14 @@
 @file:OptIn(
     ExperimentalFoundationApi::class, ExperimentalFoundationApi::class,
-    ExperimentalFoundationApi::class, ExperimentalFoundationApi::class
+    ExperimentalFoundationApi::class, ExperimentalFoundationApi::class,
+    ExperimentalComposeUiApi::class
 )
 
 package dev.koga.deeplinklauncher.android.home
 
+import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.combinedClickable
@@ -51,16 +55,16 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.geometry.Size
-import androidx.compose.ui.layout.onGloballyPositioned
-import androidx.compose.ui.layout.onSizeChanged
-import androidx.compose.ui.layout.positionInRoot
+import androidx.compose.ui.composed
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.toSize
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.koin.getNavigatorScreenModel
 import cafe.adriel.voyager.navigator.LocalNavigator
@@ -90,8 +94,17 @@ private fun HomeScreenContent() {
 
     val scope = rememberCoroutineScope()
 
+    val keyboardController = LocalSoftwareKeyboardController.current
+
     val bottomSheetState = rememberStandardBottomSheetState(
         initialValue = SheetValue.Expanded,
+        confirmValueChange = {
+            if (it == SheetValue.PartiallyExpanded) {
+                keyboardController?.hide()
+            }
+
+            true
+        }
     )
 
 
@@ -116,6 +129,7 @@ private fun HomeScreenContent() {
     val deepLinkText by screenModel.deepLinkText.collectAsState()
     val selectedDeepLink by screenModel.selectedDeepLink.collectAsState()
     val searchText by screenModel.searchText.collectAsState()
+    val folders by screenModel.folders.collectAsState()
 
     val mainContentPaddingBottom = 320.dp
 
@@ -338,43 +352,9 @@ private fun HomeScreenContent() {
 
         }
     }
-
 }
 
-val folders = listOf(
-    Folder(
-        id = "123",
-        name = "Eugenia White",
-        description = null,
-        color = null
-    ),
-    Folder(
-        id = "123",
-        name = "Eugenia White",
-        description = null,
-        color = null
-    ),
-    Folder(
-        id = "123",
-        name = "Eugenia White",
-        description = null,
-        color = null
-    ),
-    Folder(
-        id = "123",
-        name = "Eugenia White",
-        description = null,
-        color = null
-    ),
-    Folder(
-        id = "123",
-        name = "Eugenia White",
-        description = null,
-        color = null
-    )
-)
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun DeepLinkItem(
     modifier: Modifier = Modifier,
@@ -384,6 +364,7 @@ fun DeepLinkItem(
 ) {
     Column(
         modifier = modifier
+            .animatedListItem(key = deepLink.id)
             .fillMaxWidth()
             .combinedClickable(
                 onClick = { onClick(deepLink) },
@@ -442,9 +423,27 @@ fun DeepLinkItemPreview() {
         name = null,
         description = null,
         createdAt = 4849,
-        updatedAt = null,
         isFavorite = false,
         folder = null
     ), onClick = {}, onLongClick = {}
+    )
+}
+
+fun <T> Modifier.animatedListItem(key: T): Modifier = composed {
+
+    val animatedProgress = remember(key) {
+        Animatable(initialValue = 0.85f)
+    }
+
+    LaunchedEffect(key1 = key) {
+        animatedProgress.animateTo(
+            targetValue = 1f,
+            animationSpec = tween(300, easing = FastOutSlowInEasing)
+        )
+    }
+
+    this.graphicsLayer(
+        scaleX = animatedProgress.value,
+        scaleY = animatedProgress.value
     )
 }

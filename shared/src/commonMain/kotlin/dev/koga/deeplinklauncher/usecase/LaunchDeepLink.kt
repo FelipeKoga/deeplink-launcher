@@ -1,4 +1,4 @@
-package dev.koga.deeplinklauncher
+package dev.koga.deeplinklauncher.usecase
 
 expect class LaunchDeepLink {
     fun launch(url: String): LaunchDeepLinkResult
