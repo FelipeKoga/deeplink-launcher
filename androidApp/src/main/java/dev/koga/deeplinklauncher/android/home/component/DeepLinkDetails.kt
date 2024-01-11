@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Delete
+import androidx.compose.material.icons.rounded.Favorite
 import androidx.compose.material.icons.rounded.FavoriteBorder
 import androidx.compose.material.icons.rounded.Share
 import androidx.compose.material3.Divider
@@ -33,12 +34,13 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import dev.koga.deeplinklauncher.android.theme.AppTheme
+import dev.koga.deeplinklauncher.model.DeepLink
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DeepLinkDetailsBottomSheet(
     modifier: Modifier = Modifier,
-    deepLink: String,
+    deepLink: DeepLink,
     onShare: () -> Unit,
     onDelete: () -> Unit,
     onFavorite: () -> Unit,
@@ -60,14 +62,14 @@ fun DeepLinkDetailsBottomSheet(
 
 @Composable
 private fun DetailsContent(
-    deepLink: String,
+    deepLink: DeepLink,
     onShare: () -> Unit,
     onDelete: () -> Unit,
     onFavorite: () -> Unit,
 ) {
     Column(Modifier.padding(24.dp)) {
         Text(
-            text = deepLink,
+            text = deepLink.link,
             style = MaterialTheme.typography.bodyMedium.copy(
                 fontWeight = FontWeight.SemiBold
             ),
@@ -111,9 +113,12 @@ private fun DetailsContent(
 
             IconButton(onClick = onFavorite) {
                 Icon(
-                    imageVector = Icons.Rounded.FavoriteBorder,
+                    imageVector = if (deepLink.isFavorite) Icons.Rounded.Favorite
+                    else Icons.Rounded.FavoriteBorder,
                     contentDescription = "",
                     modifier = Modifier.size(18.dp),
+                    tint = if (deepLink.isFavorite) Color.Red
+                    else MaterialTheme.colorScheme.onSurface.copy(alpha = .6f),
                 )
             }
         }
@@ -128,7 +133,15 @@ private fun DetailsContent(
 fun DetailsContentPreview() {
     AppTheme {
         DetailsContent(
-            deepLink = "https://www.google.com",
+            deepLink = DeepLink(
+                "", "\"https://www.google.com\"",
+                name = null,
+                description = null,
+                createdAt = 2731,
+                updatedAt = null,
+                isFavorite = false,
+                folder = null
+            ),
             onShare = {},
             onDelete = {},
             onFavorite = {},

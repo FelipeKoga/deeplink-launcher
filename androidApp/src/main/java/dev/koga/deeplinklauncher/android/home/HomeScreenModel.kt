@@ -11,7 +11,10 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.flow.flatMap
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
@@ -25,7 +28,11 @@ class HomeScreenModel(
     private val launchDeepLink: LaunchDeepLink,
 ) : ScreenModel {
 
-    val deepLinks = repository.getAllDeepLinks().stateIn(
+    val searchText = MutableStateFlow("")
+
+    val deepLinks = searchText.flatMapLatest {
+        repository.getAllDeepLinks(it)
+    }.stateIn(
         scope = screenModelScope,
         started = SharingStarted.WhileSubscribed(),
         initialValue = emptyList()
@@ -41,10 +48,28 @@ class HomeScreenModel(
 
     val deepLinkText = MutableStateFlow("")
 
+    private val selectedDeepLinkId = MutableStateFlow<String?>(null)
+
+    val selectedDeepLink = combine(selectedDeepLinkId, deepLinks) { deepLinkId, deepLinks ->
+        deepLinks.firstOrNull { it.id == deepLinkId }
+    }.stateIn(
+        scope = screenModelScope,
+        started = SharingStarted.WhileSubscribed(),
+        initialValue = null
+    )
+
     private val dispatchErrorMessage = MutableStateFlow<String?>(null)
     val errorMessage = dispatchErrorMessage.asStateFlow()
 
-    fun insertDeepLink(link: String) {
+    fun selectDeepLink(deepLink: DeepLink) {
+        selectedDeepLinkId.update { deepLink.id }
+    }
+
+    fun clearSelectedDeepLink() {
+        selectedDeepLinkId.update { null }
+    }
+
+    private fun insertDeepLink(link: String) {
         screenModelScope.launch {
             repository.insertDeeplink(
                 DeepLink(
@@ -60,7 +85,7 @@ class HomeScreenModel(
                         description = null,
                         color = null
                     ),
-                    isFavorite = true
+                    isFavorite = false
                 )
             )
         }
@@ -94,18 +119,38 @@ class HomeScreenModel(
         launchDeepLink.launch(deepLink.link)
     }
 
-    fun deleteDeepLink(deepLink: DeepLink) {
+    fun delete() {
+        val deepLink = selectedDeepLink.value ?: return
+
+        selectedDeepLinkId.update { null }
+
         screenModelScope.launch {
             repository.deleteDeeplink(deepLink)
         }
     }
 
     fun share() {
-        TODO("Not yet implemented")
+        val deepLink = selectedDeepLink.value ?: return
+
+    }
+
+    fun favorite() {
+        val deepLink = selectedDeepLink.value ?: return
+
+        screenModelScope.launch {
+            repository.toggleFavoriteDeepLink(
+                deepLinkId = deepLink.id,
+                isFavorite = !deepLink.isFavorite
+            )
+        }
     }
 
     fun onDeepLinkTextChanged(text: String) {
         dispatchErrorMessage.update { null }
         deepLinkText.update { text }
+    }
+
+    fun onSearchTextChanged(text: String) {
+        searchText.update { text }
     }
 }

@@ -1,4 +1,7 @@
-@file:OptIn(ExperimentalFoundationApi::class, ExperimentalFoundationApi::class)
+@file:OptIn(
+    ExperimentalFoundationApi::class, ExperimentalFoundationApi::class,
+    ExperimentalFoundationApi::class, ExperimentalFoundationApi::class
+)
 
 package dev.koga.deeplinklauncher.android.home
 
@@ -26,6 +29,7 @@ import androidx.compose.material.icons.rounded.KeyboardArrowRight
 import androidx.compose.material.icons.rounded.Settings
 import androidx.compose.material3.BottomSheetScaffold
 import androidx.compose.material3.Divider
+import androidx.compose.material3.DockedSearchBar
 import androidx.compose.material3.ElevatedAssistChip
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilledTonalIconButton
@@ -61,10 +65,13 @@ import cafe.adriel.voyager.navigator.currentOrThrow
 import dev.koga.deeplinklauncher.LaunchDeepLink
 import dev.koga.deeplinklauncher.LaunchDeepLinkResult
 import dev.koga.deeplinklauncher.android.R
+import dev.koga.deeplinklauncher.android.core.designsystem.DLLSearchBar
+import dev.koga.deeplinklauncher.android.folder.FoldersListContent
 import dev.koga.deeplinklauncher.android.home.component.DeepLinkDetailsBottomSheet
 import dev.koga.deeplinklauncher.android.home.component.DeepLinkInputContent
 import dev.koga.deeplinklauncher.android.settings.SettingsScreen
 import dev.koga.deeplinklauncher.model.DeepLink
+import dev.koga.deeplinklauncher.model.Folder
 import kotlinx.coroutines.launch
 
 object HomeScreen : Screen {
@@ -94,10 +101,6 @@ private fun HomeScreenContent() {
         },
     )
 
-    var deepLinkDetails by remember {
-        mutableStateOf<String?>(null)
-    }
-
     var mustOpenInputBottomSheetAfterDetailsDismiss by remember {
         mutableStateOf(false)
     }
@@ -110,24 +113,26 @@ private fun HomeScreenContent() {
     val favoriteDeepLinks by screenModel.favoriteDeepLinks.collectAsState()
     val errorMessage by screenModel.errorMessage.collectAsState()
     val deepLinkText by screenModel.deepLinkText.collectAsState()
+    val selectedDeepLink by screenModel.selectedDeepLink.collectAsState()
+    val searchText by screenModel.searchText.collectAsState()
 
-    if (deepLinkDetails != null) {
-//        DeepLinkDetailsBottomSheet(
-//            deepLink = deepLinkDetails!!,
-//            onShare = {},
-//            onDelete = screenModel::delete,
-//            onFavorite = screenModel::favorite,
-//            onDismiss = {
-//                deepLinkDetails = null
-//
-//                if (mustOpenInputBottomSheetAfterDetailsDismiss) {
-//                    mustOpenInputBottomSheetAfterDetailsDismiss = false
-//                    scope.launch {
-//                        bottomSheetScaffoldState.bottomSheetState.expand()
-//                    }
-//                }
-//            }
-//        )
+    if (selectedDeepLink != null) {
+        DeepLinkDetailsBottomSheet(
+            deepLink = selectedDeepLink!!,
+            onShare = screenModel::share,
+            onDelete = screenModel::delete,
+            onFavorite = screenModel::favorite,
+            onDismiss = {
+                screenModel.clearSelectedDeepLink()
+
+                if (mustOpenInputBottomSheetAfterDetailsDismiss) {
+                    mustOpenInputBottomSheetAfterDetailsDismiss = false
+                    scope.launch {
+                        bottomSheetScaffoldState.bottomSheetState.expand()
+                    }
+                }
+            }
+        )
     }
 
     BottomSheetScaffold(
@@ -178,6 +183,18 @@ private fun HomeScreenContent() {
         Column(
             modifier = Modifier.fillMaxSize()
         ) {
+            DLLSearchBar(
+                modifier = Modifier.padding(
+                    start = 24.dp,
+                    end = 24.dp,
+                    top = 12.dp,
+                    bottom = 24.dp
+                ),
+                value = searchText,
+                onChanged = screenModel::onSearchTextChanged,
+                hint = "Search for deeplinks"
+            )
+
             TabRow(selectedTabIndex = pagerState.currentPage) {
                 Tab(
                     selected = pagerState.currentPage == HomeTabPage.HISTORY.ordinal,
@@ -240,21 +257,24 @@ private fun HomeScreenContent() {
                 )
             }
 
-            HorizontalPager(state = pagerState, modifier = Modifier.fillMaxSize()) { page ->
+            HorizontalPager(
+                state = pagerState,
+                modifier = Modifier.fillMaxSize()
+            ) { page ->
                 when (page) {
                     HomeTabPage.HISTORY.ordinal -> {
                         LazyColumn(
                             modifier = Modifier
                                 .padding(contentPadding)
                                 .fillMaxSize(),
-                            contentPadding = PaddingValues(bottom = 240.dp)
                         ) {
                             items(deepLinks) { deepLink ->
                                 DeepLinkItem(
-                                    deepLink,
+                                    modifier = Modifier.animateItemPlacement(),
+                                    deepLink = deepLink,
                                     onClick = screenModel::launchDeepLink,
                                     onLongClick = {
-                                        deepLinkDetails = it.link
+                                        screenModel.selectDeepLink(it)
                                         scope.launch {
                                             if (bottomSheetScaffoldState.bottomSheetState.currentValue == SheetValue.Expanded) {
                                                 bottomSheetScaffoldState.bottomSheetState.partialExpand()
@@ -276,10 +296,11 @@ private fun HomeScreenContent() {
                         ) {
                             items(favoriteDeepLinks) { deepLink ->
                                 DeepLinkItem(
-                                    deepLink,
+                                    modifier = Modifier.animateItemPlacement(),
+                                    deepLink = deepLink,
                                     onClick = screenModel::launchDeepLink,
                                     onLongClick = {
-                                        deepLinkDetails = it.link
+                                        screenModel.selectDeepLink(it)
                                         scope.launch {
                                             if (bottomSheetScaffoldState.bottomSheetState.currentValue == SheetValue.Expanded) {
                                                 bottomSheetScaffoldState.bottomSheetState.partialExpand()
@@ -293,10 +314,46 @@ private fun HomeScreenContent() {
                     }
 
                     HomeTabPage.FOLDERS.ordinal -> {
-
+                        FoldersListContent(
+                            modifier = Modifier.fillMaxSize(),
+                            folders = listOf(
+                                Folder(
+                                    id = "123",
+                                    name = "Eugenia White",
+                                    description = null,
+                                    color = null
+                                ),
+                                Folder(
+                                    id = "123",
+                                    name = "Eugenia White",
+                                    description = null,
+                                    color = null
+                                ),
+                                Folder(
+                                    id = "123",
+                                    name = "Eugenia White",
+                                    description = null,
+                                    color = null
+                                ),
+                                Folder(
+                                    id = "123",
+                                    name = "Eugenia White",
+                                    description = null,
+                                    color = null
+                                ),
+                                Folder(
+                                    id = "123",
+                                    name = "Eugenia White",
+                                    description = null,
+                                    color = null
+                                )
+                            ),
+                            onClick = {},
+                        )
                     }
                 }
             }
+
         }
     }
 
@@ -304,9 +361,14 @@ private fun HomeScreenContent() {
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun DeepLinkItem(deepLink: DeepLink, onClick: (DeepLink) -> Unit, onLongClick: (DeepLink) -> Unit) {
+fun DeepLinkItem(
+    modifier: Modifier = Modifier,
+    deepLink: DeepLink,
+    onClick: (DeepLink) -> Unit,
+    onLongClick: (DeepLink) -> Unit
+) {
     Column(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .combinedClickable(
                 onClick = { onClick(deepLink) },
@@ -356,8 +418,18 @@ fun DeepLinkItem(deepLink: DeepLink, onClick: (DeepLink) -> Unit, onLongClick: (
     }
 }
 
-@Preview
+@Preview(showBackground = true)
 @Composable
-fun HomeScreenContentPreview() {
-    HomeScreenContent()
+fun DeepLinkItemPreview() {
+    DeepLinkItem(deepLink = DeepLink(
+        id = "123",
+        link = "https://www.google.com",
+        name = null,
+        description = null,
+        createdAt = 4849,
+        updatedAt = null,
+        isFavorite = false,
+        folder = null
+    ), onClick = {}, onLongClick = {}
+    )
 }

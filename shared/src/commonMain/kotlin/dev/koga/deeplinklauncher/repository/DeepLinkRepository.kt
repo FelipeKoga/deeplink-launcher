@@ -14,9 +14,11 @@ class DeepLinkRepository(
     private val database: DeepLinkLauncherDatabase
 ) {
 
-    fun getAllDeepLinks(): Flow<List<DeepLink>> {
+    fun getAllDeepLinks(search: String): Flow<List<DeepLink>> {
+        val sqlSearchText = "%$search%"
+
         return database.deepLinkLauncherDatabaseQueries
-            .selectDeeplinks()
+            .selectDeeplinks(sqlSearchText, sqlSearchText, sqlSearchText)
             .asFlow()
             .mapToList(Dispatchers.IO)
             .map {
@@ -97,6 +99,15 @@ class DeepLinkRepository(
     fun deleteDeeplink(deepLink: DeepLink) {
         database.transaction {
             database.deepLinkLauncherDatabaseQueries.deleteDeeplinkById(deepLink.id)
+        }
+    }
+
+    fun toggleFavoriteDeepLink(deepLinkId: String, isFavorite: Boolean) {
+        database.transaction {
+            database.deepLinkLauncherDatabaseQueries.favoriteDeepLinkById(
+                isFavorite = if (isFavorite) 1L else 0L,
+                id = deepLinkId
+            )
         }
     }
 }
