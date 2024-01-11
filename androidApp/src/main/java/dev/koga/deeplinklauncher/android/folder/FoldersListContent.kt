@@ -24,28 +24,6 @@ import dev.koga.deeplinklauncher.model.Folder
 
 
 @Composable
-fun FoldersListContent(
-    modifier: Modifier = Modifier,
-    folders: List<Folder>,
-    onClick: (Folder) -> Unit,
-) {
-    LazyVerticalStaggeredGrid(
-        modifier = modifier,
-        contentPadding = PaddingValues(24.dp),
-        horizontalArrangement = Arrangement.spacedBy(24.dp),
-        verticalItemSpacing = 24.dp,
-        columns = StaggeredGridCells.Fixed(2)
-    ) {
-        items(folders.size) { index ->
-            FolderCard(
-                folder = folders[index],
-                onClick = onClick,
-            )
-        }
-    }
-}
-
-@Composable
 fun FolderCard(folder: Folder, onClick: (Folder) -> Unit) {
     ElevatedCard(
         onClick = { onClick(folder) },

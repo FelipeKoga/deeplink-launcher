@@ -21,6 +21,8 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
+import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material.icons.Icons
@@ -29,7 +31,6 @@ import androidx.compose.material.icons.rounded.KeyboardArrowRight
 import androidx.compose.material.icons.rounded.Settings
 import androidx.compose.material3.BottomSheetScaffold
 import androidx.compose.material3.Divider
-import androidx.compose.material3.DockedSearchBar
 import androidx.compose.material3.ElevatedAssistChip
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilledTonalIconButton
@@ -39,7 +40,6 @@ import androidx.compose.material3.SheetValue
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.rememberBottomSheetScaffoldState
 import androidx.compose.material3.rememberStandardBottomSheetState
 import androidx.compose.runtime.Composable
@@ -49,24 +49,26 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.layout.onSizeChanged
+import androidx.compose.ui.layout.positionInRoot
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.toSize
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.koin.getNavigatorScreenModel
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
-import dev.koga.deeplinklauncher.LaunchDeepLink
-import dev.koga.deeplinklauncher.LaunchDeepLinkResult
 import dev.koga.deeplinklauncher.android.R
 import dev.koga.deeplinklauncher.android.core.designsystem.DLLSearchBar
-import dev.koga.deeplinklauncher.android.folder.FoldersListContent
+import dev.koga.deeplinklauncher.android.core.designsystem.DLLTopBar
+import dev.koga.deeplinklauncher.android.folder.FolderCard
 import dev.koga.deeplinklauncher.android.home.component.DeepLinkDetailsBottomSheet
 import dev.koga.deeplinklauncher.android.home.component.DeepLinkInputContent
 import dev.koga.deeplinklauncher.android.settings.SettingsScreen
@@ -88,11 +90,10 @@ private fun HomeScreenContent() {
 
     val scope = rememberCoroutineScope()
 
-    val bottomSheetScaffoldState = rememberBottomSheetScaffoldState(
-        bottomSheetState = rememberStandardBottomSheetState(
-            initialValue = SheetValue.Expanded,
-        )
+    val bottomSheetState = rememberStandardBottomSheetState(
+        initialValue = SheetValue.Expanded,
     )
+
 
     val pagerState = rememberPagerState(
         initialPage = HomeTabPage.HISTORY.ordinal,
@@ -116,6 +117,8 @@ private fun HomeScreenContent() {
     val selectedDeepLink by screenModel.selectedDeepLink.collectAsState()
     val searchText by screenModel.searchText.collectAsState()
 
+    val mainContentPaddingBottom = 320.dp
+
     if (selectedDeepLink != null) {
         DeepLinkDetailsBottomSheet(
             deepLink = selectedDeepLink!!,
@@ -128,7 +131,7 @@ private fun HomeScreenContent() {
                 if (mustOpenInputBottomSheetAfterDetailsDismiss) {
                     mustOpenInputBottomSheetAfterDetailsDismiss = false
                     scope.launch {
-                        bottomSheetScaffoldState.bottomSheetState.expand()
+                        bottomSheetState.expand()
                     }
                 }
             }
@@ -137,15 +140,8 @@ private fun HomeScreenContent() {
 
     BottomSheetScaffold(
         topBar = {
-            TopAppBar(
-                title = {
-                    Text(
-                        text = "Deeplink Launcher",
-                        style = MaterialTheme.typography.titleMedium.copy(
-                            fontWeight = FontWeight.Bold
-                        )
-                    )
-                },
+            DLLTopBar(
+                title = "Deeplink Launcher",
                 actions = {
                     FilledTonalIconButton(onClick = {
 //                        navigator.push(ImportExportScreen)
@@ -167,10 +163,12 @@ private fun HomeScreenContent() {
                             modifier = Modifier.size(18.dp),
                         )
                     }
-
-                })
+                }
+            )
         },
-        scaffoldState = bottomSheetScaffoldState,
+        scaffoldState = rememberBottomSheetScaffoldState(
+            bottomSheetState = bottomSheetState
+        ),
         sheetContent = {
             DeepLinkInputContent(
                 value = deepLinkText,
@@ -181,7 +179,7 @@ private fun HomeScreenContent() {
         }
     ) { contentPadding ->
         Column(
-            modifier = Modifier.fillMaxSize()
+            modifier = Modifier.fillMaxSize(),
         ) {
             DLLSearchBar(
                 modifier = Modifier.padding(
@@ -267,6 +265,7 @@ private fun HomeScreenContent() {
                             modifier = Modifier
                                 .padding(contentPadding)
                                 .fillMaxSize(),
+                            contentPadding = PaddingValues(bottom = mainContentPaddingBottom)
                         ) {
                             items(deepLinks) { deepLink ->
                                 DeepLinkItem(
@@ -276,8 +275,8 @@ private fun HomeScreenContent() {
                                     onLongClick = {
                                         screenModel.selectDeepLink(it)
                                         scope.launch {
-                                            if (bottomSheetScaffoldState.bottomSheetState.currentValue == SheetValue.Expanded) {
-                                                bottomSheetScaffoldState.bottomSheetState.partialExpand()
+                                            if (bottomSheetState.currentValue == SheetValue.Expanded) {
+                                                bottomSheetState.partialExpand()
                                                 mustOpenInputBottomSheetAfterDetailsDismiss = true
                                             }
                                         }
@@ -292,7 +291,7 @@ private fun HomeScreenContent() {
                             modifier = Modifier
                                 .padding(contentPadding)
                                 .fillMaxSize(),
-                            contentPadding = PaddingValues(bottom = 240.dp)
+                            contentPadding = PaddingValues(bottom = mainContentPaddingBottom)
                         ) {
                             items(favoriteDeepLinks) { deepLink ->
                                 DeepLinkItem(
@@ -302,8 +301,8 @@ private fun HomeScreenContent() {
                                     onLongClick = {
                                         screenModel.selectDeepLink(it)
                                         scope.launch {
-                                            if (bottomSheetScaffoldState.bottomSheetState.currentValue == SheetValue.Expanded) {
-                                                bottomSheetScaffoldState.bottomSheetState.partialExpand()
+                                            if (bottomSheetState.currentValue == SheetValue.Expanded) {
+                                                bottomSheetState.partialExpand()
                                                 mustOpenInputBottomSheetAfterDetailsDismiss = true
                                             }
                                         }
@@ -314,42 +313,25 @@ private fun HomeScreenContent() {
                     }
 
                     HomeTabPage.FOLDERS.ordinal -> {
-                        FoldersListContent(
+                        LazyVerticalStaggeredGrid(
                             modifier = Modifier.fillMaxSize(),
-                            folders = listOf(
-                                Folder(
-                                    id = "123",
-                                    name = "Eugenia White",
-                                    description = null,
-                                    color = null
-                                ),
-                                Folder(
-                                    id = "123",
-                                    name = "Eugenia White",
-                                    description = null,
-                                    color = null
-                                ),
-                                Folder(
-                                    id = "123",
-                                    name = "Eugenia White",
-                                    description = null,
-                                    color = null
-                                ),
-                                Folder(
-                                    id = "123",
-                                    name = "Eugenia White",
-                                    description = null,
-                                    color = null
-                                ),
-                                Folder(
-                                    id = "123",
-                                    name = "Eugenia White",
-                                    description = null,
-                                    color = null
-                                )
+                            contentPadding = PaddingValues(
+                                start = 24.dp,
+                                end = 24.dp,
+                                top = 24.dp,
+                                bottom = mainContentPaddingBottom
                             ),
-                            onClick = {},
-                        )
+                            horizontalArrangement = Arrangement.spacedBy(24.dp),
+                            verticalItemSpacing = 24.dp,
+                            columns = StaggeredGridCells.Fixed(2)
+                        ) {
+                            items(folders.size) { index ->
+                                FolderCard(
+                                    folder = folders[index],
+                                    onClick = {},
+                                )
+                            }
+                        }
                     }
                 }
             }
@@ -358,6 +340,39 @@ private fun HomeScreenContent() {
     }
 
 }
+
+val folders = listOf(
+    Folder(
+        id = "123",
+        name = "Eugenia White",
+        description = null,
+        color = null
+    ),
+    Folder(
+        id = "123",
+        name = "Eugenia White",
+        description = null,
+        color = null
+    ),
+    Folder(
+        id = "123",
+        name = "Eugenia White",
+        description = null,
+        color = null
+    ),
+    Folder(
+        id = "123",
+        name = "Eugenia White",
+        description = null,
+        color = null
+    ),
+    Folder(
+        id = "123",
+        name = "Eugenia White",
+        description = null,
+        color = null
+    )
+)
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
