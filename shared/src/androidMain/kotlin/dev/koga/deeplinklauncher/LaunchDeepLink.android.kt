@@ -9,7 +9,9 @@ actual class LaunchDeepLink(
 ) {
     actual fun launch(url: String): LaunchDeepLinkResult {
         return try {
-            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url)).apply {
+                addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            }
             context.startActivity(intent)
             LaunchDeepLinkResult.Success(url)
         } catch (e: Throwable) {

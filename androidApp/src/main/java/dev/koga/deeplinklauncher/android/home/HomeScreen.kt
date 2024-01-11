@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -25,6 +26,7 @@ import androidx.compose.material.icons.rounded.KeyboardArrowRight
 import androidx.compose.material.icons.rounded.Settings
 import androidx.compose.material3.BottomSheetScaffold
 import androidx.compose.material3.Divider
+import androidx.compose.material3.ElevatedAssistChip
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilledTonalIconButton
 import androidx.compose.material3.Icon
@@ -56,7 +58,6 @@ import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.koin.getNavigatorScreenModel
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
-import dev.koga.deeplinklauncher.HomeScreenModel
 import dev.koga.deeplinklauncher.LaunchDeepLink
 import dev.koga.deeplinklauncher.LaunchDeepLinkResult
 import dev.koga.deeplinklauncher.android.R
@@ -78,27 +79,13 @@ object HomeScreen : Screen {
 @Composable
 private fun HomeScreenContent() {
 
-    val context = LocalContext.current
-
-    val launchDeepLink = remember {
-        LaunchDeepLink(context)
-    }
-
-    var deepLinkText by rememberSaveable {
-        mutableStateOf("")
-    }
-
-    var result by remember {
-        mutableStateOf<LaunchDeepLinkResult?>(null)
-    }
+    val scope = rememberCoroutineScope()
 
     val bottomSheetScaffoldState = rememberBottomSheetScaffoldState(
         bottomSheetState = rememberStandardBottomSheetState(
             initialValue = SheetValue.Expanded,
         )
     )
-
-    val scope = rememberCoroutineScope()
 
     val pagerState = rememberPagerState(
         initialPage = HomeTabPage.HISTORY.ordinal,
@@ -119,24 +106,28 @@ private fun HomeScreenContent() {
 
     val screenModel = navigator.getNavigatorScreenModel<HomeScreenModel>()
 
-    val deepLinks by screenModel.deeplinks.collectAsState()
+    val deepLinks by screenModel.deepLinks.collectAsState()
+    val favoriteDeepLinks by screenModel.favoriteDeepLinks.collectAsState()
+    val errorMessage by screenModel.errorMessage.collectAsState()
+    val deepLinkText by screenModel.deepLinkText.collectAsState()
+
     if (deepLinkDetails != null) {
-        DeepLinkDetailsBottomSheet(deepLink = deepLinkDetails!!) {
-            deepLinkDetails = null
-
-            if (mustOpenInputBottomSheetAfterDetailsDismiss) {
-                mustOpenInputBottomSheetAfterDetailsDismiss = false
-                scope.launch {
-                    bottomSheetScaffoldState.bottomSheetState.expand()
-                }
-            }
-        }
-    }
-
-    LaunchedEffect(result) {
-        if (result is LaunchDeepLinkResult.Success) {
-            screenModel.insertDeepLink(deepLinkText)
-        }
+//        DeepLinkDetailsBottomSheet(
+//            deepLink = deepLinkDetails!!,
+//            onShare = {},
+//            onDelete = screenModel::delete,
+//            onFavorite = screenModel::favorite,
+//            onDismiss = {
+//                deepLinkDetails = null
+//
+//                if (mustOpenInputBottomSheetAfterDetailsDismiss) {
+//                    mustOpenInputBottomSheetAfterDetailsDismiss = false
+//                    scope.launch {
+//                        bottomSheetScaffoldState.bottomSheetState.expand()
+//                    }
+//                }
+//            }
+//        )
     }
 
     BottomSheetScaffold(
@@ -178,16 +169,9 @@ private fun HomeScreenContent() {
         sheetContent = {
             DeepLinkInputContent(
                 value = deepLinkText,
-                onValueChange = {
-                    result = null
-                    deepLinkText = it
-                },
-                launch = {
-                    result = launchDeepLink.launch(deepLinkText)
-                },
-                errorMessage = "Something went wrong. Check if the deeplink is valid.".takeIf {
-                    result is LaunchDeepLinkResult.Failure
-                }
+                onValueChange = screenModel::onDeepLinkTextChanged,
+                launch = screenModel::launchDeepLink,
+                errorMessage = errorMessage
             )
         }
     ) { contentPadding ->
@@ -265,12 +249,10 @@ private fun HomeScreenContent() {
                                 .fillMaxSize(),
                             contentPadding = PaddingValues(bottom = 240.dp)
                         ) {
-                            items(deepLinks) {
+                            items(deepLinks) { deepLink ->
                                 DeepLinkItem(
-                                    it,
-                                    onClick = {
-                                        launchDeepLink.launch(it.link)
-                                    },
+                                    deepLink,
+                                    onClick = screenModel::launchDeepLink,
                                     onLongClick = {
                                         deepLinkDetails = it.link
                                         scope.launch {
@@ -279,13 +261,35 @@ private fun HomeScreenContent() {
                                                 mustOpenInputBottomSheetAfterDetailsDismiss = true
                                             }
                                         }
-                                    })
+                                    }
+                                )
                             }
                         }
                     }
 
                     HomeTabPage.FAVORITES.ordinal -> {
-
+                        LazyColumn(
+                            modifier = Modifier
+                                .padding(contentPadding)
+                                .fillMaxSize(),
+                            contentPadding = PaddingValues(bottom = 240.dp)
+                        ) {
+                            items(favoriteDeepLinks) { deepLink ->
+                                DeepLinkItem(
+                                    deepLink,
+                                    onClick = screenModel::launchDeepLink,
+                                    onLongClick = {
+                                        deepLinkDetails = it.link
+                                        scope.launch {
+                                            if (bottomSheetScaffoldState.bottomSheetState.currentValue == SheetValue.Expanded) {
+                                                bottomSheetScaffoldState.bottomSheetState.partialExpand()
+                                                mustOpenInputBottomSheetAfterDetailsDismiss = true
+                                            }
+                                        }
+                                    }
+                                )
+                            }
+                        }
                     }
 
                     HomeTabPage.FOLDERS.ordinal -> {
@@ -310,41 +314,47 @@ fun DeepLinkItem(deepLink: DeepLink, onClick: (DeepLink) -> Unit, onLongClick: (
             )
     ) {
 
-        Row(
-            modifier = Modifier
+        Column(
+            Modifier
+                .padding(vertical = 24.dp, horizontal = 12.dp)
                 .fillMaxWidth()
-                .padding(horizontal = 12.dp, vertical = 24.dp),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
         ) {
-            Text(
-                text = deepLink.link,
-                style = MaterialTheme.typography.bodyMedium.copy(
-                    fontWeight = FontWeight.Normal
-                ),
-                modifier = Modifier.weight(1f)
-            )
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = deepLink.link,
+                    style = MaterialTheme.typography.bodyMedium.copy(
+                        fontWeight = FontWeight.Normal
+                    ),
+                    modifier = Modifier.weight(1f)
+                )
 
-            Spacer(modifier = Modifier.width(12.dp))
+                Spacer(modifier = Modifier.width(12.dp))
 
-            Icon(
-                imageVector = Icons.Rounded.KeyboardArrowRight,
-                contentDescription = "Delete",
-                modifier = Modifier.size(18.dp),
-                tint = MaterialTheme.colorScheme.onSurface
-            )
+                Icon(
+                    imageVector = Icons.Rounded.KeyboardArrowRight,
+                    contentDescription = null,
+                    modifier = Modifier.size(18.dp),
+                    tint = MaterialTheme.colorScheme.onSurface
+                )
+            }
+
+            deepLink.folder?.let {
+                Spacer(modifier = Modifier.height(8.dp))
+                ElevatedAssistChip(onClick = { /*TODO*/ }, label = {
+                    Text(text = it.name)
+                })
+            }
         }
 
 
         Divider(modifier = Modifier.background(MaterialTheme.colorScheme.onSurface.copy(0.1f)))
     }
 }
-
-private val deepLinkSamples = listOf<String>(
-    "https://www.google.com.br",
-    "https://www.google.com.br",
-
-    )
 
 @Preview
 @Composable

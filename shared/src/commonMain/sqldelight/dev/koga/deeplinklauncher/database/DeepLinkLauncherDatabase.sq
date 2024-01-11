@@ -6,6 +6,7 @@ CREATE TABLE deeplink(
   createdAt INTEGER NOT NULL,
   updatedAt INTEGER,
   folderId TEXT,
+  isFavorite INTEGER DEFAULT 0,
   FOREIGN KEY(folderId) REFERENCES folder(id)
 );
 
@@ -17,19 +18,31 @@ CREATE TABLE folder (
 );
 
 
-insertDeeplink:
-INSERT INTO deeplink (id, link, name, description, createdAt, updatedAt)
-VALUES (?, ?, ?, ?, ?, ?);
+selectDeeplinks:
+SELECT d.*, f.*
+FROM deeplink d
+LEFT JOIN folder f ON d.folderId = f.id
+ORDER BY createdAt DESC;
 
-insertFolder:
-INSERT INTO folder (id, name, description, color)
+deleteDeeplinkById:
+DELETE FROM deeplink WHERE id = ?;
+
+upsertDeeplink:
+INSERT OR REPLACE INTO deeplink (id, link, name, description, createdAt, updatedAt, isFavorite, folderId)
+VALUES (?, ?, ?, ?, ?, ?, ?, ?);
+
+getDeepLinkByLink:
+SELECT d.*, f.*
+FROM deeplink d
+LEFT JOIN folder f ON d.folderId = f.id
+WHERE d.link = ?;
+
+selectAllFolders:
+SELECT * FROM folder;
+
+upsertFolder:
+INSERT OR REPLACE INTO folder (id, name, description, color)
 VALUES (?, ?, ?, ?);
 
-selectDeeplinks:
-SELECT * FROM deeplink;
-
-selectAllDeepLinks:
-SELECT deeplink.*, folder.*
-FROM deeplink
-LEFT JOIN folder ON deeplink.folderId = folder.id
-ORDER BY createdAt;
+deleteFolderById:
+DELETE FROM folder WHERE id = ?;

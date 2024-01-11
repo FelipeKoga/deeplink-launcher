@@ -4,6 +4,7 @@ import android.app.Application
 import com.point.android.feature.home.di.homeModule
 import dev.koga.deeplinklauncher.di.databaseModule
 import dev.koga.deeplinklauncher.di.repositoryModule
+import dev.koga.deeplinklauncher.di.useCaseModule
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
 
@@ -14,7 +15,7 @@ class App : Application() {
     }
 
     private fun initKoin() {
-        val modules = databaseModule + homeModule + repositoryModule
+        val modules = databaseModule + homeModule + repositoryModule + useCaseModule
 
         startKoin {
             androidContext(this@App)

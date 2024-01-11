@@ -5,6 +5,7 @@
         android:allowBackup="true"
         android:supportsRtl="true"
         android:name=".App"
+        android:label="DeepLink Launcher"
         android:theme="@style/AppTheme">
         <activity
             android:name=".MainActivity"

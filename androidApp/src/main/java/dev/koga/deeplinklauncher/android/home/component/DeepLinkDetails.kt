@@ -39,6 +39,9 @@ import dev.koga.deeplinklauncher.android.theme.AppTheme
 fun DeepLinkDetailsBottomSheet(
     modifier: Modifier = Modifier,
     deepLink: String,
+    onShare: () -> Unit,
+    onDelete: () -> Unit,
+    onFavorite: () -> Unit,
     onDismiss: () -> Unit,
 ) {
 
@@ -46,15 +49,23 @@ fun DeepLinkDetailsBottomSheet(
         onDismissRequest = onDismiss,
         modifier = modifier
     ) {
-        DetailsContent(deepLink)
+        DetailsContent(
+            deepLink = deepLink,
+            onShare = onShare,
+            onDelete = onDelete,
+            onFavorite = onFavorite,
+        )
     }
 }
 
 @Composable
-private fun DetailsContent(deepLink: String) {
+private fun DetailsContent(
+    deepLink: String,
+    onShare: () -> Unit,
+    onDelete: () -> Unit,
+    onFavorite: () -> Unit,
+) {
     Column(Modifier.padding(24.dp)) {
-
-
         Text(
             text = deepLink,
             style = MaterialTheme.typography.bodyMedium.copy(
@@ -75,8 +86,7 @@ private fun DetailsContent(deepLink: String) {
         ) {
 
             FilledTonalIconButton(
-                onClick = {
-                },
+                onClick = onDelete,
                 colors = IconButtonDefaults.filledTonalIconButtonColors(
                     containerColor = Color.Red.copy(alpha = .2f)
                 )
@@ -89,8 +99,7 @@ private fun DetailsContent(deepLink: String) {
             }
             Spacer(modifier = Modifier.weight(1f))
 
-            IconButton(onClick = {
-            }) {
+            IconButton(onClick = onShare) {
                 Icon(
                     imageVector = Icons.Rounded.Share,
                     contentDescription = "",
@@ -100,8 +109,7 @@ private fun DetailsContent(deepLink: String) {
 
             Spacer(modifier = Modifier.width(24.dp))
 
-            IconButton(onClick = {
-            }) {
+            IconButton(onClick = onFavorite) {
                 Icon(
                     imageVector = Icons.Rounded.FavoriteBorder,
                     contentDescription = "",
@@ -119,6 +127,11 @@ private fun DetailsContent(deepLink: String) {
 @Composable
 fun DetailsContentPreview() {
     AppTheme {
-        DetailsContent(deepLink = "https://www.google.com.br")
+        DetailsContent(
+            deepLink = "https://www.google.com",
+            onShare = {},
+            onDelete = {},
+            onFavorite = {},
+        )
     }
 }
