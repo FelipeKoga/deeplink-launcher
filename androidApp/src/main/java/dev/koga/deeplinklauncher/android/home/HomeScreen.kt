@@ -1,7 +1,7 @@
 @file:OptIn(
     ExperimentalFoundationApi::class, ExperimentalFoundationApi::class,
     ExperimentalFoundationApi::class, ExperimentalFoundationApi::class,
-    ExperimentalComposeUiApi::class
+    ExperimentalComposeUiApi::class, ExperimentalFoundationApi::class
 )
 
 package dev.koga.deeplinklauncher.android.home
@@ -59,7 +59,6 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
 import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -72,12 +71,11 @@ import cafe.adriel.voyager.navigator.currentOrThrow
 import dev.koga.deeplinklauncher.android.R
 import dev.koga.deeplinklauncher.android.core.designsystem.DLLSearchBar
 import dev.koga.deeplinklauncher.android.core.designsystem.DLLTopBar
+import dev.koga.deeplinklauncher.android.deeplink.detail.DeepLinkDetailsScreen
 import dev.koga.deeplinklauncher.android.folder.FolderCard
-import dev.koga.deeplinklauncher.android.home.component.DeepLinkDetailsBottomSheet
 import dev.koga.deeplinklauncher.android.home.component.DeepLinkInputContent
 import dev.koga.deeplinklauncher.android.settings.SettingsScreen
 import dev.koga.deeplinklauncher.model.DeepLink
-import dev.koga.deeplinklauncher.model.Folder
 import kotlinx.coroutines.launch
 
 object HomeScreen : Screen {
@@ -88,7 +86,7 @@ object HomeScreen : Screen {
 }
 
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
 private fun HomeScreenContent() {
 
@@ -115,10 +113,6 @@ private fun HomeScreenContent() {
         },
     )
 
-    var mustOpenInputBottomSheetAfterDetailsDismiss by remember {
-        mutableStateOf(false)
-    }
-
     val navigator = LocalNavigator.currentOrThrow
 
     val screenModel = navigator.getNavigatorScreenModel<HomeScreenModel>()
@@ -127,39 +121,17 @@ private fun HomeScreenContent() {
     val favoriteDeepLinks by screenModel.favoriteDeepLinks.collectAsState()
     val errorMessage by screenModel.errorMessage.collectAsState()
     val deepLinkText by screenModel.deepLinkText.collectAsState()
-    val selectedDeepLink by screenModel.selectedDeepLink.collectAsState()
     val searchText by screenModel.searchText.collectAsState()
     val folders by screenModel.folders.collectAsState()
 
     val mainContentPaddingBottom = 320.dp
-
-    if (selectedDeepLink != null) {
-        DeepLinkDetailsBottomSheet(
-            deepLink = selectedDeepLink!!,
-            onShare = screenModel::share,
-            onDelete = screenModel::delete,
-            onFavorite = screenModel::favorite,
-            onDismiss = {
-                screenModel.clearSelectedDeepLink()
-
-                if (mustOpenInputBottomSheetAfterDetailsDismiss) {
-                    mustOpenInputBottomSheetAfterDetailsDismiss = false
-                    scope.launch {
-                        bottomSheetState.expand()
-                    }
-                }
-            }
-        )
-    }
 
     BottomSheetScaffold(
         topBar = {
             DLLTopBar(
                 title = "Deeplink Launcher",
                 actions = {
-                    FilledTonalIconButton(onClick = {
-//                        navigator.push(ImportExportScreen)
-                    }) {
+                    FilledTonalIconButton(onClick = {}) {
                         Icon(
                             painter = painterResource(id = R.drawable.ic_round_import_export_24),
                             contentDescription = "",
@@ -183,6 +155,7 @@ private fun HomeScreenContent() {
         scaffoldState = rememberBottomSheetScaffoldState(
             bottomSheetState = bottomSheetState
         ),
+
         sheetContent = {
             DeepLinkInputContent(
                 value = deepLinkText,
@@ -193,8 +166,11 @@ private fun HomeScreenContent() {
         }
     ) { contentPadding ->
         Column(
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier
+                .padding(contentPadding)
+                .fillMaxSize(),
         ) {
+
             DLLSearchBar(
                 modifier = Modifier.padding(
                     start = 24.dp,
@@ -286,14 +262,8 @@ private fun HomeScreenContent() {
                                     modifier = Modifier.animateItemPlacement(),
                                     deepLink = deepLink,
                                     onClick = screenModel::launchDeepLink,
-                                    onLongClick = {
-                                        screenModel.selectDeepLink(it)
-                                        scope.launch {
-                                            if (bottomSheetState.currentValue == SheetValue.Expanded) {
-                                                bottomSheetState.partialExpand()
-                                                mustOpenInputBottomSheetAfterDetailsDismiss = true
-                                            }
-                                        }
+                                    openDetails = {
+                                        navigator.push(DeepLinkDetailsScreen(it.id))
                                     }
                                 )
                             }
@@ -312,14 +282,8 @@ private fun HomeScreenContent() {
                                     modifier = Modifier.animateItemPlacement(),
                                     deepLink = deepLink,
                                     onClick = screenModel::launchDeepLink,
-                                    onLongClick = {
-                                        screenModel.selectDeepLink(it)
-                                        scope.launch {
-                                            if (bottomSheetState.currentValue == SheetValue.Expanded) {
-                                                bottomSheetState.partialExpand()
-                                                mustOpenInputBottomSheetAfterDetailsDismiss = true
-                                            }
-                                        }
+                                    openDetails = {
+                                        navigator.push(DeepLinkDetailsScreen(it.id))
                                     }
                                 )
                             }
@@ -349,7 +313,6 @@ private fun HomeScreenContent() {
                     }
                 }
             }
-
         }
     }
 }
@@ -360,32 +323,45 @@ fun DeepLinkItem(
     modifier: Modifier = Modifier,
     deepLink: DeepLink,
     onClick: (DeepLink) -> Unit,
-    onLongClick: (DeepLink) -> Unit
+    openDetails: (DeepLink) -> Unit
 ) {
     Column(
         modifier = modifier
-            .animatedListItem(key = deepLink.id)
             .fillMaxWidth()
             .combinedClickable(
                 onClick = { onClick(deepLink) },
-                onLongClick = { onLongClick(deepLink) }
+                onLongClick = { openDetails(deepLink) },
+                onDoubleClick = { openDetails(deepLink) }
             )
     ) {
 
         Column(
             Modifier
+                .animatedListItem(key = deepLink.id)
                 .padding(vertical = 24.dp, horizontal = 12.dp)
                 .fillMaxWidth()
         ) {
+
+            deepLink.name?.let {
+                Text(
+                    text = it,
+                    style = MaterialTheme.typography.bodyMedium.copy(
+                        fontWeight = FontWeight.Bold
+                    ),
+                )
+            }
+
             Row(
                 modifier = Modifier
                     .fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
+
+
                 Text(
                     text = deepLink.link,
-                    style = MaterialTheme.typography.bodyMedium.copy(
+                    style = MaterialTheme.typography.bodyLarge.copy(
                         fontWeight = FontWeight.Normal
                     ),
                     modifier = Modifier.weight(1f)
@@ -396,8 +372,18 @@ fun DeepLinkItem(
                 Icon(
                     imageVector = Icons.Rounded.KeyboardArrowRight,
                     contentDescription = null,
-                    modifier = Modifier.size(18.dp),
+                    modifier = Modifier.size(20.dp),
                     tint = MaterialTheme.colorScheme.onSurface
+                )
+            }
+
+            deepLink.description?.let {
+                Spacer(modifier = Modifier.height(8.dp))
+                Text(
+                    text = it,
+                    style = MaterialTheme.typography.labelSmall.copy(
+                        fontWeight = FontWeight.SemiBold
+                    ),
                 )
             }
 
@@ -425,7 +411,8 @@ fun DeepLinkItemPreview() {
         createdAt = 4849,
         isFavorite = false,
         folder = null
-    ), onClick = {}, onLongClick = {}
+    ),
+        onClick = {}, openDetails = {}
     )
 }
 

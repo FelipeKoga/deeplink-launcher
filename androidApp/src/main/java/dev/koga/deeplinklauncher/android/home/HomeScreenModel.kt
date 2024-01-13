@@ -23,10 +23,11 @@ import java.util.UUID
 @OptIn(ExperimentalCoroutinesApi::class)
 class HomeScreenModel(
     private val deepLinkRepository: DeepLinkRepository,
-    private val folderRepository: FolderRepository,
     private val launchDeepLink: LaunchDeepLink,
+    folderRepository: FolderRepository,
 ) : ScreenModel {
 
+    val deepLinkText = MutableStateFlow("")
     val searchText = MutableStateFlow("")
 
     val deepLinks = searchText.flatMapLatest {
@@ -51,32 +52,13 @@ class HomeScreenModel(
         initialValue = emptyList()
     )
 
-    val deepLinkText = MutableStateFlow("")
-
-    private val selectedDeepLinkId = MutableStateFlow<String?>(null)
-
-    val selectedDeepLink = combine(selectedDeepLinkId, deepLinks) { deepLinkId, deepLinks ->
-        deepLinks.firstOrNull { it.id == deepLinkId }
-    }.stateIn(
-        scope = screenModelScope,
-        started = SharingStarted.WhileSubscribed(),
-        initialValue = null
-    )
 
     private val dispatchErrorMessage = MutableStateFlow<String?>(null)
     val errorMessage = dispatchErrorMessage.asStateFlow()
 
-    fun selectDeepLink(deepLink: DeepLink) {
-        selectedDeepLinkId.update { deepLink.id }
-    }
-
-    fun clearSelectedDeepLink() {
-        selectedDeepLinkId.update { null }
-    }
-
     private fun insertDeepLink(link: String) {
         screenModelScope.launch {
-            deepLinkRepository.insertDeeplink(
+            deepLinkRepository.upsert(
                 DeepLink(
                     id = UUID.randomUUID().toString(),
                     link = link,
@@ -116,32 +98,6 @@ class HomeScreenModel(
 
     fun launchDeepLink(deepLink: DeepLink) {
         launchDeepLink.launch(deepLink.link)
-    }
-
-    fun delete() {
-        val deepLink = selectedDeepLink.value ?: return
-
-        selectedDeepLinkId.update { null }
-
-        screenModelScope.launch {
-            deepLinkRepository.deleteDeeplink(deepLink)
-        }
-    }
-
-    fun share() {
-        val deepLink = selectedDeepLink.value ?: return
-
-    }
-
-    fun favorite() {
-        val deepLink = selectedDeepLink.value ?: return
-
-        screenModelScope.launch {
-            deepLinkRepository.toggleFavoriteDeepLink(
-                deepLinkId = deepLink.id,
-                isFavorite = !deepLink.isFavorite
-            )
-        }
     }
 
     fun onDeepLinkTextChanged(text: String) {

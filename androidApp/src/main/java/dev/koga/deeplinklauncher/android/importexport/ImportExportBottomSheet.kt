@@ -18,7 +18,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import dev.koga.deeplinklauncher.android.theme.AppTheme
+import dev.koga.deeplinklauncher.android.core.designsystem.theme.AppTheme
 
 @Composable
 fun ImportExportBottomSheet() {

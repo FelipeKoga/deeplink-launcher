@@ -1,4 +1,4 @@
-package dev.koga.deeplinklauncher.android.theme
+package dev.koga.deeplinklauncher.android.core.designsystem.theme
 
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -12,23 +12,15 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 fun AppTheme(
-    darkTheme: Boolean = isSystemInDarkTheme(),
     content: @Composable () -> Unit
 ) {
-    val colors = if (darkTheme) {
-        darkColorScheme(
-            primary = Color.White,
-            secondary = Color.DarkGray,
-            tertiary = Color.Blue,
-            background = Color(red = 28, green = 27, blue = 31)
-        )
-    } else {
-        lightColorScheme(
-            primary = Color.Black,
-            secondary = Color.Black,
-            tertiary = Color.Black,
-        )
-    }
+    val colors = darkColorScheme(
+        primary = Color.White,
+        secondary = Color.DarkGray,
+        tertiary = Color.Blue,
+        background = Color(0xFF1c1b1f),
+        surface = Color(0xFF28272a),
+    )
 
     val shapes = Shapes(
         small = RoundedCornerShape(4.dp),

@@ -1,4 +1,4 @@
-package dev.koga.deeplinklauncher.android.theme
+package dev.koga.deeplinklauncher.android.core.designsystem.theme
 
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.font.Font

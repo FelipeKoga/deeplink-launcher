@@ -40,6 +40,13 @@ FROM deeplink d
 LEFT JOIN folder f ON d.folderId = f.id
 WHERE d.link = ?;
 
+getDeepLinkById:
+SELECT d.*, f.*
+FROM deeplink d
+LEFT JOIN folder f ON d.folderId = f.id
+WHERE d.id = ?;
+
+
 selectAllFolders:
 SELECT * FROM folder;
 

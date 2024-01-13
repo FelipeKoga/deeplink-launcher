@@ -30,7 +30,7 @@ class DeepLinkRepository(
                         description = data.description,
                         createdAt = data.createdAt,
                         isFavorite = data.isFavorite == 1L,
-                        folder = data.folderId?.let {  folderId ->
+                        folder = data.folderId?.let { folderId ->
                             Folder(
                                 id = folderId,
                                 name = data.name_.orEmpty(),
@@ -57,7 +57,7 @@ class DeepLinkRepository(
                         description = data.description,
                         createdAt = data.createdAt,
                         isFavorite = data.isFavorite == 1L,
-                        folder = data.folderId?.let {  folderId ->
+                        folder = data.folderId?.let { folderId ->
                             Folder(
                                 id = folderId,
                                 name = data.name_.orEmpty(),
@@ -70,7 +70,34 @@ class DeepLinkRepository(
             }
     }
 
-    fun insertDeeplink(deepLink: DeepLink) {
+    fun getDeepLinkById(id: String): Flow<DeepLink?> {
+        return database.deepLinkLauncherDatabaseQueries
+            .getDeepLinkById(id)
+            .asFlow()
+            .mapToList(Dispatchers.IO)
+            .map {
+                it.firstOrNull()?.let { data ->
+                    DeepLink(
+                        id = data.id,
+                        link = data.link,
+                        name = data.name,
+                        description = data.description,
+                        createdAt = data.createdAt,
+                        isFavorite = data.isFavorite == 1L,
+                        folder = data.folderId?.let { folderId ->
+                            Folder(
+                                id = folderId,
+                                name = data.name_.orEmpty(),
+                                description = data.description_,
+                                color = data.color
+                            )
+                        }
+                    )
+                }
+            }
+    }
+
+    fun upsert(deepLink: DeepLink) {
         database.transaction {
             deepLink.folder?.let {
                 database.deepLinkLauncherDatabaseQueries.upsertFolder(
