@@ -5,6 +5,7 @@ import cafe.adriel.voyager.core.model.screenModelScope
 import dev.koga.deeplinklauncher.usecase.LaunchDeepLink
 import dev.koga.deeplinklauncher.usecase.LaunchDeepLinkResult
 import dev.koga.deeplinklauncher.model.DeepLink
+import dev.koga.deeplinklauncher.model.Folder
 import dev.koga.deeplinklauncher.repository.DeepLinkRepository
 import dev.koga.deeplinklauncher.repository.FolderRepository
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -23,7 +24,7 @@ import java.util.UUID
 class HomeScreenModel(
     private val deepLinkRepository: DeepLinkRepository,
     private val launchDeepLink: LaunchDeepLink,
-    folderRepository: FolderRepository,
+    private val folderRepository: FolderRepository,
 ) : ScreenModel {
 
     val deepLinkText = MutableStateFlow("")
@@ -107,4 +108,17 @@ class HomeScreenModel(
     fun onSearchTextChanged(text: String) {
         searchText.update { text }
     }
+
+    fun addFolder(name: String, description: String) {
+        folderRepository.upsertFolder(
+            Folder(
+                id = UUID.randomUUID().toString(),
+                name = name,
+                description = description,
+                color = null,
+            )
+        )
+    }
+
+
 }

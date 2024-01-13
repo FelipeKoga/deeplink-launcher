@@ -13,6 +13,7 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -29,7 +30,9 @@ import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material.icons.rounded.Favorite
 import androidx.compose.material.icons.rounded.KeyboardArrowRight
 import androidx.compose.material.icons.rounded.Settings
@@ -40,7 +43,9 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilledTonalIconButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.SheetValue
+import androidx.compose.material3.SmallFloatingActionButton
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
@@ -50,8 +55,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
@@ -70,6 +78,8 @@ import dev.koga.deeplinklauncher.android.R
 import dev.koga.deeplinklauncher.android.core.designsystem.DLLSearchBar
 import dev.koga.deeplinklauncher.android.core.designsystem.DLLTopBar
 import dev.koga.deeplinklauncher.android.deeplink.detail.DeepLinkDetailsScreen
+import dev.koga.deeplinklauncher.android.deeplink.home.component.DeepLinkInputContent
+import dev.koga.deeplinklauncher.android.folder.AddUpdateFolderBottomSheet
 import dev.koga.deeplinklauncher.android.folder.FolderCard
 import dev.koga.deeplinklauncher.android.settings.SettingsScreen
 import dev.koga.deeplinklauncher.model.DeepLink
@@ -121,7 +131,24 @@ private fun HomeScreenContent() {
     val searchText by screenModel.searchText.collectAsState()
     val folders by screenModel.folders.collectAsState()
 
+    var openFolderBottomSheet by rememberSaveable {
+        mutableStateOf(false)
+    }
+
     val mainContentPaddingBottom = 320.dp
+
+    if (openFolderBottomSheet) {
+        AddUpdateFolderBottomSheet(
+            onDismiss = {
+                openFolderBottomSheet = false
+            },
+            onAddUpdateFolder = { name, description ->
+                openFolderBottomSheet = false
+                screenModel.addFolder(name, description)
+            }
+        )
+    }
+
 
     BottomSheetScaffold(
         topBar = {
@@ -152,7 +179,6 @@ private fun HomeScreenContent() {
         scaffoldState = rememberBottomSheetScaffoldState(
             bottomSheetState = bottomSheetState
         ),
-
         sheetContent = {
             DeepLinkInputContent(
                 value = deepLinkText,
@@ -176,7 +202,12 @@ private fun HomeScreenContent() {
                     bottom = 24.dp
                 ),
                 value = searchText,
-                onChanged = screenModel::onSearchTextChanged,
+                onChanged = {
+                    screenModel.onSearchTextChanged(it)
+                    scope.launch {
+                        bottomSheetState.partialExpand()
+                    }
+                },
                 hint = "Search for deeplinks"
             )
 
@@ -288,23 +319,56 @@ private fun HomeScreenContent() {
                     }
 
                     HomeTabPage.FOLDERS.ordinal -> {
-                        LazyVerticalStaggeredGrid(
-                            modifier = Modifier.fillMaxSize(),
-                            contentPadding = PaddingValues(
-                                start = 24.dp,
-                                end = 24.dp,
-                                top = 24.dp,
-                                bottom = mainContentPaddingBottom
-                            ),
-                            horizontalArrangement = Arrangement.spacedBy(24.dp),
-                            verticalItemSpacing = 24.dp,
-                            columns = StaggeredGridCells.Fixed(2)
-                        ) {
-                            items(folders.size) { index ->
-                                FolderCard(
-                                    folder = folders[index],
-                                    onClick = {},
-                                )
+                        Box(modifier = Modifier.fillMaxSize()) {
+                            LazyVerticalStaggeredGrid(
+                                modifier = Modifier.fillMaxSize(),
+                                contentPadding = PaddingValues(
+                                    start = 24.dp,
+                                    end = 24.dp,
+                                    top = 24.dp,
+                                    bottom = mainContentPaddingBottom
+                                ),
+                                horizontalArrangement = Arrangement.spacedBy(24.dp),
+                                verticalItemSpacing = 24.dp,
+                                columns = StaggeredGridCells.Fixed(2)
+                            ) {
+                                item {
+                                    OutlinedCard(onClick = {
+                                        openFolderBottomSheet = true
+
+                                    }, shape = RoundedCornerShape(24.dp)) {
+                                        Column(
+                                            modifier = Modifier
+                                                .fillMaxWidth()
+                                                .height(184.dp),
+                                            verticalArrangement = Arrangement.Center,
+                                            horizontalAlignment = Alignment.CenterHorizontally
+                                        ) {
+                                            Icon(
+                                                imageVector = Icons.Rounded.Add,
+                                                contentDescription = null,
+                                                modifier = Modifier.size(24.dp),
+                                                tint = MaterialTheme.colorScheme.onSurface
+                                            )
+                                            Spacer(modifier = Modifier.height(8.dp))
+                                            Text(
+                                                text = "Create new folder",
+                                                style = MaterialTheme.typography.titleSmall.copy(
+                                                    fontWeight = FontWeight.Bold
+                                                )
+                                            )
+                                        }
+                                    }
+
+                                }
+                                items(folders.size) { index ->
+                                    FolderCard(
+                                        folder = folders[index],
+                                        onClick = {
+                                            openFolderBottomSheet = true
+                                        },
+                                    )
+                                }
                             }
                         }
                     }

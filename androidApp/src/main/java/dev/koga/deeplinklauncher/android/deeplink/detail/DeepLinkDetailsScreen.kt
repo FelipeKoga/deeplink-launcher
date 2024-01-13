@@ -61,6 +61,7 @@ import cafe.adriel.voyager.koin.getScreenModel
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import dev.koga.deeplinklauncher.android.R
+import dev.koga.deeplinklauncher.android.core.designsystem.DLLTextField
 import dev.koga.deeplinklauncher.android.core.designsystem.DLLTopBar
 import org.koin.core.parameter.parametersOf
 import org.koin.core.qualifier.Qualifier
@@ -159,57 +160,16 @@ fun DeepLinkDetailsScreenContent(
 
             Spacer(modifier = Modifier.height(32.dp))
 
-            TextField(
-                value = details.name,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clip(RoundedCornerShape(12.dp)),
-                onValueChange = onNameChanged,
-                label = {
-                    Text(
-                        text = "Name",
-                        style = MaterialTheme.typography.labelSmall.copy(
-                            fontWeight = FontWeight.SemiBold
-                        )
-                    )
-                },
-                colors = TextFieldDefaults.colors(
-                    focusedContainerColor = MaterialTheme.colorScheme.background,
-                    unfocusedContainerColor = MaterialTheme.colorScheme.background,
-                    disabledContainerColor = MaterialTheme.colorScheme.background,
-                    focusedIndicatorColor = Color.Transparent,
-                    unfocusedIndicatorColor = Color.Transparent,
-                    disabledIndicatorColor = Color.Transparent,
-                    errorIndicatorColor = Color.Transparent,
-                ),
-            )
+
+            DLLTextField(label = "Name", value = details.name, onValueChange = onNameChanged)
 
             Spacer(modifier = Modifier.height(12.dp))
 
-            TextField(
+            DLLTextField(
+                modifier = Modifier.defaultMinSize(minHeight = 120.dp),
+                label = "Description",
                 value = details.description,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .defaultMinSize(minHeight = 82.dp)
-                    .clip(RoundedCornerShape(12.dp)),
-                onValueChange = onDescriptionChanged,
-                label = {
-                    Text(
-                        text = "Description",
-                        style = MaterialTheme.typography.labelSmall.copy(
-                            fontWeight = FontWeight.SemiBold
-                        )
-                    )
-                },
-                colors = TextFieldDefaults.colors(
-                    focusedContainerColor = MaterialTheme.colorScheme.background,
-                    unfocusedContainerColor = MaterialTheme.colorScheme.background,
-                    disabledContainerColor = MaterialTheme.colorScheme.background,
-                    focusedIndicatorColor = Color.Transparent,
-                    unfocusedIndicatorColor = Color.Transparent,
-                    disabledIndicatorColor = Color.Transparent,
-                    errorIndicatorColor = Color.Transparent,
-                ),
+                onValueChange = onDescriptionChanged
             )
 
             Spacer(modifier = Modifier.height(8.dp))

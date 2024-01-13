@@ -5,7 +5,6 @@ import cafe.adriel.voyager.core.model.screenModelScope
 import dev.koga.deeplinklauncher.model.DeepLink
 import dev.koga.deeplinklauncher.model.Folder
 import dev.koga.deeplinklauncher.repository.DeepLinkRepository
-import dev.koga.deeplinklauncher.usecase.CopyToClipboard
 import dev.koga.deeplinklauncher.usecase.LaunchDeepLink
 import dev.koga.deeplinklauncher.usecase.ShareDeepLink
 import kotlinx.coroutines.flow.MutableStateFlow
