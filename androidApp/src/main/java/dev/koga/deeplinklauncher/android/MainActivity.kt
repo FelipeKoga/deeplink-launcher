@@ -6,7 +6,7 @@ import androidx.activity.compose.setContent
 import cafe.adriel.voyager.navigator.Navigator
 import cafe.adriel.voyager.transitions.SlideTransition
 import dev.koga.deeplinklauncher.android.core.designsystem.theme.AppTheme
-import dev.koga.deeplinklauncher.android.home.HomeScreen
+import dev.koga.deeplinklauncher.android.deeplink.home.HomeScreen
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

@@ -1,4 +1,4 @@
-package dev.koga.deeplinklauncher.android.home.component
+package dev.koga.deeplinklauncher.android.deeplink.home.component
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Column

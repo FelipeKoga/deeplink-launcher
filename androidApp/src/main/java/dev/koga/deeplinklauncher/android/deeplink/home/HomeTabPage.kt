@@ -1,4 +1,4 @@
-package dev.koga.deeplinklauncher.android.home
+package dev.koga.deeplinklauncher.android.deeplink.home
 
 enum class HomeTabPage {
     HISTORY,
