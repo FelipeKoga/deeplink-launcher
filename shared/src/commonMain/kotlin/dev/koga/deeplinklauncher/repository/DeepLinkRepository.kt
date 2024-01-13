@@ -35,7 +35,8 @@ class DeepLinkRepository(
                                 id = folderId,
                                 name = data.name_.orEmpty(),
                                 description = data.description_,
-                                color = data.color
+                                color = data.color,
+                                deepLinkCount = 1
                             )
                         }
                     )
@@ -62,7 +63,8 @@ class DeepLinkRepository(
                                 id = folderId,
                                 name = data.name_.orEmpty(),
                                 description = data.description_,
-                                color = data.color
+                                color = data.color,
+                                deepLinkCount = 1
                             )
                         }
                     )
@@ -89,7 +91,8 @@ class DeepLinkRepository(
                                 id = folderId,
                                 name = data.name_.orEmpty(),
                                 description = data.description_,
-                                color = data.color
+                                color = data.color,
+                                deepLinkCount = 1
                             )
                         }
                     )

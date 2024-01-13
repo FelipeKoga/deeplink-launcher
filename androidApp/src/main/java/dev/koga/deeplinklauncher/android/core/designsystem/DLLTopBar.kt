@@ -18,9 +18,9 @@ import androidx.compose.ui.text.font.FontWeight
 
 @Composable
 fun DLLTopBar(
-    title: String,
+    title: String = "",
     onBack: (() -> Unit)? = null,
-    actions: @Composable() (RowScope.() -> Unit) = {},
+    actions: @Composable (RowScope.() -> Unit) = {},
 ) {
     TopAppBar(
         colors = TopAppBarDefaults.topAppBarColors(

@@ -46,13 +46,26 @@ FROM deeplink d
 LEFT JOIN folder f ON d.folderId = f.id
 WHERE d.id = ?;
 
-
-selectAllFolders:
-SELECT * FROM folder;
+selectFoldersWithDeeplinkCount:
+SELECT f.*, COUNT(d.id) AS deeplinkCount
+FROM folder f
+LEFT JOIN deeplink d ON f.id = d.folderId
+GROUP BY f.id;
 
 upsertFolder:
 INSERT OR REPLACE INTO folder (id, name, description, color)
 VALUES (?, ?, ?, ?);
+
+getFolderById:
+SELECT f.*, COUNT(d.id) AS deeplinkCount
+FROM folder f
+LEFT JOIN deeplink d ON f.id = d.folderId
+WHERE f.id = ?;
+
+getFolderDeepLinks:
+SELECT d.*
+FROM deeplink d
+WHERE d.folderId = ?;
 
 deleteFolderById:
 DELETE FROM folder WHERE id = ?;

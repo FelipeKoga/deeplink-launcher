@@ -116,6 +116,7 @@ class HomeScreenModel(
                 name = name,
                 description = description,
                 color = null,
+                deepLinkCount = 0
             )
         )
     }

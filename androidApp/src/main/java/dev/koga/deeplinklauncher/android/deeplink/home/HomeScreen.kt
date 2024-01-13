@@ -9,6 +9,7 @@ package dev.koga.deeplinklauncher.android.deeplink.home
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.combinedClickable
@@ -81,6 +82,7 @@ import dev.koga.deeplinklauncher.android.deeplink.detail.DeepLinkDetailsScreen
 import dev.koga.deeplinklauncher.android.deeplink.home.component.DeepLinkInputContent
 import dev.koga.deeplinklauncher.android.folder.AddUpdateFolderBottomSheet
 import dev.koga.deeplinklauncher.android.folder.FolderCard
+import dev.koga.deeplinklauncher.android.folder.detail.FolderDetailsScreen
 import dev.koga.deeplinklauncher.android.settings.SettingsScreen
 import dev.koga.deeplinklauncher.model.DeepLink
 import kotlinx.coroutines.launch
@@ -333,10 +335,15 @@ private fun HomeScreenContent() {
                                 columns = StaggeredGridCells.Fixed(2)
                             ) {
                                 item {
-                                    OutlinedCard(onClick = {
-                                        openFolderBottomSheet = true
-
-                                    }, shape = RoundedCornerShape(24.dp)) {
+                                    OutlinedCard(
+                                        onClick = {
+                                            openFolderBottomSheet = true
+                                        }, shape = RoundedCornerShape(24.dp),
+                                        border = BorderStroke(
+                                            1.dp,
+                                            MaterialTheme.colorScheme.onSurface.copy(alpha = .3f)
+                                        )
+                                    ) {
                                         Column(
                                             modifier = Modifier
                                                 .fillMaxWidth()
@@ -365,7 +372,7 @@ private fun HomeScreenContent() {
                                     FolderCard(
                                         folder = folders[index],
                                         onClick = {
-                                            openFolderBottomSheet = true
+                                            navigator.push(FolderDetailsScreen(it.id))
                                         },
                                     )
                                 }
@@ -397,8 +404,7 @@ fun DeepLinkItem(
     ) {
 
         Column(
-            Modifier
-                .animatedListItem(key = deepLink.id)
+            modifier = Modifier
                 .padding(vertical = 24.dp, horizontal = 12.dp)
                 .fillMaxWidth()
         ) {
@@ -474,24 +480,5 @@ fun DeepLinkItemPreview() {
         folder = null
     ),
         onClick = {}, openDetails = {}
-    )
-}
-
-fun <T> Modifier.animatedListItem(key: T): Modifier = composed {
-
-    val animatedProgress = remember(key) {
-        Animatable(initialValue = 0.85f)
-    }
-
-    LaunchedEffect(key1 = key) {
-        animatedProgress.animateTo(
-            targetValue = 1f,
-            animationSpec = tween(300, easing = FastOutSlowInEasing)
-        )
-    }
-
-    this.graphicsLayer(
-        scaleX = animatedProgress.value,
-        scaleY = animatedProgress.value
     )
 }

@@ -3,9 +3,11 @@ package dev.koga.deeplinklauncher.repository
 import app.cash.sqldelight.coroutines.asFlow
 import app.cash.sqldelight.coroutines.mapToList
 import dev.koga.deeplinklauncher.database.DeepLinkLauncherDatabase
+import dev.koga.deeplinklauncher.model.DeepLink
 import dev.koga.deeplinklauncher.model.Folder
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
 class FolderRepository(
@@ -13,7 +15,7 @@ class FolderRepository(
 ) {
     fun getFolders() = database
         .deepLinkLauncherDatabaseQueries
-        .selectAllFolders()
+        .selectFoldersWithDeeplinkCount()
         .asFlow()
         .mapToList(Dispatchers.IO)
         .map { data ->
@@ -22,7 +24,8 @@ class FolderRepository(
                     id = it.id,
                     name = it.name,
                     description = it.description,
-                    color = it.color
+                    color = it.color,
+                    deepLinkCount = it.deeplinkCount.toInt()
                 )
             }
 
@@ -35,5 +38,40 @@ class FolderRepository(
             description = folder.description,
             color = folder.color
         )
+    }
+
+    fun getFolderById(folderId: String): Flow<Folder> {
+        return database.deepLinkLauncherDatabaseQueries.getFolderById(folderId)
+            .asFlow()
+            .mapToList(Dispatchers.IO)
+            .map {
+                it.first().let { data ->
+                    Folder(
+                        id = data.id,
+                        name = data.name,
+                        description = data.description,
+                        color = data.color,
+                        deepLinkCount = data.deeplinkCount.toInt()
+                    )
+                }
+            }
+    }
+
+    fun getFolderDeepLinks(folderId: String): Flow<List<DeepLink>> {
+       return database.deepLinkLauncherDatabaseQueries.getFolderDeepLinks(folderId)
+            .asFlow()
+            .mapToList(Dispatchers.IO)
+            .map {
+                it.map { data ->
+                    DeepLink(
+                        id = data.id,
+                        link = data.link,
+                        name = data.name,
+                        description = data.description,
+                        createdAt = data.createdAt,
+                        isFavorite = data.isFavorite == 1L,
+                    )
+                }
+            }
     }
 }
