@@ -202,7 +202,7 @@ private fun HomeScreenContent() {
                         bottomSheetState.partialExpand()
                     }
                 },
-                hint = "Search for deeplinks"
+                hint = "Search for deeplinks or folders"
             )
 
             TabRow(selectedTabIndex = pagerState.currentPage) {

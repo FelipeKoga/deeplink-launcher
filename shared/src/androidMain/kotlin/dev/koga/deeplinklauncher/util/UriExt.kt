@@ -1,12 +1,13 @@
 package dev.koga.deeplinklauncher.util
 
-import android.net.Uri
+import java.net.URI
 
 
-fun String.toUriOrNull(): Uri? {
+fun String.isUriValid(): Boolean {
     return try {
-        Uri.parse(this)
-    } catch (e: Exception) {
-        null
+        val uri = URI(this)
+        uri.scheme != null && uri.host != null
+    } catch (e: Throwable) {
+        false
     }
 }
