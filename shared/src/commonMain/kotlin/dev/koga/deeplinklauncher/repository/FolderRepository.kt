@@ -8,7 +8,9 @@ import dev.koga.deeplinklauncher.model.Folder
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.mapNotNull
 
 class FolderRepository(
     private val database: DeepLinkLauncherDatabase
@@ -40,12 +42,17 @@ class FolderRepository(
         )
     }
 
-    fun getFolderById(folderId: String): Flow<Folder> {
-        return database.deepLinkLauncherDatabaseQueries.getFolderById(folderId)
+    fun deleteFolderById(folderId: String) {
+        database.deepLinkLauncherDatabaseQueries.deleteFolderById(folderId)
+    }
+
+    fun getFolderById(folderId: String): Flow<Folder?> {
+        return database.deepLinkLauncherDatabaseQueries
+            .getFolderById(folderId)
             .asFlow()
             .mapToList(Dispatchers.IO)
-            .map {
-                it.first().let { data ->
+            .mapNotNull {
+                it.firstOrNull()?.let { data ->
                     Folder(
                         id = data.id,
                         name = data.name,
@@ -58,7 +65,7 @@ class FolderRepository(
     }
 
     fun getFolderDeepLinks(folderId: String): Flow<List<DeepLink>> {
-       return database.deepLinkLauncherDatabaseQueries.getFolderDeepLinks(folderId)
+        return database.deepLinkLauncherDatabaseQueries.getFolderDeepLinks(folderId)
             .asFlow()
             .mapToList(Dispatchers.IO)
             .map {

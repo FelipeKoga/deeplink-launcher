@@ -16,7 +16,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import dev.koga.deeplinklauncher.android.core.designsystem.DLLTextField
 import dev.koga.deeplinklauncher.model.Folder
@@ -28,6 +30,7 @@ fun AddUpdateFolderBottomSheet(
     folder: Folder? = null,
     onAddUpdateFolder: (name: String, description: String) -> Unit
 ) {
+    val keyboardController = LocalSoftwareKeyboardController.current
     val (name, setName) = rememberSaveable { mutableStateOf(folder?.name.orEmpty()) }
     val (description, setDescription) = rememberSaveable { mutableStateOf(folder?.description.orEmpty()) }
 
@@ -55,7 +58,9 @@ fun AddUpdateFolderBottomSheet(
                 label = "Description",
                 value = description,
                 onValueChange = setDescription,
-                modifier = Modifier.defaultMinSize(minHeight = 120.dp)
+                modifier = Modifier.defaultMinSize(minHeight = 120.dp),
+                imeAction = ImeAction.Done,
+                onDone = { keyboardController?.hide() }
             )
 
             Spacer(modifier = Modifier.height(24.dp))

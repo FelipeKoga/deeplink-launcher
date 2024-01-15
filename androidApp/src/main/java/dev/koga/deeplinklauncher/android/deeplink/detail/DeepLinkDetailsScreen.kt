@@ -1,8 +1,5 @@
 package dev.koga.deeplinklauncher.android.deeplink.detail
 
-import androidx.compose.animation.AnimatedContent
-import androidx.compose.animation.animateColorAsState
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -16,28 +13,32 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Add
-import androidx.compose.material.icons.rounded.Check
 import androidx.compose.material.icons.rounded.Delete
 import androidx.compose.material.icons.rounded.Favorite
 import androidx.compose.material.icons.rounded.FavoriteBorder
 import androidx.compose.material.icons.rounded.Share
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ElevatedAssistChip
+import androidx.compose.material3.ElevatedButton
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.FilledTonalIconButton
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
-import androidx.compose.material3.TextFieldDefaults
-import androidx.compose.material3.contentColorFor
+import androidx.compose.material3.TextButton
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -46,17 +47,16 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalClipboardManager
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
-import cafe.adriel.voyager.core.annotation.InternalVoyagerApi
-import cafe.adriel.voyager.core.model.rememberScreenModel
 import cafe.adriel.voyager.core.screen.Screen
-import cafe.adriel.voyager.koin.getNavigatorScreenModel
 import cafe.adriel.voyager.koin.getScreenModel
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
@@ -64,13 +64,10 @@ import dev.koga.deeplinklauncher.android.R
 import dev.koga.deeplinklauncher.android.core.designsystem.DLLTextField
 import dev.koga.deeplinklauncher.android.core.designsystem.DLLTopBar
 import org.koin.core.parameter.parametersOf
-import org.koin.core.qualifier.Qualifier
-import org.koin.core.qualifier.StringQualifier
 
 
 class DeepLinkDetailsScreen(private val deepLinkId: String) : Screen {
 
-    @OptIn(InternalVoyagerApi::class)
     @Composable
     override fun Content() {
         val navigator = LocalNavigator.currentOrThrow
@@ -105,6 +102,7 @@ class DeepLinkDetailsScreen(private val deepLinkId: String) : Screen {
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DeepLinkDetailsScreenContent(
     modifier: Modifier,
@@ -117,6 +115,75 @@ fun DeepLinkDetailsScreenContent(
     onLaunch: () -> Unit,
 ) {
     val clipboardManager = LocalClipboardManager.current
+    val keyboardController = LocalSoftwareKeyboardController.current
+
+    var showDeleteDialog by remember {
+        mutableStateOf(false)
+    }
+
+    if (showDeleteDialog) {
+
+        ModalBottomSheet(
+            onDismissRequest = { /*TODO*/ }, sheetState = rememberModalBottomSheetState(
+                skipPartiallyExpanded = true
+            )
+        ) {
+            Column {
+                Text(
+                    text = "Delete Deep Link",
+                    style = MaterialTheme.typography.titleSmall.copy(
+                        fontWeight = FontWeight.Bold
+                    ),
+                    modifier = Modifier.padding(24.dp)
+                )
+
+                HorizontalDivider()
+
+                Text(
+                    text = "Are you sure you want to delete this deep link?",
+                    style = MaterialTheme.typography.bodyMedium,
+                    modifier = Modifier.padding(24.dp)
+                )
+
+                Spacer(modifier = Modifier.height(12.dp))
+
+                Row(
+                    horizontalArrangement = Arrangement.End,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(24.dp)
+                ) {
+
+
+                    TextButton(
+                        onClick = { showDeleteDialog = false },
+                        modifier = Modifier.padding(start = 12.dp)
+                    ) {
+                        Text(text = "Cancel", fontWeight = FontWeight.Bold)
+                    }
+
+                    Spacer(modifier = Modifier.width(24.dp))
+
+                    FilledTonalButton(
+                        onClick = {
+                            showDeleteDialog = false
+                            onDelete()
+                        },
+                        modifier = Modifier.padding(end = 12.dp),
+                        colors = ButtonDefaults.filledTonalButtonColors(
+                            containerColor = MaterialTheme.colorScheme.errorContainer
+                        )
+                    ) {
+                        Text(text = "Delete")
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(24.dp))
+            }
+        }
+
+    }
+
 
     SelectionContainer(
         modifier = modifier
@@ -169,7 +236,9 @@ fun DeepLinkDetailsScreenContent(
                 modifier = Modifier.defaultMinSize(minHeight = 120.dp),
                 label = "Description",
                 value = details.description,
-                onValueChange = onDescriptionChanged
+                onValueChange = onDescriptionChanged,
+                imeAction = ImeAction.Done,
+                onDone = { keyboardController?.hide() }
             )
 
             Spacer(modifier = Modifier.height(8.dp))
@@ -191,7 +260,7 @@ fun DeepLinkDetailsScreenContent(
 
             Spacer(modifier = Modifier.weight(1f))
 
-            Divider()
+            HorizontalDivider()
 
             Row(
                 horizontalArrangement = Arrangement.Center,
@@ -201,7 +270,7 @@ fun DeepLinkDetailsScreenContent(
             ) {
 
                 FilledTonalIconButton(
-                    onClick = onDelete,
+                    onClick = { showDeleteDialog = true },
                     colors = IconButtonDefaults.filledTonalIconButtonColors(
                         containerColor = Color.Red.copy(alpha = .2f)
                     )
