@@ -9,12 +9,13 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import kotlinx.datetime.Instant
 
 class DeepLinkRepository(
     private val database: DeepLinkLauncherDatabase
 ) {
 
-    fun getAllDeepLinks(search: String): Flow<List<DeepLink>> {
+    fun getAllDeepLinks(search: String = ""): Flow<List<DeepLink>> {
         val sqlSearchText = "%$search%"
 
         return database.deepLinkLauncherDatabaseQueries
@@ -28,14 +29,13 @@ class DeepLinkRepository(
                         link = data.link,
                         name = data.name,
                         description = data.description,
-                        createdAt = data.createdAt,
+                        createdAt = Instant.fromEpochMilliseconds(data.createdAt),
                         isFavorite = data.isFavorite == 1L,
                         folder = data.folderId?.let { folderId ->
                             Folder(
                                 id = folderId,
                                 name = data.name_.orEmpty(),
                                 description = data.description_,
-                                color = data.color,
                                 deepLinkCount = 1
                             )
                         }
@@ -56,14 +56,13 @@ class DeepLinkRepository(
                         link = data.link,
                         name = data.name,
                         description = data.description,
-                        createdAt = data.createdAt,
+                        createdAt = Instant.fromEpochMilliseconds(data.createdAt),
                         isFavorite = data.isFavorite == 1L,
                         folder = data.folderId?.let { folderId ->
                             Folder(
                                 id = folderId,
                                 name = data.name_.orEmpty(),
                                 description = data.description_,
-                                color = data.color,
                                 deepLinkCount = 1
                             )
                         }
@@ -84,14 +83,13 @@ class DeepLinkRepository(
                         link = data.link,
                         name = data.name,
                         description = data.description,
-                        createdAt = data.createdAt,
+                        createdAt = Instant.fromEpochMilliseconds(data.createdAt),
                         isFavorite = data.isFavorite == 1L,
                         folder = data.folderId?.let { folderId ->
                             Folder(
                                 id = folderId,
                                 name = data.name_.orEmpty(),
                                 description = data.description_,
-                                color = data.color,
                                 deepLinkCount = 1
                             )
                         }
@@ -107,7 +105,6 @@ class DeepLinkRepository(
                     id = deepLink.folder.id,
                     name = deepLink.folder.name,
                     description = deepLink.folder.description,
-                    color = deepLink.folder.color
                 )
             }
 
@@ -116,7 +113,7 @@ class DeepLinkRepository(
                 link = deepLink.link,
                 name = deepLink.name,
                 description = deepLink.description,
-                createdAt = deepLink.createdAt,
+                createdAt = deepLink.createdAt.toEpochMilliseconds(),
                 isFavorite = if (deepLink.isFavorite) 1L else 0L,
                 folderId = deepLink.folder?.id
             )

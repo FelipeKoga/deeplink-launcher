@@ -34,6 +34,7 @@ kotlin {
             implementation(libs.koin.core)
             implementation(libs.sql.coroutines.extensions)
             implementation(libs.voyager.screenmodel)
+            api(libs.kotlinx.datetime)
         }
 
         val androidMain by getting {

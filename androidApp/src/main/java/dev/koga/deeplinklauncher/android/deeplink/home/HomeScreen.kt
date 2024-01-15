@@ -36,6 +36,8 @@ import androidx.compose.material.icons.rounded.KeyboardArrowRight
 import androidx.compose.material.icons.rounded.Settings
 import androidx.compose.material3.BottomSheetScaffold
 import androidx.compose.material3.Divider
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ElevatedAssistChip
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilledTonalIconButton
@@ -72,12 +74,15 @@ import dev.koga.deeplinklauncher.android.core.designsystem.DLLSearchBar
 import dev.koga.deeplinklauncher.android.core.designsystem.DLLTopBar
 import dev.koga.deeplinklauncher.android.deeplink.detail.DeepLinkDetailsScreen
 import dev.koga.deeplinklauncher.android.deeplink.home.component.DeepLinkLaunchBottomSheetContent
+import dev.koga.deeplinklauncher.android.export.ExportScreen
 import dev.koga.deeplinklauncher.android.folder.AddUpdateFolderBottomSheet
 import dev.koga.deeplinklauncher.android.folder.FolderCard
 import dev.koga.deeplinklauncher.android.folder.detail.FolderDetailsScreen
 import dev.koga.deeplinklauncher.android.settings.SettingsScreen
 import dev.koga.deeplinklauncher.model.DeepLink
 import kotlinx.coroutines.launch
+import kotlinx.datetime.Clock
+import kotlinx.datetime.Instant
 
 object HomeScreen : Screen {
     @Composable
@@ -129,6 +134,10 @@ private fun HomeScreenContent() {
         mutableStateOf(false)
     }
 
+    var openImportExportOptionBottomSheet by rememberSaveable {
+        mutableStateOf(false)
+    }
+
     val mainContentPaddingBottom = 320.dp
 
     if (openFolderBottomSheet) {
@@ -143,13 +152,12 @@ private fun HomeScreenContent() {
         )
     }
 
-
     BottomSheetScaffold(
         topBar = {
             DLLTopBar(
                 title = "Deeplink Launcher",
                 actions = {
-                    FilledTonalIconButton(onClick = {}) {
+                    FilledTonalIconButton(onClick = { openImportExportOptionBottomSheet = true }) {
                         Icon(
                             painter = painterResource(id = R.drawable.ic_round_import_export_24),
                             contentDescription = "",
@@ -157,6 +165,32 @@ private fun HomeScreenContent() {
                         )
                     }
 
+                    DropdownMenu(
+                        expanded = openImportExportOptionBottomSheet,
+                        onDismissRequest = { openImportExportOptionBottomSheet = false }
+                    ) {
+                        DropdownMenuItem(
+                            text = { Text("Import") },
+                            onClick = { /* Handle edit! */ },
+                            leadingIcon = {
+                                Icon(
+                                    painterResource(id = R.drawable.ic_round_arrow_downward_24),
+                                    contentDescription = null
+                                )
+                            })
+                        DropdownMenuItem(
+                            text = { Text("Export") },
+                            onClick = {
+                                navigator.push(ExportScreen())
+                                openImportExportOptionBottomSheet = false
+                            },
+                            leadingIcon = {
+                                Icon(
+                                    painterResource(id = R.drawable.ic_round_arrow_upward_24),
+                                    contentDescription = null
+                                )
+                            })
+                    }
 
                     FilledTonalIconButton(onClick = {
                         navigator.push(SettingsScreen)
@@ -467,7 +501,7 @@ fun DeepLinkItemPreview() {
         link = "https://www.google.com",
         name = null,
         description = null,
-        createdAt = 4849,
+        createdAt = Clock.System.now(),
         isFavorite = false,
         folder = null
     ),

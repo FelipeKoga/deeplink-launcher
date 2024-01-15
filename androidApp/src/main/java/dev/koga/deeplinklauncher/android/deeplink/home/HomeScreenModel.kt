@@ -8,6 +8,8 @@ import dev.koga.deeplinklauncher.model.DeepLink
 import dev.koga.deeplinklauncher.model.Folder
 import dev.koga.deeplinklauncher.repository.DeepLinkRepository
 import dev.koga.deeplinklauncher.repository.FolderRepository
+import dev.koga.deeplinklauncher.usecase.ExportDeepLinks
+import dev.koga.deeplinklauncher.usecase.FileType
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -18,6 +20,7 @@ import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.datetime.Clock
 import java.util.UUID
 
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -25,6 +28,7 @@ class HomeScreenModel(
     private val deepLinkRepository: DeepLinkRepository,
     private val launchDeepLink: LaunchDeepLink,
     private val folderRepository: FolderRepository,
+    private val exportDeepLinks: ExportDeepLinks,
 ) : ScreenModel {
 
     val deepLinkText = MutableStateFlow("")
@@ -64,7 +68,7 @@ class HomeScreenModel(
                     link = link,
                     name = null,
                     description = null,
-                    createdAt = System.currentTimeMillis(),
+                    createdAt = Clock.System.now(),
                     folder = null,
                     isFavorite = false
                 )
@@ -115,11 +119,15 @@ class HomeScreenModel(
                 id = UUID.randomUUID().toString(),
                 name = name,
                 description = description,
-                color = null,
                 deepLinkCount = 0
             )
         )
     }
 
+    fun export() {
+        screenModelScope.launch {
+            exportDeepLinks.export(type = FileType.JSON)
+        }
+    }
 
 }

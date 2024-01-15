@@ -12,8 +12,7 @@ CREATE TABLE deeplink(
 CREATE TABLE folder (
     id TEXT PRIMARY KEY,
     name TEXT UNIQUE NOT NULL,
-    description TEXT,
-    color TEXT
+    description TEXT
 );
 
 
@@ -53,8 +52,8 @@ LEFT JOIN deeplink d ON f.id = d.folderId
 GROUP BY f.id;
 
 upsertFolder:
-INSERT OR REPLACE INTO folder (id, name, description, color)
-VALUES (?, ?, ?, ?);
+INSERT OR REPLACE INTO folder (id, name, description)
+VALUES (?, ?, ?);
 
 deleteFolderById:
 DELETE FROM folder WHERE id = ?;

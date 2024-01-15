@@ -11,6 +11,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapNotNull
+import kotlinx.datetime.Instant
 
 class FolderRepository(
     private val database: DeepLinkLauncherDatabase
@@ -26,7 +27,6 @@ class FolderRepository(
                     id = it.id,
                     name = it.name,
                     description = it.description,
-                    color = it.color,
                     deepLinkCount = it.deeplinkCount.toInt()
                 )
             }
@@ -38,7 +38,6 @@ class FolderRepository(
             id = folder.id,
             name = folder.name,
             description = folder.description,
-            color = folder.color
         )
     }
 
@@ -57,7 +56,6 @@ class FolderRepository(
                         id = data.id,
                         name = data.name,
                         description = data.description,
-                        color = data.color,
                         deepLinkCount = data.deeplinkCount.toInt()
                     )
                 }
@@ -75,7 +73,7 @@ class FolderRepository(
                         link = data.link,
                         name = data.name,
                         description = data.description,
-                        createdAt = data.createdAt,
+                        createdAt = Instant.fromEpochMilliseconds(data.createdAt),
                         isFavorite = data.isFavorite == 1L,
                     )
                 }
