@@ -6,9 +6,6 @@
 
 package dev.koga.deeplinklauncher.android.deeplink.home
 
-import androidx.compose.animation.core.Animatable
-import androidx.compose.animation.core.FastOutSlowInEasing
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
@@ -46,26 +43,21 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.SheetValue
-import androidx.compose.material3.SmallFloatingActionButton
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberBottomSheetScaffoldState
 import androidx.compose.material3.rememberStandardBottomSheetState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.composed
-import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -79,7 +71,7 @@ import dev.koga.deeplinklauncher.android.R
 import dev.koga.deeplinklauncher.android.core.designsystem.DLLSearchBar
 import dev.koga.deeplinklauncher.android.core.designsystem.DLLTopBar
 import dev.koga.deeplinklauncher.android.deeplink.detail.DeepLinkDetailsScreen
-import dev.koga.deeplinklauncher.android.deeplink.home.component.DeepLinkInputContent
+import dev.koga.deeplinklauncher.android.deeplink.home.component.DeepLinkLaunchBottomSheetContent
 import dev.koga.deeplinklauncher.android.folder.AddUpdateFolderBottomSheet
 import dev.koga.deeplinklauncher.android.folder.FolderCard
 import dev.koga.deeplinklauncher.android.folder.detail.FolderDetailsScreen
@@ -182,7 +174,7 @@ private fun HomeScreenContent() {
             bottomSheetState = bottomSheetState
         ),
         sheetContent = {
-            DeepLinkInputContent(
+            DeepLinkLaunchBottomSheetContent(
                 value = deepLinkText,
                 onValueChange = screenModel::onDeepLinkTextChanged,
                 launch = screenModel::launchDeepLink,
