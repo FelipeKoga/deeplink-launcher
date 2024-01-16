@@ -13,11 +13,14 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.Clear
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilledTonalIconButton
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SwipeToDismissBox
 import androidx.compose.material3.SwipeToDismissBoxValue
@@ -31,6 +34,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -43,7 +47,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import dev.koga.deeplinklauncher.android.R
+import dev.koga.deeplinklauncher.android.core.designsystem.DLLTextField
 import dev.koga.deeplinklauncher.util.isUriValid
+import kotlinx.coroutines.flow.collect
 
 @Composable
 fun DeepLinkLaunchBottomSheetContent(
@@ -57,27 +63,31 @@ fun DeepLinkLaunchBottomSheetContent(
     Column(
         modifier = modifier
             .fillMaxWidth()
-            .padding(24.dp),
+            .padding(start = 24.dp, end = 24.dp, bottom = 24.dp),
     ) {
-        TextField(
+        DLLTextField(
+            label = "Enter your deeplink here",
             value = value,
+            onValueChange = onValueChange,
             modifier = Modifier
                 .defaultMinSize(minHeight = 80.dp)
-                .fillMaxWidth()
                 .clip(RoundedCornerShape(12.dp)),
-            onValueChange = onValueChange,
-            placeholder = {
-                Text(text = "Enter your deeplink here")
-            },
             colors = TextFieldDefaults.colors(
-                focusedContainerColor = MaterialTheme.colorScheme.surface,
-                unfocusedContainerColor = MaterialTheme.colorScheme.surface,
-                disabledContainerColor = MaterialTheme.colorScheme.surface,
                 focusedIndicatorColor = Color.Transparent,
                 unfocusedIndicatorColor = Color.Transparent,
                 disabledIndicatorColor = Color.Transparent,
                 errorIndicatorColor = Color.Transparent,
             ),
+            trailingIcon = {
+                AnimatedVisibility(visible = value.isNotEmpty()) {
+                    IconButton(onClick = { onValueChange("") }) {
+                        Icon(
+                            imageVector = Icons.Rounded.Clear,
+                            contentDescription = "Clear",
+                        )
+                    }
+                }
+            },
         )
 
         AnimatedVisibility(
@@ -129,21 +139,20 @@ fun LaunchClipboardDeepLinkUI(
         mutableStateOf(false)
     }
 
-    LaunchedEffect(clipboardManager.getText()) {
-        if (clipboardManager.getText() == null) return@LaunchedEffect
+    LaunchedEffect(clipboardManager) {
+        snapshotFlow { clipboardManager.getText() }.collect {
+            if (it == null) return@collect
+            if (currentText == it.toString()) return@collect
+            if (clipboardDeepLinkUri == it.toString()) return@collect
 
-        val clipboardText = clipboardManager.getText().toString()
-
-        if (currentText == clipboardText) return@LaunchedEffect
-
-        if (clipboardDeepLinkUri == clipboardText) return@LaunchedEffect
-
-        clipboardDeepLinkUri = if (clipboardText.isUriValid()) {
-            clipboardDismissed = false
-            clipboardText
-        } else {
-            null
+            clipboardDeepLinkUri = if (it.toString().isUriValid()) {
+                clipboardDismissed = false
+                it.toString()
+            } else {
+                null
+            }
         }
+
     }
 
     AnimatedVisibility(

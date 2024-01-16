@@ -32,8 +32,12 @@ import cafe.adriel.voyager.koin.getScreenModel
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import dev.koga.deeplinklauncher.android.core.designsystem.DLLTopBar
+import dev.koga.deeplinklauncher.usecase.ExportDeepLinks
+import dev.koga.deeplinklauncher.usecase.ExportDeepLinksOutput
 import dev.koga.deeplinklauncher.usecase.FileType
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import org.koin.compose.koinInject
 
 class ExportScreen : Screen {
     @OptIn(ExperimentalMaterial3Api::class)
@@ -41,7 +45,7 @@ class ExportScreen : Screen {
     override fun Content() {
         val navigator = LocalNavigator.currentOrThrow
 
-        val screenModel = getScreenModel<ExportScreenModel>()
+        val exportDeepLinks = koinInject<ExportDeepLinks>()
         val scope = rememberCoroutineScope()
         val snackbarHostState = remember { SnackbarHostState() }
         var selectedIndex by remember { mutableIntStateOf(0) }
@@ -95,18 +99,36 @@ class ExportScreen : Screen {
                         .align(Alignment.CenterHorizontally)
                         .fillMaxWidth(.7f),
                     onClick = {
-                        screenModel.export(
-                            type = when (selectedIndex) {
-                                0 -> FileType.TXT
-                                1 -> FileType.JSON
-                                else -> throw IllegalStateException("Invalid index")
-                            }
-                        )
                         scope.launch {
-                            snackbarHostState.showSnackbar(
-                                message = "DeepLinks exported successfully. " +
-                                        "Check your downloads folder.",
+                            val response = exportDeepLinks.export(
+                                type = when (selectedIndex) {
+                                    0 -> FileType.TXT
+                                    1 -> FileType.JSON
+                                    else -> throw IllegalStateException("Invalid index")
+                                }
                             )
+
+                            when (response) {
+                                ExportDeepLinksOutput.Empty -> snackbarHostState.showSnackbar(
+                                    message = "No DeepLinks to export.",
+                                )
+
+                                is ExportDeepLinksOutput.Error -> snackbarHostState.showSnackbar(
+                                    message = "Something went wrong. "
+                                )
+
+                                ExportDeepLinksOutput.Success -> {
+                                    snackbarHostState.showSnackbar(
+                                        message = "DeepLinks exported successfully. " +
+                                                "Check your downloads folder.",
+                                    )
+
+                                    delay(150)
+                                    navigator.pop()
+                                }
+                            }
+
+
                         }
                     }
                 ) {

@@ -34,13 +34,14 @@ val defaultTextFieldColors: TextFieldColors
 @Composable
 fun DLLTextField(
     modifier: Modifier = Modifier,
-    label: String,
     value: String,
     onValueChange: (String) -> Unit,
+    label: String,
     imeAction: ImeAction = ImeAction.Next,
     focusDirection: FocusDirection = FocusDirection.Down,
     colors: TextFieldColors = defaultTextFieldColors,
     onDone: () -> Unit = {},
+    trailingIcon: @Composable (() -> Unit)? = null,
 ) {
 
     val focusManager = LocalFocusManager.current
@@ -63,6 +64,7 @@ fun DLLTextField(
         keyboardOptions = KeyboardOptions.Default.copy(
             imeAction = imeAction,
         ),
+        trailingIcon = trailingIcon,
         keyboardActions = KeyboardActions(
             onNext = { focusManager.moveFocus(focusDirection) },
             onDone = {

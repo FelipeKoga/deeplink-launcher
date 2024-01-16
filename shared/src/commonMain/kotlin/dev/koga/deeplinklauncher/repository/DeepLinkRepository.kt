@@ -120,6 +120,30 @@ class DeepLinkRepository(
         }
     }
 
+    fun upsertAll(deepLinks: List<DeepLink>) {
+        database.transaction {
+            deepLinks.forEach { deepLink ->
+                deepLink.folder?.let {
+                    database.deepLinkLauncherDatabaseQueries.upsertFolder(
+                        id = deepLink.folder.id,
+                        name = deepLink.folder.name,
+                        description = deepLink.folder.description,
+                    )
+                }
+
+                database.deepLinkLauncherDatabaseQueries.upsertDeeplink(
+                    id = deepLink.id,
+                    link = deepLink.link,
+                    name = deepLink.name,
+                    description = deepLink.description,
+                    createdAt = deepLink.createdAt.toEpochMilliseconds(),
+                    isFavorite = if (deepLink.isFavorite) 1L else 0L,
+                    folderId = deepLink.folder?.id
+                )
+            }
+        }
+    }
+
     fun deleteDeeplink(deepLink: DeepLink) {
         database.transaction {
             database.deepLinkLauncherDatabaseQueries.deleteDeeplinkById(deepLink.id)

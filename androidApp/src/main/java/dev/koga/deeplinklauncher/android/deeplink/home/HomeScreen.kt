@@ -1,9 +1,3 @@
-@file:OptIn(
-    ExperimentalFoundationApi::class, ExperimentalFoundationApi::class,
-    ExperimentalFoundationApi::class, ExperimentalFoundationApi::class,
-    ExperimentalComposeUiApi::class, ExperimentalFoundationApi::class
-)
-
 package dev.koga.deeplinklauncher.android.deeplink.home
 
 import androidx.compose.foundation.BorderStroke
@@ -30,6 +24,7 @@ import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.rounded.KeyboardArrowRight
 import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material.icons.rounded.Favorite
 import androidx.compose.material.icons.rounded.KeyboardArrowRight
@@ -41,10 +36,15 @@ import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ElevatedAssistChip
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilledTonalIconButton
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.SheetValue
+import androidx.compose.material3.SnackbarDuration
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
@@ -54,14 +54,17 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -73,11 +76,13 @@ import dev.koga.deeplinklauncher.android.R
 import dev.koga.deeplinklauncher.android.core.designsystem.DLLSearchBar
 import dev.koga.deeplinklauncher.android.core.designsystem.DLLTopBar
 import dev.koga.deeplinklauncher.android.deeplink.detail.DeepLinkDetailsScreen
+import dev.koga.deeplinklauncher.android.deeplink.home.component.DeepLinkItem
 import dev.koga.deeplinklauncher.android.deeplink.home.component.DeepLinkLaunchBottomSheetContent
 import dev.koga.deeplinklauncher.android.export.ExportScreen
 import dev.koga.deeplinklauncher.android.folder.AddUpdateFolderBottomSheet
 import dev.koga.deeplinklauncher.android.folder.FolderCard
 import dev.koga.deeplinklauncher.android.folder.detail.FolderDetailsScreen
+import dev.koga.deeplinklauncher.android.import.ImportScreen
 import dev.koga.deeplinklauncher.android.settings.SettingsScreen
 import dev.koga.deeplinklauncher.model.DeepLink
 import kotlinx.coroutines.launch
@@ -98,17 +103,8 @@ private fun HomeScreenContent() {
 
     val scope = rememberCoroutineScope()
 
-    val keyboardController = LocalSoftwareKeyboardController.current
-
     val bottomSheetState = rememberStandardBottomSheetState(
         initialValue = SheetValue.Expanded,
-        confirmValueChange = {
-            if (it == SheetValue.PartiallyExpanded) {
-                keyboardController?.hide()
-            }
-
-            true
-        }
     )
 
 
@@ -122,6 +118,8 @@ private fun HomeScreenContent() {
     val navigator = LocalNavigator.currentOrThrow
 
     val screenModel = navigator.getNavigatorScreenModel<HomeScreenModel>()
+    val snackbarHostState = remember { SnackbarHostState() }
+    val clipboardManager = LocalClipboardManager.current
 
     val deepLinks by screenModel.deepLinks.collectAsState()
     val favoriteDeepLinks by screenModel.favoriteDeepLinks.collectAsState()
@@ -171,7 +169,10 @@ private fun HomeScreenContent() {
                     ) {
                         DropdownMenuItem(
                             text = { Text("Import") },
-                            onClick = { /* Handle edit! */ },
+                            onClick = {
+                                navigator.push(ImportScreen())
+                                openImportExportOptionBottomSheet = false
+                            },
                             leadingIcon = {
                                 Icon(
                                     painterResource(id = R.drawable.ic_round_arrow_downward_24),
@@ -207,6 +208,7 @@ private fun HomeScreenContent() {
         scaffoldState = rememberBottomSheetScaffoldState(
             bottomSheetState = bottomSheetState
         ),
+        snackbarHost = { SnackbarHost(snackbarHostState) },
         sheetContent = {
             DeepLinkLaunchBottomSheetContent(
                 value = deepLinkText,
@@ -317,10 +319,20 @@ private fun HomeScreenContent() {
                                 DeepLinkItem(
                                     modifier = Modifier.animateItemPlacement(),
                                     deepLink = deepLink,
-                                    onClick = screenModel::launchDeepLink,
-                                    openDetails = {
+                                    onClick = {
                                         navigator.push(DeepLinkDetailsScreen(it.id))
-                                    }
+                                    },
+                                    onLongClick = {
+                                        clipboardManager.setText(AnnotatedString(it.link))
+                                        scope.launch {
+                                            snackbarHostState.showSnackbar(
+                                                message = "Copied to clipboard",
+                                                duration = SnackbarDuration.Short,
+                                                withDismissAction = true,
+                                            )
+                                        }
+                                    },
+                                    onLaunch = screenModel::launchDeepLink,
                                 )
                             }
                         }
@@ -337,10 +349,20 @@ private fun HomeScreenContent() {
                                 DeepLinkItem(
                                     modifier = Modifier.animateItemPlacement(),
                                     deepLink = deepLink,
-                                    onClick = screenModel::launchDeepLink,
-                                    openDetails = {
+                                    onClick = {
                                         navigator.push(DeepLinkDetailsScreen(it.id))
-                                    }
+                                    },
+                                    onLongClick = {
+                                        clipboardManager.setText(AnnotatedString(it.link))
+                                        scope.launch {
+                                            snackbarHostState.showSnackbar(
+                                                message = "Copied to clipboard",
+                                                duration = SnackbarDuration.Short,
+                                                withDismissAction = true,
+                                            )
+                                        }
+                                    },
+                                    onLaunch = screenModel::launchDeepLink,
                                 )
                             }
                         }
@@ -409,102 +431,4 @@ private fun HomeScreenContent() {
             }
         }
     }
-}
-
-
-@Composable
-fun DeepLinkItem(
-    modifier: Modifier = Modifier,
-    deepLink: DeepLink,
-    onClick: (DeepLink) -> Unit,
-    openDetails: (DeepLink) -> Unit
-) {
-    Column(
-        modifier = modifier
-            .fillMaxWidth()
-            .combinedClickable(
-                onClick = { onClick(deepLink) },
-                onLongClick = { openDetails(deepLink) },
-                onDoubleClick = { openDetails(deepLink) }
-            )
-    ) {
-
-        Column(
-            modifier = Modifier
-                .padding(vertical = 24.dp, horizontal = 12.dp)
-                .fillMaxWidth()
-        ) {
-
-            deepLink.name?.let {
-                Text(
-                    text = it,
-                    style = MaterialTheme.typography.bodyMedium.copy(
-                        fontWeight = FontWeight.Bold
-                    ),
-                )
-            }
-
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-
-
-                Text(
-                    text = deepLink.link,
-                    style = MaterialTheme.typography.bodyLarge.copy(
-                        fontWeight = FontWeight.Normal
-                    ),
-                    modifier = Modifier.weight(1f)
-                )
-
-                Spacer(modifier = Modifier.width(12.dp))
-
-                Icon(
-                    imageVector = Icons.Rounded.KeyboardArrowRight,
-                    contentDescription = null,
-                    modifier = Modifier.size(20.dp),
-                    tint = MaterialTheme.colorScheme.onSurface
-                )
-            }
-
-            deepLink.description?.let {
-                Spacer(modifier = Modifier.height(8.dp))
-                Text(
-                    text = it,
-                    style = MaterialTheme.typography.labelSmall.copy(
-                        fontWeight = FontWeight.SemiBold
-                    ),
-                )
-            }
-
-            deepLink.folder?.let {
-                Spacer(modifier = Modifier.height(8.dp))
-                ElevatedAssistChip(onClick = { /*TODO*/ }, label = {
-                    Text(text = it.name)
-                })
-            }
-        }
-
-
-        Divider(modifier = Modifier.background(MaterialTheme.colorScheme.onSurface.copy(0.1f)))
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun DeepLinkItemPreview() {
-    DeepLinkItem(deepLink = DeepLink(
-        id = "123",
-        link = "https://www.google.com",
-        name = null,
-        description = null,
-        createdAt = Clock.System.now(),
-        isFavorite = false,
-        folder = null
-    ),
-        onClick = {}, openDetails = {}
-    )
 }

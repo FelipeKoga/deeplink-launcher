@@ -15,7 +15,6 @@ import androidx.compose.material.icons.rounded.Delete
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilledTonalButton
-import androidx.compose.material3.FilledTonalIconButton
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -41,9 +40,7 @@ import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.koin.getScreenModel
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
-import dev.koga.deeplinklauncher.android.core.designsystem.DLLTextField
 import dev.koga.deeplinklauncher.android.core.designsystem.DLLTopBar
-import dev.koga.deeplinklauncher.android.deeplink.home.DeepLinkItem
 import dev.koga.deeplinklauncher.model.DeepLink
 import dev.koga.deeplinklauncher.model.Folder
 import org.koin.core.parameter.parametersOf
@@ -216,13 +213,6 @@ fun FolderDetailsScreenContent(
             )
 
             Spacer(modifier = Modifier.padding(8.dp))
-            deepLinks.forEach { deepLink ->
-                DeepLinkItem(
-                    deepLink = deepLink,
-                    onClick = {},
-                    openDetails = {}
-                )
-            }
         }
     }
 }

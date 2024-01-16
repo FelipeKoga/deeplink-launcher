@@ -15,44 +15,69 @@ import kotlinx.serialization.json.Json
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
+import java.lang.Exception
 import java.time.Instant
 
 actual class ExportDeepLinks(
     private val context: Context,
     private val repository: DeepLinkRepository
 ) {
-    actual suspend fun export(type: FileType) {
-        val deepLinks = repository.getAllDeepLinks().first()
+    actual suspend fun export(type: FileType): ExportDeepLinksOutput {
+        val deepLinks = repository.getAllDeepLinks().first().ifEmpty {
+            return ExportDeepLinksOutput.Empty
+        }
 
-        when (type) {
-            FileType.JSON -> {
-                val serializedData = Json.encodeToString(
-                    serializer = ListSerializer(
-                        DeepLink.serializer()
-                    ),
-                    value = deepLinks
-                )
-                saveToDownloads(
-                    context = context,
-                    fileContent = serializedData,
-                    fileName = "deep_links.json",
-                    type = type
-                )
-            }
-
-            FileType.TXT -> {
-
-                val serializedData = deepLinks.joinToString(separator = "\n") { deepLink ->
-                    deepLink.link
+        return try {
+            when (type) {
+                FileType.JSON -> {
+                    val serializedData = Json.encodeToString(
+                        serializer = ListSerializer(
+                            ImportDeepLinkDto.serializer()
+                        ),
+                        value = deepLinks.map {
+                            ImportDeepLinkDto(
+                                id = it.id,
+                                createdAt = it.createdAt.toString(),
+                                link = it.link,
+                                name = it.name,
+                                description = it.description,
+                                folder = it.folder?.let { folder ->
+                                    ImportFolderDto(
+                                        id = folder.id,
+                                        name = folder.name,
+                                        description = folder.description
+                                    )
+                                },
+                                isFavorite = it.isFavorite
+                            )
+                        }
+                    )
+                    saveToDownloads(
+                        context = context,
+                        fileContent = serializedData,
+                        fileName = "deep_links.json",
+                        type = type
+                    )
                 }
 
-                saveToDownloads(
-                    context = context,
-                    fileContent = serializedData,
-                    fileName = "deep_links.txt",
-                    type = type
-                )
+                FileType.TXT -> {
+
+                    val serializedData = deepLinks.joinToString(separator = "\n") { deepLink ->
+                        deepLink.link
+                    }
+
+                    saveToDownloads(
+                        context = context,
+                        fileContent = serializedData,
+                        fileName = "deep_links.txt",
+                        type = type
+                    )
+                }
             }
+
+            ExportDeepLinksOutput.Success
+        } catch (e: Exception) {
+            ExportDeepLinksOutput.Error(e)
         }
     }
 
@@ -88,8 +113,6 @@ actual class ExportDeepLinks(
                 outputStream.write(fileContent.toByteArray())
             }
         }
-
-        println("Data exported to Downloads")
     }
 
 }
