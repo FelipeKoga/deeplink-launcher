@@ -122,9 +122,6 @@ class ExportScreen : Screen {
                                         message = "DeepLinks exported successfully. " +
                                                 "Check your downloads folder.",
                                     )
-
-                                    delay(150)
-                                    navigator.pop()
                                 }
                             }
 

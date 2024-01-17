@@ -40,6 +40,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalClipboardManager
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
@@ -59,6 +61,8 @@ fun DeepLinkLaunchBottomSheetContent(
     launch: () -> Unit,
     errorMessage: String? = null,
 ) {
+
+    val focusManager = LocalFocusManager.current
 
     Column(
         modifier = modifier
@@ -80,7 +84,10 @@ fun DeepLinkLaunchBottomSheetContent(
             ),
             trailingIcon = {
                 AnimatedVisibility(visible = value.isNotEmpty()) {
-                    IconButton(onClick = { onValueChange("") }) {
+                    IconButton(onClick = {
+                        onValueChange("")
+                        focusManager.clearFocus()
+                    }) {
                         Icon(
                             imageVector = Icons.Rounded.Clear,
                             contentDescription = "Clear",
@@ -140,17 +147,15 @@ fun LaunchClipboardDeepLinkUI(
     }
 
     LaunchedEffect(clipboardManager) {
-        snapshotFlow { clipboardManager.getText() }.collect {
-            if (it == null) return@collect
-            if (currentText == it.toString()) return@collect
-            if (clipboardDeepLinkUri == it.toString()) return@collect
+        val text = clipboardManager.getText() ?: return@LaunchedEffect
+        if (currentText == text.toString()) return@LaunchedEffect
+        if (clipboardDeepLinkUri == text.toString()) return@LaunchedEffect
 
-            clipboardDeepLinkUri = if (it.toString().isUriValid()) {
-                clipboardDismissed = false
-                it.toString()
-            } else {
-                null
-            }
+        clipboardDeepLinkUri = if (text.toString().isUriValid()) {
+            clipboardDismissed = false
+            text.toString()
+        } else {
+            null
         }
 
     }
@@ -187,7 +192,7 @@ fun LaunchClipboardDeepLinkUI(
                                 fontWeight = FontWeight.Normal
                             ),
                         ) {
-                            append("Clipboard deeplink: ")
+                            append("Deeplink from clipboard: ")
                         }
 
                         withStyle(

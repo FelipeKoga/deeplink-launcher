@@ -7,5 +7,5 @@ data class Folder(
     val id: String,
     val name: String,
     val description: String?,
-    val deepLinkCount: Int,
+    val deepLinkCount: Int = 0,
 )

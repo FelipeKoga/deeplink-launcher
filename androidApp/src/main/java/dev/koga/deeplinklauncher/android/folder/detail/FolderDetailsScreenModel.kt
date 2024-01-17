@@ -17,15 +17,14 @@ class FolderDetailsScreenModel(
     private val folderRepository: FolderRepository,
 ) : ScreenModel {
 
-    private val folder = folderRepository.getFolderById(folderId).filterNotNull()
+    private val folder = folderRepository.getFolderById(folderId)
     private val deepLinks = folderRepository.getFolderDeepLinks(folderId)
     private val deleted = MutableStateFlow(false)
 
     val state = combine(
-        folder,
         deepLinks,
         deleted,
-    ) { folder, deepLinks, deleted ->
+    ) { deepLinks, deleted ->
         FolderDetailsScreenState.Loaded(
             folder = folder,
             deepLinks = deepLinks,

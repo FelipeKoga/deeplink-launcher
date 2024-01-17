@@ -7,6 +7,6 @@ import org.koin.dsl.module
 
 val screenModule = module {
     factory { HomeScreenModel(get(), get(), get(), get()) }
-    factory { DeepLinkDetailScreenModel(get(), get(), get(), get()) }
+    factory { DeepLinkDetailScreenModel(get(), get(), get(), get(), get()) }
     factory { FolderDetailsScreenModel(get(), get()) }
 }

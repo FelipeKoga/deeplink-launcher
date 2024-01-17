@@ -5,88 +5,78 @@ import cafe.adriel.voyager.core.model.screenModelScope
 import dev.koga.deeplinklauncher.model.DeepLink
 import dev.koga.deeplinklauncher.model.Folder
 import dev.koga.deeplinklauncher.repository.DeepLinkRepository
+import dev.koga.deeplinklauncher.repository.FolderRepository
 import dev.koga.deeplinklauncher.usecase.LaunchDeepLink
 import dev.koga.deeplinklauncher.usecase.ShareDeepLink
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.receiveAsFlow
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-
-data class DeepLinkDetails(
-    val id: String,
-    val name: String,
-    val description: String,
-    val folder: Folder?,
-    val link: String,
-    val isFavorite: Boolean,
-    val deleted: Boolean,
-)
+import java.util.UUID
 
 class DeepLinkDetailScreenModel(
-    private val deepLinkId: String,
+    deepLinkId: String,
     private val deepLinkRepository: DeepLinkRepository,
+    private val folderRepository: FolderRepository,
     private val launchDeepLink: LaunchDeepLink,
     private val shareDeepLink: ShareDeepLink,
 ) : ScreenModel {
 
-    private lateinit var deepLink: DeepLink
+    private val deepLink = deepLinkRepository.getDeepLinkById(deepLinkId)
+
+    val folders = folderRepository.getFolders().stateIn(
+        scope = screenModelScope,
+        started = SharingStarted.WhileSubscribed(),
+        initialValue = emptyList()
+    )
+
 
     val details = MutableStateFlow(
         DeepLinkDetails(
-            id = "",
-            name = "",
-            description = "",
-            folder = null,
-            link = "",
-            isFavorite = false,
+            id = deepLinkId,
+            name = deepLink.name.orEmpty(),
+            description = deepLink.description.orEmpty(),
+            folder = deepLink.folder,
+            link = deepLink.link,
+            isFavorite = deepLink.isFavorite,
             deleted = false,
         )
     )
 
     init {
-        screenModelScope.launch {
-            val data = deepLinkRepository.getDeepLinkById(deepLinkId).first()!!
-
-            deepLink = data
-
-            details.update {
-                it.copy(
-                    name = data.name.orEmpty(),
-                    description = data.description.orEmpty(),
-                    folder = data.folder,
-                    link = data.link,
-                    isFavorite = data.isFavorite,
+        details.onEach {
+            deepLinkRepository.upsert(
+                deepLink.copy(
+                    name = it.name,
+                    description = it.description,
+                    folder = it.folder,
+                    isFavorite = it.isFavorite,
                 )
-            }
-        }
+            )
+        }.launchIn(screenModelScope)
 
-    }
-
-    fun updateDeepLinkDescription(s: String) {
-        details.update { it.copy(description = s) }
-
-        deepLinkRepository.upsert(
-            deepLink.copy(description = s)
-        )
     }
 
     fun updateDeepLinkName(s: String) {
-        details.update { it.copy(name = s) }
+        details.update {
+            it.copy(name = s)
+        }
+    }
 
-        deepLinkRepository.upsert(
-            deepLink.copy(name = s)
-        )
+    fun updateDeepLinkDescription(s: String) {
+        details.update {
+            it.copy(description = s)
+        }
     }
 
     fun favorite() {
-        screenModelScope.launch {
-            details.update { it.copy(isFavorite = !it.isFavorite) }
-
-            deepLinkRepository.toggleFavoriteDeepLink(
-                deepLinkId = deepLink.id,
-                isFavorite = !deepLink.isFavorite
-            )
-        }
+        details.update { it.copy(isFavorite = !it.isFavorite) }
     }
 
     fun launch() {
@@ -105,8 +95,36 @@ class DeepLinkDetailScreenModel(
         shareDeepLink(deepLink)
     }
 
-    fun copy() {
+    fun insertFolder(name: String, description: String) {
+        screenModelScope.launch {
+            val folder = Folder(
+                id = UUID.randomUUID().toString(),
+                name = name,
+                description = description,
+            )
+
+            folderRepository.upsertFolder(folder)
+
+            selectFolder(folder)
+        }
     }
 
+    fun selectFolder(folder: Folder) {
+        details.update { it.copy(folder = folder) }
+    }
+
+    fun removeFolderFromDeepLink() {
+        details.update { it.copy(folder = null) }
+    }
 
 }
+
+data class DeepLinkDetails(
+    val id: String,
+    val name: String,
+    val description: String,
+    val folder: Folder?,
+    val link: String,
+    val isFavorite: Boolean,
+    val deleted: Boolean,
+)

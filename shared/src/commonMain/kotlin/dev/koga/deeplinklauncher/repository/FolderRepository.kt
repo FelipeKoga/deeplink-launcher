@@ -45,25 +45,24 @@ class FolderRepository(
         database.deepLinkLauncherDatabaseQueries.deleteFolderById(folderId)
     }
 
-    fun getFolderById(folderId: String): Flow<Folder?> {
+    fun getFolderById(folderId: String): Folder {
         return database.deepLinkLauncherDatabaseQueries
             .getFolderById(folderId)
-            .asFlow()
-            .mapToList(Dispatchers.IO)
-            .mapNotNull {
-                it.firstOrNull()?.let { data ->
-                    Folder(
-                        id = data.id,
-                        name = data.name,
-                        description = data.description,
-                        deepLinkCount = data.deeplinkCount.toInt()
-                    )
-                }
+            .executeAsOne()
+            .let {
+                Folder(
+                    id = it.id,
+                    name = it.name,
+                    description = it.description,
+                    deepLinkCount = it.deeplinkCount.toInt()
+                )
             }
     }
 
     fun getFolderDeepLinks(folderId: String): Flow<List<DeepLink>> {
-        return database.deepLinkLauncherDatabaseQueries.getFolderDeepLinks(folderId)
+        return database
+            .deepLinkLauncherDatabaseQueries
+            .getFolderDeepLinks(folderId)
             .asFlow()
             .mapToList(Dispatchers.IO)
             .map {

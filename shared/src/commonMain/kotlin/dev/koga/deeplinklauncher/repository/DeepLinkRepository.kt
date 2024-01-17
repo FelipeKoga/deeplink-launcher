@@ -71,30 +71,27 @@ class DeepLinkRepository(
             }
     }
 
-    fun getDeepLinkById(id: String): Flow<DeepLink?> {
+    fun getDeepLinkById(id: String): DeepLink {
         return database.deepLinkLauncherDatabaseQueries
             .getDeepLinkById(id)
-            .asFlow()
-            .mapToList(Dispatchers.IO)
-            .map {
-                it.firstOrNull()?.let { data ->
-                    DeepLink(
-                        id = data.id,
-                        link = data.link,
-                        name = data.name,
-                        description = data.description,
-                        createdAt = Instant.fromEpochMilliseconds(data.createdAt),
-                        isFavorite = data.isFavorite == 1L,
-                        folder = data.folderId?.let { folderId ->
-                            Folder(
-                                id = folderId,
-                                name = data.name_.orEmpty(),
-                                description = data.description_,
-                                deepLinkCount = 1
-                            )
-                        }
-                    )
-                }
+            .executeAsOne()
+            .let {
+                DeepLink(
+                    id = it.id,
+                    link = it.link,
+                    name = it.name,
+                    description = it.description,
+                    createdAt = Instant.fromEpochMilliseconds(it.createdAt),
+                    isFavorite = it.isFavorite == 1L,
+                    folder = it.folderId?.let { folderId ->
+                        Folder(
+                            id = folderId,
+                            name = it.name_.orEmpty(),
+                            description = it.description_,
+                            deepLinkCount = 1
+                        )
+                    }
+                )
             }
     }
 
@@ -147,15 +144,6 @@ class DeepLinkRepository(
     fun deleteDeeplink(deepLink: DeepLink) {
         database.transaction {
             database.deepLinkLauncherDatabaseQueries.deleteDeeplinkById(deepLink.id)
-        }
-    }
-
-    fun toggleFavoriteDeepLink(deepLinkId: String, isFavorite: Boolean) {
-        database.transaction {
-            database.deepLinkLauncherDatabaseQueries.favoriteDeepLinkById(
-                isFavorite = if (isFavorite) 1L else 0L,
-                id = deepLinkId
-            )
         }
     }
 }

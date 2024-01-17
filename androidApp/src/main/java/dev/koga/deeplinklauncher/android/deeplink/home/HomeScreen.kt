@@ -2,8 +2,6 @@ package dev.koga.deeplinklauncher.android.deeplink.home
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.background
-import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -24,21 +22,15 @@ import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.rounded.KeyboardArrowRight
 import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material.icons.rounded.Favorite
-import androidx.compose.material.icons.rounded.KeyboardArrowRight
 import androidx.compose.material.icons.rounded.Settings
 import androidx.compose.material3.BottomSheetScaffold
-import androidx.compose.material3.Divider
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
-import androidx.compose.material3.ElevatedAssistChip
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilledTonalIconButton
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.SheetValue
@@ -59,14 +51,11 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalClipboardManager
-import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.koin.getNavigatorScreenModel
@@ -79,15 +68,12 @@ import dev.koga.deeplinklauncher.android.deeplink.detail.DeepLinkDetailsScreen
 import dev.koga.deeplinklauncher.android.deeplink.home.component.DeepLinkItem
 import dev.koga.deeplinklauncher.android.deeplink.home.component.DeepLinkLaunchBottomSheetContent
 import dev.koga.deeplinklauncher.android.export.ExportScreen
-import dev.koga.deeplinklauncher.android.folder.AddUpdateFolderBottomSheet
+import dev.koga.deeplinklauncher.android.folder.AddFolderBottomSheet
 import dev.koga.deeplinklauncher.android.folder.FolderCard
 import dev.koga.deeplinklauncher.android.folder.detail.FolderDetailsScreen
 import dev.koga.deeplinklauncher.android.import.ImportScreen
 import dev.koga.deeplinklauncher.android.settings.SettingsScreen
-import dev.koga.deeplinklauncher.model.DeepLink
 import kotlinx.coroutines.launch
-import kotlinx.datetime.Clock
-import kotlinx.datetime.Instant
 
 object HomeScreen : Screen {
     @Composable
@@ -139,11 +125,11 @@ private fun HomeScreenContent() {
     val mainContentPaddingBottom = 320.dp
 
     if (openFolderBottomSheet) {
-        AddUpdateFolderBottomSheet(
+        AddFolderBottomSheet(
             onDismiss = {
                 openFolderBottomSheet = false
             },
-            onAddUpdateFolder = { name, description ->
+            onAdd = { name, description ->
                 openFolderBottomSheet = false
                 screenModel.addFolder(name, description)
             }
@@ -313,7 +299,13 @@ private fun HomeScreenContent() {
                             modifier = Modifier
                                 .padding(contentPadding)
                                 .fillMaxSize(),
-                            contentPadding = PaddingValues(bottom = mainContentPaddingBottom)
+                            contentPadding = PaddingValues(
+                                start = 12.dp,
+                                end = 12.dp,
+                                top = 12.dp,
+                                bottom = mainContentPaddingBottom
+                            ),
+                            verticalArrangement = Arrangement.spacedBy(12.dp)
                         ) {
                             items(deepLinks) { deepLink ->
                                 DeepLinkItem(
@@ -343,7 +335,13 @@ private fun HomeScreenContent() {
                             modifier = Modifier
                                 .padding(contentPadding)
                                 .fillMaxSize(),
-                            contentPadding = PaddingValues(bottom = mainContentPaddingBottom)
+                            contentPadding = PaddingValues(
+                                start = 12.dp,
+                                end = 12.dp,
+                                top = 12.dp,
+                                bottom = mainContentPaddingBottom
+                            ),
+                            verticalArrangement = Arrangement.spacedBy(12.dp)
                         ) {
                             items(favoriteDeepLinks) { deepLink ->
                                 DeepLinkItem(
@@ -373,8 +371,8 @@ private fun HomeScreenContent() {
                             LazyVerticalStaggeredGrid(
                                 modifier = Modifier.fillMaxSize(),
                                 contentPadding = PaddingValues(
-                                    start = 24.dp,
-                                    end = 24.dp,
+                                    start = 12.dp,
+                                    end = 12.dp,
                                     top = 24.dp,
                                     bottom = mainContentPaddingBottom
                                 ),

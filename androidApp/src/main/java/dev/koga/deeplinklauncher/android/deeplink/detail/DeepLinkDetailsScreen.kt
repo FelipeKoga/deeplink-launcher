@@ -1,5 +1,7 @@
 package dev.koga.deeplinklauncher.android.deeplink.detail
 
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -17,11 +19,14 @@ import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Add
+import androidx.compose.material.icons.rounded.Clear
+import androidx.compose.material.icons.rounded.Close
 import androidx.compose.material.icons.rounded.Delete
 import androidx.compose.material.icons.rounded.Favorite
 import androidx.compose.material.icons.rounded.FavoriteBorder
 import androidx.compose.material.icons.rounded.Share
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.AssistChipDefaults
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ElevatedAssistChip
@@ -40,6 +45,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -63,6 +69,9 @@ import cafe.adriel.voyager.navigator.currentOrThrow
 import dev.koga.deeplinklauncher.android.R
 import dev.koga.deeplinklauncher.android.core.designsystem.DLLTextField
 import dev.koga.deeplinklauncher.android.core.designsystem.DLLTopBar
+import dev.koga.deeplinklauncher.android.folder.SelectFolderBottomSheet
+import dev.koga.deeplinklauncher.model.Folder
+import kotlinx.coroutines.flow.collectLatest
 import org.koin.core.parameter.parametersOf
 
 
@@ -77,6 +86,7 @@ class DeepLinkDetailsScreen(private val deepLinkId: String) : Screen {
         )
 
         val details by screenModel.details.collectAsState()
+        val folders by screenModel.folders.collectAsState()
 
         if (details.deleted) {
             navigator.pop()
@@ -97,6 +107,10 @@ class DeepLinkDetailsScreen(private val deepLinkId: String) : Screen {
                 onDelete = screenModel::delete,
                 onFavorite = screenModel::favorite,
                 onLaunch = screenModel::launch,
+                onAddFolder = screenModel::insertFolder,
+                onSelectFolder = screenModel::selectFolder,
+                onRemoveFolder = screenModel::removeFolderFromDeepLink,
+                folders = folders,
             )
         }
     }
@@ -107,83 +121,54 @@ class DeepLinkDetailsScreen(private val deepLinkId: String) : Screen {
 fun DeepLinkDetailsScreenContent(
     modifier: Modifier,
     details: DeepLinkDetails,
+    folders: List<Folder>,
     onNameChanged: (String) -> Unit,
     onDescriptionChanged: (String) -> Unit,
     onShare: () -> Unit,
     onDelete: () -> Unit,
     onFavorite: () -> Unit,
     onLaunch: () -> Unit,
+    onAddFolder: (String, String) -> Unit,
+    onSelectFolder: (Folder) -> Unit,
+    onRemoveFolder: () -> Unit,
 ) {
     val clipboardManager = LocalClipboardManager.current
     val keyboardController = LocalSoftwareKeyboardController.current
 
-    var showDeleteDialog by remember {
+    var showDeleteDeepLinkConfirmation by remember {
         mutableStateOf(false)
     }
 
-    if (showDeleteDialog) {
-
-        ModalBottomSheet(
-            onDismissRequest = { /*TODO*/ }, sheetState = rememberModalBottomSheetState(
-                skipPartiallyExpanded = true
-            )
-        ) {
-            Column {
-                Text(
-                    text = "Delete Deep Link",
-                    style = MaterialTheme.typography.titleSmall.copy(
-                        fontWeight = FontWeight.Bold
-                    ),
-                    modifier = Modifier.padding(24.dp)
-                )
-
-                HorizontalDivider()
-
-                Text(
-                    text = "Are you sure you want to delete this deep link?",
-                    style = MaterialTheme.typography.bodyMedium,
-                    modifier = Modifier.padding(24.dp)
-                )
-
-                Spacer(modifier = Modifier.height(12.dp))
-
-                Row(
-                    horizontalArrangement = Arrangement.End,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(24.dp)
-                ) {
-
-
-                    TextButton(
-                        onClick = { showDeleteDialog = false },
-                        modifier = Modifier.padding(start = 12.dp)
-                    ) {
-                        Text(text = "Cancel", fontWeight = FontWeight.Bold)
-                    }
-
-                    Spacer(modifier = Modifier.width(24.dp))
-
-                    FilledTonalButton(
-                        onClick = {
-                            showDeleteDialog = false
-                            onDelete()
-                        },
-                        modifier = Modifier.padding(end = 12.dp),
-                        colors = ButtonDefaults.filledTonalButtonColors(
-                            containerColor = MaterialTheme.colorScheme.errorContainer
-                        )
-                    ) {
-                        Text(text = "Delete")
-                    }
-                }
-
-                Spacer(modifier = Modifier.height(24.dp))
-            }
-        }
-
+    var showSelectFolderBottomSheet by remember {
+        mutableStateOf(false)
     }
 
+
+    if (showDeleteDeepLinkConfirmation) {
+        DeleteDeepLinkConfirmationBottomSheet(onDismissRequest = {
+            showDeleteDeepLinkConfirmation = false
+        }, onDelete = {
+            onDelete()
+            showDeleteDeepLinkConfirmation = false
+        })
+    }
+
+    if (showSelectFolderBottomSheet) {
+        SelectFolderBottomSheet(
+            folders = folders,
+            onDismissRequest = {
+                showSelectFolderBottomSheet = false
+            },
+            onAdd = { name, description ->
+                onAddFolder(name, description)
+                showSelectFolderBottomSheet = false
+            },
+            onClick = {
+                onSelectFolder(it)
+                showSelectFolderBottomSheet = false
+            }
+        )
+    }
 
     SelectionContainer(
         modifier = modifier
@@ -213,13 +198,11 @@ fun DeepLinkDetailsScreenContent(
                     onClick = {
                         clipboardManager.setText(AnnotatedString(details.link))
                     },
-                    modifier = Modifier.size(24.dp)
                 ) {
 
                     Icon(
                         painter = painterResource(id = R.drawable.ic_round_content_copy_24),
                         contentDescription = "Copy",
-                        modifier = Modifier.size(24.dp)
                     )
                 }
 
@@ -243,17 +226,56 @@ fun DeepLinkDetailsScreenContent(
 
             Spacer(modifier = Modifier.height(8.dp))
 
-            ElevatedAssistChip(
-                onClick = { /*TODO*/ },
-                leadingIcon = {
-                    Icon(
-                        imageVector = Icons.Rounded.Add,
-                        contentDescription = "",
-                        modifier = Modifier.size(18.dp),
+            AnimatedContent(
+                targetState = details.folder,
+                label = "",
+                modifier = Modifier.fillMaxWidth()
+            ) { folder ->
+
+                when (folder) {
+                    null -> ElevatedAssistChip(
+                        modifier = Modifier
+                            .fillMaxWidth(), onClick = { showSelectFolderBottomSheet = true },
+                        leadingIcon = {
+                            Icon(
+                                imageVector = Icons.Rounded.Add,
+                                contentDescription = "",
+                                modifier = Modifier.size(18.dp),
+                            )
+                        },
+                        label = { Text(text = "Add Folder") }
                     )
-                },
-                label = { Text(text = "Add Folder") }
-            )
+
+                    else -> ElevatedAssistChip(
+                        colors = AssistChipDefaults.elevatedAssistChipColors(),
+                        modifier = Modifier
+                            .fillMaxWidth(),
+                        onClick = { showSelectFolderBottomSheet = true },
+                        leadingIcon = {
+                            Icon(
+                                painter = painterResource(id = R.drawable.ic_round_folder_24),
+                                contentDescription = null,
+                            )
+                        },
+                        trailingIcon = {
+                            Icon(
+                                imageVector = Icons.Rounded.Clear,
+                                contentDescription = "Remove folder",
+                                modifier = Modifier.clickable {
+                                    onRemoveFolder()
+                                }
+                            )
+                        },
+                        label = {
+                            Text(
+                                text = folder.name,
+                                fontWeight = FontWeight.Bold,
+                            )
+                        }
+                    )
+                }
+            }
+
 
             Spacer(modifier = Modifier.height(24.dp))
 
@@ -270,7 +292,7 @@ fun DeepLinkDetailsScreenContent(
             ) {
 
                 FilledTonalIconButton(
-                    onClick = { showDeleteDialog = true },
+                    onClick = { showDeleteDeepLinkConfirmation = true },
                     colors = IconButtonDefaults.filledTonalIconButtonColors(
                         containerColor = Color.Red.copy(alpha = .2f)
                     )
