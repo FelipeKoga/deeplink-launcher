@@ -153,18 +153,7 @@ private fun HomeScreenContent() {
                         expanded = openImportExportOptionBottomSheet,
                         onDismissRequest = { openImportExportOptionBottomSheet = false }
                     ) {
-                        DropdownMenuItem(
-                            text = { Text("Import") },
-                            onClick = {
-                                navigator.push(ImportScreen())
-                                openImportExportOptionBottomSheet = false
-                            },
-                            leadingIcon = {
-                                Icon(
-                                    painterResource(id = R.drawable.ic_round_arrow_downward_24),
-                                    contentDescription = null
-                                )
-                            })
+
                         DropdownMenuItem(
                             text = { Text("Export") },
                             onClick = {
@@ -174,6 +163,19 @@ private fun HomeScreenContent() {
                             leadingIcon = {
                                 Icon(
                                     painterResource(id = R.drawable.ic_round_arrow_upward_24),
+                                    contentDescription = null
+                                )
+                            })
+
+                        DropdownMenuItem(
+                            text = { Text("Import") },
+                            onClick = {
+                                navigator.push(ImportScreen())
+                                openImportExportOptionBottomSheet = false
+                            },
+                            leadingIcon = {
+                                Icon(
+                                    painterResource(id = R.drawable.ic_round_arrow_downward_24),
                                     contentDescription = null
                                 )
                             })
