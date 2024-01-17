@@ -1,5 +1,7 @@
 package dev.koga.deeplinklauncher.android.export
 
+import android.app.DownloadManager
+import android.content.Intent
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -16,6 +18,7 @@ import androidx.compose.material3.SegmentedButtonDefaults
 import androidx.compose.material3.SingleChoiceSegmentedButtonRow
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.SnackbarResult
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -25,6 +28,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
@@ -45,6 +49,7 @@ class ExportScreen : Screen {
     override fun Content() {
         val navigator = LocalNavigator.currentOrThrow
 
+        val context = LocalContext.current
         val exportDeepLinks = koinInject<ExportDeepLinks>()
         val scope = rememberCoroutineScope()
         val snackbarHostState = remember { SnackbarHostState() }
@@ -118,14 +123,22 @@ class ExportScreen : Screen {
                                 )
 
                                 ExportDeepLinksOutput.Success -> {
-                                    snackbarHostState.showSnackbar(
+                                    val result = snackbarHostState.showSnackbar(
                                         message = "DeepLinks exported successfully. " +
                                                 "Check your downloads folder.",
+                                        actionLabel = "Open",
                                     )
+
+                                    when (result) {
+                                        SnackbarResult.Dismissed -> Unit
+                                        SnackbarResult.ActionPerformed -> {
+                                            context.startActivity(
+                                                Intent(DownloadManager.ACTION_VIEW_DOWNLOADS)
+                                            )
+                                        }
+                                    }
                                 }
                             }
-
-
                         }
                     }
                 ) {
