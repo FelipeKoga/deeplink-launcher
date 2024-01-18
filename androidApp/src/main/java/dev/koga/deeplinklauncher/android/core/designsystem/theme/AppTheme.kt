@@ -17,7 +17,8 @@ fun AppTheme(
     val colors = darkColorScheme(
         primary = Color.White,
         secondary = Color.DarkGray,
-        tertiary = Color.Blue,
+        onPrimary = Color.Black,
+        onSecondary = Color.White,
         background = Color(0xFF1c1b1f),
         surface = Color(0xFF28272a),
     )

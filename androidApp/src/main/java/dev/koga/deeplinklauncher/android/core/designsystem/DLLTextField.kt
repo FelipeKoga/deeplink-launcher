@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -15,6 +16,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
@@ -42,6 +44,8 @@ fun DLLTextField(
     colors: TextFieldColors = defaultTextFieldColors,
     onDone: () -> Unit = {},
     trailingIcon: @Composable (() -> Unit)? = null,
+    readOnly: Boolean = false,
+    textStyle: TextStyle = LocalTextStyle.current,
 ) {
 
     val focusManager = LocalFocusManager.current
@@ -52,6 +56,8 @@ fun DLLTextField(
             .fillMaxWidth()
             .clip(RoundedCornerShape(12.dp)),
         onValueChange = onValueChange,
+        readOnly = readOnly,
+        textStyle = textStyle,
         label = {
             Text(
                 text = label,

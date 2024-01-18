@@ -62,8 +62,6 @@ fun DeepLinkLaunchBottomSheetContent(
     errorMessage: String? = null,
 ) {
 
-    val focusManager = LocalFocusManager.current
-
     Column(
         modifier = modifier
             .fillMaxWidth()
@@ -86,7 +84,6 @@ fun DeepLinkLaunchBottomSheetContent(
                 AnimatedVisibility(visible = value.isNotEmpty()) {
                     IconButton(onClick = {
                         onValueChange("")
-                        focusManager.clearFocus()
                     }) {
                         Icon(
                             imageVector = Icons.Rounded.Clear,
