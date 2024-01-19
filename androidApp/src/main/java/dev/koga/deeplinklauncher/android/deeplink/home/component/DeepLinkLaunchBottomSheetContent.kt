@@ -30,6 +30,7 @@ import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.rememberSwipeToDismissBoxState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -48,10 +49,12 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
+import dev.koga.deeplinklauncher.DeeplinkClipboardManager
 import dev.koga.deeplinklauncher.android.R
 import dev.koga.deeplinklauncher.android.core.designsystem.DLLTextField
 import dev.koga.deeplinklauncher.util.isUriValid
 import kotlinx.coroutines.flow.collect
+import org.koin.compose.koinInject
 
 @Composable
 fun DeepLinkLaunchBottomSheetContent(
@@ -135,30 +138,11 @@ fun LaunchClipboardDeepLinkUI(
     currentText: String,
     launch: (String) -> Unit,
 ) {
-    val clipboardManager = LocalClipboardManager.current
-    var clipboardDeepLinkUri by rememberSaveable {
-        mutableStateOf<String?>(null)
-    }
-    var clipboardDismissed by rememberSaveable {
-        mutableStateOf(false)
-    }
-
-    LaunchedEffect(clipboardManager) {
-        val text = clipboardManager.getText() ?: return@LaunchedEffect
-        if (currentText == text.toString()) return@LaunchedEffect
-        if (clipboardDeepLinkUri == text.toString()) return@LaunchedEffect
-
-        clipboardDeepLinkUri = if (text.toString().isUriValid()) {
-            clipboardDismissed = false
-            text.toString()
-        } else {
-            null
-        }
-
-    }
+    val clipboardManager = koinInject<DeeplinkClipboardManager>()
+    val clipboardText by clipboardManager.clipboardText.collectAsState()
 
     AnimatedVisibility(
-        visible = clipboardDeepLinkUri != null && !clipboardDismissed,
+        visible = clipboardText != null,
         enter = fadeIn(),
         exit = fadeOut()
     ) {
@@ -171,7 +155,7 @@ fun LaunchClipboardDeepLinkUI(
                 state = rememberSwipeToDismissBoxState(
                     confirmValueChange = {
                         if (it == SwipeToDismissBoxValue.StartToEnd) {
-                            clipboardDismissed = true
+                            clipboardManager.dismissDeepLink()
                         }
 
                         true
@@ -197,7 +181,7 @@ fun LaunchClipboardDeepLinkUI(
                                 fontWeight = FontWeight.Bold,
                             ),
                         ) {
-                            append(clipboardDeepLinkUri.orEmpty())
+                            append(clipboardText.orEmpty())
                         }
                     }
 
@@ -222,8 +206,7 @@ fun LaunchClipboardDeepLinkUI(
                         Spacer(modifier = Modifier.width(8.dp))
 
                         FilledTonalIconButton(onClick = {
-                            launch(clipboardDeepLinkUri.orEmpty())
-                            clipboardDeepLinkUri = null
+                            launch(clipboardText.orEmpty())
                         }) {
                             Icon(
                                 painter = painterResource(id = R.drawable.ic_round_launch_24),
