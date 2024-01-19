@@ -25,12 +25,12 @@ actual class DeeplinkClipboardManager(
         manager.addPrimaryClipChangedListener {
             if (currentText in dismissedDeepLinks) return@addPrimaryClipChangedListener
 
-            stream.value = currentText
+            stream.update { currentText }
         }
     }
 
     actual fun copy(text: String) {
-        manager.setPrimaryClip(ClipData.newPlainText(null, text))
+        manager.setPrimaryClip(ClipData.newPlainText("DeepLink", text))
     }
 
     actual fun dismissDeepLink() {

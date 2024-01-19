@@ -123,7 +123,6 @@ fun DeepLinkLaunchBottomSheetContent(
         }
 
         LaunchClipboardDeepLinkUI(
-            currentText = value,
             launch = { clipboardText ->
                 onValueChange(clipboardText)
                 launch()
@@ -135,7 +134,6 @@ fun DeepLinkLaunchBottomSheetContent(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LaunchClipboardDeepLinkUI(
-    currentText: String,
     launch: (String) -> Unit,
 ) {
     val clipboardManager = koinInject<DeeplinkClipboardManager>()
@@ -143,7 +141,6 @@ fun LaunchClipboardDeepLinkUI(
 
     AnimatedVisibility(
         visible = clipboardText != null,
-        enter = fadeIn(),
         exit = fadeOut()
     ) {
         Column {
@@ -158,7 +155,7 @@ fun LaunchClipboardDeepLinkUI(
                             clipboardManager.dismissDeepLink()
                         }
 
-                        true
+                        it != SwipeToDismissBoxValue.EndToStart
                     }
                 ),
                 backgroundContent = {},

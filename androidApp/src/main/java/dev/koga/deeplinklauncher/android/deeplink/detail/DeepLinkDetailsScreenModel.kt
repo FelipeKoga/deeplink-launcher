@@ -85,9 +85,9 @@ class DeepLinkDetailScreenModel(
 
     fun delete() {
         screenModelScope.launch {
-            details.update { it.copy(deleted = true) }
-
             deepLinkRepository.deleteDeeplink(deepLink)
+
+            details.update { it.copy(deleted = true) }
         }
     }
 

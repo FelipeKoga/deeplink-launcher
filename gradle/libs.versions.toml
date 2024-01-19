@@ -1,5 +1,6 @@
 [versions]
 agp = "8.2.1"
+balloonCompose = "1.6.4"
 jetbrains-kotlinxDatetime = "0.5.0"
 kotlin = "1.9.20"
 compose = "1.5.4"
@@ -16,6 +17,7 @@ kotlinxCoroutinesCore = "1.7.3"
 material3Android = "1.2.0-beta02"
 
 [libraries]
+balloon-compose = { module = "com.github.skydoves:balloon-compose", version.ref = "balloonCompose" }
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
 androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "androidx-activityCompose" }
 compose-ui = { module = "androidx.compose.ui:ui", version.ref = "compose" }

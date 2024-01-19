@@ -33,6 +33,14 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.skydoves.balloon.ArrowOrientation
+import com.skydoves.balloon.ArrowPositionRules
+import com.skydoves.balloon.BalloonAnimation
+import com.skydoves.balloon.BalloonSizeSpec
+import com.skydoves.balloon.compose.Balloon
+import com.skydoves.balloon.compose.rememberBalloonBuilder
+import com.skydoves.balloon.compose.setBackgroundColor
+import com.skydoves.balloon.compose.setTextColor
 import dev.koga.deeplinklauncher.android.R
 import dev.koga.deeplinklauncher.model.DeepLink
 import kotlinx.datetime.Clock
@@ -46,97 +54,130 @@ fun DeepLinkItem(
     onLaunch: (DeepLink) -> Unit,
     onLongClick: (DeepLink) -> Unit,
 ) {
-    Card(
-        modifier = modifier
-            .fillMaxWidth()
-            .clip(RoundedCornerShape(12.dp))
-            .combinedClickable(
-                onClick = { onClick(deepLink) },
-                onLongClick = { onLongClick(deepLink) },
-            ),
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.background,
-            contentColor = MaterialTheme.colorScheme.onBackground,
-        ),
+    val builder = rememberBalloonBuilder {
+        setArrowPositionRules(ArrowPositionRules.ALIGN_BALLOON)
+        setWidth(BalloonSizeSpec.WRAP)
+        setHeight(BalloonSizeSpec.WRAP)
+        setArrowOrientation(ArrowOrientation.END)
+        setPadding(12)
+        setIsVisibleArrow(false)
+        setMarginHorizontal(12)
+        setCornerRadius(8f)
+        setAutoDismissDuration(1000)
+        setBackgroundColor(Color.White)
+        setTextColor(Color.Black)
+        setBalloonAnimation(BalloonAnimation.FADE)
+    }
+
+    Balloon(
+        builder = builder,
+        balloonContent = {
+            Text(
+                text = "Copied!", style = MaterialTheme.typography.bodyMedium.copy(
+                    fontWeight = FontWeight.Bold,
+                    color = Color.Black
+                )
+            )
+        }
     ) {
-        Column(
+        Card(
             modifier = modifier
                 .fillMaxWidth()
-                .padding(top = 8.dp)
+                .clip(RoundedCornerShape(12.dp))
+                .combinedClickable(
+                    onClick = { onClick(deepLink) },
+                    onLongClick = {
+                        onLongClick(deepLink)
+                        it.showAlignEnd()
+                    },
+                ),
+            colors = CardDefaults.cardColors(
+                containerColor = MaterialTheme.colorScheme.background,
+                contentColor = MaterialTheme.colorScheme.onBackground,
+            ),
         ) {
 
-            Row(
-                modifier = Modifier
+            Column(
+                modifier = modifier
                     .fillMaxWidth()
-                    .padding(start = 12.dp),
-                horizontalArrangement = Arrangement.End,
-                verticalAlignment = Alignment.Bottom
+                    .padding(top = 8.dp)
             ) {
-                deepLink.name?.let {
+
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(start = 12.dp),
+                    horizontalArrangement = Arrangement.End,
+                    verticalAlignment = Alignment.Bottom
+                ) {
+                    deepLink.name?.let {
+                        Text(
+                            text = it,
+                            style = MaterialTheme.typography.bodyMedium.copy(
+                                fontWeight = FontWeight.Bold
+                            ),
+                            modifier = Modifier.weight(1f)
+                        )
+                    }
+
+                    deepLink.folder?.let {
+                        Box(
+                            modifier = Modifier
+                                .clip(RoundedCornerShape(topStart = 12.dp, bottomStart = 12.dp))
+                                .background(MaterialTheme.colorScheme.onSurface.copy(0.1f))
+                        ) {
+                            Text(
+                                text = it.name,
+                                style = MaterialTheme.typography.labelSmall,
+                                modifier = Modifier.padding(vertical = 4.dp, horizontal = 12.dp),
+                            )
+                        }
+                    }
+                }
+
+
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 12.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
                     Text(
-                        text = it,
-                        style = MaterialTheme.typography.bodyMedium.copy(
-                            fontWeight = FontWeight.Bold
+                        text = deepLink.link,
+                        style = MaterialTheme.typography.bodyLarge.copy(
+                            fontWeight = FontWeight.Normal
                         ),
                         modifier = Modifier.weight(1f)
                     )
-                }
 
-                deepLink.folder?.let {
-                    Box(
-                        modifier = Modifier
-                            .clip(RoundedCornerShape(topStart = 12.dp, bottomStart = 12.dp))
-                            .background(MaterialTheme.colorScheme.onSurface.copy(0.1f))
-                    ) {
-                        Text(
-                            text = it.name,
-                            style = MaterialTheme.typography.labelSmall,
-                            modifier = Modifier.padding(vertical = 4.dp, horizontal = 12.dp),
+                    Spacer(modifier = Modifier.width(12.dp))
+
+                    IconButton(onClick = { onLaunch(deepLink) }) {
+                        Icon(
+                            painterResource(id = R.drawable.ic_round_launch_24),
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.onSurface
                         )
                     }
+
                 }
-            }
 
-
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 12.dp),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text(
-                    text = deepLink.link,
-                    style = MaterialTheme.typography.bodyLarge.copy(
-                        fontWeight = FontWeight.Normal
-                    ),
-                    modifier = Modifier.weight(1f)
-                )
-
-                Spacer(modifier = Modifier.width(12.dp))
-
-                IconButton(onClick = { onLaunch(deepLink) }) {
-                    Icon(
-                        painterResource(id = R.drawable.ic_round_launch_24),
-                        contentDescription = null,
-                        tint = MaterialTheme.colorScheme.onSurface
+                deepLink.description?.let {
+                    Text(
+                        text = it,
+                        modifier = Modifier
+                            .padding(start = 12.dp, end = 12.dp, bottom = 12.dp),
+                        style = MaterialTheme.typography.labelSmall.copy(
+                            fontWeight = FontWeight.SemiBold
+                        ),
                     )
                 }
-
-            }
-
-            deepLink.description?.let {
-                Text(
-                    text = it,
-                    modifier = Modifier
-                        .padding(start = 12.dp, end = 12.dp, bottom = 12.dp),
-                    style = MaterialTheme.typography.labelSmall.copy(
-                        fontWeight = FontWeight.SemiBold
-                    ),
-                )
             }
         }
+
     }
+
 
 }
 

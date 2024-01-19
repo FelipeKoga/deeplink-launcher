@@ -55,5 +55,7 @@ dependencies {
     implementation(libs.koin.androidx.compose)
     implementation(libs.androidx.material3.android)
 
+    implementation(libs.balloon.compose)
+
     debugImplementation(libs.compose.ui.tooling)
 }
