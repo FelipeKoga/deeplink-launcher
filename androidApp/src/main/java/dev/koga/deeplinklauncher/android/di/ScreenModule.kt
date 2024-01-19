@@ -10,5 +10,5 @@ val screenModule = module {
     factory { HomeScreenModel(get(), get(), get(), get()) }
     factory { DeepLinkDetailScreenModel(get(), get(), get(), get(), get()) }
     factory { FolderDetailsScreenModel(get(), get()) }
-    factory { ExportScreenModel(get()) }
+    factory { ExportScreenModel(get(), get()) }
 }

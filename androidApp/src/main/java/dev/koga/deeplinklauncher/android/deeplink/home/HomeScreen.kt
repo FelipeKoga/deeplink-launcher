@@ -315,9 +315,6 @@ private fun HomeScreenContent() {
                                     onClick = {
                                         navigator.push(DeepLinkDetailsScreen(it.id))
                                     },
-                                    onLongClick = {
-                                        clipboardManager.setText(AnnotatedString(it.link))
-                                    },
                                     onLaunch = screenModel::launchDeepLink,
                                 )
                             }
@@ -342,16 +339,6 @@ private fun HomeScreenContent() {
                                     deepLink = deepLink,
                                     onClick = {
                                         navigator.push(DeepLinkDetailsScreen(it.id))
-                                    },
-                                    onLongClick = {
-                                        clipboardManager.setText(AnnotatedString(it.link))
-                                        scope.launch {
-                                            snackbarHostState.showSnackbar(
-                                                message = "Copied to clipboard",
-                                                duration = SnackbarDuration.Short,
-                                                withDismissAction = true,
-                                            )
-                                        }
                                     },
                                     onLaunch = screenModel::launchDeepLink,
                                 )

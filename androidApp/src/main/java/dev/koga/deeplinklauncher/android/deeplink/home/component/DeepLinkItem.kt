@@ -41,19 +41,22 @@ import com.skydoves.balloon.compose.Balloon
 import com.skydoves.balloon.compose.rememberBalloonBuilder
 import com.skydoves.balloon.compose.setBackgroundColor
 import com.skydoves.balloon.compose.setTextColor
+import dev.koga.deeplinklauncher.DeeplinkClipboardManager
 import dev.koga.deeplinklauncher.android.R
 import dev.koga.deeplinklauncher.model.DeepLink
 import kotlinx.datetime.Clock
+import org.koin.compose.koinInject
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun DeepLinkItem(
     modifier: Modifier = Modifier,
     deepLink: DeepLink,
     onClick: (DeepLink) -> Unit,
     onLaunch: (DeepLink) -> Unit,
-    onLongClick: (DeepLink) -> Unit,
 ) {
+
+    val clipboardManager = koinInject<DeeplinkClipboardManager>()
+
     val builder = rememberBalloonBuilder {
         setArrowPositionRules(ArrowPositionRules.ALIGN_BALLOON)
         setWidth(BalloonSizeSpec.WRAP)
@@ -79,112 +82,131 @@ fun DeepLinkItem(
                 )
             )
         }
-    ) {
-        Card(
-            modifier = modifier
-                .fillMaxWidth()
-                .clip(RoundedCornerShape(12.dp))
-                .combinedClickable(
-                    onClick = { onClick(deepLink) },
-                    onLongClick = {
-                        onLongClick(deepLink)
-                        it.showAlignEnd()
-                    },
-                ),
-            colors = CardDefaults.cardColors(
-                containerColor = MaterialTheme.colorScheme.background,
-                contentColor = MaterialTheme.colorScheme.onBackground,
+    ) { balloonWindow ->
+        DeepLinkCard(
+            deepLink = deepLink,
+            modifier = modifier,
+            onLongClick = {
+                balloonWindow.showAlignEnd()
+                clipboardManager.copy(deepLink.link)
+            },
+            onClick = {
+                onClick(deepLink)
+            },
+            onLaunch = {
+                onLaunch(deepLink)
+            }
+        )
+    }
+}
+
+@OptIn(ExperimentalFoundationApi::class)
+@Composable
+fun DeepLinkCard(
+    modifier: Modifier = Modifier,
+    deepLink: DeepLink,
+    onClick: () -> Unit,
+    onLaunch: () -> Unit,
+    onLongClick: () -> Unit,
+) {
+    Card(
+        modifier = modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(12.dp))
+            .combinedClickable(
+                onClick = onClick,
+                onLongClick = onLongClick,
             ),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.background,
+            contentColor = MaterialTheme.colorScheme.onBackground,
+        ),
+    ) {
+
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 8.dp)
         ) {
 
-            Column(
-                modifier = modifier
+            Row(
+                modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = 8.dp)
+                    .padding(start = 12.dp),
+                horizontalArrangement = Arrangement.End,
+                verticalAlignment = Alignment.Bottom
             ) {
-
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(start = 12.dp),
-                    horizontalArrangement = Arrangement.End,
-                    verticalAlignment = Alignment.Bottom
-                ) {
-                    deepLink.name?.let {
-                        Text(
-                            text = it,
-                            style = MaterialTheme.typography.bodyMedium.copy(
-                                fontWeight = FontWeight.Bold
-                            ),
-                            modifier = Modifier.weight(1f)
-                        )
-                    }
-
-                    deepLink.folder?.let {
-                        Box(
-                            modifier = Modifier
-                                .clip(RoundedCornerShape(topStart = 12.dp, bottomStart = 12.dp))
-                                .background(MaterialTheme.colorScheme.onSurface.copy(0.1f))
-                        ) {
-                            Text(
-                                text = it.name,
-                                style = MaterialTheme.typography.labelSmall,
-                                modifier = Modifier.padding(vertical = 4.dp, horizontal = 12.dp),
-                            )
-                        }
-                    }
-                }
-
-
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 12.dp),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
+                deepLink.name?.let {
                     Text(
-                        text = deepLink.link,
-                        style = MaterialTheme.typography.bodyLarge.copy(
-                            fontWeight = FontWeight.Normal
+                        text = it,
+                        style = MaterialTheme.typography.bodyMedium.copy(
+                            fontWeight = FontWeight.Bold
                         ),
                         modifier = Modifier.weight(1f)
                     )
+                }
 
-                    Spacer(modifier = Modifier.width(12.dp))
-
-                    IconButton(onClick = { onLaunch(deepLink) }) {
-                        Icon(
-                            painterResource(id = R.drawable.ic_round_launch_24),
-                            contentDescription = null,
-                            tint = MaterialTheme.colorScheme.onSurface
+                deepLink.folder?.let {
+                    Box(
+                        modifier = Modifier
+                            .clip(RoundedCornerShape(topStart = 12.dp, bottomStart = 12.dp))
+                            .background(MaterialTheme.colorScheme.onSurface.copy(0.1f))
+                    ) {
+                        Text(
+                            text = it.name,
+                            style = MaterialTheme.typography.labelSmall,
+                            modifier = Modifier.padding(vertical = 4.dp, horizontal = 12.dp),
                         )
                     }
-
-                }
-
-                deepLink.description?.let {
-                    Text(
-                        text = it,
-                        modifier = Modifier
-                            .padding(start = 12.dp, end = 12.dp, bottom = 12.dp),
-                        style = MaterialTheme.typography.labelSmall.copy(
-                            fontWeight = FontWeight.SemiBold
-                        ),
-                    )
                 }
             }
+
+
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 12.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = deepLink.link,
+                    style = MaterialTheme.typography.bodyLarge.copy(
+                        fontWeight = FontWeight.Normal
+                    ),
+                    modifier = Modifier.weight(1f)
+                )
+
+                Spacer(modifier = Modifier.width(12.dp))
+
+                IconButton(onClick = onLaunch) {
+                    Icon(
+                        painterResource(id = R.drawable.ic_round_launch_24),
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.onSurface
+                    )
+                }
+
+            }
+
+            deepLink.description?.let {
+                Text(
+                    text = it,
+                    modifier = Modifier
+                        .padding(start = 12.dp, end = 12.dp, bottom = 12.dp),
+                    style = MaterialTheme.typography.labelSmall.copy(
+                        fontWeight = FontWeight.SemiBold
+                    ),
+                )
+            }
         }
-
     }
-
-
 }
 
 @Preview(showBackground = true)
 @Composable
 fun DeepLinkItemPreview() {
-    DeepLinkItem(
+    DeepLinkCard(
         deepLink = DeepLink(
             id = "123",
             link = "https://www.google.com",

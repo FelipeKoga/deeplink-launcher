@@ -28,6 +28,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SegmentedButton
 import androidx.compose.material3.SegmentedButtonDefaults
 import androidx.compose.material3.SingleChoiceSegmentedButtonRow
+import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.SnackbarResult
@@ -67,7 +68,7 @@ class ExportScreen : Screen {
         val snackbarHostState = remember { SnackbarHostState() }
 
         val screenModel = getScreenModel<ExportScreenModel>()
-        val data by screenModel.formattedExportData.collectAsState()
+        val preview = screenModel.preview
 
         val exportDeepLinks = koinInject<ExportDeepLinks>()
 
@@ -146,8 +147,8 @@ class ExportScreen : Screen {
                         }
                     ) { index ->
                         when (index) {
-                            0 -> JSONBoxViewer(text = data.jsonFormat)
-                            1 -> JSONBoxViewer(text = data.plainTextFormat)
+                            0 -> JSONBoxViewer(text = preview.jsonFormat)
+                            1 -> JSONBoxViewer(text = preview.plainTextFormat)
                         }
                     }
 
@@ -166,7 +167,6 @@ class ExportScreen : Screen {
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(24.dp),
-                        enabled = !data.isEmpty,
                         onClick = {
                             scope.launch {
                                 val response = exportDeepLinks.export(
@@ -191,6 +191,7 @@ class ExportScreen : Screen {
                                             message = "DeepLinks exported successfully. " +
                                                     "Check your downloads folder.",
                                             actionLabel = "Open",
+                                            duration = SnackbarDuration.Short
                                         )
 
                                         when (result) {

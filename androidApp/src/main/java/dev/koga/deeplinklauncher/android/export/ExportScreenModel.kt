@@ -3,67 +3,30 @@ package dev.koga.deeplinklauncher.android.export
 import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.screenModelScope
 import dev.koga.deeplinklauncher.repository.DeepLinkRepository
+import dev.koga.deeplinklauncher.usecase.GetDeepLinksJsonPreview
+import dev.koga.deeplinklauncher.usecase.GetDeepLinksPlainTextPreview
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
 
 class ExportScreenModel(
-    private val deepLinkRepository: DeepLinkRepository
+    getDeepLinksPlainTextPreview: GetDeepLinksPlainTextPreview,
+    getDeepLinksJsonPreview: GetDeepLinksJsonPreview,
 ) : ScreenModel {
 
 
-    val formattedExportData = deepLinkRepository
-        .getAllDeepLinks()
-        .map {
-            if (it.isEmpty()) {
-                return@map ExportData(
-                    plainTextFormat = "No deeplinks to export",
-                    jsonFormat = "No deeplinks to export",
-                    isEmpty = true,
-                )
-            }
+    private val plainTextPreview = getDeepLinksPlainTextPreview()
+    private val jsonPreview = getDeepLinksJsonPreview()
 
-            ExportData(
-                plainTextFormat = it.joinToString(separator = "\n") { deepLink ->
-                    deepLink.link
-                },
-                jsonFormat = it.joinToString(separator = "\n") { deepLink ->
-                    """
-                    {
-                        "id": "${deepLink.id}",
-                        "link": "${deepLink.link}",
-                        "name": "${deepLink.name}",
-                        "description": "${deepLink.description}",
-                        "isFavorite": ${deepLink.isFavorite},
-                        "folder": ${
-                        deepLink.folder?.let { folder ->
-                            """
-                            {
-                                "id": "${folder.id}",
-                                "name": "${folder.name}",
-                                "description": "${folder.description}"
-                            }
-                            """.trimIndent()
-                        }
-                    }
-                    }
-                    """.trimIndent()
-                },
-                isEmpty = false,
-            )
-        }.stateIn(
-            scope = screenModelScope,
-            started = SharingStarted.WhileSubscribed(),
-            initialValue = ExportData(
-                plainTextFormat = "",
-                jsonFormat = "",
-                isEmpty = false,
-            )
-        )
+    val preview = ExportData(
+        plainTextFormat = plainTextPreview,
+        jsonFormat = jsonPreview,
+    )
 }
 
 data class ExportData(
     val jsonFormat: String,
     val plainTextFormat: String,
-    val isEmpty: Boolean,
 )

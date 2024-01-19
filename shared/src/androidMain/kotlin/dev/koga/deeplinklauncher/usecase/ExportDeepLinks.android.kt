@@ -23,7 +23,7 @@ actual class ExportDeepLinks(
     private val repository: DeepLinkRepository
 ) {
     actual suspend fun export(type: FileType): ExportDeepLinksOutput {
-        val deepLinks = repository.getAllDeepLinks().first().ifEmpty {
+        val deepLinks = repository.getAllDeepLinks().ifEmpty {
             return ExportDeepLinksOutput.Empty
         }
 

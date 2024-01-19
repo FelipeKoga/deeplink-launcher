@@ -44,6 +44,30 @@ class DeepLinkRepository(
             }
     }
 
+    fun getAllDeepLinks(): List<DeepLink> {
+        return database.deepLinkLauncherDatabaseQueries
+            .selectAllDeeplinks()
+            .executeAsList()
+            .map { data ->
+                DeepLink(
+                    id = data.id,
+                    link = data.link,
+                    name = data.name,
+                    description = data.description,
+                    createdAt = Instant.fromEpochMilliseconds(data.createdAt),
+                    isFavorite = data.isFavorite == 1L,
+                    folder = data.folderId?.let { folderId ->
+                        Folder(
+                            id = folderId,
+                            name = data.name_.orEmpty(),
+                            description = data.description_,
+                            deepLinkCount = 1
+                        )
+                    }
+                )
+            }
+    }
+
     fun getDeepLinkByLink(link: String): DeepLink? {
         return database.deepLinkLauncherDatabaseQueries
             .getDeepLinkByLink(link)

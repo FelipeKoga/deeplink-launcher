@@ -10,6 +10,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Delete
 import androidx.compose.material3.ButtonDefaults
@@ -41,8 +43,12 @@ import cafe.adriel.voyager.koin.getScreenModel
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import dev.koga.deeplinklauncher.android.core.designsystem.DLLTopBar
+import dev.koga.deeplinklauncher.android.deeplink.detail.DeepLinkDetailsScreen
+import dev.koga.deeplinklauncher.android.deeplink.home.component.DeepLinkItem
 import dev.koga.deeplinklauncher.model.DeepLink
 import dev.koga.deeplinklauncher.model.Folder
+import dev.koga.deeplinklauncher.usecase.LaunchDeepLink
+import org.koin.compose.koinInject
 import org.koin.core.parameter.parametersOf
 
 class FolderDetailsScreen(private val folderId: String) : Screen {
@@ -50,9 +56,12 @@ class FolderDetailsScreen(private val folderId: String) : Screen {
     @Composable
     override fun Content() {
         val navigator = LocalNavigator.currentOrThrow
+
         val screenModel = getScreenModel<FolderDetailsScreenModel>(
             parameters = { parametersOf(folderId) }
         )
+
+        val launchDeepLink = koinInject<LaunchDeepLink>()
 
         val state by screenModel.state.collectAsState()
 
@@ -63,7 +72,6 @@ class FolderDetailsScreen(private val folderId: String) : Screen {
         var showDeleteDialog by remember { mutableStateOf(false) }
 
         if (showDeleteDialog) {
-
             ModalBottomSheet(
                 onDismissRequest = { showDeleteDialog = false },
                 sheetState = rememberModalBottomSheetState(
@@ -161,6 +169,16 @@ class FolderDetailsScreen(private val folderId: String) : Screen {
                     is FolderDetailsScreenState.Loaded -> FolderDetailsScreenContent(
                         folder = (state as FolderDetailsScreenState.Loaded).folder,
                         deepLinks = (state as FolderDetailsScreenState.Loaded).deepLinks,
+                        onDeepLinkClick = { deepLink ->
+                            navigator.push(
+                                DeepLinkDetailsScreen(
+                                    deepLinkId = deepLink.id
+                                )
+                            )
+                        },
+                        onDeepLinkLaunch = { deepLink ->
+                            launchDeepLink.launch(deepLink.link)
+                        },
                     )
                 }
             }
@@ -174,12 +192,13 @@ class FolderDetailsScreen(private val folderId: String) : Screen {
 fun FolderDetailsScreenContent(
     folder: Folder,
     deepLinks: List<DeepLink>,
+    onDeepLinkClick: (DeepLink) -> Unit,
+    onDeepLinkLaunch: (DeepLink) -> Unit,
 ) {
-
     Column(modifier = Modifier.padding(24.dp)) {
 
         Text(
-            text = folder.name, style = MaterialTheme.typography.titleLarge.copy(
+            text = folder.name, style = MaterialTheme.typography.headlineSmall.copy(
                 fontWeight = FontWeight.Bold
             )
         )
@@ -194,7 +213,7 @@ fun FolderDetailsScreenContent(
             )
         }
 
-        Spacer(modifier = Modifier.height(24.dp))
+        Spacer(modifier = Modifier.height(12.dp))
 
         if (deepLinks.isEmpty()) {
             Text(
@@ -204,7 +223,6 @@ fun FolderDetailsScreenContent(
                 )
             )
         } else {
-
             Text(
                 text = "Deeplinks",
                 style = MaterialTheme.typography.titleSmall.copy(
@@ -213,6 +231,18 @@ fun FolderDetailsScreenContent(
             )
 
             Spacer(modifier = Modifier.padding(8.dp))
+
+            LazyColumn(
+                verticalArrangement = Arrangement.spacedBy(24.dp)
+            ) {
+                items(deepLinks) { deepLink ->
+                    DeepLinkItem(
+                        deepLink = deepLink,
+                        onClick = onDeepLinkClick,
+                        onLaunch = onDeepLinkLaunch,
+                    )
+                }
+            }
         }
     }
 }
