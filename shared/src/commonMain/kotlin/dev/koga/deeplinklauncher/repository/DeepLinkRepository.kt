@@ -44,30 +44,27 @@ class DeepLinkRepository(
             }
     }
 
-    fun getDeepLinkByLink(link: String): Flow<DeepLink?> {
+    fun getDeepLinkByLink(link: String): DeepLink? {
         return database.deepLinkLauncherDatabaseQueries
             .getDeepLinkByLink(link)
-            .asFlow()
-            .mapToList(Dispatchers.IO)
-            .map {
-                it.firstOrNull()?.let { data ->
-                    DeepLink(
-                        id = data.id,
-                        link = data.link,
-                        name = data.name,
-                        description = data.description,
-                        createdAt = Instant.fromEpochMilliseconds(data.createdAt),
-                        isFavorite = data.isFavorite == 1L,
-                        folder = data.folderId?.let { folderId ->
-                            Folder(
-                                id = folderId,
-                                name = data.name_.orEmpty(),
-                                description = data.description_,
-                                deepLinkCount = 1
-                            )
-                        }
-                    )
-                }
+            .executeAsOneOrNull()
+            ?.let { data ->
+                DeepLink(
+                    id = data.id,
+                    link = data.link,
+                    name = data.name,
+                    description = data.description,
+                    createdAt = Instant.fromEpochMilliseconds(data.createdAt),
+                    isFavorite = data.isFavorite == 1L,
+                    folder = data.folderId?.let { folderId ->
+                        Folder(
+                            id = folderId,
+                            name = data.name_.orEmpty(),
+                            description = data.description_,
+                            deepLinkCount = 1
+                        )
+                    }
+                )
             }
     }
 

@@ -1,65 +1,91 @@
 package dev.koga.deeplinklauncher.usecase
 
-import dev.koga.deeplinklauncher.model.DeepLink
-import dev.koga.deeplinklauncher.model.Folder
 import dev.koga.deeplinklauncher.repository.DeepLinkRepository
-import kotlinx.datetime.Clock
+import dev.koga.deeplinklauncher.util.isUriValid
+import kotlinx.datetime.toInstant
 import kotlinx.serialization.json.Json
 import java.io.File
-import java.util.UUID
 
 actual class ImportDeepLinks(
     private val deepLinkRepository: DeepLinkRepository
 ) {
+
     actual fun invoke(filePath: String, fileType: FileType): ImportDeepLinksOutput {
         return try {
             val fileContents = File(filePath).readText()
 
             when (fileType) {
                 FileType.JSON -> {
-                    val parsedData = Json.decodeFromString<List<ImportDeepLinkDto>>(fileContents)
-                    deepLinkRepository.upsertAll(parsedData.map {
-                        DeepLink(
-                            id = it.id ?: UUID.randomUUID().toString(),
-                            createdAt = Clock.System.now(),
-                            link = it.link,
-                            name = it.name,
-                            description = it.description,
-                            isFavorite = it.isFavorite ?: false,
-                            folder = it.folder?.let { folder ->
-                                Folder(
-                                    id = folder.id ?: UUID.randomUUID().toString(),
-                                    name = folder.name,
-                                    description = folder.description,
-                                    deepLinkCount = 0
-                                )
-                            }
+                    val deepLinksFromJson =
+                        Json.decodeFromString<List<ImportDeepLinkDto>>(fileContents)
+
+                    val invalidDeepLinks = deepLinksFromJson.filter {
+                        !it.link.isUriValid()
+                    }
+
+                    if (invalidDeepLinks.isNotEmpty()) {
+                        return ImportDeepLinksOutput.Error.InvalidDeepLinksFound(
+                            invalidDeepLinks.map { it.link }
                         )
-                    })
+                    }
+
+                    val databaseDeepLinks = deepLinksFromJson.mapNotNull {
+                        deepLinkRepository.getDeepLinkByLink(it.link)
+                    }
+
+                    val newDeepLinks = deepLinksFromJson.filter {
+                        databaseDeepLinks.none { databaseDeepLink -> databaseDeepLink.link == it.link }
+                    }.map(ImportDeepLinkDto::toDeepLink)
+
+                    val updatedDeepLinks = deepLinksFromJson.mapNotNull { newDeepLinkDto ->
+                        val databaseDeepLink = databaseDeepLinks.find { databaseDeepLink ->
+                            databaseDeepLink.link == newDeepLinkDto.link
+                        } ?: return@mapNotNull null
+
+                        databaseDeepLink.copy(
+                            id = databaseDeepLink.id,
+                            name = newDeepLinkDto.name ?: databaseDeepLink.name,
+                            description = newDeepLinkDto.description
+                                ?: databaseDeepLink.description,
+                            isFavorite = newDeepLinkDto.isFavorite ?: databaseDeepLink.isFavorite,
+                            createdAt = newDeepLinkDto.createdAt?.toInstant()
+                                ?: databaseDeepLink.createdAt,
+                            folder = newDeepLinkDto.folder?.toFolder() ?: databaseDeepLink.folder
+                        )
+                    }
+
+                    deepLinkRepository.upsertAll(newDeepLinks + updatedDeepLinks)
                 }
 
                 FileType.TXT -> {
-                    val deepLinks = fileContents.split("\n")
+                    val deepLinksTexts = fileContents.split("\n")
 
-                    deepLinks.forEach {
-                        val parsedData = DeepLink(
-                            id = UUID.randomUUID().toString(),
-                            link = it,
-                            name = "",
-                            description = "",
-                            createdAt = Clock.System.now(),
-                            isFavorite = false,
-                            folder = null
-                        )
-
-                        deepLinkRepository.upsert(parsedData)
+                    val databaseDeepLinks = deepLinksTexts.mapNotNull {
+                        deepLinkRepository.getDeepLinkByLink(it)
                     }
+
+                    val newDeepLinksTexts = deepLinksTexts.filter {
+                        databaseDeepLinks.none { databaseDeepLink -> databaseDeepLink.link == it }
+                    }
+
+                    val invalidDeepLinks = newDeepLinksTexts.filter {
+                        !it.isUriValid()
+                    }
+
+                    if (invalidDeepLinks.isNotEmpty()) {
+                        return ImportDeepLinksOutput.Error.InvalidDeepLinksFound(
+                            invalidDeepLinks
+                        )
+                    }
+
+                    deepLinkRepository.upsertAll(newDeepLinksTexts.map(String::toDeepLink))
+
                 }
             }
 
             ImportDeepLinksOutput.Success
         } catch (e: Exception) {
-            ImportDeepLinksOutput.Error(e)
+            ImportDeepLinksOutput.Error.Unknown
         }
     }
 }

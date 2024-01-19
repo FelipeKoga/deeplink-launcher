@@ -79,7 +79,7 @@ class HomeScreenModel(
     fun launchDeepLink() = screenModelScope.launch {
         val link = deepLinkText.value
 
-        val deepLink = deepLinkRepository.getDeepLinkByLink(link).firstOrNull()
+        val deepLink = deepLinkRepository.getDeepLinkByLink(link)
 
         if (deepLink != null) {
             launchDeepLink(deepLink)

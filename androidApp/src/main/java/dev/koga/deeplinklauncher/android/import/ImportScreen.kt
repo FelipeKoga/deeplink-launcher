@@ -1,13 +1,11 @@
 package dev.koga.deeplinklauncher.android.import
 
-import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.SizeTransform
-import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInHorizontally
@@ -24,7 +22,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -37,7 +34,6 @@ import androidx.compose.material3.SingleChoiceSegmentedButtonRow
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -47,7 +43,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextStyle
@@ -58,12 +53,9 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import cafe.adriel.voyager.core.screen.Screen
-import cafe.adriel.voyager.koin.getScreenModel
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
-import dev.koga.deeplinklauncher.android.core.designsystem.DLLTextField
 import dev.koga.deeplinklauncher.android.core.designsystem.DLLTopBar
-import dev.koga.deeplinklauncher.android.core.designsystem.defaultTextFieldColors
 import dev.koga.deeplinklauncher.usecase.FileType
 import dev.koga.deeplinklauncher.usecase.ImportDeepLinks
 import dev.koga.deeplinklauncher.usecase.ImportDeepLinksOutput
@@ -112,12 +104,13 @@ class ImportScreen : Screen {
                     when (response) {
                         is ImportDeepLinksOutput.Success -> {
                             snackbarHostState.showSnackbar("DeepLinks imported successfully")
-                            navigator.pop()
                         }
 
                         is ImportDeepLinksOutput.Error -> {
-                            snackbarHostState.showSnackbar("Something went wrong. " +
-                                    "Check the content structure and try again.")
+                            snackbarHostState.showSnackbar(
+                                "Something went wrong. " +
+                                        "Check the content structure and try again."
+                            )
                         }
                     }
                 }
@@ -221,7 +214,8 @@ class ImportScreen : Screen {
                                 Column {
 
                                     Text(
-                                        text = "The most basic JSON format is an object that only contains a link property.",
+                                        text = "The most basic JSON format is an object that only " +
+                                                "contains a link property.",
                                         style = MaterialTheme.typography.titleSmall.copy(
                                             fontWeight = FontWeight.Normal
                                         )
@@ -240,7 +234,9 @@ class ImportScreen : Screen {
                                     Spacer(modifier = Modifier.height(8.dp))
 
                                     Text(
-                                        text = "It`s possible to add more properties to the object, such as id, name, description, createdAt, isFavorite and folder.",
+                                        text = "It's possible to add more properties to the object, " +
+                                                "such as id, name, description, createdAt, isFavorite, " +
+                                                "and folder.",
                                         style = MaterialTheme.typography.titleSmall.copy(
                                             fontWeight = FontWeight.Normal
                                         )

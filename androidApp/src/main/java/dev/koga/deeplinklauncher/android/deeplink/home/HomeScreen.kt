@@ -311,20 +311,12 @@ private fun HomeScreenContent() {
                         ) {
                             items(deepLinks) { deepLink ->
                                 DeepLinkItem(
-                                    modifier = Modifier.animateItemPlacement(),
                                     deepLink = deepLink,
                                     onClick = {
                                         navigator.push(DeepLinkDetailsScreen(it.id))
                                     },
                                     onLongClick = {
                                         clipboardManager.setText(AnnotatedString(it.link))
-                                        scope.launch {
-                                            snackbarHostState.showSnackbar(
-                                                message = "Copied to clipboard",
-                                                duration = SnackbarDuration.Short,
-                                                withDismissAction = true,
-                                            )
-                                        }
                                     },
                                     onLaunch = screenModel::launchDeepLink,
                                 )
@@ -347,7 +339,6 @@ private fun HomeScreenContent() {
                         ) {
                             items(favoriteDeepLinks) { deepLink ->
                                 DeepLinkItem(
-                                    modifier = Modifier.animateItemPlacement(),
                                     deepLink = deepLink,
                                     onClick = {
                                         navigator.push(DeepLinkDetailsScreen(it.id))
