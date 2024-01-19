@@ -1,6 +1,5 @@
 package dev.koga.deeplinklauncher.usecase
 
-import dev.koga.deeplinklauncher.model.Folder
 import kotlinx.serialization.Serializable
 
 @Serializable

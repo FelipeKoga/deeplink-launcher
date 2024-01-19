@@ -16,9 +16,11 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import dev.koga.deeplinklauncher.android.R
 import dev.koga.deeplinklauncher.model.Folder
 
 
@@ -46,7 +48,11 @@ fun FolderCard(folder: Folder, onClick: (Folder) -> Unit) {
 
             Spacer(modifier = Modifier.size(12.dp))
             Text(
-                text = "${folder.deepLinkCount} deeplinks",
+                text = pluralStringResource(
+                    R.plurals.folder_deeplink_count,
+                    folder.deepLinkCount,
+                    folder.deepLinkCount
+                ),
                 style = MaterialTheme.typography.bodySmall.copy(
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.onBackground.copy(alpha = .5f)
