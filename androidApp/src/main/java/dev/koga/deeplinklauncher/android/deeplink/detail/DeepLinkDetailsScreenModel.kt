@@ -2,22 +2,17 @@ package dev.koga.deeplinklauncher.android.deeplink.detail
 
 import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.screenModelScope
-import dev.koga.deeplinklauncher.model.DeepLink
 import dev.koga.deeplinklauncher.model.Folder
 import dev.koga.deeplinklauncher.repository.DeepLinkRepository
 import dev.koga.deeplinklauncher.repository.FolderRepository
 import dev.koga.deeplinklauncher.usecase.LaunchDeepLink
 import dev.koga.deeplinklauncher.usecase.ShareDeepLink
-import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
 import java.util.UUID
 
 class DeepLinkDetailScreenModel(
@@ -36,7 +31,6 @@ class DeepLinkDetailScreenModel(
         initialValue = emptyList()
     )
 
-
     val details = MutableStateFlow(
         DeepLinkDetails(
             id = deepLinkId,
@@ -51,6 +45,12 @@ class DeepLinkDetailScreenModel(
 
     init {
         details.onEach {
+
+            if (it.deleted) {
+                deepLinkRepository.deleteDeeplinkById(it.id)
+                return@onEach
+            }
+
             deepLinkRepository.upsert(
                 deepLink.copy(
                     name = it.name,
@@ -84,11 +84,7 @@ class DeepLinkDetailScreenModel(
     }
 
     fun delete() {
-        screenModelScope.launch {
-            deepLinkRepository.deleteDeeplink(deepLink)
-
-            details.update { it.copy(deleted = true) }
-        }
+        details.update { it.copy(deleted = true) }
     }
 
     fun share() {
@@ -96,17 +92,15 @@ class DeepLinkDetailScreenModel(
     }
 
     fun insertFolder(name: String, description: String) {
-        screenModelScope.launch {
-            val folder = Folder(
-                id = UUID.randomUUID().toString(),
-                name = name,
-                description = description,
-            )
+        val folder = Folder(
+            id = UUID.randomUUID().toString(),
+            name = name,
+            description = description,
+        )
 
-            folderRepository.upsertFolder(folder)
+        folderRepository.upsertFolder(folder)
 
-            selectFolder(folder)
-        }
+        selectFolder(folder)
     }
 
     fun selectFolder(folder: Folder) {

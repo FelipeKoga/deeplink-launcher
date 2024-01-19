@@ -32,9 +32,6 @@ ORDER BY createdAt DESC;
 deleteDeeplinkById:
 DELETE FROM deeplink WHERE id = ?;
 
-favoriteDeepLinkById:
-UPDATE deeplink SET isFavorite = ? WHERE id = ?;
-
 upsertDeeplink:
 INSERT OR REPLACE INTO deeplink (id, link, name, description, createdAt, isFavorite, folderId)
 VALUES (?, ?, ?, ?, ?, ?, ?);

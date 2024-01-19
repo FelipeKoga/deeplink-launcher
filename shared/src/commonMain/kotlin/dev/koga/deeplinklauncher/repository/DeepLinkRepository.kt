@@ -162,9 +162,9 @@ class DeepLinkRepository(
         }
     }
 
-    fun deleteDeeplink(deepLink: DeepLink) {
+    fun deleteDeeplinkById(id: String) {
         database.transaction {
-            database.deepLinkLauncherDatabaseQueries.deleteDeeplinkById(deepLink.id)
+            database.deepLinkLauncherDatabaseQueries.deleteDeeplinkById(id)
         }
     }
 }
