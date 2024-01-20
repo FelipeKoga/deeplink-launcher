@@ -4,6 +4,7 @@ import app.cash.sqldelight.coroutines.asFlow
 import app.cash.sqldelight.coroutines.mapToList
 import dev.koga.deeplinklauncher.database.DeepLinkLauncherDatabase
 import dev.koga.deeplinklauncher.database.GetDeepLinkById
+import dev.koga.deeplinklauncher.database.GetDeepLinkByLink
 import dev.koga.deeplinklauncher.model.DeepLink
 import dev.koga.deeplinklauncher.model.Folder
 import kotlinx.coroutines.Dispatchers
@@ -73,7 +74,7 @@ class DeepLinkRepository(
         return database.deepLinkLauncherDatabaseQueries
             .getDeepLinkByLink(link)
             .executeAsOneOrNull()
-            ?.let(GetDeepLinkById::toModel)
+            ?.let(GetDeepLinkByLink::toModel)
     }
 
     fun getDeepLinkById(id: String): DeepLink {
@@ -119,6 +120,23 @@ class DeepLinkRepository(
 }
 
 fun GetDeepLinkById.toModel() = DeepLink(
+    id = id,
+    link = link,
+    name = name,
+    description = description,
+    createdAt = Instant.fromEpochMilliseconds(createdAt),
+    isFavorite = isFavorite == 1L,
+    folder = folderId?.let { folderId ->
+        Folder(
+            id = folderId,
+            name = name_.orEmpty(),
+            description = description_,
+            deepLinkCount = 1
+        )
+    }
+)
+
+fun GetDeepLinkByLink.toModel() = DeepLink(
     id = id,
     link = link,
     name = name,
