@@ -8,3 +8,6 @@ captures
 .cxx
 local.properties
 xcuserdata
+keystore.properties
+*.pepk
+*.jks
