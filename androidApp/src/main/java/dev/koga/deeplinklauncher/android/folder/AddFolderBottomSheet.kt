@@ -54,20 +54,20 @@ fun AddFolderBottomSheetContent(
         Spacer(modifier = Modifier.height(12.dp))
 
         DLLTextField(
-            label = "Name",
             value = name,
-            onValueChange = setName
+            onValueChange = setName,
+            label = "Name",
         )
 
         Spacer(modifier = Modifier.height(12.dp))
 
         DLLTextField(
-            label = "Description",
+            modifier = Modifier.defaultMinSize(minHeight = 120.dp),
             value = description,
             onValueChange = setDescription,
-            modifier = Modifier.defaultMinSize(minHeight = 120.dp),
+            label = "Description",
             imeAction = ImeAction.Done,
-            onDone = { keyboardController?.hide() }
+            onDone = { keyboardController?.hide() },
         )
 
         Spacer(modifier = Modifier.height(24.dp))

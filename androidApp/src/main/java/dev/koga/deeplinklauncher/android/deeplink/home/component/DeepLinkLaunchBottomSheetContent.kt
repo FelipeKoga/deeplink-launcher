@@ -1,7 +1,6 @@
 package dev.koga.deeplinklauncher.android.deeplink.home.component
 
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -25,24 +24,19 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SwipeToDismissBox
 import androidx.compose.material3.SwipeToDismissBoxValue
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.rememberSwipeToDismissBoxState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
-import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalFocusManager
-import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
@@ -52,8 +46,6 @@ import androidx.compose.ui.unit.dp
 import dev.koga.deeplinklauncher.DeeplinkClipboardManager
 import dev.koga.deeplinklauncher.android.R
 import dev.koga.deeplinklauncher.android.core.designsystem.DLLTextField
-import dev.koga.deeplinklauncher.util.isUriValid
-import kotlinx.coroutines.flow.collect
 import org.koin.compose.koinInject
 
 @Composable
@@ -65,6 +57,15 @@ fun DeepLinkLaunchBottomSheetContent(
     errorMessage: String? = null,
 ) {
 
+    val focusManager = LocalFocusManager.current
+
+    val clipboardManager = koinInject<DeeplinkClipboardManager>()
+    val clipboardText by clipboardManager.clipboardText.collectAsState()
+
+    LaunchedEffect(clipboardText) {
+        onValueChange(clipboardText.orEmpty())
+    }
+
     Column(
         modifier = modifier
             .fillMaxWidth()
@@ -74,19 +75,20 @@ fun DeepLinkLaunchBottomSheetContent(
             label = "Enter your deeplink here",
             value = value,
             onValueChange = onValueChange,
-            modifier = Modifier
-                .defaultMinSize(minHeight = 80.dp)
-                .clip(RoundedCornerShape(12.dp)),
+            modifier = Modifier.clip(RoundedCornerShape(12.dp)),
             colors = TextFieldDefaults.colors(
                 focusedIndicatorColor = Color.Transparent,
                 unfocusedIndicatorColor = Color.Transparent,
                 disabledIndicatorColor = Color.Transparent,
                 errorIndicatorColor = Color.Transparent,
+                unfocusedContainerColor = MaterialTheme.colorScheme.secondaryContainer,
+                focusedContainerColor = MaterialTheme.colorScheme.secondaryContainer,
             ),
             trailingIcon = {
                 AnimatedVisibility(visible = value.isNotEmpty()) {
                     IconButton(onClick = {
                         onValueChange("")
+                        focusManager.clearFocus()
                     }) {
                         Icon(
                             imageVector = Icons.Rounded.Clear,
@@ -110,7 +112,7 @@ fun DeepLinkLaunchBottomSheetContent(
             )
         }
 
-        Spacer(modifier = Modifier.height(24.dp))
+        Spacer(modifier = Modifier.height(12.dp))
 
         Button(
             onClick = launch,
@@ -120,99 +122,6 @@ fun DeepLinkLaunchBottomSheetContent(
                 .fillMaxWidth(.6f)
         ) {
             Text(text = "Launch")
-        }
-
-        LaunchClipboardDeepLinkUI(
-            launch = { clipboardText ->
-                onValueChange(clipboardText)
-                launch()
-            }
-        )
-    }
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun LaunchClipboardDeepLinkUI(
-    launch: (String) -> Unit,
-) {
-    val clipboardManager = koinInject<DeeplinkClipboardManager>()
-    val clipboardText by clipboardManager.clipboardText.collectAsState()
-
-    AnimatedVisibility(
-        visible = clipboardText != null,
-        exit = fadeOut()
-    ) {
-        Column {
-            Spacer(modifier = Modifier.height(24.dp))
-
-            HorizontalDivider()
-
-            SwipeToDismissBox(
-                state = rememberSwipeToDismissBoxState(
-                    confirmValueChange = {
-                        if (it == SwipeToDismissBoxValue.StartToEnd) {
-                            clipboardManager.dismissDeepLink()
-                        }
-
-                        it != SwipeToDismissBoxValue.EndToStart
-                    }
-                ),
-                backgroundContent = {},
-            ) {
-                Column {
-
-                    Spacer(modifier = Modifier.height(12.dp))
-
-                    val text = buildAnnotatedString {
-                        withStyle(
-                            style = SpanStyle(
-                                fontWeight = FontWeight.Normal
-                            ),
-                        ) {
-                            append("Deeplink from clipboard: ")
-                        }
-
-                        withStyle(
-                            style = SpanStyle(
-                                fontWeight = FontWeight.Bold,
-                            ),
-                        ) {
-                            append(clipboardText.orEmpty())
-                        }
-                    }
-
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-
-                        Icon(
-                            painterResource(id = R.drawable.ic_round_content_copy_24),
-                            contentDescription = null,
-                            modifier = Modifier.size(14.dp)
-                        )
-
-                        Spacer(modifier = Modifier.width(8.dp))
-
-                        Text(
-                            text = text,
-                            style = MaterialTheme.typography.labelMedium.copy(
-                                color = MaterialTheme.colorScheme.onBackground
-                            ),
-                            modifier = Modifier.weight(1f)
-                        )
-
-                        Spacer(modifier = Modifier.width(8.dp))
-
-                        FilledTonalIconButton(onClick = {
-                            launch(clipboardText.orEmpty())
-                        }) {
-                            Icon(
-                                painter = painterResource(id = R.drawable.ic_round_launch_24),
-                                contentDescription = "Launch",
-                            )
-                        }
-                    }
-                }
-            }
         }
     }
 }

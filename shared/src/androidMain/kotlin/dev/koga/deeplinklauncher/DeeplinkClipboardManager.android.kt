@@ -11,18 +11,25 @@ import kotlinx.coroutines.flow.update
 actual class DeeplinkClipboardManager(
     private val context: Context
 ) {
-    private val manager get() = context.getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
+    private val clipboardManager
+        get() = context.getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
 
     private val dismissedDeepLinks = mutableSetOf<String>()
     private val currentText
-        get() = manager.primaryClip?.getItemAt(0)?.text?.toString()
+        get() = clipboardManager.primaryClip?.let { primaryClip ->
+            if (primaryClip.itemCount > 0) {
+                primaryClip.getItemAt(0)?.text.toString()
+            } else {
+                null
+            }
+        }
 
-    private val stream = MutableStateFlow(currentText)
-
+    private var inited = false
+    private val stream = MutableStateFlow<String?>(null)
     actual val clipboardText = stream.asStateFlow()
 
     init {
-        manager.addPrimaryClipChangedListener {
+        clipboardManager.addPrimaryClipChangedListener {
             if (currentText in dismissedDeepLinks) return@addPrimaryClipChangedListener
 
             stream.update { currentText }
@@ -30,11 +37,18 @@ actual class DeeplinkClipboardManager(
     }
 
     actual fun copy(text: String) {
-        manager.setPrimaryClip(ClipData.newPlainText("DeepLink", text))
+        clipboardManager.setPrimaryClip(ClipData.newPlainText("DeepLink", text))
     }
 
     actual fun dismissDeepLink() {
         dismissedDeepLinks.add(clipboardText.value ?: return)
         stream.update { null }
+    }
+
+    fun initWithCurrentClipboardText() {
+        if (inited) return
+
+        stream.update { currentText }
+        inited = true
     }
 }

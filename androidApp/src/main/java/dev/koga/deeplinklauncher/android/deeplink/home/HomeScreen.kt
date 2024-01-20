@@ -54,7 +54,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
-import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -105,13 +104,11 @@ private fun HomeScreenContent() {
 
     val screenModel = navigator.getNavigatorScreenModel<HomeScreenModel>()
     val snackbarHostState = remember { SnackbarHostState() }
-    val clipboardManager = LocalClipboardManager.current
 
     val deepLinks by screenModel.deepLinks.collectAsState()
     val favoriteDeepLinks by screenModel.favoriteDeepLinks.collectAsState()
     val errorMessage by screenModel.errorMessage.collectAsState()
     val deepLinkText by screenModel.deepLinkText.collectAsState()
-    val searchText by screenModel.searchText.collectAsState()
     val folders by screenModel.folders.collectAsState()
     val scrollBehavior =
         TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
@@ -214,23 +211,6 @@ private fun HomeScreenContent() {
                 .padding(contentPadding)
                 .fillMaxSize(),
         ) {
-//
-//            DLLSearchBar(
-//                modifier = Modifier.padding(
-//                    start = 24.dp,
-//                    end = 24.dp,
-//                    top = 12.dp,
-//                    bottom = 24.dp
-//                ),
-//                value = searchText,
-//                onChanged = {
-//                    screenModel.onSearchTextChanged(it)
-//                    scope.launch {
-//                        bottomSheetState.partialExpand()
-//                    }
-//                },
-//                hint = "Search for deeplinks or folders"
-//            )
 
             TabRow(selectedTabIndex = pagerState.currentPage) {
                 Tab(
