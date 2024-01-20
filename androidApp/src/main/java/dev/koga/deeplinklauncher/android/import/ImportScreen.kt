@@ -15,6 +15,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -43,6 +44,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextStyle
@@ -91,14 +93,22 @@ class ImportScreen : Screen {
             onResult = { uri ->
                 // Handle the URI, convert it to a file path or process it directly
                 val filePath = uri?.getRealPathFromUri(context).orEmpty()
+
+                val fileType = when (filePath.substringAfterLast(".")) {
+                    "txt" -> FileType.TXT
+                    "json" -> FileType.JSON
+                    else -> null
+                } ?: run {
+                    scope.launch {
+                        snackbarHostState.showSnackbar("Unsupported file type")
+                    }
+                    return@rememberLauncherForActivityResult
+                }
+
                 scope.launch {
                     val response = importDeepLinks.invoke(
                         filePath = filePath,
-                        fileType = when (filePath.substringAfterLast(".")) {
-                            "txt" -> FileType.TXT
-                            "json" -> FileType.JSON
-                            else -> throw IllegalStateException("Invalid file type")
-                        }
+                        fileType = fileType
                     )
 
                     when (response) {
@@ -121,161 +131,12 @@ class ImportScreen : Screen {
             topBar = {
                 DLLTopBar(title = "Import DeepLinks", onBack = navigator::pop)
             },
-            snackbarHost =
-            { SnackbarHost(snackbarHostState) },
-            containerColor = MaterialTheme.colorScheme.surface
-        ) { contentPadding ->
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(contentPadding)
-            ) {
+            snackbarHost = {
+                SnackbarHost(snackbarHostState)
+            },
+            bottomBar = {
                 Column(
                     modifier = Modifier
-                        .fillMaxSize()
-                        .padding(24.dp)
-                        .verticalScroll(rememberScrollState())
-                ) {
-
-                    Text(
-                        "How to Import Data", style = MaterialTheme.typography.titleMedium.copy(
-                            fontWeight = FontWeight.Bold
-                        )
-                    )
-
-                    Spacer(modifier = Modifier.height(16.dp))
-
-                    val headerText = buildAnnotatedString {
-                        append("The are two types of files that can be imported: ")
-                        withStyle(
-                            style = SpanStyle(
-                                fontWeight = FontWeight.Bold
-                            )
-                        ) {
-                            append("plain text (.txt)")
-                        }
-
-                        append(" and ")
-
-                        withStyle(
-                            style = SpanStyle(
-                                fontWeight = FontWeight.Bold
-                            )
-                        ) {
-                            append("JSON (.json)")
-                        }
-                    }
-
-                    Text(
-                        text = headerText,
-                        style = MaterialTheme.typography.titleSmall.copy(
-                            fontWeight = FontWeight.Normal
-                        )
-                    )
-
-                    Spacer(modifier = Modifier.height(16.dp))
-
-                    SingleChoiceSegmentedButtonRow(
-                        modifier = Modifier
-                            .align(Alignment.CenterHorizontally)
-                            .fillMaxWidth()
-                    ) {
-                        options.forEachIndexed { index, label ->
-                            SegmentedButton(
-                                shape = SegmentedButtonDefaults.itemShape(
-                                    index = index,
-                                    count = options.size
-                                ),
-                                onClick = { selectedIndex = index },
-                                selected = index == selectedIndex
-                            ) {
-                                Text(label)
-                            }
-                        }
-                    }
-
-                    Spacer(modifier = Modifier.height(12.dp))
-                    AnimatedContent(
-                        targetState = selectedIndex,
-                        transitionSpec = {
-                            if (targetState > initialState) {
-                                slideInHorizontally { width -> width } + fadeIn() togetherWith
-                                        slideOutHorizontally { width -> -width } + fadeOut()
-                            } else {
-                                slideInHorizontally { width -> -width } + fadeIn() togetherWith
-                                        slideOutHorizontally { width -> width } + fadeOut()
-                            }.using(
-                                SizeTransform(clip = false)
-                            )
-                        }, label = ""
-                    ) { index ->
-                        when (index) {
-                            0 -> {
-                                Column {
-
-                                    Text(
-                                        text = "The most basic JSON format is an object that only " +
-                                                "contains a link property.",
-                                        style = MaterialTheme.typography.titleSmall.copy(
-                                            fontWeight = FontWeight.Normal
-                                        )
-                                    )
-
-                                    Spacer(modifier = Modifier.height(8.dp))
-
-                                    JSONBoxViewer(
-                                        text = """
-                                        {
-                                            "link": string
-                                        }
-                                    """.trimIndent()
-                                    )
-
-                                    Spacer(modifier = Modifier.height(8.dp))
-
-                                    Text(
-                                        text = "It's possible to add more properties to the object, " +
-                                                "such as id, name, description, createdAt, isFavorite, " +
-                                                "and folder.",
-                                        style = MaterialTheme.typography.titleSmall.copy(
-                                            fontWeight = FontWeight.Normal
-                                        )
-                                    )
-
-                                    Spacer(modifier = Modifier.height(8.dp))
-
-                                    JsonDisplayScreen()
-                                }
-                            }
-
-                            1 -> {
-
-                                Column {
-                                    Text(
-                                        text = "The plain text format is a simple list of deeplinks, one per line.",
-                                        style = MaterialTheme.typography.titleSmall.copy(
-                                            fontWeight = FontWeight.Normal
-                                        )
-                                    )
-
-                                    Spacer(modifier = Modifier.height(8.dp))
-
-                                    JSONBoxViewer(
-                                        text = "test://myapplink\nhttps://myapplink2\ntest://myapplink3"
-                                    )
-                                }
-
-                            }
-                        }
-
-                    }
-
-                    Spacer(modifier = Modifier.height(82.dp))
-                }
-
-                Column(
-                    modifier = Modifier
-                        .align(Alignment.BottomCenter)
                         .fillMaxWidth()
                         .background(MaterialTheme.colorScheme.surface)
                 ) {
@@ -288,11 +149,153 @@ class ImportScreen : Screen {
                         onClick = {
                             filePickerLauncher.launch("*/*") // Launch the picker
                         }) {
-                        Text(text = "Browse")
+                        Text(text = "Browse file")
                     }
                 }
-            }
+            },
+            containerColor = MaterialTheme.colorScheme.surface
+        ) { contentPadding ->
+            Column(
+                modifier = Modifier
+                    .padding(contentPadding)
+                    .fillMaxSize()
+                    .padding(horizontal = 24.dp)
+                    .verticalScroll(rememberScrollState())
+            ) {
 
+                Text(
+                    "How to Import Data", style = MaterialTheme.typography.titleMedium.copy(
+                        fontWeight = FontWeight.Bold
+                    )
+                )
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                val headerText = buildAnnotatedString {
+                    append("The are two types of files that can be imported: ")
+                    withStyle(
+                        style = SpanStyle(
+                            fontWeight = FontWeight.Bold
+                        )
+                    ) {
+                        append("plain text (.txt)")
+                    }
+
+                    append(" and ")
+
+                    withStyle(
+                        style = SpanStyle(
+                            fontWeight = FontWeight.Bold
+                        )
+                    ) {
+                        append("JSON (.json)")
+                    }
+                }
+
+                Text(
+                    text = headerText,
+                    style = MaterialTheme.typography.titleSmall.copy(
+                        fontWeight = FontWeight.Normal
+                    )
+                )
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                SingleChoiceSegmentedButtonRow(
+                    modifier = Modifier
+                        .align(Alignment.CenterHorizontally)
+                        .fillMaxWidth()
+                ) {
+                    options.forEachIndexed { index, label ->
+                        SegmentedButton(
+                            shape = SegmentedButtonDefaults.itemShape(
+                                index = index,
+                                count = options.size
+                            ),
+                            onClick = { selectedIndex = index },
+                            selected = index == selectedIndex
+                        ) {
+                            Text(label)
+                        }
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(12.dp))
+                AnimatedContent(
+                    targetState = selectedIndex,
+                    transitionSpec = {
+                        if (targetState > initialState) {
+                            slideInHorizontally { width -> width } + fadeIn() togetherWith
+                                    slideOutHorizontally { width -> -width } + fadeOut()
+                        } else {
+                            slideInHorizontally { width -> -width } + fadeIn() togetherWith
+                                    slideOutHorizontally { width -> width } + fadeOut()
+                        }.using(
+                            SizeTransform(clip = false)
+                        )
+                    }, label = ""
+                ) { index ->
+                    when (index) {
+                        0 -> {
+                            Column {
+
+                                Text(
+                                    text = "The most basic JSON format is an object that only " +
+                                            "contains a link property.",
+                                    style = MaterialTheme.typography.titleSmall.copy(
+                                        fontWeight = FontWeight.Normal
+                                    )
+                                )
+
+                                Spacer(modifier = Modifier.height(8.dp))
+
+                                JSONBoxViewer(
+                                    text = """
+                                        {
+                                            "link": string
+                                        }
+                                    """.trimIndent()
+                                )
+
+                                Spacer(modifier = Modifier.height(8.dp))
+
+                                Text(
+                                    text = "It's possible to add more properties to the object, " +
+                                            "such as id, name, description, createdAt, isFavorite, " +
+                                            "and folder.",
+                                    style = MaterialTheme.typography.titleSmall.copy(
+                                        fontWeight = FontWeight.Normal
+                                    )
+                                )
+
+                                Spacer(modifier = Modifier.height(8.dp))
+
+                                JsonDisplayScreen()
+                            }
+                        }
+
+                        1 -> {
+
+                            Column {
+                                Text(
+                                    text = "The plain text format is a simple list of deeplinks, one per line.",
+                                    style = MaterialTheme.typography.titleSmall.copy(
+                                        fontWeight = FontWeight.Normal
+                                    )
+                                )
+
+                                Spacer(modifier = Modifier.height(8.dp))
+
+                                JSONBoxViewer(
+                                    text = "test://myapplink\nhttps://myapplink2\ntest://myapplink3"
+                                )
+                            }
+
+                        }
+                    }
+
+                }
+            }
         }
     }
 }
