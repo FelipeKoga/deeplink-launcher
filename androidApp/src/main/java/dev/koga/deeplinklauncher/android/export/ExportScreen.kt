@@ -21,7 +21,6 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -33,8 +32,9 @@ import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.SnackbarResult
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
@@ -54,7 +54,6 @@ import dev.koga.deeplinklauncher.android.import.JSONBoxViewer
 import dev.koga.deeplinklauncher.usecase.ExportDeepLinks
 import dev.koga.deeplinklauncher.usecase.ExportDeepLinksOutput
 import dev.koga.deeplinklauncher.usecase.FileType
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.koin.compose.koinInject
 
@@ -74,10 +73,16 @@ class ExportScreen : Screen {
 
         var selectedIndex by remember { mutableIntStateOf(0) }
         val options = listOf("JSON (.json)", "Plain text (.txt)")
+        val scrollBehavior =
+            TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
 
         Scaffold(
             topBar = {
-                DLLTopBar(title = "Export DeepLinks", onBack = navigator::pop)
+                DLLTopBar(
+                    scrollBehavior = scrollBehavior,
+                    title = "Export DeepLinks",
+                    onBack = navigator::pop
+                )
             },
             snackbarHost = { SnackbarHost(snackbarHostState) },
             containerColor = MaterialTheme.colorScheme.surface,
@@ -90,7 +95,9 @@ class ExportScreen : Screen {
                 Column(
                     modifier = Modifier
                         .fillMaxSize()
-                        .padding(24.dp)
+//                        .nestedScroll(scrollBehavior.nestedScrollConnection)
+                        .padding(horizontal = 24.dp)
+                        .padding(top = 8.dp)
                         .verticalScroll(rememberScrollState())
                 ) {
 

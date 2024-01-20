@@ -71,12 +71,12 @@ import dev.koga.deeplinklauncher.android.core.designsystem.DLLTextField
 import dev.koga.deeplinklauncher.android.core.designsystem.DLLTopBar
 import dev.koga.deeplinklauncher.android.folder.SelectFolderBottomSheet
 import dev.koga.deeplinklauncher.model.Folder
-import kotlinx.coroutines.flow.collectLatest
 import org.koin.core.parameter.parametersOf
 
 
 class DeepLinkDetailsScreen(private val deepLinkId: String) : Screen {
 
+    @OptIn(ExperimentalMaterial3Api::class)
     @Composable
     override fun Content() {
         val navigator = LocalNavigator.currentOrThrow

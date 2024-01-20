@@ -34,14 +34,15 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.SheetValue
-import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberBottomSheetScaffoldState
 import androidx.compose.material3.rememberStandardBottomSheetState
+import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -52,9 +53,9 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
@@ -62,7 +63,6 @@ import cafe.adriel.voyager.koin.getNavigatorScreenModel
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import dev.koga.deeplinklauncher.android.R
-import dev.koga.deeplinklauncher.android.core.designsystem.DLLSearchBar
 import dev.koga.deeplinklauncher.android.core.designsystem.DLLTopBar
 import dev.koga.deeplinklauncher.android.deeplink.detail.DeepLinkDetailsScreen
 import dev.koga.deeplinklauncher.android.deeplink.home.component.DeepLinkItem
@@ -113,6 +113,8 @@ private fun HomeScreenContent() {
     val deepLinkText by screenModel.deepLinkText.collectAsState()
     val searchText by screenModel.searchText.collectAsState()
     val folders by screenModel.folders.collectAsState()
+    val scrollBehavior =
+        TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
 
     var openFolderBottomSheet by rememberSaveable {
         mutableStateOf(false)
@@ -139,6 +141,7 @@ private fun HomeScreenContent() {
     BottomSheetScaffold(
         topBar = {
             DLLTopBar(
+                scrollBehavior = scrollBehavior,
                 title = "Deeplink Launcher",
                 actions = {
                     FilledTonalIconButton(onClick = { openImportExportOptionBottomSheet = true }) {
@@ -211,23 +214,23 @@ private fun HomeScreenContent() {
                 .padding(contentPadding)
                 .fillMaxSize(),
         ) {
-
-            DLLSearchBar(
-                modifier = Modifier.padding(
-                    start = 24.dp,
-                    end = 24.dp,
-                    top = 12.dp,
-                    bottom = 24.dp
-                ),
-                value = searchText,
-                onChanged = {
-                    screenModel.onSearchTextChanged(it)
-                    scope.launch {
-                        bottomSheetState.partialExpand()
-                    }
-                },
-                hint = "Search for deeplinks or folders"
-            )
+//
+//            DLLSearchBar(
+//                modifier = Modifier.padding(
+//                    start = 24.dp,
+//                    end = 24.dp,
+//                    top = 12.dp,
+//                    bottom = 24.dp
+//                ),
+//                value = searchText,
+//                onChanged = {
+//                    screenModel.onSearchTextChanged(it)
+//                    scope.launch {
+//                        bottomSheetState.partialExpand()
+//                    }
+//                },
+//                hint = "Search for deeplinks or folders"
+//            )
 
             TabRow(selectedTabIndex = pagerState.currentPage) {
                 Tab(
@@ -300,7 +303,8 @@ private fun HomeScreenContent() {
                         LazyColumn(
                             modifier = Modifier
                                 .padding(contentPadding)
-                                .fillMaxSize(),
+                                .fillMaxSize()
+                                .nestedScroll(scrollBehavior.nestedScrollConnection),
                             contentPadding = PaddingValues(
                                 start = 12.dp,
                                 end = 12.dp,
@@ -325,7 +329,8 @@ private fun HomeScreenContent() {
                         LazyColumn(
                             modifier = Modifier
                                 .padding(contentPadding)
-                                .fillMaxSize(),
+                                .fillMaxSize()
+                                .nestedScroll(scrollBehavior.nestedScrollConnection),
                             contentPadding = PaddingValues(
                                 start = 12.dp,
                                 end = 12.dp,
@@ -349,7 +354,9 @@ private fun HomeScreenContent() {
                     HomeTabPage.FOLDERS.ordinal -> {
                         Box(modifier = Modifier.fillMaxSize()) {
                             LazyVerticalStaggeredGrid(
-                                modifier = Modifier.fillMaxSize(),
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .nestedScroll(scrollBehavior.nestedScrollConnection),
                                 contentPadding = PaddingValues(
                                     start = 12.dp,
                                     end = 12.dp,
