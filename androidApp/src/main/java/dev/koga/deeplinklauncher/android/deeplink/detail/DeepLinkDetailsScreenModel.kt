@@ -45,7 +45,6 @@ class DeepLinkDetailScreenModel(
 
     init {
         details.onEach {
-
             if (it.deleted) {
                 deepLinkRepository.deleteDeeplinkById(it.id)
                 return@onEach

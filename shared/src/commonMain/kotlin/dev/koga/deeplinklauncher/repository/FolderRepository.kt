@@ -42,7 +42,10 @@ class FolderRepository(
     }
 
     fun deleteFolderById(folderId: String) {
-        database.deepLinkLauncherDatabaseQueries.deleteFolderById(folderId)
+        database.transaction {
+            database.deepLinkLauncherDatabaseQueries.removeFolderFromDeeplinks(folderId)
+            database.deepLinkLauncherDatabaseQueries.deleteFolderById(folderId)
+        }
     }
 
     fun getFolderById(folderId: String): Folder {

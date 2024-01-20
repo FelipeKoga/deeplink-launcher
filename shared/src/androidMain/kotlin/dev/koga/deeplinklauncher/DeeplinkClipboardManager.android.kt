@@ -4,6 +4,7 @@ import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
 import android.content.Context.CLIPBOARD_SERVICE
+import dev.koga.deeplinklauncher.util.isUriValid
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -17,11 +18,13 @@ actual class DeeplinkClipboardManager(
     private val dismissedDeepLinks = mutableSetOf<String>()
     private val currentText
         get() = clipboardManager.primaryClip?.let { primaryClip ->
-            if (primaryClip.itemCount > 0) {
-                primaryClip.getItemAt(0)?.text.toString()
-            } else {
-                null
+            val text = primaryClip.getItemAt(0)?.text?.toString()
+
+            if (text?.isUriValid() == true) {
+                return@let text
             }
+
+            null
         }
 
     private var inited = false

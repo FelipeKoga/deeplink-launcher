@@ -81,14 +81,12 @@ fun DeepLinkLaunchBottomSheetContent(
                 unfocusedIndicatorColor = Color.Transparent,
                 disabledIndicatorColor = Color.Transparent,
                 errorIndicatorColor = Color.Transparent,
-                unfocusedContainerColor = MaterialTheme.colorScheme.secondaryContainer,
-                focusedContainerColor = MaterialTheme.colorScheme.secondaryContainer,
             ),
             trailingIcon = {
                 AnimatedVisibility(visible = value.isNotEmpty()) {
                     IconButton(onClick = {
                         onValueChange("")
-                        focusManager.clearFocus()
+                        focusManager.clearFocus(force = true)
                     }) {
                         Icon(
                             imageVector = Icons.Rounded.Clear,

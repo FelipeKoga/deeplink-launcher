@@ -81,9 +81,34 @@ class DeepLinkDetailsScreen(private val deepLinkId: String) : Screen {
             navigator.pop()
         }
 
+        var showDeleteDeepLinkConfirmation by remember {
+            mutableStateOf(false)
+        }
+
+        if (showDeleteDeepLinkConfirmation) {
+            DeleteDeepLinkConfirmationBottomSheet(onDismissRequest = {
+                showDeleteDeepLinkConfirmation = false
+            }, onDelete = {
+                screenModel.delete()
+                showDeleteDeepLinkConfirmation = false
+            })
+        }
+
         Scaffold(
             topBar = {
-                DLLTopBar(title = "", onBack = navigator::pop)
+                DLLTopBar(title = "", onBack = navigator::pop, actions = {
+                    FilledTonalIconButton(
+                        onClick = { showDeleteDeepLinkConfirmation = true },
+                        colors = IconButtonDefaults.filledTonalIconButtonColors(
+                            containerColor = Color.Red.copy(alpha = .2f)
+                        )
+                    ) {
+                        Icon(
+                            imageVector = Icons.Rounded.Delete,
+                            contentDescription = "Delete",
+                        )
+                    }
+                })
             },
             containerColor = MaterialTheme.colorScheme.surface,
         ) { contentPadding ->
@@ -93,7 +118,6 @@ class DeepLinkDetailsScreen(private val deepLinkId: String) : Screen {
                 onNameChanged = screenModel::updateDeepLinkName,
                 onDescriptionChanged = screenModel::updateDeepLinkDescription,
                 onShare = screenModel::share,
-                onDelete = screenModel::delete,
                 onFavorite = screenModel::favorite,
                 onLaunch = screenModel::launch,
                 onAddFolder = screenModel::insertFolder,
@@ -114,7 +138,6 @@ fun DeepLinkDetailsScreenContent(
     onNameChanged: (String) -> Unit,
     onDescriptionChanged: (String) -> Unit,
     onShare: () -> Unit,
-    onDelete: () -> Unit,
     onFavorite: () -> Unit,
     onLaunch: () -> Unit,
     onAddFolder: (String, String) -> Unit,
@@ -124,22 +147,8 @@ fun DeepLinkDetailsScreenContent(
     val clipboardManager = LocalClipboardManager.current
     val keyboardController = LocalSoftwareKeyboardController.current
 
-    var showDeleteDeepLinkConfirmation by remember {
-        mutableStateOf(false)
-    }
-
     var showSelectFolderBottomSheet by remember {
         mutableStateOf(false)
-    }
-
-
-    if (showDeleteDeepLinkConfirmation) {
-        DeleteDeepLinkConfirmationBottomSheet(onDismissRequest = {
-            showDeleteDeepLinkConfirmation = false
-        }, onDelete = {
-            onDelete()
-            showDeleteDeepLinkConfirmation = false
-        })
     }
 
     if (showSelectFolderBottomSheet) {
@@ -272,7 +281,6 @@ fun DeepLinkDetailsScreenContent(
 
             Spacer(modifier = Modifier.height(24.dp))
 
-
             Spacer(modifier = Modifier.weight(1f))
 
             HorizontalDivider()
@@ -283,20 +291,6 @@ fun DeepLinkDetailsScreenContent(
                     .fillMaxWidth()
                     .padding(vertical = 24.dp)
             ) {
-
-                FilledTonalIconButton(
-                    onClick = { showDeleteDeepLinkConfirmation = true },
-                    colors = IconButtonDefaults.filledTonalIconButtonColors(
-                        containerColor = Color.Red.copy(alpha = .2f)
-                    )
-                ) {
-                    Icon(
-                        imageVector = Icons.Rounded.Delete,
-                        contentDescription = "Delete",
-                    )
-                }
-                Spacer(modifier = Modifier.weight(1f))
-
                 IconButton(onClick = onShare) {
                     Icon(
                         imageVector = Icons.Rounded.Share,

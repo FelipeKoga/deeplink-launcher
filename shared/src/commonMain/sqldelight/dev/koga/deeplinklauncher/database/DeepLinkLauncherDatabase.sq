@@ -6,7 +6,7 @@ CREATE TABLE deeplink(
   createdAt INTEGER NOT NULL,
   folderId TEXT,
   isFavorite INTEGER DEFAULT 0,
-  FOREIGN KEY(folderId) REFERENCES folder(id)
+  FOREIGN KEY(folderId) REFERENCES folder(id) ON UPDATE CASCADE
 );
 
 CREATE TABLE folder (
@@ -35,6 +35,9 @@ DELETE FROM deeplink WHERE id = ?;
 upsertDeeplink:
 INSERT OR REPLACE INTO deeplink (id, link, name, description, createdAt, isFavorite, folderId)
 VALUES (?, ?, ?, ?, ?, ?, ?);
+
+removeFolderFromDeeplinks:
+UPDATE deeplink SET folderId = NULL WHERE folderId = ?;
 
 getDeepLinkByLink:
 SELECT d.*, f.*
