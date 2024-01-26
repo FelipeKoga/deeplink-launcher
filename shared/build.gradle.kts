@@ -1,19 +1,10 @@
 plugins {
-    alias(libs.plugins.kotlinMultiplatform)
-    alias(libs.plugins.androidLibrary)
+    id("dev.koga.deeplinklauncher.multiplataform")
     kotlin("plugin.serialization") version "1.9.20"
     alias(libs.plugins.sqlDelight)
 }
 
 kotlin {
-    androidTarget {
-        compilations.all {
-            kotlinOptions {
-                jvmTarget = "1.8"
-            }
-        }
-    }
-    
     listOf(
         iosX64(),
         iosArm64(),
@@ -28,9 +19,7 @@ kotlin {
     sourceSets {
         commonMain.dependencies {
             implementation(libs.kotlinx.coroutines.core)
-//            implementation(libs.ktor.client.core)
-//            implementation(libs.ktor.client.content.negotiation)
-//            api(libs.ktor.serialization.kotlinx.json)
+            implementation(libs.kotlinx.serialization.json)
             implementation(libs.koin.core)
             implementation(libs.sql.coroutines.extensions)
             implementation(libs.voyager.screenmodel)
@@ -39,7 +28,6 @@ kotlin {
 
         val androidMain by getting {
             dependencies {
-//                implementation(libs.ktor.client.android)
                 implementation(libs.sql.android.driver)
                 implementation(libs.koin.android)
             }
@@ -53,10 +41,6 @@ kotlin {
 
 android {
     namespace = "dev.koga.deeplinklauncher"
-    compileSdk = 34
-    defaultConfig {
-        minSdk = 24
-    }
 }
 
 sqldelight {
