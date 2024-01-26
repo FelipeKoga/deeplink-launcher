@@ -28,9 +28,9 @@ kotlin {
     sourceSets {
         commonMain.dependencies {
             implementation(libs.kotlinx.coroutines.core)
-            implementation(libs.ktor.client.core)
-            implementation(libs.ktor.client.content.negotiation)
-            api(libs.ktor.serialization.kotlinx.json)
+//            implementation(libs.ktor.client.core)
+//            implementation(libs.ktor.client.content.negotiation)
+//            api(libs.ktor.serialization.kotlinx.json)
             implementation(libs.koin.core)
             implementation(libs.sql.coroutines.extensions)
             implementation(libs.voyager.screenmodel)
@@ -39,7 +39,7 @@ kotlin {
 
         val androidMain by getting {
             dependencies {
-                implementation(libs.ktor.client.android)
+//                implementation(libs.ktor.client.android)
                 implementation(libs.sql.android.driver)
                 implementation(libs.koin.android)
             }
