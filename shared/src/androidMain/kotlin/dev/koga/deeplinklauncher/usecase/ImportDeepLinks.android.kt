@@ -1,6 +1,5 @@
 package dev.koga.deeplinklauncher.usecase
 
-import dev.koga.deeplinklauncher.repository.DeepLinkRepository
 import dev.koga.deeplinklauncher.util.isUriValid
 import kotlinx.datetime.toInstant
 import kotlinx.serialization.json.Json

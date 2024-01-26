@@ -1,7 +1,5 @@
 package dev.koga.deeplinklauncher.usecase
 
-import dev.koga.deeplinklauncher.repository.DeepLinkRepository
-
 class GetDeepLinksPlainTextPreview(
     private val repository: DeepLinkRepository
 ) {

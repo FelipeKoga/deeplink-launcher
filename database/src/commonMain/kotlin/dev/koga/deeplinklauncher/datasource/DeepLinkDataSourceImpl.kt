@@ -1,7 +1,8 @@
-package dev.koga.deeplinklauncher.repository
+package dev.koga.deeplinklauncher.datasource
 
 import app.cash.sqldelight.coroutines.asFlow
 import app.cash.sqldelight.coroutines.mapToList
+import dev.koga.deeplinklauncher.database.DatabaseProvider
 import dev.koga.deeplinklauncher.database.DeepLinkLauncherDatabase
 import dev.koga.deeplinklauncher.database.GetDeepLinkById
 import dev.koga.deeplinklauncher.database.GetDeepLinkByLink
@@ -13,13 +14,16 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.datetime.Instant
 
-class DeepLinkRepository(
-    private val database: DeepLinkLauncherDatabase
-) {
+internal class DeepLinkDataSourceImpl(
+    private val databaseProvider: DatabaseProvider
+) : DeepLinkDataSource {
 
-    fun getAllDeepLinksStream(): Flow<List<DeepLink>> {
+    private val database: DeepLinkLauncherDatabase
+        get() = databaseProvider.getInstance()
+
+    override fun getDeepLinksStream(): Flow<List<DeepLink>> {
         return database.deepLinkLauncherDatabaseQueries
-            .selectDeeplinks()
+            .selectAllDeeplinks()
             .asFlow()
             .mapToList(Dispatchers.IO)
             .map {
@@ -44,7 +48,7 @@ class DeepLinkRepository(
             }
     }
 
-    fun getAllDeepLinks(): List<DeepLink> {
+    override fun getDeepLinks(): List<DeepLink> {
         return database.deepLinkLauncherDatabaseQueries
             .selectAllDeeplinks()
             .executeAsList()
@@ -68,27 +72,27 @@ class DeepLinkRepository(
             }
     }
 
-    fun getDeepLinkByLink(link: String): DeepLink? {
-        return database.deepLinkLauncherDatabaseQueries
-            .getDeepLinkByLink(link)
-            .executeAsOneOrNull()
-            ?.let(GetDeepLinkByLink::toModel)
-    }
-
-    fun getDeepLinkById(id: String): DeepLink {
+    override fun getDeepLinkById(id: String): DeepLink? {
         return database.deepLinkLauncherDatabaseQueries
             .getDeepLinkById(id)
             .executeAsOne()
             .let(GetDeepLinkById::toModel)
     }
 
-    fun upsert(deepLink: DeepLink) {
+    override fun getDeepLinkByLink(link: String): DeepLink? {
+        return database.deepLinkLauncherDatabaseQueries
+            .getDeepLinkByLink(link)
+            .executeAsOneOrNull()
+            ?.let(GetDeepLinkByLink::toModel)
+    }
+
+    override fun upsertDeepLink(deepLink: DeepLink) {
         database.transaction {
-            deepLink.folder?.let {
+            deepLink.folder?.let { folder ->
                 database.deepLinkLauncherDatabaseQueries.upsertFolder(
-                    id = deepLink.folder.id,
-                    name = deepLink.folder.name,
-                    description = deepLink.folder.description,
+                    id = folder.id,
+                    name = folder.name,
+                    description = folder.description,
                 )
             }
 
@@ -104,18 +108,13 @@ class DeepLinkRepository(
         }
     }
 
-    fun upsertAll(deepLinks: List<DeepLink>) {
-        database.transaction {
-            deepLinks.forEach(::upsert)
-        }
-    }
-
-    fun deleteDeeplinkById(id: String) {
+    override fun deleteDeepLink(id: String) {
         database.transaction {
             database.deepLinkLauncherDatabaseQueries.deleteDeeplinkById(id)
         }
     }
 }
+
 
 fun GetDeepLinkById.toModel() = DeepLink(
     id = id,

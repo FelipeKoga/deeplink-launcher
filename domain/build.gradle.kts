@@ -10,23 +10,24 @@ kotlin {
         iosSimulatorArm64()
     ).forEach {
         it.binaries.framework {
-            baseName = "shared"
+            baseName = "domain"
             isStatic = true
         }
     }
 
     sourceSets {
         commonMain.dependencies {
-            implementation(projects.database)
             implementation(libs.kotlinx.coroutines.core)
             implementation(libs.kotlinx.serialization.json)
             implementation(libs.koin.core)
+            implementation(libs.sql.coroutines.extensions)
             implementation(libs.voyager.screenmodel)
             api(libs.kotlinx.datetime)
         }
 
         val androidMain by getting {
             dependencies {
+                implementation(libs.sql.android.driver)
                 implementation(libs.koin.android)
             }
         }
@@ -38,5 +39,5 @@ kotlin {
 }
 
 android {
-    namespace = "dev.koga.deeplinklauncher.shared"
+    namespace = "dev.koga.deeplinklauncher.domain"
 }

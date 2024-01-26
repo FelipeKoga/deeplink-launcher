@@ -3,8 +3,6 @@ package dev.koga.deeplinklauncher.android.deeplink.detail
 import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.screenModelScope
 import dev.koga.deeplinklauncher.model.Folder
-import dev.koga.deeplinklauncher.repository.DeepLinkRepository
-import dev.koga.deeplinklauncher.repository.FolderRepository
 import dev.koga.deeplinklauncher.usecase.LaunchDeepLink
 import dev.koga.deeplinklauncher.usecase.ShareDeepLink
 import kotlinx.coroutines.flow.MutableStateFlow

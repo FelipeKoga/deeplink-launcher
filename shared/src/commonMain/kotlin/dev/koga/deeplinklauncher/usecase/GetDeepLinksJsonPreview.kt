@@ -1,6 +1,5 @@
 package dev.koga.deeplinklauncher.usecase
 
-import dev.koga.deeplinklauncher.repository.DeepLinkRepository
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json

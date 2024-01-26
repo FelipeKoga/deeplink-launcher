@@ -1,6 +1,7 @@
 plugins {
     id("dev.koga.deeplinklauncher.multiplataform")
     kotlin("plugin.serialization") version "1.9.20"
+    alias(libs.plugins.sqlDelight)
 }
 
 kotlin {
@@ -10,23 +11,26 @@ kotlin {
         iosSimulatorArm64()
     ).forEach {
         it.binaries.framework {
-            baseName = "shared"
+            baseName = "database"
             isStatic = true
         }
     }
 
     sourceSets {
         commonMain.dependencies {
-            implementation(projects.database)
+            implementation(projects.domain)
+
             implementation(libs.kotlinx.coroutines.core)
             implementation(libs.kotlinx.serialization.json)
             implementation(libs.koin.core)
+            implementation(libs.sql.coroutines.extensions)
             implementation(libs.voyager.screenmodel)
             api(libs.kotlinx.datetime)
         }
 
         val androidMain by getting {
             dependencies {
+                implementation(libs.sql.android.driver)
                 implementation(libs.koin.android)
             }
         }
@@ -38,5 +42,13 @@ kotlin {
 }
 
 android {
-    namespace = "dev.koga.deeplinklauncher.shared"
+    namespace = "dev.koga.deeplinklauncher.database"
+}
+
+sqldelight {
+    databases {
+        create(name = "DeepLinkLauncherDatabase") {
+            packageName.set("dev.koga.deeplinklauncher.database")
+        }
+    }
 }

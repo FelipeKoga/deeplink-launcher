@@ -19,3 +19,5 @@ dependencyResolutionManagement {
 rootProject.name = "deeplinklauncher"
 include(":androidApp")
 include(":shared")
+include(":database")
+include(":domain")

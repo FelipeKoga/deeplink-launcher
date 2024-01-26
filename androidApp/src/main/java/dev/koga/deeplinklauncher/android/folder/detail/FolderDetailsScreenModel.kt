@@ -3,7 +3,6 @@ package dev.koga.deeplinklauncher.android.folder.detail
 import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.screenModelScope
 import dev.koga.deeplinklauncher.model.DeepLink
-import dev.koga.deeplinklauncher.repository.FolderRepository
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
