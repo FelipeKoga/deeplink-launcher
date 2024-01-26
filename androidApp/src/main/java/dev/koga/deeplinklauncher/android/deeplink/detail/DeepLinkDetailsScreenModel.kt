@@ -52,8 +52,8 @@ class DeepLinkDetailScreenModel(
 
             deepLinkRepository.upsert(
                 deepLink.copy(
-                    name = it.name,
-                    description = it.description,
+                    name = it.name.ifEmpty { null },
+                    description = it.description.ifEmpty { null },
                     folder = it.folder,
                     isFavorite = it.isFavorite,
                 )
