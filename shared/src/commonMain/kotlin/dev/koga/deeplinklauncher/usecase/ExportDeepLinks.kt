@@ -10,7 +10,7 @@ sealed interface ExportDeepLinksOutput {
     data class Error(val throwable: Throwable) : ExportDeepLinksOutput
 }
 
-enum class FileType(val mimeType: String) {
-    JSON("application/json"),
-    TXT("text/plain")
+enum class FileType(val mimeType: String, val extension : String) {
+    JSON("application/json", "json"),
+    TXT("text/plain", "txt")
 }

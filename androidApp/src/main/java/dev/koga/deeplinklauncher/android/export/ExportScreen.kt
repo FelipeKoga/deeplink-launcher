@@ -178,8 +178,8 @@ class ExportScreen : Screen {
                             scope.launch {
                                 val response = exportDeepLinks.export(
                                     type = when (selectedIndex) {
-                                        0 -> FileType.TXT
-                                        1 -> FileType.JSON
+                                        0 -> FileType.JSON
+                                        1 -> FileType.TXT
                                         else -> throw IllegalStateException("Invalid index")
                                     }
                                 )

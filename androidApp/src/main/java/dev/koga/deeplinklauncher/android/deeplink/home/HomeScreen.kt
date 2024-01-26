@@ -24,7 +24,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material.icons.rounded.Favorite
-import androidx.compose.material.icons.rounded.Settings
 import androidx.compose.material3.BottomSheetScaffold
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
@@ -71,8 +70,8 @@ import dev.koga.deeplinklauncher.android.folder.AddFolderBottomSheet
 import dev.koga.deeplinklauncher.android.folder.FolderCard
 import dev.koga.deeplinklauncher.android.folder.detail.FolderDetailsScreen
 import dev.koga.deeplinklauncher.android.import.ImportScreen
-import dev.koga.deeplinklauncher.android.settings.SettingsScreen
 import kotlinx.coroutines.launch
+
 
 object HomeScreen : Screen {
     @Composable
@@ -80,7 +79,6 @@ object HomeScreen : Screen {
         HomeScreenContent()
     }
 }
-
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable

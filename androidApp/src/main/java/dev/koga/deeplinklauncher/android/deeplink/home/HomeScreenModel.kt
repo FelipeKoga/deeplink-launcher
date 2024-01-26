@@ -32,11 +32,8 @@ class HomeScreenModel(
 ) : ScreenModel {
 
     val deepLinkText = MutableStateFlow("")
-    val searchText = MutableStateFlow("")
 
-    val deepLinks = searchText.flatMapLatest {
-        deepLinkRepository.getAllDeepLinks(it)
-    }.stateIn(
+    val deepLinks = deepLinkRepository.getAllDeepLinksStream().stateIn(
         scope = screenModelScope,
         started = SharingStarted.WhileSubscribed(),
         initialValue = emptyList()
@@ -109,10 +106,6 @@ class HomeScreenModel(
         deepLinkText.update { text }
     }
 
-    fun onSearchTextChanged(text: String) {
-        searchText.update { text }
-    }
-
     fun addFolder(name: String, description: String) {
         folderRepository.upsertFolder(
             Folder(
@@ -123,11 +116,4 @@ class HomeScreenModel(
             )
         )
     }
-
-    fun export() {
-        screenModelScope.launch {
-            exportDeepLinks.export(type = FileType.JSON)
-        }
-    }
-
 }

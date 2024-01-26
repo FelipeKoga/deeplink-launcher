@@ -17,11 +17,9 @@ class DeepLinkRepository(
     private val database: DeepLinkLauncherDatabase
 ) {
 
-    fun getAllDeepLinks(search: String = ""): Flow<List<DeepLink>> {
-        val sqlSearchText = "%$search%"
-
+    fun getAllDeepLinksStream(): Flow<List<DeepLink>> {
         return database.deepLinkLauncherDatabaseQueries
-            .selectDeeplinks(sqlSearchText, sqlSearchText, sqlSearchText)
+            .selectDeeplinks()
             .asFlow()
             .mapToList(Dispatchers.IO)
             .map {

@@ -20,7 +20,6 @@ selectDeeplinks:
 SELECT d.*, f.*
 FROM deeplink d
 LEFT JOIN folder f ON d.folderId = f.id
-WHERE d.link LIKE ? OR d.name LIKE ? OR d.description LIKE ?
 ORDER BY createdAt DESC;
 
 selectAllDeeplinks:
