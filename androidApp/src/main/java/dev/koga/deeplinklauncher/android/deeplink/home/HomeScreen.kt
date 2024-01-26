@@ -180,16 +180,6 @@ private fun HomeScreenContent() {
                                 )
                             })
                     }
-
-                    FilledTonalIconButton(onClick = {
-                        navigator.push(SettingsScreen)
-                    }) {
-                        Icon(
-                            imageVector = Icons.Rounded.Settings,
-                            contentDescription = "Delete",
-                            modifier = Modifier.size(18.dp),
-                        )
-                    }
                 }
             )
         },
