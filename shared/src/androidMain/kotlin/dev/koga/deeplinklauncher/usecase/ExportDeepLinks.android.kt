@@ -8,6 +8,7 @@ import android.os.Build
 import android.os.Environment
 import android.provider.MediaStore
 import androidx.core.content.FileProvider
+import dev.koga.deeplinklauncher.datasource.DeepLinkDataSource
 import kotlinx.datetime.Clock
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
@@ -19,10 +20,10 @@ import java.io.IOException
 
 actual class ExportDeepLinks(
     private val context: Context,
-    private val repository: DeepLinkRepository
+    private val dataSource: DeepLinkDataSource
 ) {
     actual suspend fun export(type: FileType): ExportDeepLinksOutput {
-        val deepLinks = repository.getAllDeepLinks().ifEmpty {
+        val deepLinks = dataSource.getDeepLinks().ifEmpty {
             return ExportDeepLinksOutput.Empty
         }
 

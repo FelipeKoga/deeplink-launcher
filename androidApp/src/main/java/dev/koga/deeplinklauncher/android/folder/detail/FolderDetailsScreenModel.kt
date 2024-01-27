@@ -3,6 +3,10 @@ package dev.koga.deeplinklauncher.android.folder.detail
 import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.screenModelScope
 import dev.koga.deeplinklauncher.model.DeepLink
+import dev.koga.deeplinklauncher.usecase.folder.DeleteFolder
+import dev.koga.deeplinklauncher.usecase.folder.GetFolderById
+import dev.koga.deeplinklauncher.usecase.folder.GetFolderDeepLinksStream
+import dev.koga.deeplinklauncher.usecase.folder.UpsertFolder
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -16,10 +20,13 @@ import kotlinx.coroutines.launch
 
 class FolderDetailsScreenModel(
     private val folderId: String,
-    private val folderRepository: FolderRepository,
+    private val deleteFolder: DeleteFolder,
+    getFolderById: GetFolderById,
+    getFolderDeepLinksStream: GetFolderDeepLinksStream,
+    upsertFolder: UpsertFolder,
 ) : ScreenModel {
 
-    private val folder = folderRepository.getFolderById(folderId)
+    private val folder = getFolderById(folderId)!!
 
     private val form = MutableStateFlow(folder.let {
         FolderDetails(
@@ -29,7 +36,7 @@ class FolderDetailsScreenModel(
         )
     })
 
-    private val deepLinks = folderRepository.getFolderDeepLinks(folderId).stateIn(
+    private val deepLinks = getFolderDeepLinksStream(folderId).stateIn(
         scope = screenModelScope,
         started = SharingStarted.WhileSubscribed(),
         initialValue = emptyList()
@@ -53,7 +60,7 @@ class FolderDetailsScreenModel(
 
     init {
         form.onEach {
-            folderRepository.upsertFolder(
+            upsertFolder(
                 folder.copy(
                     name = it.name,
                     description = it.description,
@@ -62,8 +69,8 @@ class FolderDetailsScreenModel(
         }.launchIn(screenModelScope)
     }
 
-    fun deleteFolder() {
-        folderRepository.deleteFolderById(folderId)
+    fun delete() {
+        deleteFolder(folderId)
         screenModelScope.launch { deleteDispatcher.send(Unit) }
     }
 

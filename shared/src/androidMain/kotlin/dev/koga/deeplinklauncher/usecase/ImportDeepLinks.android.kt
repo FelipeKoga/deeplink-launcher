@@ -1,12 +1,13 @@
 package dev.koga.deeplinklauncher.usecase
 
+import dev.koga.deeplinklauncher.datasource.DeepLinkDataSource
 import dev.koga.deeplinklauncher.util.isUriValid
 import kotlinx.datetime.toInstant
 import kotlinx.serialization.json.Json
 import java.io.File
 
 actual class ImportDeepLinks(
-    private val deepLinkRepository: DeepLinkRepository
+    private val dataSource: DeepLinkDataSource
 ) {
 
     actual fun invoke(filePath: String, fileType: FileType): ImportDeepLinksOutput {
@@ -29,7 +30,7 @@ actual class ImportDeepLinks(
                     }
 
                     val databaseDeepLinks = deepLinksFromJson.mapNotNull {
-                        deepLinkRepository.getDeepLinkByLink(it.link)
+                        dataSource.getDeepLinkByLink(it.link)
                     }
 
                     val newDeepLinks = deepLinksFromJson.filter {
@@ -53,14 +54,16 @@ actual class ImportDeepLinks(
                         )
                     }
 
-                    deepLinkRepository.upsertAll(newDeepLinks + updatedDeepLinks)
+                    (newDeepLinks + updatedDeepLinks).forEach {
+                        dataSource.upsertDeepLink(it)
+                    }
                 }
 
                 FileType.TXT -> {
                     val deepLinksTexts = fileContents.split("\n")
 
                     val databaseDeepLinks = deepLinksTexts.mapNotNull {
-                        deepLinkRepository.getDeepLinkByLink(it)
+                        dataSource.getDeepLinkByLink(it)
                     }
 
                     val newDeepLinksTexts = deepLinksTexts.filter {
@@ -77,8 +80,10 @@ actual class ImportDeepLinks(
                         )
                     }
 
-                    deepLinkRepository.upsertAll(newDeepLinksTexts.map(String::toDeepLink))
 
+                    newDeepLinksTexts.map(String::toDeepLink).forEach {
+                        dataSource.upsertDeepLink(it)
+                    }
                 }
             }
 

@@ -1,10 +1,12 @@
 package dev.koga.deeplinklauncher.usecase
 
+import dev.koga.deeplinklauncher.datasource.DeepLinkDataSource
+
 class GetDeepLinksPlainTextPreview(
-    private val repository: DeepLinkRepository
+    private val dataSource: DeepLinkDataSource
 ) {
     operator fun invoke(): String {
-        val deepLinks = repository.getAllDeepLinks()
+        val deepLinks = dataSource.getDeepLinks()
 
         return deepLinks.joinToString(separator = "\n") { deepLink ->
             deepLink.link

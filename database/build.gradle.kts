@@ -42,7 +42,7 @@ kotlin {
 }
 
 android {
-    namespace = "dev.koga.deeplinklauncher.database"
+    namespace = "dev.koga.database"
 }
 
 sqldelight {

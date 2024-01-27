@@ -1,11 +1,12 @@
 package dev.koga.deeplinklauncher.usecase
 
+import dev.koga.deeplinklauncher.datasource.DeepLinkDataSource
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 
 class GetDeepLinksJsonPreview(
-    private val repository: DeepLinkRepository
+    private val dataSource: DeepLinkDataSource
 ) {
 
     @Serializable
@@ -26,7 +27,7 @@ class GetDeepLinksJsonPreview(
     }
 
     operator fun invoke(): String {
-        val deepLinks = repository.getAllDeepLinks().map {
+        val deepLinks = dataSource.getDeepLinks().map {
             DeepLinkJson(
                 id = it.id,
                 link = it.link,

@@ -174,7 +174,9 @@ fun DeepLinkCard(
                     style = MaterialTheme.typography.bodyLarge.copy(
                         fontWeight = FontWeight.Normal
                     ),
-                    modifier = Modifier.weight(1f)
+                    modifier = Modifier
+                        .weight(1f)
+                        .padding(vertical = 4.dp)
                 )
 
                 Spacer(modifier = Modifier.width(12.dp))
@@ -209,9 +211,9 @@ fun DeepLinkItemPreview() {
     DeepLinkCard(
         deepLink = DeepLink(
             id = "123",
-            link = "https://www.google.com",
-            name = null,
-            description = null,
+            link = "https://www.google.comwww.google.comwww.google.com",
+            name = "Google",
+            description = "Google's search engine",
             createdAt = Clock.System.now(),
             isFavorite = false,
             folder = null

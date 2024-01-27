@@ -39,5 +39,5 @@ kotlin {
 }
 
 android {
-    namespace = "dev.koga.deeplinklauncher.domain"
+    namespace = "dev.koga.domain"
 }

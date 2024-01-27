@@ -17,7 +17,9 @@ kotlin {
 
     sourceSets {
         commonMain.dependencies {
-            implementation(projects.database)
+            api(projects.domain)
+            api(projects.database)
+
             implementation(libs.kotlinx.coroutines.core)
             implementation(libs.kotlinx.serialization.json)
             implementation(libs.koin.core)
@@ -38,5 +40,5 @@ kotlin {
 }
 
 android {
-    namespace = "dev.koga.deeplinklauncher.shared"
+    namespace = "dev.koga.shared"
 }

@@ -5,6 +5,11 @@ import cafe.adriel.voyager.core.model.screenModelScope
 import dev.koga.deeplinklauncher.model.Folder
 import dev.koga.deeplinklauncher.usecase.LaunchDeepLink
 import dev.koga.deeplinklauncher.usecase.ShareDeepLink
+import dev.koga.deeplinklauncher.usecase.deeplink.DeleteDeepLink
+import dev.koga.deeplinklauncher.usecase.deeplink.GetDeepLinkById
+import dev.koga.deeplinklauncher.usecase.deeplink.UpsertDeepLink
+import dev.koga.deeplinklauncher.usecase.folder.GetFoldersStream
+import dev.koga.deeplinklauncher.usecase.folder.UpsertFolder
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.launchIn
@@ -15,15 +20,18 @@ import java.util.UUID
 
 class DeepLinkDetailScreenModel(
     deepLinkId: String,
-    private val deepLinkRepository: DeepLinkRepository,
-    private val folderRepository: FolderRepository,
+    getDeepLinkById: GetDeepLinkById,
     private val launchDeepLink: LaunchDeepLink,
     private val shareDeepLink: ShareDeepLink,
+    private val deleteDeepLink: DeleteDeepLink,
+    private val upsertDeepLink: UpsertDeepLink,
+    getFoldersStream: GetFoldersStream,
+    private val upsertFolder: UpsertFolder,
 ) : ScreenModel {
 
-    private val deepLink = deepLinkRepository.getDeepLinkById(deepLinkId)
+    private val deepLink = getDeepLinkById(deepLinkId)!!
 
-    val folders = folderRepository.getFolders().stateIn(
+    val folders = getFoldersStream().stateIn(
         scope = screenModelScope,
         started = SharingStarted.WhileSubscribed(),
         initialValue = emptyList()
@@ -44,11 +52,11 @@ class DeepLinkDetailScreenModel(
     init {
         details.onEach {
             if (it.deleted) {
-                deepLinkRepository.deleteDeeplinkById(it.id)
+                deleteDeepLink(it.id)
                 return@onEach
             }
 
-            deepLinkRepository.upsert(
+            upsertDeepLink(
                 deepLink.copy(
                     name = it.name.ifEmpty { null },
                     description = it.description.ifEmpty { null },
@@ -95,7 +103,7 @@ class DeepLinkDetailScreenModel(
             description = description,
         )
 
-        folderRepository.upsertFolder(folder)
+        upsertFolder(folder)
 
         selectFolder(folder)
     }

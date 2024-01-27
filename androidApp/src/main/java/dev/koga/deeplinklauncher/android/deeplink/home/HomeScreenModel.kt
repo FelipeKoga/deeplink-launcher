@@ -7,6 +7,11 @@ import dev.koga.deeplinklauncher.usecase.LaunchDeepLinkResult
 import dev.koga.deeplinklauncher.model.DeepLink
 import dev.koga.deeplinklauncher.model.Folder
 import dev.koga.deeplinklauncher.usecase.ExportDeepLinks
+import dev.koga.deeplinklauncher.usecase.deeplink.GetDeepLinkByLink
+import dev.koga.deeplinklauncher.usecase.deeplink.GetDeepLinksStream
+import dev.koga.deeplinklauncher.usecase.deeplink.UpsertDeepLink
+import dev.koga.deeplinklauncher.usecase.folder.GetFoldersStream
+import dev.koga.deeplinklauncher.usecase.folder.UpsertFolder
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -20,15 +25,17 @@ import java.util.UUID
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class HomeScreenModel(
-    private val deepLinkRepository: DeepLinkRepository,
+    getDeepLinksStream: GetDeepLinksStream,
+    private val upsertDeepLink: UpsertDeepLink,
+    private val getDeepLinkByLink: GetDeepLinkByLink,
     private val launchDeepLink: LaunchDeepLink,
-    private val folderRepository: FolderRepository,
-    private val exportDeepLinks: ExportDeepLinks,
+    getFoldersStream: GetFoldersStream,
+    private val upsertFolder: UpsertFolder,
 ) : ScreenModel {
 
     val deepLinkText = MutableStateFlow("")
 
-    val deepLinks = deepLinkRepository.getAllDeepLinksStream().stateIn(
+    val deepLinks = getDeepLinksStream().stateIn(
         scope = screenModelScope,
         started = SharingStarted.WhileSubscribed(),
         initialValue = emptyList()
@@ -42,7 +49,7 @@ class HomeScreenModel(
         initialValue = emptyList()
     )
 
-    val folders = folderRepository.getFolders().stateIn(
+    val folders = getFoldersStream().stateIn(
         scope = screenModelScope,
         started = SharingStarted.WhileSubscribed(),
         initialValue = emptyList()
@@ -54,7 +61,7 @@ class HomeScreenModel(
 
     private fun insertDeepLink(link: String) {
         screenModelScope.launch {
-            deepLinkRepository.upsert(
+            upsertDeepLink(
                 DeepLink(
                     id = UUID.randomUUID().toString(),
                     link = link,
@@ -71,7 +78,7 @@ class HomeScreenModel(
     fun launchDeepLink() = screenModelScope.launch {
         val link = deepLinkText.value
 
-        val deepLink = deepLinkRepository.getDeepLinkByLink(link)
+        val deepLink = getDeepLinkByLink(link)
 
         if (deepLink != null) {
             launchDeepLink(deepLink)
@@ -102,7 +109,7 @@ class HomeScreenModel(
     }
 
     fun addFolder(name: String, description: String) {
-        folderRepository.upsertFolder(
+        upsertFolder(
             Folder(
                 id = UUID.randomUUID().toString(),
                 name = name,

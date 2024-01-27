@@ -124,7 +124,7 @@ class FolderDetailsScreen(private val folderId: String) : Screen {
                         FilledTonalButton(
                             onClick = {
                                 showDeleteDialog = false
-                                screenModel.deleteFolder()
+                                screenModel.delete()
                             },
                             modifier = Modifier.padding(end = 12.dp),
                             colors = ButtonDefaults.filledTonalButtonColors(
