@@ -1,6 +1,6 @@
-package dev.koga.deeplinklauncher
+package dev.koga.deeplinklauncher.provider
 
-actual class UUIDGenerator {
+actual object UUIDGenerator {
     actual fun generate(): String {
         TODO("Not yet implemented")
     }

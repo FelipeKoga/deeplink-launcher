@@ -6,7 +6,6 @@ import dev.koga.deeplinklauncher.usecase.LaunchDeepLink
 import dev.koga.deeplinklauncher.usecase.LaunchDeepLinkResult
 import dev.koga.deeplinklauncher.model.DeepLink
 import dev.koga.deeplinklauncher.model.Folder
-import dev.koga.deeplinklauncher.usecase.ExportDeepLinks
 import dev.koga.deeplinklauncher.usecase.deeplink.GetDeepLinkByLink
 import dev.koga.deeplinklauncher.usecase.deeplink.GetDeepLinksStream
 import dev.koga.deeplinklauncher.usecase.deeplink.UpsertDeepLink

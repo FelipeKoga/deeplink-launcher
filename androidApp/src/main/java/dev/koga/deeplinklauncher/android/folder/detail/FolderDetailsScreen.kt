@@ -52,7 +52,6 @@ import dev.koga.deeplinklauncher.android.core.designsystem.DLLTopBar
 import dev.koga.deeplinklauncher.android.deeplink.detail.DeepLinkDetailsScreen
 import dev.koga.deeplinklauncher.android.deeplink.home.component.DeepLinkItem
 import dev.koga.deeplinklauncher.model.DeepLink
-import dev.koga.deeplinklauncher.model.Folder
 import dev.koga.deeplinklauncher.usecase.LaunchDeepLink
 import kotlinx.coroutines.flow.collectLatest
 import org.koin.compose.koinInject

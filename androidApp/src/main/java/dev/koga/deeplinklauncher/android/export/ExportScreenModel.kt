@@ -1,8 +1,8 @@
 package dev.koga.deeplinklauncher.android.export
 
 import cafe.adriel.voyager.core.model.ScreenModel
-import dev.koga.deeplinklauncher.usecase.GetDeepLinksJsonPreview
-import dev.koga.deeplinklauncher.usecase.GetDeepLinksPlainTextPreview
+import dev.koga.deeplinklauncher.usecase.deeplink.GetDeepLinksJsonPreview
+import dev.koga.deeplinklauncher.usecase.deeplink.GetDeepLinksPlainTextPreview
 
 class ExportScreenModel(
     getDeepLinksPlainTextPreview: GetDeepLinksPlainTextPreview,

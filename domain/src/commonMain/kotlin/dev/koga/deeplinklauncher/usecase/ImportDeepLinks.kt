@@ -1,8 +1,8 @@
 package dev.koga.deeplinklauncher.usecase
 
-import dev.koga.deeplinklauncher.UUIDGenerator
 import dev.koga.deeplinklauncher.model.DeepLink
 import dev.koga.deeplinklauncher.model.Folder
+import dev.koga.deeplinklauncher.provider.UUIDGenerator
 import kotlinx.datetime.Clock
 
 expect class ImportDeepLinks {
