@@ -10,49 +10,60 @@ androidGradlePlugin = "8.2.1"
 balloonCompose = "1.6.4"
 jetbrains-kotlinxDatetime = "0.5.0"
 kotlin = "1.9.20"
+
 compose = "1.5.4"
+compose_bom = "2024.01.00"
 compose-compiler = "1.5.4"
 compose-material3 = "1.1.2"
+material3Android = "1.2.0-beta02"
+compose-plugin = "1.5.11"
+
 androidx-activityCompose = "1.8.2"
 uuid = "0.8.4"
 voyager = "1.0.0"
 ktorClient = "2.3.5"
 kotlinxDatetime = "0.4.1"
+
 koin = "3.5.3"
+koin-compose = "1.0.4"
+
 sqlDelight = "2.0.0"
 kotlinxCoroutinesCore = "1.7.3"
-material3Android = "1.2.0-beta02"
 org-jetbrains-kotlin-jvm = "1.9.20"
+androidx-material3Android = "1.2.0-rc01"
+activityKtx = "1.8.2"
 
 [libraries]
 android-gradle-plugin = { module = "com.android.tools.build:gradle", version.ref = "androidGradlePlugin" }
 kotlin-gradle-plugin = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin" }
+kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
 
 balloon-compose = { module = "com.github.skydoves:balloon-compose", version.ref = "balloonCompose" }
-kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
 androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "androidx-activityCompose" }
-compose-ui = { module = "androidx.compose.ui:ui", version.ref = "compose" }
-compose-ui-tooling = { module = "androidx.compose.ui:ui-tooling", version.ref = "compose" }
-compose-ui-tooling-preview = { module = "androidx.compose.ui:ui-tooling-preview", version.ref = "compose" }
-compose-foundation = { module = "androidx.compose.foundation:foundation", version.ref = "compose" }
-compose-material3 = { module = "androidx.compose.material3:material3", version.ref = "compose-material3" }
-kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinxCoroutinesCore" }
 
+compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "compose_bom" }
+compose-ui = { module = "androidx.compose.ui:ui" }
+compose-toolingpreview = { module = "androidx.compose.ui:ui-tooling-preview" }
+compose-icons = { module = "androidx.compose.material:material-icons-extended" }
+compose-material3 = { module = "androidx.compose.material3:material3" }
+androidx-material3-android = { group = "androidx.compose.material3", name = "material3-android", version.ref = "material3Android" }
+
+#compose-ui-tooling = { module = "androidx.compose.ui:ui-tooling", version.ref = "compose" }
+#compose-foundation = { module = "androidx.compose.foundation:foundation", version.ref = "compose" }
+#compose-material3 = { module = "androidx.compose.material3:material3", version.ref = "compose-material3" }
+
+kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinxCoroutinesCore" }
 kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "jetbrains-kotlinxDatetime" }
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinxSerializationJson" }
+
 voyager-navigator = { module = "cafe.adriel.voyager:voyager-navigator", version.ref = "voyager" }
 voyager-screenmodel = { module = "cafe.adriel.voyager:voyager-screenmodel", version.ref = "voyager" }
 voyager-tab-navigator = { module = "cafe.adriel.voyager:voyager-tab-navigator", version.ref = "voyager" }
 voyager-transitions = { module = "cafe.adriel.voyager:voyager-transitions", version.ref = "voyager" }
 voyager-koin = { module = "cafe.adriel.voyager:voyager-koin", version.ref = "voyager" }
 voyager-bottomsheet = { module = "cafe.adriel.voyager:voyager-bottom-sheet-navigator", version.ref = "voyager" }
-#
-#ktor-client-core = { module = "io.ktor:ktor-client-core", version.ref = "ktorClient" }
-#ktor-serialization-kotlinx-json = { module = "io.ktor:ktor-serialization-kotlinx-json", version.ref = "ktorClient" }
-#ktor-client-content-negotiation = { module = "io.ktor:ktor-client-content-negotiation", version.ref = "ktorClient" }
-#ktor-client-android = { module = "io.ktor:ktor-client-android", version.ref = "ktorClient" }
-#ktor-client-darwin = { module = "io.ktor:ktor-client-darwin", version.ref = "ktorClient" }
 
+koin-compose = { module = "io.insert-koin:koin-compose", version.ref = "koin-compose"}
 koin-androidx-compose = { module = "io.insert-koin:koin-androidx-compose", version.ref = "koin" }
 koin-android = { module = "io.insert-koin:koin-android", version.ref = "koin" }
 koin-core = { module = "io.insert-koin:koin-core", version.ref = "koin" }
@@ -60,7 +71,8 @@ koin-core = { module = "io.insert-koin:koin-core", version.ref = "koin" }
 sql-coroutines-extensions = { module = "app.cash.sqldelight:coroutines-extensions", version.ref = "sqlDelight" }
 sql-native-driver = { module = "app.cash.sqldelight:native-driver", version.ref = "sqlDelight" }
 sql-android-driver = { module = "app.cash.sqldelight:android-driver", version.ref = "sqlDelight" }
-androidx-material3-android = { group = "androidx.compose.material3", name = "material3-android", version.ref = "material3Android" }
+material3-android = { group = "androidx.compose.material3", name = "material3-android", version.ref = "androidx-material3Android" }
+androidx-activity-ktx = { group = "androidx.activity", name = "activity-ktx", version.ref = "activityKtx" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "androidGradlePlugin" }
@@ -70,3 +82,13 @@ kotlinMultiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref =
 kotlinCocoapods = { id = "org.jetbrains.kotlin.native.cocoapods", version.ref = "kotlin" }
 sqlDelight = { id = "app.cash.sqldelight", version.ref = "sqlDelight" }
 org-jetbrains-kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "org-jetbrains-kotlin-jvm" }
+jetbrainsCompose = { id = "org.jetbrains.compose", version.ref = "compose-plugin" }
+
+[bundles]
+compose = [
+    "compose-bom",
+    "compose-ui",
+    "compose-toolingpreview",
+    "compose-icons",
+    "androidx-material3-android",
+]

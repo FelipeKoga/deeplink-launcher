@@ -1,24 +1,21 @@
 import extension.composeConfig
 import extension.getBundle
-import extension.getLibrary
-import gradle.kotlin.dsl.accessors._4a1608c7e4c1251e896c27efcc41b09e.android
-import gradle.kotlin.dsl.accessors._4a1608c7e4c1251e896c27efcc41b09e.api
-import gradle.kotlin.dsl.accessors._4a1608c7e4c1251e896c27efcc41b09e.debugApi
+import extension.getPlugin
 
 plugins {
-    id("dev.koga.deeplinklauncher.multiplataform")
+    id("dev.koga.deeplinklauncher.multiplatform")
 }
 
 val libs: VersionCatalog = extensions.getByType<VersionCatalogsExtension>().named("libs")
+
+apply(
+    libs.getPlugin("jetbrainsCompose"),
+)
 
 android {
     composeConfig(libs)
 }
 
 dependencies {
-
-    api(libs.getBundle("compose"))
-    api(libs.getLibrary("core.ktx"))
-
-    debugApi(libs.getLibrary("compose.tooling"))
+    implementation(libs.getBundle("compose"))
 }
