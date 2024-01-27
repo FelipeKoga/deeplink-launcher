@@ -1,31 +1,20 @@
 package dev.koga.deeplinklauncher.android.deeplink.home.component
 
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Clear
 import androidx.compose.material3.Button
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FilledTonalIconButton
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.SwipeToDismissBox
-import androidx.compose.material3.SwipeToDismissBoxValue
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
-import androidx.compose.material3.rememberSwipeToDismissBoxState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -33,19 +22,12 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.focus.FocusRequester
-import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
-import dev.koga.deeplinklauncher.DeeplinkClipboardManager
-import dev.koga.deeplinklauncher.android.R
 import dev.koga.deeplinklauncher.android.core.designsystem.DLLTextField
+import dev.koga.deeplinklauncher.provider.DeepLinkClipboardProvider
 import org.koin.compose.koinInject
 
 @Composable
@@ -59,8 +41,8 @@ fun DeepLinkLaunchBottomSheetContent(
 
     val focusManager = LocalFocusManager.current
 
-    val clipboardManager = koinInject<DeeplinkClipboardManager>()
-    val clipboardText by clipboardManager.clipboardText.collectAsState()
+    val deepLinkClipboardProvider = koinInject<DeepLinkClipboardProvider>()
+    val clipboardText by deepLinkClipboardProvider.clipboardText.collectAsState()
 
     LaunchedEffect(clipboardText) {
         onValueChange(clipboardText.orEmpty())

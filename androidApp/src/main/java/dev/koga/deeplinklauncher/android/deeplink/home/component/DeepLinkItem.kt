@@ -41,9 +41,9 @@ import com.skydoves.balloon.compose.Balloon
 import com.skydoves.balloon.compose.rememberBalloonBuilder
 import com.skydoves.balloon.compose.setBackgroundColor
 import com.skydoves.balloon.compose.setTextColor
-import dev.koga.deeplinklauncher.DeeplinkClipboardManager
 import dev.koga.deeplinklauncher.android.R
 import dev.koga.deeplinklauncher.model.DeepLink
+import dev.koga.deeplinklauncher.provider.DeepLinkClipboardProvider
 import kotlinx.datetime.Clock
 import org.koin.compose.koinInject
 
@@ -55,7 +55,7 @@ fun DeepLinkItem(
     onLaunch: (DeepLink) -> Unit,
 ) {
 
-    val clipboardManager = koinInject<DeeplinkClipboardManager>()
+    val deepLinkClipboardProvider = koinInject<DeepLinkClipboardProvider>()
 
     val builder = rememberBalloonBuilder {
         setArrowPositionRules(ArrowPositionRules.ALIGN_BALLOON)
@@ -88,7 +88,7 @@ fun DeepLinkItem(
             modifier = modifier,
             onLongClick = {
                 balloonWindow.showAlignEnd()
-                clipboardManager.copy(deepLink.link)
+                deepLinkClipboardProvider.copy(deepLink.link)
             },
             onClick = {
                 onClick(deepLink)

@@ -2,7 +2,7 @@ package dev.koga.deeplinklauncher.usecase
 
 import dev.koga.deeplinklauncher.model.DeepLink
 import dev.koga.deeplinklauncher.model.Folder
-import dev.koga.deeplinklauncher.provider.UUIDGenerator
+import dev.koga.deeplinklauncher.provider.UUIDProvider
 import kotlinx.datetime.Clock
 
 expect class ImportDeepLinks {
@@ -20,7 +20,7 @@ sealed interface ImportDeepLinksOutput {
 
 fun String.toDeepLink(): DeepLink {
     return DeepLink(
-        id = UUIDGenerator.generate(),
+        id = UUIDProvider.provide(),
         createdAt = Clock.System.now(),
         link = this,
         name = null,
@@ -31,7 +31,7 @@ fun String.toDeepLink(): DeepLink {
 }
 
 fun ImportDeepLinkDto.toDeepLink() = DeepLink(
-    id = this.id ?: UUIDGenerator.generate(),
+    id = this.id ?: UUIDProvider.provide(),
     createdAt = Clock.System.now(),
     link = this.link,
     name = this.name,
@@ -39,7 +39,7 @@ fun ImportDeepLinkDto.toDeepLink() = DeepLink(
     isFavorite = this.isFavorite ?: false,
     folder = this.folder?.let { folder ->
         Folder(
-            id = folder.id ?: UUIDGenerator.generate(),
+            id = folder.id ?: UUIDProvider.provide(),
             name = folder.name,
             description = folder.description,
             deepLinkCount = 0
@@ -48,7 +48,7 @@ fun ImportDeepLinkDto.toDeepLink() = DeepLink(
 )
 
 fun ImportFolderDto.toFolder() = Folder(
-    id = id ?: UUIDGenerator.generate(),
+    id = id ?: UUIDProvider.provide(),
     name =name,
     description = description,
 )

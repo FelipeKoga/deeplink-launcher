@@ -1,19 +1,18 @@
-package dev.koga.deeplinklauncher
+package dev.koga.deeplinklauncher.provider
 
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
-import android.content.Context.CLIPBOARD_SERVICE
 import dev.koga.deeplinklauncher.util.isUriValid
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 
-actual class DeeplinkClipboardManager(
+actual class DeepLinkClipboardProvider(
     private val context: Context
 ) {
     private val clipboardManager
-        get() = context.getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
+        get() = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
 
     private val dismissedDeepLinks = mutableSetOf<String>()
     private val currentText

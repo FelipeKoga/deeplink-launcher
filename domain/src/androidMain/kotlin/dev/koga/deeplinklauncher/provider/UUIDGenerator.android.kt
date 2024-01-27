@@ -1,7 +1,7 @@
 package dev.koga.deeplinklauncher.provider
 
-actual object UUIDGenerator {
-    actual fun generate(): String {
-        return UUIDGenerator.generate()
+actual object UUIDProvider {
+    actual fun provide(): String {
+        return UUIDProvider.provide()
     }
 }

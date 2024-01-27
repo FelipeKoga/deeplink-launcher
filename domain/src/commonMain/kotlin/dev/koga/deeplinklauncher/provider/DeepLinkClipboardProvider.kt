@@ -1,9 +1,8 @@
-package dev.koga.deeplinklauncher
+package dev.koga.deeplinklauncher.provider
 
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.StateFlow
 
-expect class DeeplinkClipboardManager {
+expect class DeepLinkClipboardProvider {
     val clipboardText: StateFlow<String?>
 
     fun copy(text: String)
