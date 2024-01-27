@@ -22,8 +22,6 @@ kotlin {
             implementation(projects.core.domain)
             implementation(projects.core.designsystem)
 
-            implementation(libs.balloon.compose)
-
             implementation(libs.koin.compose)
             implementation(compose.runtime)
             implementation(compose.foundation)

@@ -3,6 +3,7 @@ package dev.koga.deeplinklauncher
 import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.screenModelScope
 import dev.koga.deeplinklauncher.model.Folder
+import dev.koga.deeplinklauncher.provider.UUIDProvider
 import dev.koga.deeplinklauncher.usecase.LaunchDeepLink
 import dev.koga.deeplinklauncher.usecase.ShareDeepLink
 import dev.koga.deeplinklauncher.usecase.deeplink.DeleteDeepLink
@@ -16,7 +17,6 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
-import java.util.UUID
 
 class DeepLinkDetailScreenModel(
     deepLinkId: String,
@@ -98,7 +98,7 @@ class DeepLinkDetailScreenModel(
 
     fun insertFolder(name: String, description: String) {
         val folder = Folder(
-            id = UUID.randomUUID().toString(),
+            id = UUIDProvider.get(),
             name = name,
             description = description,
         )

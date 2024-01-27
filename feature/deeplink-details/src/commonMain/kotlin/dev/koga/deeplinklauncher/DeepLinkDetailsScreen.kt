@@ -46,7 +46,6 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalClipboardManager
-import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
@@ -56,7 +55,6 @@ import cafe.adriel.voyager.koin.getScreenModel
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import dev.koga.deeplinklauncher.model.Folder
-import org.jetbrains.compose.resources.painterResource
 import org.koin.core.parameter.parametersOf
 
 
@@ -142,7 +140,6 @@ fun DeepLinkDetailsScreenContent(
     onRemoveFolder: () -> Unit,
 ) {
     val clipboardManager = LocalClipboardManager.current
-    val keyboardController = LocalSoftwareKeyboardController.current
 
     var showSelectFolderBottomSheet by remember {
         mutableStateOf(false)
@@ -220,7 +217,6 @@ fun DeepLinkDetailsScreenContent(
                 onValueChange = onDescriptionChanged,
                 label = "Description",
                 imeAction = ImeAction.Done,
-                onDone = { keyboardController?.hide() },
             )
 
             Spacer(modifier = Modifier.height(8.dp))

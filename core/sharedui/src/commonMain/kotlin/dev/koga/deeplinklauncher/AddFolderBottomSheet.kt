@@ -15,9 +15,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
@@ -33,12 +31,10 @@ fun AddFolderBottomSheet(
     }
 }
 
-@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun AddFolderBottomSheetContent(
     onAdd: (name: String, description: String) -> Unit
 ) {
-    val keyboardController = LocalSoftwareKeyboardController.current
     val (name, setName) = rememberSaveable { mutableStateOf("") }
     val (description, setDescription) = rememberSaveable { mutableStateOf("") }
 
@@ -54,7 +50,7 @@ fun AddFolderBottomSheetContent(
 
         Spacer(modifier = Modifier.height(12.dp))
 
-        dev.koga.deeplinklauncher.DLLTextField(
+        DLLTextField(
             value = name,
             onValueChange = setName,
             label = "Name",
@@ -62,13 +58,12 @@ fun AddFolderBottomSheetContent(
 
         Spacer(modifier = Modifier.height(12.dp))
 
-        dev.koga.deeplinklauncher.DLLTextField(
+        DLLTextField(
             modifier = Modifier.defaultMinSize(minHeight = 120.dp),
             value = description,
             onValueChange = setDescription,
             label = "Description",
             imeAction = ImeAction.Done,
-            onDone = { keyboardController?.hide() },
         )
 
         Spacer(modifier = Modifier.height(24.dp))
