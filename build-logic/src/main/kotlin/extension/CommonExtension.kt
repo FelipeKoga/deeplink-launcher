@@ -5,6 +5,7 @@ import com.android.build.api.dsl.LibraryExtension
 import org.gradle.api.JavaVersion
 import org.gradle.api.Project
 import org.gradle.api.artifacts.VersionCatalog
+import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 import java.util.Properties
 
 fun CommonExtension<*, *, *, *, *>.composeConfig(libs: VersionCatalog) {
@@ -41,6 +42,19 @@ internal fun CommonExtension<*, *, *, *, *>.setupReleaseSigningConfig(
             storePassword = keystoreProperties.getProperty("storePassword", "")
             keyAlias = keystoreProperties.getProperty("keyAlias", "")
             keyPassword = keystoreProperties.getProperty("keyPassword", "")
+        }
+    }
+}
+
+fun KotlinMultiplatformExtension.binariesFrameworkConfig(name: String) {
+    listOf(
+        iosX64(),
+        iosArm64(),
+        iosSimulatorArm64()
+    ).forEach {
+        it.binaries.framework {
+            baseName = name
+            isStatic = true
         }
     }
 }

@@ -21,6 +21,7 @@ pluginManagement {
 dependencyResolutionManagement {
     repositories {
         google()
+        gradlePluginPortal()
         mavenCentral()
     }
 }
@@ -32,6 +33,7 @@ include(":core:domain")
 include(":core:designsystem")
 include(":core:sharedui")
 include(":core:navigation")
+include(":core:resources")
 include(":feature:home")
 include(":feature:import")
 include(":feature:export")

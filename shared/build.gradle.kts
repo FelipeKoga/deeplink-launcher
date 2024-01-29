@@ -1,21 +1,14 @@
+import extension.binariesFrameworkConfig
 import org.jetbrains.compose.ExperimentalComposeLibrary
 
 plugins {
     id("dev.koga.deeplinklauncher.multiplatform")
+    id(libs.plugins.moko.multiplatform.resources.get().pluginId)
     alias(libs.plugins.jetbrainsCompose)
 }
 
 kotlin {
-    listOf(
-        iosX64(),
-        iosArm64(),
-        iosSimulatorArm64()
-    ).forEach {
-        it.binaries.framework {
-            baseName = "shared"
-            isStatic = true
-        }
-    }
+    binariesFrameworkConfig("shared")
 
     sourceSets {
         commonMain.dependencies {
@@ -47,10 +40,24 @@ kotlin {
             implementation(compose.ui)
             @OptIn(ExperimentalComposeLibrary::class)
             implementation(compose.components.resources)
+
+            implementation(libs.moko.resources.core)
+        }
+
+        androidMain {
+            dependsOn(commonMain.get())
+        }
+
+        iosMain {
+            dependsOn(commonMain.get())
         }
     }
 }
 
 android {
     namespace = "dev.koga.shared"
+}
+
+multiplatformResources {
+    multiplatformResourcesPackage = "dev.koga.deeplinklauncher"
 }
