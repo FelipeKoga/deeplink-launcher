@@ -47,14 +47,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.registry.ScreenRegistry
-import cafe.adriel.voyager.core.registry.rememberScreen
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.koin.getScreenModel
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import dev.koga.deeplinklauncher.model.DeepLink
 import dev.koga.deeplinklauncher.provider.DeepLinkClipboardProvider
-import dev.koga.deeplinklauncher.usecase.LaunchDeepLink
+import dev.koga.deeplinklauncher.usecase.deeplink.LaunchDeepLink
 import dev.koga.navigation.SharedScreen
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch

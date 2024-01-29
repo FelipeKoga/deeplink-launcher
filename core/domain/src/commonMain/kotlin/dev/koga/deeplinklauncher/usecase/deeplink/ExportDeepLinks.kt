@@ -1,4 +1,4 @@
-package dev.koga.deeplinklauncher.usecase
+package dev.koga.deeplinklauncher.usecase.deeplink
 
 import dev.koga.deeplinklauncher.model.FileType
 

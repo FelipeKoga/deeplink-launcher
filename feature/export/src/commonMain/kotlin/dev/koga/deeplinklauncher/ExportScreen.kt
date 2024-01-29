@@ -44,8 +44,8 @@ import cafe.adriel.voyager.koin.getScreenModel
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import dev.koga.deeplinklauncher.model.FileType
-import dev.koga.deeplinklauncher.usecase.ExportDeepLinks
-import dev.koga.deeplinklauncher.usecase.ExportDeepLinksOutput
+import dev.koga.deeplinklauncher.usecase.deeplink.ExportDeepLinks
+import dev.koga.deeplinklauncher.usecase.deeplink.ExportDeepLinksOutput
 import kotlinx.coroutines.launch
 import org.koin.compose.koinInject
 
