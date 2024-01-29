@@ -37,6 +37,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
@@ -86,7 +87,7 @@ class ExportScreen : Screen {
                 Column(
                     modifier = Modifier
                         .fillMaxSize()
-//                        .nestedScroll(scrollBehavior.nestedScrollConnection)
+                        .nestedScroll(scrollBehavior.nestedScrollConnection)
                         .padding(horizontal = 24.dp)
                         .padding(top = 8.dp)
                         .verticalScroll(rememberScrollState())
@@ -101,24 +102,13 @@ class ExportScreen : Screen {
 
                     Spacer(modifier = Modifier.height(16.dp))
 
-//                    SingleChoiceSegmentedButtonRow(
-//                        modifier = Modifier
-//                            .align(Alignment.CenterHorizontally)
-//                            .fillMaxWidth()
-//                    ) {
-//                        options.forEachIndexed { index, label ->
-//                            SegmentedButton(
-//                                shape = SegmentedButtonDefaults.itemShape(
-//                                    index = index,
-//                                    count = options.size
-//                                ),
-//                                onClick = { selectedIndex = index },
-//                                selected = index == selectedIndex
-//                            ) {
-//                                Text(label)
-//                            }
-//                        }
-//                    }
+                    DLLSingleChoiceSegmentedButtonRow(
+                        modifier = Modifier.align(Alignment.CenterHorizontally),
+                        options = options,
+                        selectedOption = options[selectedIndex],
+                        onOptionSelected = { selectedIndex = options.indexOf(it) }
+
+                    )
 
                     Spacer(modifier = Modifier.height(16.dp))
 

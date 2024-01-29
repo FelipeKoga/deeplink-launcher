@@ -30,6 +30,7 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
@@ -181,24 +182,13 @@ class ImportScreen : Screen {
 
                 Spacer(modifier = Modifier.height(16.dp))
 
-//                SingleChoiceSegmentedButtonRow(
-//                    modifier = Modifier
-//                        .align(Alignment.CenterHorizontally)
-//                        .fillMaxWidth()
-//                ) {
-//                    options.forEachIndexed { index, label ->
-//                        SegmentedButton(
-//                            shape = SegmentedButtonDefaults.itemShape(
-//                                index = index,
-//                                count = options.size
-//                            ),
-//                            onClick = { selectedIndex = index },
-//                            selected = index == selectedIndex
-//                        ) {
-//                            Text(label)
-//                        }
-//                    }
-//                }
+                DLLSingleChoiceSegmentedButtonRow(
+                    modifier = Modifier
+                        .align(Alignment.CenterHorizontally),
+                    options = options,
+                    selectedOption = options[selectedIndex],
+                    onOptionSelected = { selectedIndex = options.indexOf(it) }
+                )
 
                 Spacer(modifier = Modifier.height(12.dp))
                 AnimatedContent(

@@ -10,12 +10,12 @@ import androidx.compose.ui.unit.dp
 
 
 @Composable
-fun AppTheme(
+fun DLLTheme(
     content: @Composable () -> Unit
 ) {
     val colors = darkColorScheme(
         primary = Color.White,
-        secondary = Color.Gray,
+//        secondary = Color.Gray,
         onPrimary = Color.Black,
         onSecondary = Color.White,
         background = Color(0xFF323232),

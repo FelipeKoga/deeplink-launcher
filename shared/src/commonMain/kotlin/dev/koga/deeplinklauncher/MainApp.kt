@@ -3,15 +3,13 @@ package dev.koga.deeplinklauncher
 import androidx.compose.runtime.Composable
 import cafe.adriel.voyager.navigator.Navigator
 import cafe.adriel.voyager.transitions.SlideTransition
-import dev.koga.deeplinklauncher.theme.AppTheme
+import dev.koga.deeplinklauncher.theme.DLLTheme
 
 @Composable
 fun MainApp() {
-    AppTheme {
-        AppTheme {
-            Navigator(HomeScreen) { navigator ->
-                SlideTransition(navigator)
-            }
+    DLLTheme {
+        Navigator(HomeScreen) { navigator ->
+            SlideTransition(navigator)
         }
     }
 }
