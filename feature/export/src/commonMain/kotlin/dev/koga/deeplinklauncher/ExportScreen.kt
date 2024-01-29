@@ -25,7 +25,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
-import androidx.compose.material3.SnackbarResult
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
@@ -75,6 +74,52 @@ class ExportScreen : Screen {
                     title = "Export DeepLinks",
                     onBack = navigator::pop
                 )
+            },
+            bottomBar = {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(MaterialTheme.colorScheme.surface)
+                ) {
+                    Divider()
+
+                    Button(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(24.dp),
+                        onClick = {
+                            scope.launch {
+                                val response = exportDeepLinks.export(
+                                    type = when (selectedIndex) {
+                                        0 -> FileType.JSON
+                                        1 -> FileType.TXT
+                                        else -> throw IllegalStateException("Invalid index")
+                                    }
+                                )
+
+                                when (response) {
+                                    ExportDeepLinksOutput.Empty -> snackbarHostState.showSnackbar(
+                                        message = "No DeepLinks to export.",
+                                    )
+
+                                    is ExportDeepLinksOutput.Error -> snackbarHostState.showSnackbar(
+                                        message = "Something went wrong. "
+                                    )
+
+                                    ExportDeepLinksOutput.Success -> {
+                                        snackbarHostState.showSnackbar(
+                                            message = "DeepLinks exported successfully. " +
+                                                    "Check your downloads folder.",
+                                            duration = SnackbarDuration.Short
+                                        )
+                                    }
+                                }
+                            }
+                        }
+                    ) {
+                        Text("Export")
+                    }
+                }
             },
             snackbarHost = { SnackbarHost(snackbarHostState) },
             containerColor = MaterialTheme.colorScheme.surface,
@@ -138,64 +183,6 @@ class ExportScreen : Screen {
                             0 -> JSONBoxViewer(text = preview.jsonFormat)
                             1 -> JSONBoxViewer(text = preview.plainTextFormat)
                         }
-                    }
-
-                    Spacer(modifier = Modifier.height(82.dp))
-                }
-
-                Column(
-                    modifier = Modifier
-                        .align(Alignment.BottomCenter)
-                        .fillMaxWidth()
-                        .background(MaterialTheme.colorScheme.surface)
-                ) {
-                    Divider()
-
-                    Button(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(24.dp),
-                        onClick = {
-                            scope.launch {
-                                val response = exportDeepLinks.export(
-                                    type = when (selectedIndex) {
-                                        0 -> FileType.JSON
-                                        1 -> FileType.TXT
-                                        else -> throw IllegalStateException("Invalid index")
-                                    }
-                                )
-
-                                when (response) {
-                                    ExportDeepLinksOutput.Empty -> snackbarHostState.showSnackbar(
-                                        message = "No DeepLinks to export.",
-                                    )
-
-                                    is ExportDeepLinksOutput.Error -> snackbarHostState.showSnackbar(
-                                        message = "Something went wrong. "
-                                    )
-
-                                    ExportDeepLinksOutput.Success -> {
-                                        val result = snackbarHostState.showSnackbar(
-                                            message = "DeepLinks exported successfully. " +
-                                                    "Check your downloads folder.",
-                                            actionLabel = "Open",
-                                            duration = SnackbarDuration.Short
-                                        )
-
-                                        when (result) {
-                                            SnackbarResult.Dismissed -> Unit
-                                            SnackbarResult.ActionPerformed -> {
-//                                                context.startActivity(
-//                                                    Intent(DownloadManager.ACTION_VIEW_DOWNLOADS)
-//                                                )
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    ) {
-                        Text("Export")
                     }
                 }
             }
