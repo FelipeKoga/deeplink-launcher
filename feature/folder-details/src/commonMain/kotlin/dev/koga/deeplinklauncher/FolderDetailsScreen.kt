@@ -27,6 +27,8 @@ import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberModalBottomSheetState
@@ -36,6 +38,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -50,9 +53,11 @@ import cafe.adriel.voyager.koin.getScreenModel
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import dev.koga.deeplinklauncher.model.DeepLink
+import dev.koga.deeplinklauncher.provider.DeepLinkClipboardProvider
 import dev.koga.deeplinklauncher.usecase.LaunchDeepLink
 import dev.koga.navigation.SharedScreen
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import org.koin.compose.koinInject
 import org.koin.core.parameter.parametersOf
 
@@ -67,6 +72,10 @@ class FolderDetailsScreen(private val folderId: String) : Screen {
         )
 
         val launchDeepLink = koinInject<LaunchDeepLink>()
+        val deepLinkClipboardProvider = koinInject<DeepLinkClipboardProvider>()
+
+        val snackbarHostState = remember { SnackbarHostState() }
+        val scope = rememberCoroutineScope()
 
         val state by screenModel.state.collectAsState()
 
@@ -162,6 +171,7 @@ class FolderDetailsScreen(private val folderId: String) : Screen {
                 })
             },
             containerColor = MaterialTheme.colorScheme.surface,
+            snackbarHost = { SnackbarHost(snackbarHostState) }
         ) { contentPadding ->
             Column(
                 modifier = Modifier
@@ -179,6 +189,15 @@ class FolderDetailsScreen(private val folderId: String) : Screen {
                     onDeepLinkLaunch = { deepLink ->
                         launchDeepLink.launch(deepLink.link)
                     },
+                    onDeepLinkCopy = {
+                        scope.launch {
+                            deepLinkClipboardProvider.copy(it.link)
+                            snackbarHostState.showSnackbar(
+                                message = "Copied to clipboard",
+                                actionLabel = "Dismiss"
+                            )
+                        }
+                    }
                 )
             }
 
@@ -194,6 +213,7 @@ fun FolderDetailsScreenContent(
     onEditDescription: (String) -> Unit,
     onDeepLinkClick: (DeepLink) -> Unit,
     onDeepLinkLaunch: (DeepLink) -> Unit,
+    onDeepLinkCopy: (DeepLink) -> Unit,
 ) {
 
     var showEditNameInput by rememberSaveable {
@@ -355,6 +375,7 @@ fun FolderDetailsScreenContent(
                         deepLink = deepLink,
                         onClick = onDeepLinkClick,
                         onLaunch = onDeepLinkLaunch,
+                        onCopy = onDeepLinkCopy
                     )
                 }
             }

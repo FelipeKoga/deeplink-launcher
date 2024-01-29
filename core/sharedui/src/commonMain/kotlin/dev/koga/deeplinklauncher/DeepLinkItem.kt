@@ -36,16 +36,16 @@ import org.koin.compose.koinInject
 @Composable
 fun DeepLinkItem(
     modifier: Modifier = Modifier,
-    deepLinkClipboardProvider: DeepLinkClipboardProvider = koinInject(),
     deepLink: DeepLink,
     onClick: (DeepLink) -> Unit,
     onLaunch: (DeepLink) -> Unit,
+    onCopy: (DeepLink) -> Unit,
 ) {
     DeepLinkCard(
         deepLink = deepLink,
         modifier = modifier,
         onLongClick = {
-            deepLinkClipboardProvider.copy(deepLink.link)
+            onCopy(deepLink)
         },
         onClick = {
             onClick(deepLink)

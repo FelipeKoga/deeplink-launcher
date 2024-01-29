@@ -62,9 +62,11 @@ import cafe.adriel.voyager.koin.getNavigatorScreenModel
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import dev.icerock.moko.resources.compose.painterResource
+import dev.koga.deeplinklauncher.provider.DeepLinkClipboardProvider
 import dev.koga.navigation.SharedScreen
 import dev.koga.resources.MR
 import kotlinx.coroutines.launch
+import org.koin.compose.koinInject
 
 
 object HomeScreen : Screen {
@@ -80,6 +82,7 @@ private fun HomeScreenContent() {
 
     val exportScreen = rememberScreen(SharedScreen.ExportDeepLinks)
     val importScreen = rememberScreen(SharedScreen.ImportDeepLinks)
+    val deepLinkClipboardProvider = koinInject<DeepLinkClipboardProvider>()
 
     val scope = rememberCoroutineScope()
 
@@ -289,6 +292,15 @@ private fun HomeScreenContent() {
                                         navigator.push(screen)
                                     },
                                     onLaunch = screenModel::launchDeepLink,
+                                    onCopy = {
+                                        scope.launch {
+                                            deepLinkClipboardProvider.copy(it.link)
+                                            snackbarHostState.showSnackbar(
+                                                message = "Copied to clipboard",
+                                                actionLabel = "Dismiss"
+                                            )
+                                        }
+                                    }
                                 )
                             }
                         }
@@ -317,6 +329,15 @@ private fun HomeScreenContent() {
                                         navigator.push(screen)
                                     },
                                     onLaunch = screenModel::launchDeepLink,
+                                    onCopy = {
+                                        scope.launch {
+                                            deepLinkClipboardProvider.copy(it.link)
+                                            snackbarHostState.showSnackbar(
+                                                message = "Copied to clipboard",
+                                                actionLabel = "Dismiss"
+                                            )
+                                        }
+                                    }
                                 )
                             }
                         }
