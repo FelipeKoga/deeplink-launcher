@@ -40,8 +40,8 @@ import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
-import dev.koga.deeplinklauncher.usecase.ImportDeepLinks
-import dev.koga.deeplinklauncher.usecase.ImportDeepLinksOutput
+import dev.koga.deeplinklauncher.usecase.deeplink.ImportDeepLinks
+import dev.koga.deeplinklauncher.usecase.deeplink.ImportDeepLinksOutput
 import kotlinx.coroutines.launch
 import org.koin.compose.koinInject
 

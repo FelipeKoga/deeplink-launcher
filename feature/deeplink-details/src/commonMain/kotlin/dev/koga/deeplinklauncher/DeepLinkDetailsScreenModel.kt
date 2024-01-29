@@ -4,8 +4,8 @@ import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.screenModelScope
 import dev.koga.deeplinklauncher.model.Folder
 import dev.koga.deeplinklauncher.provider.UUIDProvider
-import dev.koga.deeplinklauncher.usecase.LaunchDeepLink
-import dev.koga.deeplinklauncher.usecase.ShareDeepLink
+import dev.koga.deeplinklauncher.usecase.deeplink.LaunchDeepLink
+import dev.koga.deeplinklauncher.usecase.deeplink.ShareDeepLink
 import dev.koga.deeplinklauncher.usecase.deeplink.DeleteDeepLink
 import dev.koga.deeplinklauncher.usecase.deeplink.GetDeepLinkById
 import dev.koga.deeplinklauncher.usecase.deeplink.UpsertDeepLink

@@ -1,6 +1,6 @@
-package dev.koga.deeplinklauncher.usecase
+package dev.koga.deeplinklauncher.usecase.deeplink
 
-import dev.koga.deeplinklauncher.usecase.deeplink.ImportDeepLinksOutput
+import dev.koga.deeplinklauncher.model.FileType
 
 actual class ImportDeepLinks {
     actual fun invoke(
