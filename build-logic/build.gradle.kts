@@ -12,4 +12,5 @@ dependencies {
 
     implementation(libs.android.gradle.plugin)
     implementation(libs.kotlin.gradle.plugin)
+    implementation(libs.kotlinx.datetime)
 }
