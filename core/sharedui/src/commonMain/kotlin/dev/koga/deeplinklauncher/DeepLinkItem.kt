@@ -82,14 +82,24 @@ fun DeepLinkCard(
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(4.dp)
         ) {
 
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(start = 12.dp, bottom = 4.dp),
-                horizontalArrangement = Arrangement.End,
+            deepLink.folder?.let {
+                Box(
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(topEnd = 12.dp, bottomEnd = 12.dp))
+                        .background(MaterialTheme.colorScheme.onSurface.copy(0.1f))
+                ) {
+                    Text(
+                        text = it.name,
+                        style = MaterialTheme.typography.labelSmall,
+                        modifier = Modifier.padding(vertical = 4.dp, horizontal = 12.dp),
+                    )
+                }
+            }
+
+            Column(
+                modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp).fillMaxWidth()
             ) {
                 deepLink.name?.let {
                     Text(
@@ -97,61 +107,40 @@ fun DeepLinkCard(
                         style = MaterialTheme.typography.bodyMedium.copy(
                             fontWeight = FontWeight.Medium
                         ),
+                    )
+                }
+
+                deepLink.description?.let {
+                    Text(
+                        text = it,
+                        style = MaterialTheme.typography.labelSmall.copy(
+                            fontWeight = FontWeight.Light
+                        ),
+                    )
+                }
+
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = deepLink.link,
+                        style = MaterialTheme.typography.bodyLarge.copy(
+                            fontWeight = FontWeight.Bold
+                        ),
                         modifier = Modifier.weight(1f)
                     )
-                }
 
-                deepLink.folder?.let {
-                    Box(
-                        modifier = Modifier
-                            .clip(RoundedCornerShape(topStart = 12.dp, bottomStart = 12.dp))
-                            .background(MaterialTheme.colorScheme.onSurface.copy(0.1f))
-                    ) {
-                        Text(
-                            text = it.name,
-                            style = MaterialTheme.typography.labelSmall,
-                            modifier = Modifier.padding(vertical = 4.dp, horizontal = 12.dp),
+                    Spacer(modifier = Modifier.width(12.dp))
+
+                    FilledTonalIconButton(onClick = onLaunch) {
+                        Icon(
+                            painterResource(MR.images.ic_launch_24dp),
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.onSurface
                         )
                     }
-                }
-            }
-
-            deepLink.description?.let {
-                Text(
-                    text = it,
-                    modifier = Modifier
-                        .padding(start = 12.dp, end = 12.dp, top = 4.dp, bottom = 12.dp),
-                    style = MaterialTheme.typography.labelSmall.copy(
-                        fontWeight = FontWeight.Light
-                    ),
-                )
-            }
-
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 12.dp),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text(
-                    text = deepLink.link,
-                    style = MaterialTheme.typography.bodyLarge.copy(
-                        fontWeight = FontWeight.Bold
-                    ),
-                    modifier = Modifier
-                        .weight(1f)
-                        .padding(vertical = 4.dp)
-                )
-
-                Spacer(modifier = Modifier.width(12.dp))
-
-                FilledTonalIconButton(onClick = onLaunch) {
-                    Icon(
-                        painterResource(MR.images.ic_launch_24dp),
-                        contentDescription = null,
-                        tint = MaterialTheme.colorScheme.onSurface
-                    )
                 }
             }
         }

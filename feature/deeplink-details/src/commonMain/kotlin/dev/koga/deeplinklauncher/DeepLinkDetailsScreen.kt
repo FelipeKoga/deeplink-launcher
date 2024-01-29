@@ -264,6 +264,7 @@ fun DeepLinkDetailsScreenContent(
                         label = {
                             Text(
                                 text = folder.name,
+                                modifier = Modifier.weight(1f),
                                 fontWeight = FontWeight.Bold,
                             )
                         }
