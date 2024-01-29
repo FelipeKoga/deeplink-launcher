@@ -26,7 +26,11 @@ fun DLLSingleChoiceSegmentedButtonRow(
     val scrollState = rememberScrollState()
 
     Row(
-        modifier = modifier.horizontalScroll(scrollState),
+        modifier = modifier.horizontalScroll(scrollState).border(
+            width = 1.dp,
+            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.12f),
+            shape = RoundedCornerShape(24.dp)
+        ),
         horizontalArrangement = Arrangement.Center
     ) {
         options.forEach { option ->
@@ -35,9 +39,9 @@ fun DLLSingleChoiceSegmentedButtonRow(
             OutlinedButton(
                 onClick = { onOptionSelected(option) },
                 colors = ButtonDefaults.outlinedButtonColors(
-                    containerColor = if (isSelected) MaterialTheme.colorScheme.primary
+                    containerColor = if (isSelected) MaterialTheme.colorScheme.primary.copy(alpha = 0.12f)
                     else MaterialTheme.colorScheme.surface,
-                    contentColor = if (isSelected) MaterialTheme.colorScheme.onPrimary
+                    contentColor = if (isSelected) MaterialTheme.colorScheme.primary
                     else MaterialTheme.colorScheme.onSurface
                 ),
                 border = if (isSelected) BorderStroke(1.dp, MaterialTheme.colorScheme.primary)
