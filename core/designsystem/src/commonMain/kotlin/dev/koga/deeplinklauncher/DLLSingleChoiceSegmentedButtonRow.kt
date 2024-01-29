@@ -35,9 +35,7 @@ fun DLLSingleChoiceSegmentedButtonRow(
             OutlinedButton(
                 onClick = { onOptionSelected(option) },
                 colors = ButtonDefaults.outlinedButtonColors(
-                    containerColor = if (isSelected) MaterialTheme.colorScheme.primary.copy(
-                        alpha = 0.12f
-                    )
+                    containerColor = if (isSelected) MaterialTheme.colorScheme.primary
                     else MaterialTheme.colorScheme.surface,
                     contentColor = if (isSelected) MaterialTheme.colorScheme.onPrimary
                     else MaterialTheme.colorScheme.onSurface

@@ -24,6 +24,7 @@ kotlin {
             implementation(projects.core.navigation)
             implementation(projects.core.sharedui)
 
+            implementation("com.darkrockstudios:mpfilepicker:3.1.0")
             implementation(libs.kotlinx.coroutines.core)
 
             implementation(libs.koin.compose)

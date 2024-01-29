@@ -41,6 +41,8 @@ import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import dev.koga.deeplinklauncher.usecase.ImportDeepLinks
+import dev.koga.deeplinklauncher.usecase.ImportDeepLinksOutput
+import kotlinx.coroutines.launch
 import org.koin.compose.koinInject
 
 
@@ -52,58 +54,43 @@ class ImportScreen : Screen {
         val navigator = LocalNavigator.currentOrThrow
 
         val importDeepLinks = koinInject<ImportDeepLinks>()
+        val browseFileAndGetPath = koinInject<BrowseFileAndGetPath>()
 
         val scope = rememberCoroutineScope()
         val snackbarHostState = remember { SnackbarHostState() }
         val options = listOf("JSON (.json)", "Plain text (.txt)")
         var selectedIndex by remember { mutableIntStateOf(0) }
 
-//        val filePickerLauncher = rememberLauncherForActivityResult(
-//            contract = object : ActivityResultContracts.GetContent() {
-//                override fun createIntent(context: Context, input: String): Intent {
-//                    return super.createIntent(context, input)
-//                        .putExtra(
-//                            Intent.EXTRA_MIME_TYPES,
-//                            arrayOf("text/plain", "application/json")
-//                        )
-//                }
-//            },
-//            onResult = { uri ->
-//                // Handle the URI, convert it to a file path or process it directly
-//                val filePath = uri?.getRealPathFromUri(context).orEmpty()
-//
-//                val fileType = when (filePath.substringAfterLast(".")) {
-//                    "txt" -> FileType.TXT
-//                    "json" -> FileType.JSON
-//                    else -> null
-//                } ?: run {
-//                    scope.launch {
-//                        snackbarHostState.showSnackbar("Unsupported file type")
-//                    }
-//                    return@rememberLauncherForActivityResult
-//                }
-//
-//                scope.launch {
-//                    val response = importDeepLinks.invoke(
-//                        filePath = filePath,
-//                        fileType = fileType
-//                    )
-//
-//                    when (response) {
-//                        is ImportDeepLinksOutput.Success -> {
-//                            snackbarHostState.showSnackbar("DeepLinks imported successfully")
-//                        }
-//
-//                        is ImportDeepLinksOutput.Error -> {
-//                            snackbarHostState.showSnackbar(
-//                                "Something went wrong. " +
-//                                        "Check the content structure and try again."
-//                            )
-//                        }
-//                    }
-//                }
-//            }
-//        )
+        browseFileAndGetPath.Listen(
+            onResult = { realPath, fileType ->
+                if (fileType == null) {
+                    scope.launch {
+                        snackbarHostState.showSnackbar("Unsupported file type")
+                    }
+                    return@Listen
+                }
+
+                scope.launch {
+                    val response = importDeepLinks.invoke(
+                        filePath = realPath,
+                        fileType = fileType
+                    )
+
+                    when (response) {
+                        is ImportDeepLinksOutput.Success -> {
+                            snackbarHostState.showSnackbar("DeepLinks imported successfully")
+                        }
+
+                        is ImportDeepLinksOutput.Error -> {
+                            snackbarHostState.showSnackbar(
+                                "Something went wrong. " +
+                                        "Check the content structure and try again."
+                            )
+                        }
+                    }
+                }
+            }
+        )
 
         Scaffold(
             topBar = {
@@ -128,7 +115,7 @@ class ImportScreen : Screen {
                             .fillMaxWidth()
                             .padding(24.dp),
                         onClick = {
-//                            filePickerLauncher.launch("*/*") // Launch the picker
+                            browseFileAndGetPath.launch()
                         }) {
                         Text(text = "Browse file")
                     }

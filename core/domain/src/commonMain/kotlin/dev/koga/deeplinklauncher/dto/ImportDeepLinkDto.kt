@@ -1,4 +1,4 @@
-package dev.koga.deeplinklauncher.usecase
+package dev.koga.deeplinklauncher.dto
 
 import kotlinx.serialization.Serializable
 
