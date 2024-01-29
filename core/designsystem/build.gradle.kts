@@ -1,24 +1,20 @@
+import extension.binariesFrameworkConfig
 import org.jetbrains.compose.ExperimentalComposeLibrary
 
 plugins {
     id("dev.koga.deeplinklauncher.multiplatform")
+//    id(libs.plugins.moko.multiplatform.resources.get().pluginId)
     alias(libs.plugins.jetbrainsCompose)
 }
 
 kotlin {
-    listOf(
-        iosX64(),
-        iosArm64(),
-        iosSimulatorArm64()
-    ).forEach {
-        it.binaries.framework {
-            baseName = "designsystem"
-            isStatic = true
-        }
-    }
+    binariesFrameworkConfig("designsystem")
 
     sourceSets {
         commonMain.dependencies {
+            api(projects.core.resources)
+            implementation(libs.moko.resources.compose)
+
             implementation(compose.runtime)
             implementation(compose.foundation)
             implementation(compose.material3)
@@ -26,11 +22,10 @@ kotlin {
             @OptIn(ExperimentalComposeLibrary::class)
             implementation(compose.components.resources)
         }
-//        val androidMain by getting {
-//            dependencies {
-//                implementation(libs.bundles.compose)
-//            }
-//        }
+
+        androidMain {
+            dependsOn(commonMain.get())
+        }
     }
 }
 

@@ -42,7 +42,7 @@ fun DLLTextField(
     focusDirection: FocusDirection = FocusDirection.Down,
     colors: TextFieldColors = defaultTextFieldColors,
     onDone: () -> Unit = {},
-    trailingIcon: @Composable() (() -> Unit)? = null,
+    trailingIcon: @Composable (() -> Unit)? = null,
     readOnly: Boolean = false,
     textStyle: TextStyle = LocalTextStyle.current,
 ) {

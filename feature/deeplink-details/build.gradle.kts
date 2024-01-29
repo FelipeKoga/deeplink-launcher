@@ -23,6 +23,7 @@ kotlin {
             implementation(projects.core.designsystem)
             implementation(projects.core.navigation)
             implementation(projects.core.sharedui)
+            implementation(projects.core.resources)
 
             implementation(libs.kotlinx.coroutines.core)
 
@@ -38,6 +39,8 @@ kotlin {
             implementation(compose.ui)
             @OptIn(ExperimentalComposeLibrary::class)
             implementation(compose.components.resources)
+
+            implementation(libs.moko.resources.compose)
         }
 
         val androidMain by getting {

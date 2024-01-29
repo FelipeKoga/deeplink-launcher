@@ -47,7 +47,7 @@ fun FolderCard(folder: Folder, onClick: (Folder) -> Unit) {
 
             Spacer(modifier = Modifier.size(12.dp))
 //            Text(
-//                text = pluralStringResource(
+//                text = MR.images pluralStringResource(
 //                    R.plurals.folder_deeplink_count,
 //                    folder.deepLinkCount,
 //                    folder.deepLinkCount

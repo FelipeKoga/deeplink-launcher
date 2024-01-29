@@ -21,6 +21,7 @@ kotlin {
         commonMain.dependencies {
             implementation(projects.core.domain)
             implementation(projects.core.designsystem)
+            implementation(projects.core.resources)
 
             implementation(libs.koin.compose)
             implementation(compose.runtime)
@@ -29,6 +30,8 @@ kotlin {
             implementation(compose.ui)
             @OptIn(ExperimentalComposeLibrary::class)
             implementation(compose.components.resources)
+
+            implementation(libs.moko.resources.compose)
         }
     }
 }

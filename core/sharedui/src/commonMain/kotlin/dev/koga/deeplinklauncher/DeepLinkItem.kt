@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -23,8 +24,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import dev.icerock.moko.resources.compose.painterResource
 import dev.koga.deeplinklauncher.model.DeepLink
 import dev.koga.deeplinklauncher.provider.DeepLinkClipboardProvider
+import dev.koga.resources.MR
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.koin.compose.koinInject
 
@@ -51,7 +54,7 @@ fun DeepLinkItem(
     )
 }
 
-@OptIn(ExperimentalFoundationApi::class, ExperimentalResourceApi::class)
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun DeepLinkCard(
     modifier: Modifier = Modifier,
@@ -83,9 +86,8 @@ fun DeepLinkCard(
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(start = 12.dp),
+                    .padding(start = 12.dp, bottom = 4.dp),
                 horizontalArrangement = Arrangement.End,
-                verticalAlignment = Alignment.Bottom
             ) {
                 deepLink.name?.let {
                     Text(
@@ -133,11 +135,11 @@ fun DeepLinkCard(
                 Spacer(modifier = Modifier.width(12.dp))
 
                 IconButton(onClick = onLaunch) {
-//                    Icon(
-//                        painterResource(id = R.drawable.ic_round_launch_24),
-//                        contentDescription = null,
-//                        tint = MaterialTheme.colorScheme.onSurface
-//                    )
+                    Icon(
+                        painterResource(MR.images.ic_launch_24dp),
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.onSurface
+                    )
                 }
 
             }
@@ -146,7 +148,7 @@ fun DeepLinkCard(
                 Text(
                     text = it,
                     modifier = Modifier
-                        .padding(start = 12.dp, end = 12.dp, bottom = 12.dp),
+                        .padding(start = 12.dp, end = 12.dp, top = 4.dp, bottom = 12.dp),
                     style = MaterialTheme.typography.labelSmall.copy(
                         fontWeight = FontWeight.SemiBold
                     ),

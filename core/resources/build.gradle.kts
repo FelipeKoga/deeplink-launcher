@@ -12,6 +12,18 @@ kotlin {
         commonMain.dependencies {
             implementation(libs.moko.resources.core)
         }
+
+        androidMain {
+            dependsOn(commonMain.get())
+        }
+
+        iosMain {
+            dependsOn(commonMain.get())
+        }
+
+        jvmMain {
+            dependsOn(commonMain.get())
+        }
     }
 }
 

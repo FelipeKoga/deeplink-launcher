@@ -59,8 +59,6 @@ fun DLLSearchBar(
             },
         colors = TextFieldDefaults.colors(
             cursorColor = MaterialTheme.colorScheme.onSurface,
-//            unfocusedContainerColor = MaterialTheme.colorScheme.surface,
-//            focusedContainerColor = MaterialTheme.colorScheme.surface,
             focusedLeadingIconColor = MaterialTheme.colorScheme.primary,
             focusedIndicatorColor = Color.Transparent,
             unfocusedIndicatorColor = Color.Transparent,

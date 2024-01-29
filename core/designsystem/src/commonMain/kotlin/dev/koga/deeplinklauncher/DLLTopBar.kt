@@ -1,5 +1,3 @@
-@file:OptIn(ExperimentalMaterial3Api::class)
-
 package dev.koga.deeplinklauncher
 
 import androidx.compose.foundation.layout.RowScope
@@ -16,6 +14,7 @@ import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.text.font.FontWeight
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DLLTopBar(
     title: String = "",

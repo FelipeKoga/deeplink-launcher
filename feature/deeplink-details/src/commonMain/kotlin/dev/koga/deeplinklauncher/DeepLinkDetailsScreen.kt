@@ -42,7 +42,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalClipboardManager
@@ -54,7 +53,10 @@ import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.koin.getScreenModel
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
+import dev.icerock.moko.resources.compose.painterResource
 import dev.koga.deeplinklauncher.model.Folder
+import dev.koga.resources.MR
+import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.koin.core.parameter.parametersOf
 
 
@@ -124,7 +126,7 @@ class DeepLinkDetailsScreen(private val deepLinkId: String) : Screen {
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
+@OptIn(ExperimentalResourceApi::class)
 @Composable
 fun DeepLinkDetailsScreenContent(
     modifier: Modifier,
@@ -191,11 +193,10 @@ fun DeepLinkDetailsScreenContent(
                         clipboardManager.setText(AnnotatedString(details.link))
                     },
                 ) {
-
-//                    Icon(
-//                        painter = painterResource(id = R.drawable.ic_round_content_copy_24),
-//                        contentDescription = "Copy",
-//                    )
+                    Icon(
+                        painter = painterResource(MR.images.ic_content_copy_24dp),
+                        contentDescription = "Copy",
+                    )
                 }
 
             }
@@ -243,14 +244,13 @@ fun DeepLinkDetailsScreenContent(
 
                     else -> ElevatedAssistChip(
                         colors = AssistChipDefaults.elevatedAssistChipColors(),
-                        modifier = Modifier
-                            .fillMaxWidth(),
+                        modifier = Modifier.fillMaxWidth(),
                         onClick = { showSelectFolderBottomSheet = true },
                         leadingIcon = {
-//                            Icon(
-//                                painter = painterResource(id = R.drawable.ic_round_folder_24),
-//                                contentDescription = null,
-//                            )
+                            Icon(
+                                painter = painterResource(MR.images.ic_folder_24dp),
+                                contentDescription = null,
+                            )
                         },
                         trailingIcon = {
                             Icon(
@@ -306,10 +306,10 @@ fun DeepLinkDetailsScreenContent(
                 Spacer(modifier = Modifier.width(24.dp))
 
                 FilledTonalIconButton(onClick = onLaunch) {
-//                    Icon(
-//                        painter = painterResource(id = R.drawable.ic_round_launch_24),
-//                        contentDescription = "Launch",
-//                    )
+                    Icon(
+                        painter = painterResource(MR.images.ic_launch_24dp),
+                        contentDescription = "Launch",
+                    )
                 }
             }
 

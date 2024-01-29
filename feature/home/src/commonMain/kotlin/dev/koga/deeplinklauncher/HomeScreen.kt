@@ -61,7 +61,9 @@ import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.koin.getNavigatorScreenModel
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
+import dev.icerock.moko.resources.compose.painterResource
 import dev.koga.navigation.SharedScreen
+import dev.koga.resources.MR
 import kotlinx.coroutines.launch
 
 
@@ -134,12 +136,14 @@ private fun HomeScreenContent() {
                 scrollBehavior = scrollBehavior,
                 title = "Deeplink Launcher",
                 actions = {
-                    FilledTonalIconButton(onClick = { openImportExportOptionBottomSheet = true }) {
-//                        Icon(
-//                            painter = painterResource(id = R.drawable.ic_round_import_export_24),
-//                            contentDescription = "",
-//                            modifier = Modifier.size(18.dp),
-//                        )
+                    FilledTonalIconButton(
+                        onClick = { openImportExportOptionBottomSheet = true }
+                    ) {
+                        Icon(
+                            painter = painterResource(MR.images.ic_import_export_24dp),
+                            contentDescription = "import or export deeplinks",
+                            modifier = Modifier.size(18.dp),
+                        )
                     }
 
                     DropdownMenu(
@@ -154,10 +158,10 @@ private fun HomeScreenContent() {
                                 openImportExportOptionBottomSheet = false
                             },
                             leadingIcon = {
-//                                Icon(
-//                                    painterResource(id = R.drawable.ic_round_arrow_upward_24),
-//                                    contentDescription = null
-//                                )
+                                Icon(
+                                    painterResource(MR.images.ic_arrow_upward_24dp),
+                                    contentDescription = null
+                                )
                             })
 
                         DropdownMenuItem(
@@ -167,10 +171,10 @@ private fun HomeScreenContent() {
                                 openImportExportOptionBottomSheet = false
                             },
                             leadingIcon = {
-//                                Icon(
-//                                    painterResource(id = R.drawable.ic_round_arrow_downward_24),
-//                                    contentDescription = null
-//                                )
+                                Icon(
+                                    painterResource(MR.images.ic_arrow_downward_24dp),
+                                    contentDescription = null
+                                )
                             })
                     }
                 }
@@ -205,11 +209,11 @@ private fun HomeScreenContent() {
                     },
                     text = {
                         Row(verticalAlignment = Alignment.CenterVertically) {
-//                            Icon(
-//                                painter = painterResource(id = R.drawable.ic_round_history_24),
-//                                contentDescription = null,
-//                                modifier = Modifier.size(16.dp),
-//                            )
+                            Icon(
+                                painter = painterResource(MR.images.ic_history_24dp),
+                                contentDescription = null,
+                                modifier = Modifier.size(16.dp),
+                            )
                             Spacer(modifier = Modifier.width(8.dp))
                             Text(text = "History")
                         }
@@ -244,11 +248,11 @@ private fun HomeScreenContent() {
                     },
                     text = {
                         Row(verticalAlignment = Alignment.CenterVertically) {
-//                            Icon(
-//                                painter = painterResource(id = R.drawable.ic_round_folder_24),
-//                                contentDescription = null,
-//                                modifier = Modifier.size(16.dp),
-//                            )
+                            Icon(
+                                painter = painterResource(MR.images.ic_folder_24dp),
+                                contentDescription = null,
+                                modifier = Modifier.size(16.dp),
+                            )
                             Spacer(modifier = Modifier.width(8.dp))
                             Text(text = "Folders")
                         }
