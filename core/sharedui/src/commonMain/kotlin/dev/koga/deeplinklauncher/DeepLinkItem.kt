@@ -9,11 +9,13 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.FilledTonalIconButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -80,7 +82,7 @@ fun DeepLinkCard(
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(top = 8.dp)
+                .padding(4.dp)
         ) {
 
             Row(
@@ -93,7 +95,7 @@ fun DeepLinkCard(
                     Text(
                         text = it,
                         style = MaterialTheme.typography.bodyMedium.copy(
-                            fontWeight = FontWeight.Bold
+                            fontWeight = FontWeight.Medium
                         ),
                         modifier = Modifier.weight(1f)
                     )
@@ -114,6 +116,16 @@ fun DeepLinkCard(
                 }
             }
 
+            deepLink.description?.let {
+                Text(
+                    text = it,
+                    modifier = Modifier
+                        .padding(start = 12.dp, end = 12.dp, top = 4.dp, bottom = 12.dp),
+                    style = MaterialTheme.typography.labelSmall.copy(
+                        fontWeight = FontWeight.Light
+                    ),
+                )
+            }
 
             Row(
                 modifier = Modifier
@@ -125,7 +137,7 @@ fun DeepLinkCard(
                 Text(
                     text = deepLink.link,
                     style = MaterialTheme.typography.bodyLarge.copy(
-                        fontWeight = FontWeight.Normal
+                        fontWeight = FontWeight.Bold
                     ),
                     modifier = Modifier
                         .weight(1f)
@@ -134,25 +146,13 @@ fun DeepLinkCard(
 
                 Spacer(modifier = Modifier.width(12.dp))
 
-                IconButton(onClick = onLaunch) {
+                FilledTonalIconButton(onClick = onLaunch) {
                     Icon(
                         painterResource(MR.images.ic_launch_24dp),
                         contentDescription = null,
                         tint = MaterialTheme.colorScheme.onSurface
                     )
                 }
-
-            }
-
-            deepLink.description?.let {
-                Text(
-                    text = it,
-                    modifier = Modifier
-                        .padding(start = 12.dp, end = 12.dp, top = 4.dp, bottom = 12.dp),
-                    style = MaterialTheme.typography.labelSmall.copy(
-                        fontWeight = FontWeight.SemiBold
-                    ),
-                )
             }
         }
     }
