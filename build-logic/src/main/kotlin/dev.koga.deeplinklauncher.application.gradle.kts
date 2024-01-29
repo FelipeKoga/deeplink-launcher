@@ -25,6 +25,8 @@ android {
         compileSdk = Configuration.compileSdk
         minSdk = Configuration.minSdk
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        versionName = Configuration.versionName
+        versionCode = Configuration.versionCode
     }
 
     compileOptions {
