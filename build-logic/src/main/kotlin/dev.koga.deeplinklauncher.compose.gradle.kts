@@ -1,6 +1,7 @@
 import extension.composeConfig
 import extension.getBundle
 import extension.getPlugin
+import extension.proguardConfig
 
 plugins {
     id("dev.koga.deeplinklauncher.multiplatform")
