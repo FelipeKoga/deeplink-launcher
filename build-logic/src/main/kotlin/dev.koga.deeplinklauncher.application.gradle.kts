@@ -18,7 +18,6 @@ if (keystorePropertiesFile.exists()) {
 val libs: VersionCatalog = extensions.getByType<VersionCatalogsExtension>().named("libs")
 
 android {
-    composeConfig(libs)
 
     defaultConfig.targetSdk = Configuration.targetSdk
     defaultConfig {
@@ -45,6 +44,7 @@ android {
     }
 
     setupReleaseSigningConfig(project)
+    composeConfig(libs)
 
     buildTypes {
         release {
