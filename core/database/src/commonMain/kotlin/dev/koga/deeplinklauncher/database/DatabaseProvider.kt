@@ -22,7 +22,7 @@ internal class DatabaseProvider(
     private fun prepopulateDatabase(database: DeepLinkLauncherDatabase) {
         if (driverFactory.shouldPrepopulateDatabase(DATABASE_NAME)) {
             driverFactory.getPrepopulateData().forEach { deeplink ->
-                database.deepLinkLauncherDatabaseQueries.upsertDeeplink(
+                database.deepLinkQueries.upsertDeeplink(
                     id = deeplink.id,
                     link = deeplink.link,
                     name = deeplink.name,

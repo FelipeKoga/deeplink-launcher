@@ -9,19 +9,6 @@ CREATE TABLE deeplink(
   FOREIGN KEY(folderId) REFERENCES folder(id) ON UPDATE CASCADE
 );
 
-CREATE TABLE folder (
-    id TEXT PRIMARY KEY,
-    name TEXT UNIQUE NOT NULL,
-    description TEXT
-);
-
-
-selectDeeplinks:
-SELECT d.*, f.*
-FROM deeplink d
-LEFT JOIN folder f ON d.folderId = f.id
-ORDER BY createdAt DESC;
-
 selectAllDeeplinks:
 SELECT d.*, f.*
 FROM deeplink d
@@ -35,9 +22,6 @@ upsertDeeplink:
 INSERT OR REPLACE INTO deeplink (id, link, name, description, createdAt, isFavorite, folderId)
 VALUES (?, ?, ?, ?, ?, ?, ?);
 
-removeFolderFromDeeplinks:
-UPDATE deeplink SET folderId = NULL WHERE folderId = ?;
-
 getDeepLinkByLink:
 SELECT d.*, f.*
 FROM deeplink d
@@ -49,27 +33,3 @@ SELECT d.*, f.*
 FROM deeplink d
 LEFT JOIN folder f ON d.folderId = f.id
 WHERE d.id = ?;
-
-selectFoldersWithDeeplinkCount:
-SELECT f.*, COUNT(d.id) AS deeplinkCount
-FROM folder f
-LEFT JOIN deeplink d ON f.id = d.folderId
-GROUP BY f.id;
-
-upsertFolder:
-INSERT OR REPLACE INTO folder (id, name, description)
-VALUES (?, ?, ?);
-
-deleteFolderById:
-DELETE FROM folder WHERE id = ?;
-
-getFolderById:
-SELECT f.*, COUNT(d.id) AS deeplinkCount
-FROM folder f
-LEFT JOIN deeplink d ON f.id = d.folderId
-WHERE f.id = ?;
-
-getFolderDeepLinks:
-SELECT d.*
-FROM deeplink d
-WHERE d.folderId = ?;

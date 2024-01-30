@@ -21,7 +21,7 @@ internal class FolderDataSourceImpl(
 
     override fun getFoldersStream(): Flow<List<Folder>> {
         return database
-            .deepLinkLauncherDatabaseQueries
+            .folderQueries
             .selectFoldersWithDeeplinkCount()
             .asFlow()
             .mapToList(Dispatchers.IO)
@@ -39,7 +39,7 @@ internal class FolderDataSourceImpl(
 
     override fun getFolderDeepLinksStream(id: String): Flow<List<DeepLink>> {
         return database
-            .deepLinkLauncherDatabaseQueries
+            .folderQueries
             .getFolderDeepLinks(id)
             .asFlow()
             .mapToList(Dispatchers.IO)
@@ -58,7 +58,7 @@ internal class FolderDataSourceImpl(
     }
 
     override fun getFolderById(id: String): Folder? {
-        return database.deepLinkLauncherDatabaseQueries
+        return database.folderQueries
             .getFolderById(id)
             .executeAsOne()
             .let {
@@ -72,7 +72,7 @@ internal class FolderDataSourceImpl(
     }
 
     override fun upsertFolder(folder: Folder) {
-        database.deepLinkLauncherDatabaseQueries.upsertFolder(
+        database.folderQueries.upsertFolder(
             id = folder.id,
             name = folder.name,
             description = folder.description,
@@ -81,8 +81,8 @@ internal class FolderDataSourceImpl(
 
     override fun deleteFolder(id: String) {
         database.transaction {
-            database.deepLinkLauncherDatabaseQueries.removeFolderFromDeeplinks(id)
-            database.deepLinkLauncherDatabaseQueries.deleteFolderById(id)
+            database.folderQueries.removeFolderFromDeeplinks(id)
+            database.folderQueries.deleteFolderById(id)
         }
     }
 }

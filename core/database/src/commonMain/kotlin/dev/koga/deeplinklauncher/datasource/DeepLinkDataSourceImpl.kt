@@ -16,13 +16,14 @@ import kotlinx.datetime.Instant
 
 internal class DeepLinkDataSourceImpl(
     private val databaseProvider: DatabaseProvider,
+    private val folderDataSource: FolderDataSource,
 ) : DeepLinkDataSource {
 
     private val database: DeepLinkLauncherDatabase
         get() = databaseProvider.getInstance()
 
     override fun getDeepLinksStream(): Flow<List<DeepLink>> {
-        return database.deepLinkLauncherDatabaseQueries
+        return database.deepLinkQueries
             .selectAllDeeplinks()
             .asFlow()
             .mapToList(Dispatchers.IO)
@@ -40,7 +41,6 @@ internal class DeepLinkDataSourceImpl(
                                 id = folderId,
                                 name = data.name_.orEmpty(),
                                 description = data.description_,
-                                deepLinkCount = 1,
                             )
                         },
                     )
@@ -49,7 +49,7 @@ internal class DeepLinkDataSourceImpl(
     }
 
     override fun getDeepLinks(): List<DeepLink> {
-        return database.deepLinkLauncherDatabaseQueries
+        return database.deepLinkQueries
             .selectAllDeeplinks()
             .executeAsList()
             .map { data ->
@@ -72,15 +72,15 @@ internal class DeepLinkDataSourceImpl(
             }
     }
 
-    override fun getDeepLinkById(id: String): DeepLink? {
-        return database.deepLinkLauncherDatabaseQueries
+    override fun getDeepLinkById(id: String): DeepLink {
+        return database.deepLinkQueries
             .getDeepLinkById(id)
             .executeAsOne()
             .let(GetDeepLinkById::toModel)
     }
 
     override fun getDeepLinkByLink(link: String): DeepLink? {
-        return database.deepLinkLauncherDatabaseQueries
+        return database.deepLinkQueries
             .getDeepLinkByLink(link)
             .executeAsOneOrNull()
             ?.let(GetDeepLinkByLink::toModel)
@@ -89,14 +89,10 @@ internal class DeepLinkDataSourceImpl(
     override fun upsertDeepLink(deepLink: DeepLink) {
         database.transaction {
             deepLink.folder?.let { folder ->
-                database.deepLinkLauncherDatabaseQueries.upsertFolder(
-                    id = folder.id,
-                    name = folder.name,
-                    description = folder.description,
-                )
+                folderDataSource.upsertFolder(folder)
             }
 
-            database.deepLinkLauncherDatabaseQueries.upsertDeeplink(
+            database.deepLinkQueries.upsertDeeplink(
                 id = deepLink.id,
                 link = deepLink.link,
                 name = deepLink.name,
@@ -110,12 +106,12 @@ internal class DeepLinkDataSourceImpl(
 
     override fun deleteDeepLink(id: String) {
         database.transaction {
-            database.deepLinkLauncherDatabaseQueries.deleteDeeplinkById(id)
+            database.deepLinkQueries.deleteDeeplinkById(id)
         }
     }
 }
 
-fun GetDeepLinkById.toModel() = DeepLink(
+private fun GetDeepLinkById.toModel() = DeepLink(
     id = id,
     link = link,
     name = name,
@@ -127,12 +123,11 @@ fun GetDeepLinkById.toModel() = DeepLink(
             id = folderId,
             name = name_.orEmpty(),
             description = description_,
-            deepLinkCount = 1,
         )
     },
 )
 
-fun GetDeepLinkByLink.toModel() = DeepLink(
+private fun GetDeepLinkByLink.toModel() = DeepLink(
     id = id,
     link = link,
     name = name,
@@ -144,7 +139,6 @@ fun GetDeepLinkByLink.toModel() = DeepLink(
             id = folderId,
             name = name_.orEmpty(),
             description = description_,
-            deepLinkCount = 1,
         )
     },
 )
