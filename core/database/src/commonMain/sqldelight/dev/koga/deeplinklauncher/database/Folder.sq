@@ -1,0 +1,32 @@
+CREATE TABLE folder (
+    id TEXT PRIMARY KEY,
+    name TEXT UNIQUE NOT NULL,
+    description TEXT
+);
+
+selectFoldersWithDeeplinkCount:
+SELECT f.*, COUNT(d.id) AS deeplinkCount
+FROM folder f
+LEFT JOIN deeplink d ON f.id = d.folderId
+GROUP BY f.id;
+
+upsertFolder:
+INSERT OR REPLACE INTO folder (id, name, description)
+VALUES (?, ?, ?);
+
+deleteFolderById:
+DELETE FROM folder WHERE id = ?;
+
+getFolderById:
+SELECT f.*, COUNT(d.id) AS deeplinkCount
+FROM folder f
+LEFT JOIN deeplink d ON f.id = d.folderId
+WHERE f.id = ?;
+
+getFolderDeepLinks:
+SELECT d.*
+FROM deeplink d
+WHERE d.folderId = ?;
+
+removeFolderFromDeeplinks:
+UPDATE deeplink SET folderId = NULL WHERE folderId = ?;
