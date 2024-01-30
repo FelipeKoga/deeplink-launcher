@@ -68,7 +68,6 @@ import dev.koga.resources.MR
 import kotlinx.coroutines.launch
 import org.koin.compose.koinInject
 
-
 object HomeScreen : Screen {
     @Composable
     override fun Content() {
@@ -79,7 +78,6 @@ object HomeScreen : Screen {
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
 private fun HomeScreenContent() {
-
     val exportScreen = rememberScreen(SharedScreen.ExportDeepLinks)
     val importScreen = rememberScreen(SharedScreen.ImportDeepLinks)
     val deepLinkClipboardProvider = koinInject<DeepLinkClipboardProvider>()
@@ -89,7 +87,6 @@ private fun HomeScreenContent() {
     val bottomSheetState = rememberStandardBottomSheetState(
         initialValue = SheetValue.Expanded,
     )
-
 
     val pagerState = rememberPagerState(
         initialPage = HomeTabPage.HISTORY.ordinal,
@@ -129,7 +126,7 @@ private fun HomeScreenContent() {
             onAdd = { name, description ->
                 openFolderBottomSheet = false
                 screenModel.addFolder(name, description)
-            }
+            },
         )
     }
 
@@ -140,7 +137,7 @@ private fun HomeScreenContent() {
                 title = "Deeplink Launcher",
                 actions = {
                     FilledTonalIconButton(
-                        onClick = { openImportExportOptionBottomSheet = true }
+                        onClick = { openImportExportOptionBottomSheet = true },
                     ) {
                         Icon(
                             painter = painterResource(MR.images.ic_import_export_24dp),
@@ -151,9 +148,8 @@ private fun HomeScreenContent() {
 
                     DropdownMenu(
                         expanded = openImportExportOptionBottomSheet,
-                        onDismissRequest = { openImportExportOptionBottomSheet = false }
+                        onDismissRequest = { openImportExportOptionBottomSheet = false },
                     ) {
-
                         DropdownMenuItem(
                             text = { Text("Export") },
                             onClick = {
@@ -163,9 +159,10 @@ private fun HomeScreenContent() {
                             leadingIcon = {
                                 Icon(
                                     painterResource(MR.images.ic_arrow_upward_24dp),
-                                    contentDescription = null
+                                    contentDescription = null,
                                 )
-                            })
+                            },
+                        )
 
                         DropdownMenuItem(
                             text = { Text("Import") },
@@ -176,15 +173,16 @@ private fun HomeScreenContent() {
                             leadingIcon = {
                                 Icon(
                                     painterResource(MR.images.ic_arrow_downward_24dp),
-                                    contentDescription = null
+                                    contentDescription = null,
                                 )
-                            })
+                            },
+                        )
                     }
-                }
+                },
             )
         },
         scaffoldState = rememberBottomSheetScaffoldState(
-            bottomSheetState = bottomSheetState
+            bottomSheetState = bottomSheetState,
         ),
         snackbarHost = { SnackbarHost(snackbarHostState) },
         sheetContent = {
@@ -192,16 +190,15 @@ private fun HomeScreenContent() {
                 value = deepLinkText,
                 onValueChange = screenModel::onDeepLinkTextChanged,
                 launch = screenModel::launchDeepLink,
-                errorMessage = errorMessage
+                errorMessage = errorMessage,
             )
-        }
+        },
     ) { contentPadding ->
         Column(
             modifier = Modifier
                 .padding(contentPadding)
                 .fillMaxSize(),
         ) {
-
             TabRow(selectedTabIndex = pagerState.currentPage) {
                 Tab(
                     selected = pagerState.currentPage == HomeTabPage.HISTORY.ordinal,
@@ -220,7 +217,7 @@ private fun HomeScreenContent() {
                             Spacer(modifier = Modifier.width(8.dp))
                             Text(text = "History")
                         }
-                    }
+                    },
                 )
                 Tab(
                     selected = pagerState.currentPage == HomeTabPage.FAVORITES.ordinal,
@@ -228,7 +225,6 @@ private fun HomeScreenContent() {
                         scope.launch {
                             pagerState.animateScrollToPage(HomeTabPage.FAVORITES.ordinal)
                         }
-
                     },
                     text = {
                         Row(verticalAlignment = Alignment.CenterVertically) {
@@ -240,7 +236,7 @@ private fun HomeScreenContent() {
                             Spacer(modifier = Modifier.width(8.dp))
                             Text(text = "Favorites")
                         }
-                    }
+                    },
                 )
                 Tab(
                     selected = pagerState.currentPage == HomeTabPage.FOLDERS.ordinal,
@@ -259,14 +255,14 @@ private fun HomeScreenContent() {
                             Spacer(modifier = Modifier.width(8.dp))
                             Text(text = "Folders")
                         }
-                    }
+                    },
 
                 )
             }
 
             HorizontalPager(
                 state = pagerState,
-                modifier = Modifier.fillMaxSize()
+                modifier = Modifier.fillMaxSize(),
             ) { page ->
                 when (page) {
                     HomeTabPage.HISTORY.ordinal -> {
@@ -279,9 +275,9 @@ private fun HomeScreenContent() {
                                 start = 12.dp,
                                 end = 12.dp,
                                 top = 12.dp,
-                                bottom = mainContentPaddingBottom
+                                bottom = mainContentPaddingBottom,
                             ),
-                            verticalArrangement = Arrangement.spacedBy(12.dp)
+                            verticalArrangement = Arrangement.spacedBy(12.dp),
                         ) {
                             items(deepLinks) { deepLink ->
                                 DeepLinkItem(
@@ -297,10 +293,10 @@ private fun HomeScreenContent() {
                                             deepLinkClipboardProvider.copy(it.link)
                                             snackbarHostState.showSnackbar(
                                                 message = "Copied to clipboard",
-                                                actionLabel = "Dismiss"
+                                                actionLabel = "Dismiss",
                                             )
                                         }
-                                    }
+                                    },
                                 )
                             }
                         }
@@ -316,9 +312,9 @@ private fun HomeScreenContent() {
                                 start = 12.dp,
                                 end = 12.dp,
                                 top = 12.dp,
-                                bottom = mainContentPaddingBottom
+                                bottom = mainContentPaddingBottom,
                             ),
-                            verticalArrangement = Arrangement.spacedBy(12.dp)
+                            verticalArrangement = Arrangement.spacedBy(12.dp),
                         ) {
                             items(favoriteDeepLinks) { deepLink ->
                                 DeepLinkItem(
@@ -334,10 +330,10 @@ private fun HomeScreenContent() {
                                             deepLinkClipboardProvider.copy(it.link)
                                             snackbarHostState.showSnackbar(
                                                 message = "Copied to clipboard",
-                                                actionLabel = "Dismiss"
+                                                actionLabel = "Dismiss",
                                             )
                                         }
-                                    }
+                                    },
                                 )
                             }
                         }
@@ -353,45 +349,45 @@ private fun HomeScreenContent() {
                                     start = 12.dp,
                                     end = 12.dp,
                                     top = 24.dp,
-                                    bottom = mainContentPaddingBottom
+                                    bottom = mainContentPaddingBottom,
                                 ),
                                 horizontalArrangement = Arrangement.spacedBy(24.dp),
                                 verticalItemSpacing = 24.dp,
-                                columns = StaggeredGridCells.Fixed(2)
+                                columns = StaggeredGridCells.Fixed(2),
                             ) {
                                 item {
                                     OutlinedCard(
                                         onClick = {
                                             openFolderBottomSheet = true
-                                        }, shape = RoundedCornerShape(24.dp),
+                                        },
+                                        shape = RoundedCornerShape(24.dp),
                                         border = BorderStroke(
                                             1.dp,
-                                            MaterialTheme.colorScheme.onSurface.copy(alpha = .3f)
-                                        )
+                                            MaterialTheme.colorScheme.onSurface.copy(alpha = .3f),
+                                        ),
                                     ) {
                                         Column(
                                             modifier = Modifier
                                                 .fillMaxWidth()
                                                 .height(184.dp),
                                             verticalArrangement = Arrangement.Center,
-                                            horizontalAlignment = Alignment.CenterHorizontally
+                                            horizontalAlignment = Alignment.CenterHorizontally,
                                         ) {
                                             Icon(
                                                 imageVector = Icons.Rounded.Add,
                                                 contentDescription = null,
                                                 modifier = Modifier.size(24.dp),
-                                                tint = MaterialTheme.colorScheme.onSurface
+                                                tint = MaterialTheme.colorScheme.onSurface,
                                             )
                                             Spacer(modifier = Modifier.height(8.dp))
                                             Text(
                                                 text = "Create new folder",
                                                 style = MaterialTheme.typography.titleSmall.copy(
-                                                    fontWeight = FontWeight.Bold
-                                                )
+                                                    fontWeight = FontWeight.Bold,
+                                                ),
                                             )
                                         }
                                     }
-
                                 }
                                 items(folders.size) { index ->
                                     FolderCard(

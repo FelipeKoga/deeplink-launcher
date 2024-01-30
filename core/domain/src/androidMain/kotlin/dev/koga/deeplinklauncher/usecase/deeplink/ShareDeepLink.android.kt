@@ -5,7 +5,7 @@ import android.content.Intent
 import dev.koga.deeplinklauncher.model.DeepLink
 
 actual class ShareDeepLink(
-    private val context: Context
+    private val context: Context,
 ) {
     actual operator fun invoke(deepLink: DeepLink) {
         val intent = Intent(Intent.ACTION_SEND).apply {

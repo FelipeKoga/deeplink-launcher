@@ -7,7 +7,6 @@ import androidx.compose.ui.text.font.FontWeight
 import dev.icerock.moko.resources.compose.asFont
 import dev.koga.resources.MR
 
-
 val appFont
     @Composable get() = FontFamily(
         listOfNotNull(
@@ -17,7 +16,7 @@ val appFont
             MR.fonts.Montserrat.semibold.asFont(weight = FontWeight.SemiBold),
             MR.fonts.Montserrat.bold.asFont(weight = FontWeight.Bold),
             MR.fonts.Montserrat.black.asFont(weight = FontWeight.Black),
-        )
+        ),
     )
 
 // Set of Material typography styles to start with
@@ -43,6 +42,5 @@ val typography
 
         labelLarge = defaultTypography.labelLarge.copy(fontFamily = appFont),
         labelMedium = defaultTypography.labelMedium.copy(fontFamily = appFont),
-        labelSmall = defaultTypography.labelSmall.copy(fontFamily = appFont)
+        labelSmall = defaultTypography.labelSmall.copy(fontFamily = appFont),
     )
-

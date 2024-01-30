@@ -67,7 +67,7 @@ class FolderDetailsScreen(private val folderId: String) : Screen {
         val navigator = LocalNavigator.currentOrThrow
 
         val screenModel = getScreenModel<FolderDetailsScreenModel>(
-            parameters = { parametersOf(folderId) }
+            parameters = { parametersOf(folderId) },
         )
 
         val launchDeepLink = koinInject<LaunchDeepLink>()
@@ -87,16 +87,16 @@ class FolderDetailsScreen(private val folderId: String) : Screen {
             ModalBottomSheet(
                 onDismissRequest = { showDeleteDialog = false },
                 sheetState = rememberModalBottomSheetState(
-                    skipPartiallyExpanded = true
-                )
+                    skipPartiallyExpanded = true,
+                ),
             ) {
                 Column {
                     Text(
                         text = "Delete folder",
                         style = MaterialTheme.typography.titleSmall.copy(
-                            fontWeight = FontWeight.Bold
+                            fontWeight = FontWeight.Bold,
                         ),
-                        modifier = Modifier.padding(24.dp)
+                        modifier = Modifier.padding(24.dp),
                     )
 
                     Divider()
@@ -104,7 +104,7 @@ class FolderDetailsScreen(private val folderId: String) : Screen {
                     Text(
                         text = "Are you sure you want to delete this deep link?",
                         style = MaterialTheme.typography.bodyMedium,
-                        modifier = Modifier.padding(24.dp)
+                        modifier = Modifier.padding(24.dp),
                     )
 
                     Spacer(modifier = Modifier.height(12.dp))
@@ -114,13 +114,11 @@ class FolderDetailsScreen(private val folderId: String) : Screen {
                         horizontalArrangement = Arrangement.End,
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(24.dp)
+                            .padding(24.dp),
                     ) {
-
-
                         TextButton(
                             onClick = { showDeleteDialog = false },
-                            modifier = Modifier.padding(start = 12.dp)
+                            modifier = Modifier.padding(start = 12.dp),
                         ) {
                             Text(text = "Cancel", fontWeight = FontWeight.Bold)
                         }
@@ -134,22 +132,19 @@ class FolderDetailsScreen(private val folderId: String) : Screen {
                             },
                             modifier = Modifier.padding(end = 12.dp),
                             colors = ButtonDefaults.filledTonalButtonColors(
-                                containerColor = MaterialTheme.colorScheme.errorContainer
-                            )
+                                containerColor = MaterialTheme.colorScheme.errorContainer,
+                            ),
                         ) {
                             Text(
                                 text = "Delete",
-                                fontWeight = FontWeight.Bold
+                                fontWeight = FontWeight.Bold,
                             )
                         }
-
-
                     }
 
                     Spacer(modifier = Modifier.height(24.dp))
                 }
             }
-
         }
 
         Scaffold(
@@ -158,8 +153,8 @@ class FolderDetailsScreen(private val folderId: String) : Screen {
                     IconButton(
                         onClick = { showDeleteDialog = true },
                         colors = IconButtonDefaults.filledTonalIconButtonColors(
-                            containerColor = Color.Red.copy(alpha = .2f)
-                        )
+                            containerColor = Color.Red.copy(alpha = .2f),
+                        ),
                     ) {
                         Icon(
                             imageVector = Icons.Rounded.Delete,
@@ -170,12 +165,12 @@ class FolderDetailsScreen(private val folderId: String) : Screen {
                 })
             },
             containerColor = MaterialTheme.colorScheme.surface,
-            snackbarHost = { SnackbarHost(snackbarHostState) }
+            snackbarHost = { SnackbarHost(snackbarHostState) },
         ) { contentPadding ->
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(contentPadding)
+                    .padding(contentPadding),
             ) {
                 FolderDetailsScreenContent(
                     form = state,
@@ -193,17 +188,15 @@ class FolderDetailsScreen(private val folderId: String) : Screen {
                             deepLinkClipboardProvider.copy(it.link)
                             snackbarHostState.showSnackbar(
                                 message = "Copied to clipboard",
-                                actionLabel = "Dismiss"
+                                actionLabel = "Dismiss",
                             )
                         }
-                    }
+                    },
                 )
             }
-
         }
     }
 }
-
 
 @Composable
 fun FolderDetailsScreenContent(
@@ -214,7 +207,6 @@ fun FolderDetailsScreenContent(
     onDeepLinkLaunch: (DeepLink) -> Unit,
     onDeepLinkCopy: (DeepLink) -> Unit,
 ) {
-
     var showEditNameInput by rememberSaveable {
         mutableStateOf(false)
     }
@@ -234,14 +226,13 @@ fun FolderDetailsScreenContent(
     Column(modifier = Modifier.padding(24.dp)) {
         AnimatedContent(
             targetState = showEditNameInput,
-            label = ""
+            label = "",
         ) { target ->
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween
+                horizontalArrangement = Arrangement.SpaceBetween,
             ) {
-
                 when (target) {
                     true -> {
                         DLLTextField(
@@ -251,14 +242,14 @@ fun FolderDetailsScreenContent(
                             trailingIcon = {
                                 IconButton(
                                     onClick = { showEditNameInput = false },
-                                    modifier = Modifier.size(18.dp)
+                                    modifier = Modifier.size(18.dp),
                                 ) {
                                     Icon(
                                         imageVector = Icons.Rounded.Done,
-                                        contentDescription = "Edit name"
+                                        contentDescription = "Edit name",
                                     )
                                 }
-                            }
+                            },
                         )
                     }
 
@@ -266,7 +257,7 @@ fun FolderDetailsScreenContent(
                         Text(
                             text = form.name,
                             style = MaterialTheme.typography.headlineSmall.copy(
-                                fontWeight = FontWeight.Bold
+                                fontWeight = FontWeight.Bold,
                             ),
                         )
 
@@ -276,12 +267,12 @@ fun FolderDetailsScreenContent(
                             onClick = { showEditNameInput = true },
                             modifier = Modifier.size(18.dp),
                             colors = IconButtonDefaults.iconButtonColors(
-                                contentColor = MaterialTheme.colorScheme.secondary
-                            )
+                                contentColor = MaterialTheme.colorScheme.secondary,
+                            ),
                         ) {
                             Icon(
                                 imageVector = Icons.Rounded.Edit,
-                                contentDescription = "Edit name"
+                                contentDescription = "Edit name",
                             )
                         }
                     }
@@ -293,12 +284,12 @@ fun FolderDetailsScreenContent(
 
         AnimatedContent(
             targetState = showEditDescriptionInput,
-            label = ""
+            label = "",
         ) { target ->
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween
+                horizontalArrangement = Arrangement.SpaceBetween,
             ) {
                 when (target) {
                     true -> {
@@ -309,14 +300,14 @@ fun FolderDetailsScreenContent(
                             trailingIcon = {
                                 IconButton(
                                     onClick = { showEditDescriptionInput = false },
-                                    modifier = Modifier.size(18.dp)
+                                    modifier = Modifier.size(18.dp),
                                 ) {
                                     Icon(
                                         imageVector = Icons.Rounded.Done,
-                                        contentDescription = "Edit name"
+                                        contentDescription = "Edit name",
                                     )
                                 }
-                            }
+                            },
                         )
                     }
 
@@ -324,7 +315,7 @@ fun FolderDetailsScreenContent(
                         Text(
                             text = form.description.ifEmpty { "No description" },
                             style = MaterialTheme.typography.bodySmall,
-                            modifier = Modifier.weight(1f)
+                            modifier = Modifier.weight(1f),
                         )
 
                         Spacer(modifier = Modifier.width(12.dp))
@@ -333,18 +324,17 @@ fun FolderDetailsScreenContent(
                             onClick = { showEditDescriptionInput = true },
                             modifier = Modifier.size(18.dp),
                             colors = IconButtonDefaults.iconButtonColors(
-                                contentColor = MaterialTheme.colorScheme.secondary
-                            )
+                                contentColor = MaterialTheme.colorScheme.secondary,
+                            ),
                         ) {
                             Icon(
                                 imageVector = Icons.Rounded.Edit,
-                                contentDescription = "Edit description"
+                                contentDescription = "Edit description",
                             )
                         }
                     }
                 }
             }
-
         }
 
         Divider(modifier = Modifier.padding(vertical = 24.dp))
@@ -353,28 +343,28 @@ fun FolderDetailsScreenContent(
             Text(
                 text = "No deeplinks vinculated to this folder",
                 style = MaterialTheme.typography.bodyMedium.copy(
-                    fontWeight = FontWeight.Normal
-                )
+                    fontWeight = FontWeight.Normal,
+                ),
             )
         } else {
             Text(
                 text = "Deeplinks",
                 style = MaterialTheme.typography.titleSmall.copy(
-                    fontWeight = FontWeight.Bold
-                )
+                    fontWeight = FontWeight.Bold,
+                ),
             )
 
             Spacer(modifier = Modifier.padding(8.dp))
 
             LazyColumn(
-                verticalArrangement = Arrangement.spacedBy(24.dp)
+                verticalArrangement = Arrangement.spacedBy(24.dp),
             ) {
                 items(form.deepLinks) { deepLink ->
                     DeepLinkItem(
                         deepLink = deepLink,
                         onClick = onDeepLinkClick,
                         onLaunch = onDeepLinkLaunch,
-                        onCopy = onDeepLinkCopy
+                        onCopy = onDeepLinkCopy,
                     )
                 }
             }

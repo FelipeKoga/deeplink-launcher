@@ -12,7 +12,7 @@ class App : Application() {
         initKoin(
             appModule = module {
                 single<Context> { this@App }
-            }
+            },
         )
     }
 }

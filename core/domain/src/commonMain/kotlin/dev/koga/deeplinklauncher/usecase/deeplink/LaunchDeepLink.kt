@@ -2,7 +2,6 @@ package dev.koga.deeplinklauncher.usecase.deeplink
 
 expect class LaunchDeepLink {
     fun launch(url: String): LaunchDeepLinkResult
-
 }
 
 sealed interface LaunchDeepLinkResult {

@@ -46,7 +46,6 @@ fun DLLTextField(
     readOnly: Boolean = false,
     textStyle: TextStyle = LocalTextStyle.current,
 ) {
-
     val focusManager = LocalFocusManager.current
 
     TextField(
@@ -61,8 +60,8 @@ fun DLLTextField(
             Text(
                 text = label,
                 style = MaterialTheme.typography.labelSmall.copy(
-                    fontWeight = FontWeight.SemiBold
-                )
+                    fontWeight = FontWeight.SemiBold,
+                ),
             )
         },
         colors = colors,
@@ -75,8 +74,7 @@ fun DLLTextField(
             onDone = {
                 focusManager.clearFocus()
                 onDone()
-            }
+            },
         ),
     )
-
 }

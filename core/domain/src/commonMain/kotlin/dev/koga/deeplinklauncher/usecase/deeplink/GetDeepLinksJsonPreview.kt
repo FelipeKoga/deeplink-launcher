@@ -6,7 +6,7 @@ import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 
 class GetDeepLinksJsonPreview(
-    private val dataSource: DeepLinkDataSource
+    private val dataSource: DeepLinkDataSource,
 ) {
 
     @Serializable
@@ -40,7 +40,7 @@ class GetDeepLinksJsonPreview(
                         name = folder.name,
                         description = folder.description,
                     )
-                }
+                },
             )
         }
 

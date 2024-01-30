@@ -1,6 +1,7 @@
 plugins {
     kotlin("multiplatform")
     id("com.android.library")
+    id("dev.koga.deeplinklauncher.code-analysis")
 }
 
 kotlin {

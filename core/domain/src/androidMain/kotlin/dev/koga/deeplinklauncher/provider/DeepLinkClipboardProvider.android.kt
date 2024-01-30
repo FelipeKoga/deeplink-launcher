@@ -9,7 +9,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 
 actual class DeepLinkClipboardProvider(
-    private val context: Context
+    private val context: Context,
 ) {
     private val clipboardManager
         get() = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager

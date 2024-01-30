@@ -15,7 +15,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.datetime.Instant
 
 internal class DeepLinkDataSourceImpl(
-    private val databaseProvider: DatabaseProvider
+    private val databaseProvider: DatabaseProvider,
 ) : DeepLinkDataSource {
 
     private val database: DeepLinkLauncherDatabase
@@ -40,9 +40,9 @@ internal class DeepLinkDataSourceImpl(
                                 id = folderId,
                                 name = data.name_.orEmpty(),
                                 description = data.description_,
-                                deepLinkCount = 1
+                                deepLinkCount = 1,
                             )
-                        }
+                        },
                     )
                 }
             }
@@ -65,9 +65,9 @@ internal class DeepLinkDataSourceImpl(
                             id = folderId,
                             name = data.name_.orEmpty(),
                             description = data.description_,
-                            deepLinkCount = 1
+                            deepLinkCount = 1,
                         )
-                    }
+                    },
                 )
             }
     }
@@ -103,7 +103,7 @@ internal class DeepLinkDataSourceImpl(
                 description = deepLink.description,
                 createdAt = deepLink.createdAt.toEpochMilliseconds(),
                 isFavorite = if (deepLink.isFavorite) 1L else 0L,
-                folderId = deepLink.folder?.id
+                folderId = deepLink.folder?.id,
             )
         }
     }
@@ -114,7 +114,6 @@ internal class DeepLinkDataSourceImpl(
         }
     }
 }
-
 
 fun GetDeepLinkById.toModel() = DeepLink(
     id = id,
@@ -128,9 +127,9 @@ fun GetDeepLinkById.toModel() = DeepLink(
             id = folderId,
             name = name_.orEmpty(),
             description = description_,
-            deepLinkCount = 1
+            deepLinkCount = 1,
         )
-    }
+    },
 )
 
 fun GetDeepLinkByLink.toModel() = DeepLink(
@@ -145,7 +144,7 @@ fun GetDeepLinkByLink.toModel() = DeepLink(
             id = folderId,
             name = name_.orEmpty(),
             description = description_,
-            deepLinkCount = 1
+            deepLinkCount = 1,
         )
-    }
+    },
 )

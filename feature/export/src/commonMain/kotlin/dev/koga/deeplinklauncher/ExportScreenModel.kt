@@ -9,7 +9,6 @@ class ExportScreenModel(
     getDeepLinksJsonPreview: GetDeepLinksJsonPreview,
 ) : ScreenModel {
 
-
     private val plainTextPreview = getDeepLinksPlainTextPreview()
     private val jsonPreview = getDeepLinksJsonPreview()
 

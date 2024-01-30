@@ -35,6 +35,10 @@ activityKtx = "1.8.2"
 
 moko_resources = "0.23.0"
 
+ktlint = "0.50.0"
+detekt = "1.22.0"
+composerules = "0.0.26"
+
 [libraries]
 android-gradle-plugin = { module = "com.android.tools.build:gradle", version.ref = "androidGradlePlugin" }
 kotlin-gradle-plugin = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin" }
@@ -80,6 +84,11 @@ moko-resources-generator = { module = "dev.icerock.moko:resources-generator", ve
 moko-resources-core = { module = "dev.icerock.moko:resources", version.ref = "moko_resources" }
 moko-resources-compose = { module = "dev.icerock.moko:resources-compose", version.ref = "moko_resources" }
 
+ktlint = { module = "com.pinterest:ktlint", version.ref = "ktlint" }
+detekt = { module = "io.gitlab.arturbosch.detekt:detekt-gradle-plugin", version.ref = "detekt" }
+composerules = { module = "com.twitter.compose.rules:detekt", version.ref = "composerules" }
+
+
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "androidGradlePlugin" }
 androidLibrary = { id = "com.android.library", version.ref = "androidGradlePlugin" }
@@ -90,6 +99,8 @@ sqlDelight = { id = "app.cash.sqldelight", version.ref = "sqlDelight" }
 org-jetbrains-kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "org-jetbrains-kotlin-jvm" }
 jetbrainsCompose = { id = "org.jetbrains.compose", version.ref = "compose-plugin" }
 moko-multiplatform-resources = { id = "dev.icerock.mobile.multiplatform-resources" }
+ktlint = { id = "org.jlleitschuh.gradle.ktlint", version.ref = "ktlint" }
+detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
 
 [bundles]
 compose = [

@@ -2,12 +2,10 @@ package dev.koga.deeplinklauncher.util
 
 import android.content.Context
 import android.net.Uri
-import android.provider.MediaStore
 import android.provider.OpenableColumns
 import java.io.File
 import java.io.FileOutputStream
 import java.net.URI
-
 
 fun String.isUriValid(): Boolean {
     return try {

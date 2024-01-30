@@ -24,7 +24,7 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun AddFolderBottomSheet(
     onDismiss: () -> Unit,
-    onAdd: (name: String, description: String) -> Unit
+    onAdd: (name: String, description: String) -> Unit,
 ) {
     ModalBottomSheet(onDismissRequest = onDismiss) {
         AddFolderBottomSheetContent(onAdd = onAdd)
@@ -33,19 +33,19 @@ fun AddFolderBottomSheet(
 
 @Composable
 fun AddFolderBottomSheetContent(
-    onAdd: (name: String, description: String) -> Unit
+    onAdd: (name: String, description: String) -> Unit,
 ) {
     val (name, setName) = rememberSaveable { mutableStateOf("") }
     val (description, setDescription) = rememberSaveable { mutableStateOf("") }
 
-
     Column(
-        modifier = Modifier.padding(32.dp)
+        modifier = Modifier.padding(32.dp),
     ) {
         Text(
-            text = "Add Folder", style = MaterialTheme.typography.titleSmall.copy(
-                fontWeight = FontWeight.Bold
-            )
+            text = "Add Folder",
+            style = MaterialTheme.typography.titleSmall.copy(
+                fontWeight = FontWeight.Bold,
+            ),
         )
 
         Spacer(modifier = Modifier.height(12.dp))
@@ -73,7 +73,7 @@ fun AddFolderBottomSheetContent(
             enabled = name.isNotBlank(),
             modifier = Modifier
                 .align(Alignment.CenterHorizontally)
-                .fillMaxWidth(.6f)
+                .fillMaxWidth(.6f),
         ) {
             Text(text = "Save")
         }

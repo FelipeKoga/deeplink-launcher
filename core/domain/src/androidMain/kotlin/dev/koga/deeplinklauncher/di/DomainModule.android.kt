@@ -7,7 +7,6 @@ import dev.koga.deeplinklauncher.usecase.deeplink.ExportDeepLinks
 import dev.koga.deeplinklauncher.usecase.deeplink.ImportDeepLinks
 import dev.koga.deeplinklauncher.usecase.deeplink.LaunchDeepLink
 import dev.koga.deeplinklauncher.usecase.deeplink.ShareDeepLink
-
 import org.koin.core.module.Module
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module

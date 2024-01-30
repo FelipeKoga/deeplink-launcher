@@ -41,11 +41,9 @@ kotlin {
             implementation(compose.components.resources)
         }
 
-        val androidMain by getting {
-            dependencies {
-                implementation(libs.compose.toolingpreview)
-                implementation(libs.androidx.activity.compose)
-            }
+        androidMain.dependencies {
+            implementation(libs.compose.toolingpreview)
+            implementation(libs.androidx.activity.compose)
         }
 
         commonTest.dependencies {

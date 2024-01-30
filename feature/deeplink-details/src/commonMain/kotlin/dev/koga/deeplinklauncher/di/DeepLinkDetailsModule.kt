@@ -13,7 +13,7 @@ val deepLinkDetailsModule = module {
             deleteDeepLink = get(),
             upsertDeepLink = get(),
             getFoldersStream = get(),
-            upsertFolder = get()
+            upsertFolder = get(),
         )
     }
 }

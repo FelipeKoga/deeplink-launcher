@@ -45,7 +45,6 @@ import dev.koga.deeplinklauncher.usecase.deeplink.ImportDeepLinksOutput
 import kotlinx.coroutines.launch
 import org.koin.compose.koinInject
 
-
 class ImportScreen : Screen {
 
     @OptIn(ExperimentalMaterial3Api::class)
@@ -73,7 +72,7 @@ class ImportScreen : Screen {
                 scope.launch {
                     val response = importDeepLinks.invoke(
                         filePath = realPath,
-                        fileType = fileType
+                        fileType = fileType,
                     )
 
                     when (response) {
@@ -84,19 +83,19 @@ class ImportScreen : Screen {
                         is ImportDeepLinksOutput.Error -> {
                             snackbarHostState.showSnackbar(
                                 "Something went wrong. " +
-                                        "Check the content structure and try again."
+                                    "Check the content structure and try again.",
                             )
                         }
                     }
                 }
-            }
+            },
         )
 
         Scaffold(
             topBar = {
                 DLLTopBar(
                     title = "Import DeepLinks",
-                    onBack = navigator::pop
+                    onBack = navigator::pop,
                 )
             },
             snackbarHost = {
@@ -106,7 +105,7 @@ class ImportScreen : Screen {
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .background(MaterialTheme.colorScheme.surface)
+                        .background(MaterialTheme.colorScheme.surface),
                 ) {
                     Divider()
 
@@ -116,25 +115,26 @@ class ImportScreen : Screen {
                             .padding(24.dp),
                         onClick = {
                             browseFileAndGetPath.launch()
-                        }) {
+                        },
+                    ) {
                         Text(text = "Browse file")
                     }
                 }
             },
-            containerColor = MaterialTheme.colorScheme.surface
+            containerColor = MaterialTheme.colorScheme.surface,
         ) { contentPadding ->
             Column(
                 modifier = Modifier
                     .padding(contentPadding)
                     .fillMaxSize()
                     .padding(horizontal = 24.dp)
-                    .verticalScroll(rememberScrollState())
+                    .verticalScroll(rememberScrollState()),
             ) {
-
                 Text(
-                    "How to Import Data", style = MaterialTheme.typography.titleMedium.copy(
-                        fontWeight = FontWeight.Bold
-                    )
+                    "How to Import Data",
+                    style = MaterialTheme.typography.titleMedium.copy(
+                        fontWeight = FontWeight.Bold,
+                    ),
                 )
 
                 Spacer(modifier = Modifier.height(16.dp))
@@ -143,8 +143,8 @@ class ImportScreen : Screen {
                     append("The are two types of files that can be imported: ")
                     withStyle(
                         style = SpanStyle(
-                            fontWeight = FontWeight.Bold
-                        )
+                            fontWeight = FontWeight.Bold,
+                        ),
                     ) {
                         append("plain text (.txt)")
                     }
@@ -153,8 +153,8 @@ class ImportScreen : Screen {
 
                     withStyle(
                         style = SpanStyle(
-                            fontWeight = FontWeight.Bold
-                        )
+                            fontWeight = FontWeight.Bold,
+                        ),
                     ) {
                         append("JSON (.json)")
                     }
@@ -163,8 +163,8 @@ class ImportScreen : Screen {
                 Text(
                     text = headerText,
                     style = MaterialTheme.typography.titleSmall.copy(
-                        fontWeight = FontWeight.Normal
-                    )
+                        fontWeight = FontWeight.Normal,
+                    ),
                 )
 
                 Spacer(modifier = Modifier.height(16.dp))
@@ -174,7 +174,7 @@ class ImportScreen : Screen {
                         .align(Alignment.CenterHorizontally),
                     options = options,
                     selectedOption = options[selectedIndex],
-                    onOptionSelected = { selectedIndex = options.indexOf(it) }
+                    onOptionSelected = { selectedIndex = options.indexOf(it) },
                 )
 
                 Spacer(modifier = Modifier.height(12.dp))
@@ -183,25 +183,25 @@ class ImportScreen : Screen {
                     transitionSpec = {
                         if (targetState > initialState) {
                             slideInHorizontally { width -> width } + fadeIn() togetherWith
-                                    slideOutHorizontally { width -> -width } + fadeOut()
+                                slideOutHorizontally { width -> -width } + fadeOut()
                         } else {
                             slideInHorizontally { width -> -width } + fadeIn() togetherWith
-                                    slideOutHorizontally { width -> width } + fadeOut()
+                                slideOutHorizontally { width -> width } + fadeOut()
                         }.using(
-                            SizeTransform(clip = false)
+                            SizeTransform(clip = false),
                         )
-                    }, label = ""
+                    },
+                    label = "",
                 ) { index ->
                     when (index) {
                         0 -> {
                             Column {
-
                                 Text(
                                     text = "The most basic JSON format is an object that only " +
-                                            "contains a link property.",
+                                        "contains a link property.",
                                     style = MaterialTheme.typography.titleSmall.copy(
-                                        fontWeight = FontWeight.Normal
-                                    )
+                                        fontWeight = FontWeight.Normal,
+                                    ),
                                 )
 
                                 Spacer(modifier = Modifier.height(8.dp))
@@ -211,18 +211,18 @@ class ImportScreen : Screen {
                                         {
                                             "link": string
                                         }
-                                    """.trimIndent()
+                                    """.trimIndent(),
                                 )
 
                                 Spacer(modifier = Modifier.height(8.dp))
 
                                 Text(
                                     text = "It's possible to add more properties to the object, " +
-                                            "such as id, name, description, createdAt, isFavorite, " +
-                                            "and folder.",
+                                        "such as id, name, description, createdAt, isFavorite, " +
+                                        "and folder.",
                                     style = MaterialTheme.typography.titleSmall.copy(
-                                        fontWeight = FontWeight.Normal
-                                    )
+                                        fontWeight = FontWeight.Normal,
+                                    ),
                                 )
 
                                 Spacer(modifier = Modifier.height(8.dp))
@@ -232,25 +232,22 @@ class ImportScreen : Screen {
                         }
 
                         1 -> {
-
                             Column {
                                 Text(
                                     text = "The plain text format is a simple list of deeplinks, one per line.",
                                     style = MaterialTheme.typography.titleSmall.copy(
-                                        fontWeight = FontWeight.Normal
-                                    )
+                                        fontWeight = FontWeight.Normal,
+                                    ),
                                 )
 
                                 Spacer(modifier = Modifier.height(8.dp))
 
                                 JSONBoxViewer(
-                                    text = "test://myapplink\nhttps://myapplink2\ntest://myapplink3"
+                                    text = "test://myapplink\nhttps://myapplink2\ntest://myapplink3",
                                 )
                             }
-
                         }
                     }
-
                 }
             }
         }
