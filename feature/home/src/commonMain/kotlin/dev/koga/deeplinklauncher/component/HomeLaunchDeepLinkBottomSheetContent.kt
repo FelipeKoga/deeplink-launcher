@@ -26,6 +26,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import dev.icerock.moko.resources.compose.painterResource
 import dev.koga.deeplinklauncher.DLLTextField
@@ -67,6 +68,8 @@ internal fun HomeLaunchDeepLinkBottomSheetContent(
                     disabledIndicatorColor = Color.Transparent,
                     errorIndicatorColor = Color.Transparent,
                 ),
+                imeAction = ImeAction.Done,
+                onDone = launch,
                 trailingIcon = {
                     AnimatedVisibility(visible = value.isNotEmpty()) {
                         IconButton(onClick = {
