@@ -1,7 +1,7 @@
 package dev.koga.deeplinklauncher
 
 import androidx.compose.runtime.Composable
-import dev.koga.deeplinklauncher.usecase.FileType
+import dev.koga.deeplinklauncher.model.FileType
 
 actual class BrowseFileAndGetPath {
     actual fun launch() {
@@ -10,4 +10,5 @@ actual class BrowseFileAndGetPath {
     @Composable
     actual fun Listen(onResult: (realPath: String, fileType: FileType?) -> Unit) {
     }
+
 }
