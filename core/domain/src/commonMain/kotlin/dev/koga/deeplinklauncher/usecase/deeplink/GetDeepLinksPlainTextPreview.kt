@@ -8,7 +8,7 @@ class GetDeepLinksPlainTextPreview(
 ) {
     operator fun invoke(): String {
         val deepLinks = dataSource.getDeepLinks().filter {
-            it != defaultDeepLink
+            it.id != defaultDeepLink.id
         }
 
         return deepLinks.joinToString(separator = "\n") { deepLink ->

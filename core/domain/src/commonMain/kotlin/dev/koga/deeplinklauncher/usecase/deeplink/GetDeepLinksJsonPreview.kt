@@ -29,7 +29,7 @@ class GetDeepLinksJsonPreview(
 
     operator fun invoke(): String {
         val deepLinks = dataSource.getDeepLinks()
-            .filter { it != defaultDeepLink }
+            .filter { it.id != defaultDeepLink.id }
             .map {
                 DeepLinkJson(
                     id = it.id,
@@ -46,6 +46,8 @@ class GetDeepLinksJsonPreview(
                     },
                 )
             }
+
+        if (deepLinks.isEmpty()) return ""
 
         val json = Json { prettyPrint = true }
 
