@@ -19,4 +19,7 @@ dependencies {
 
     implementation(libs.koin.compose)
     implementation(libs.koin.core)
+
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.crashlytics)
 }

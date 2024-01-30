@@ -75,7 +75,7 @@ ktlint = { module = "com.pinterest:ktlint", version.ref = "ktlint" }
 detekt = { module = "io.gitlab.arturbosch.detekt:detekt-gradle-plugin", version.ref = "detekt" }
 composerules = { module = "com.twitter.compose.rules:detekt", version.ref = "composerules" }
 
-firebase-bom = { module = "com.google.firebase:firebase-bom", version = "firebase-bom" }
+firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebase-bom" }
 firebase-crashlytics = { module = "com.google.firebase:firebase-crashlytics" }
 
 [plugins]
