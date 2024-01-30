@@ -7,7 +7,6 @@ import dev.koga.deeplinklauncher.provider.UUIDProvider
 import dev.koga.deeplinklauncher.usecase.deeplink.DeleteDeepLink
 import dev.koga.deeplinklauncher.usecase.deeplink.GetDeepLinkById
 import dev.koga.deeplinklauncher.usecase.deeplink.LaunchDeepLink
-import dev.koga.deeplinklauncher.usecase.deeplink.ShareDeepLink
 import dev.koga.deeplinklauncher.usecase.deeplink.UpsertDeepLink
 import dev.koga.deeplinklauncher.usecase.folder.GetFoldersStream
 import dev.koga.deeplinklauncher.usecase.folder.UpsertFolder
