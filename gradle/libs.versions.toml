@@ -1,10 +1,5 @@
 [versions]
 kotlinxSerializationJson = "1.6.2"
-version_code = "10000"
-version_name = "1.0.0"
-android_sdk_compile = "34"
-android_sdk_target = "34"
-android_sdk_min = "24"
 
 androidGradlePlugin = "8.2.1"
 balloonCompose = "1.6.4"
@@ -15,13 +10,11 @@ compose = "1.5.4"
 compose_bom = "2024.01.00"
 compose-compiler = "1.5.4"
 compose-material3 = "1.1.2"
-material3Android = "1.2.0-beta02"
 compose-plugin = "1.5.11"
 
 androidx-activityCompose = "1.8.2"
 uuid = "0.8.4"
 voyager = "1.0.0"
-ktorClient = "2.3.5"
 kotlinxDatetime = "0.4.1"
 
 koin = "3.5.3"
@@ -30,14 +23,16 @@ koin-compose = "1.0.4"
 sqlDelight = "2.0.0"
 kotlinxCoroutinesCore = "1.7.3"
 org-jetbrains-kotlin-jvm = "1.9.20"
-androidx-material3Android = "1.2.0-rc01"
-activityKtx = "1.8.2"
 
 moko_resources = "0.23.0"
 
-ktlint = "0.50.0"
+ktlint = "10.2.0"
 detekt = "1.22.0"
 composerules = "0.0.26"
+
+firebase-bom = "32.7.1"
+firebase-crashlytics-plugin = "2.9.9"
+google-services = "4.4.0"
 
 [libraries]
 android-gradle-plugin = { module = "com.android.tools.build:gradle", version.ref = "androidGradlePlugin" }
@@ -52,11 +47,6 @@ compose-ui = { module = "androidx.compose.ui:ui" }
 compose-toolingpreview = { module = "androidx.compose.ui:ui-tooling-preview" }
 compose-icons = { module = "androidx.compose.material:material-icons-extended" }
 compose-material3 = { module = "androidx.compose.material3:material3" }
-androidx-material3-android = { group = "androidx.compose.material3", name = "material3-android", version.ref = "material3Android" }
-
-#compose-ui-tooling = { module = "androidx.compose.ui:ui-tooling", version.ref = "compose" }
-#compose-foundation = { module = "androidx.compose.foundation:foundation", version.ref = "compose" }
-#compose-material3 = { module = "androidx.compose.material3:material3", version.ref = "compose-material3" }
 
 kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinxCoroutinesCore" }
 kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "jetbrains-kotlinxDatetime" }
@@ -64,21 +54,16 @@ kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serializa
 
 voyager-navigator = { module = "cafe.adriel.voyager:voyager-navigator", version.ref = "voyager" }
 voyager-screenmodel = { module = "cafe.adriel.voyager:voyager-screenmodel", version.ref = "voyager" }
-voyager-tab-navigator = { module = "cafe.adriel.voyager:voyager-tab-navigator", version.ref = "voyager" }
 voyager-transitions = { module = "cafe.adriel.voyager:voyager-transitions", version.ref = "voyager" }
 voyager-koin = { module = "cafe.adriel.voyager:voyager-koin", version.ref = "voyager" }
-voyager-bottomsheet = { module = "cafe.adriel.voyager:voyager-bottom-sheet-navigator", version.ref = "voyager" }
 
 koin-compose = { module = "io.insert-koin:koin-compose", version.ref = "koin-compose"}
-koin-androidx-compose = { module = "io.insert-koin:koin-androidx-compose", version.ref = "koin" }
 koin-android = { module = "io.insert-koin:koin-android", version.ref = "koin" }
 koin-core = { module = "io.insert-koin:koin-core", version.ref = "koin" }
 
 sql-coroutines-extensions = { module = "app.cash.sqldelight:coroutines-extensions", version.ref = "sqlDelight" }
 sql-native-driver = { module = "app.cash.sqldelight:native-driver", version.ref = "sqlDelight" }
 sql-android-driver = { module = "app.cash.sqldelight:android-driver", version.ref = "sqlDelight" }
-material3-android = { group = "androidx.compose.material3", name = "material3-android", version.ref = "androidx-material3Android" }
-androidx-activity-ktx = { group = "androidx.activity", name = "activity-ktx", version.ref = "activityKtx" }
 
 moko-resources-generator = { module = "dev.icerock.moko:resources-generator", version.ref = "moko_resources" }
 moko-resources-core = { module = "dev.icerock.moko:resources", version.ref = "moko_resources" }
@@ -88,6 +73,8 @@ ktlint = { module = "com.pinterest:ktlint", version.ref = "ktlint" }
 detekt = { module = "io.gitlab.arturbosch.detekt:detekt-gradle-plugin", version.ref = "detekt" }
 composerules = { module = "com.twitter.compose.rules:detekt", version.ref = "composerules" }
 
+firebase-bom = { module = "com.google.firebase:firebase-bom", version = "firebase-bom" }
+firebase-crashlytics = { module = "com.google.firebase:firebase-crashlytics" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "androidGradlePlugin" }
@@ -99,8 +86,9 @@ sqlDelight = { id = "app.cash.sqldelight", version.ref = "sqlDelight" }
 org-jetbrains-kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "org-jetbrains-kotlin-jvm" }
 jetbrainsCompose = { id = "org.jetbrains.compose", version.ref = "compose-plugin" }
 moko-multiplatform-resources = { id = "dev.icerock.mobile.multiplatform-resources" }
-ktlint = { id = "org.jlleitschuh.gradle.ktlint", version.ref = "ktlint" }
-detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
+
+google-services = { id = "com.google.gms.google-services", version.ref = "google-services" }
+crashlytics = { id = "com.google.firebase.crashlytics", version.ref = "firebase-crashlytics-plugin" }
 
 [bundles]
 compose = [
@@ -108,5 +96,4 @@ compose = [
     "compose-ui",
     "compose-toolingpreview",
     "compose-icons",
-    "androidx-material3-android",
 ]

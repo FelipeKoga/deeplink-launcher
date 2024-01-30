@@ -1,5 +1,7 @@
 plugins {
     id("dev.koga.deeplinklauncher.application")
+    alias(libs.plugins.google.services)
+    alias(libs.plugins.crashlytics)
 }
 
 android {
@@ -17,6 +19,4 @@ dependencies {
 
     implementation(libs.koin.compose)
     implementation(libs.koin.core)
-
-//    debugImplementation(libs.compose.ui.tooling)
 }
