@@ -5,16 +5,6 @@ import android.net.Uri
 import android.provider.OpenableColumns
 import java.io.File
 import java.io.FileOutputStream
-import java.net.URI
-
-fun String.isUriValid(): Boolean {
-    return try {
-        val uri = URI(this)
-        uri.scheme != null && uri.host != null
-    } catch (e: Throwable) {
-        false
-    }
-}
 
 fun Uri.getRealPathFromUri(context: Context): String? {
     // Check if the URI is a 'file' URI - if so, return the path directly

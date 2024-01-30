@@ -30,7 +30,6 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -47,7 +46,6 @@ import cafe.adriel.voyager.navigator.currentOrThrow
 import dev.koga.deeplinklauncher.model.FileType
 import dev.koga.deeplinklauncher.usecase.deeplink.ExportDeepLinks
 import dev.koga.deeplinklauncher.usecase.deeplink.ExportDeepLinksOutput
-import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.launch
 import org.koin.compose.koinInject
@@ -56,7 +54,8 @@ class ExportScreen : Screen {
 
     private enum class ExportType(val label: String) {
         JSON("JSON (.json)"),
-        PLAIN_TEXT("Plain text (.txt)");
+        PLAIN_TEXT("Plain text (.txt)"),
+        ;
 
         companion object {
             fun getByLabel(label: String): ExportType {
@@ -123,7 +122,7 @@ class ExportScreen : Screen {
                                     ExportDeepLinksOutput.Success -> {
                                         snackbarHostState.showSnackbar(
                                             message = "DeepLinks exported successfully. " +
-                                                    "Check your downloads folder.",
+                                                "Check your downloads folder.",
                                             duration = SnackbarDuration.Short,
                                         )
                                     }
@@ -184,10 +183,10 @@ class ExportScreen : Screen {
                         transitionSpec = {
                             if (targetState > initialState) {
                                 slideInHorizontally { width -> width } + fadeIn() togetherWith
-                                        slideOutHorizontally { width -> -width } + fadeOut()
+                                    slideOutHorizontally { width -> -width } + fadeOut()
                             } else {
                                 slideInHorizontally { width -> -width } + fadeIn() togetherWith
-                                        slideOutHorizontally { width -> width } + fadeOut()
+                                    slideOutHorizontally { width -> width } + fadeOut()
                             }.using(
                                 SizeTransform(clip = false),
                             )
@@ -195,11 +194,11 @@ class ExportScreen : Screen {
                     ) { index ->
                         when (index) {
                             ExportType.JSON -> BoxPreview(
-                                text = preview.jsonFormat.ifEmpty { "No DeepLinks" }
+                                text = preview.jsonFormat.ifEmpty { "No DeepLinks" },
                             )
 
                             ExportType.PLAIN_TEXT -> BoxPreview(
-                                text = preview.plainTextFormat.ifEmpty { "No DeepLinks" }
+                                text = preview.plainTextFormat.ifEmpty { "No DeepLinks" },
                             )
                         }
                     }
