@@ -3,13 +3,14 @@ package dev.koga.deeplinklauncher.provider
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
-import dev.koga.deeplinklauncher.util.isUriValid
+import dev.koga.deeplinklauncher.usecase.ValidateDeepLink
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 
 actual class DeepLinkClipboardProvider(
     private val context: Context,
+    private val validateDeepLink: ValidateDeepLink,
 ) {
     private val clipboardManager
         get() = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
@@ -19,7 +20,7 @@ actual class DeepLinkClipboardProvider(
         get() = clipboardManager.primaryClip?.let { primaryClip ->
             val text = primaryClip.getItemAt(0)?.text?.toString()
 
-            if (text?.isUriValid() == true) {
+            if (validateDeepLink(text ?: "")) {
                 return@let text
             }
 
