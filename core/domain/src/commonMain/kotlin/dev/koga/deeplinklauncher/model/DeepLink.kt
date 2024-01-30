@@ -12,4 +12,7 @@ data class DeepLink(
     val createdAt: Instant,
     val isFavorite: Boolean,
     val folder: Folder? = null,
-)
+) {
+    val hasNameAndDescription: Boolean
+        get() = !name.isNullOrBlank() && !description.isNullOrBlank()
+}
