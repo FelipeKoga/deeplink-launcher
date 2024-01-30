@@ -20,8 +20,8 @@ data class ImportExportDeepLinkDto(
 
 @Serializable
 data class ImportExportFolderDto(
+    val id: String,
     val name: String,
-    val id: String? = null,
     val description: String? = null,
 )
 
@@ -36,7 +36,7 @@ fun ImportExportDeepLinkDto.toDeepLink() = DeepLink(
 )
 
 fun ImportExportFolderDto.toFolder() = Folder(
-    id = id ?: UUIDProvider.get(),
+    id = id,
     name = name,
     description = description,
 )

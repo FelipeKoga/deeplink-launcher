@@ -84,7 +84,7 @@ class ImportScreen : Screen {
                         is ImportDeepLinksOutput.Error -> {
                             snackbarHostState.showSnackbar(
                                 "Something went wrong. " +
-                                    "Check the content structure and try again.",
+                                        "Check the content structure and try again.",
                             )
                         }
                     }
@@ -184,10 +184,10 @@ class ImportScreen : Screen {
                     transitionSpec = {
                         if (targetState > initialState) {
                             slideInHorizontally { width -> width } + fadeIn() togetherWith
-                                slideOutHorizontally { width -> -width } + fadeOut()
+                                    slideOutHorizontally { width -> -width } + fadeOut()
                         } else {
                             slideInHorizontally { width -> -width } + fadeIn() togetherWith
-                                slideOutHorizontally { width -> width } + fadeOut()
+                                    slideOutHorizontally { width -> width } + fadeOut()
                         }.using(
                             SizeTransform(clip = false),
                         )
@@ -199,7 +199,7 @@ class ImportScreen : Screen {
                             Column {
                                 Text(
                                     text = "The most basic JSON format is an object that only " +
-                                        "contains a link property.",
+                                            "contains a link property.",
                                     style = MaterialTheme.typography.titleSmall.copy(
                                         fontWeight = FontWeight.Normal,
                                     ),
@@ -217,10 +217,84 @@ class ImportScreen : Screen {
 
                                 Spacer(modifier = Modifier.height(8.dp))
 
+                                val generalPropertiesHint = buildAnnotatedString {
+                                    append(
+                                        "It's possible to add more properties to the object, " +
+                                                "such as"
+                                    )
+
+                                    withStyle(
+                                        style = SpanStyle(
+                                            fontWeight = FontWeight.Bold,
+                                        ),
+                                    ) {
+                                        append(" id, name, description, createdAt, isFavorite, ")
+                                    }
+
+                                    append("and ")
+
+                                    withStyle(
+                                        style = SpanStyle(
+                                            fontWeight = FontWeight.Bold,
+                                        ),
+                                    ) {
+                                        append("folder.")
+                                    }
+                                }
+
                                 Text(
-                                    text = "It's possible to add more properties to the object, " +
-                                        "such as id, name, description, createdAt, isFavorite, " +
-                                        "and folder.",
+                                    text = generalPropertiesHint,
+                                    style = MaterialTheme.typography.titleSmall.copy(
+                                        fontWeight = FontWeight.Normal,
+                                    ),
+                                )
+
+                                Spacer(modifier = Modifier.height(8.dp))
+
+                                val folderHint = buildAnnotatedString {
+                                    append("The folder property is an object that contains: ")
+                                    withStyle(
+                                        style = SpanStyle(
+                                            fontWeight = FontWeight.Bold,
+                                        ),
+                                    ) {
+                                        append("id, name, ")
+                                    }
+
+                                    append("and ")
+
+                                    withStyle(
+                                        style = SpanStyle(
+                                            fontWeight = FontWeight.Bold,
+                                        ),
+                                    ) {
+                                        append("description.")
+                                    }
+                                }
+
+                                Text(
+                                    text = folderHint,
+                                    style = MaterialTheme.typography.titleSmall.copy(
+                                        fontWeight = FontWeight.Normal,
+                                    ),
+                                )
+
+                                Spacer(modifier = Modifier.height(8.dp))
+
+                                val idHint = buildAnnotatedString {
+                                    append("We recommend using the ")
+                                    withStyle(
+                                        style = SpanStyle(
+                                            fontWeight = FontWeight.Bold,
+                                        ),
+                                    ) {
+                                        append("UUID ")
+                                    }
+                                    append("format for the id property.")
+                                }
+
+                                Text(
+                                    text = idHint,
                                     style = MaterialTheme.typography.titleSmall.copy(
                                         fontWeight = FontWeight.Normal,
                                     ),
@@ -267,8 +341,8 @@ fun JsonDisplayScreen() {
             "createdAt": string,        // optional
             "isFavorite": boolean       // optional,
             "folder": {                 // optional
-                "id": string,           // optional
-                "name": string,         // required if folder is present
+                "id": string,           // required
+                "name": string,         // required
                 "description": string   // optional
             }
           },
