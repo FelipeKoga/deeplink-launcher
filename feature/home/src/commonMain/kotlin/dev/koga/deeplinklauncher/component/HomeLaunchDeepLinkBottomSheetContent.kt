@@ -62,12 +62,6 @@ internal fun HomeLaunchDeepLinkBottomSheetContent(
                 value = value,
                 onValueChange = onValueChange,
                 modifier = Modifier.clip(RoundedCornerShape(12.dp)).weight(1f),
-                colors = TextFieldDefaults.colors(
-                    focusedIndicatorColor = Color.Transparent,
-                    unfocusedIndicatorColor = Color.Transparent,
-                    disabledIndicatorColor = Color.Transparent,
-                    errorIndicatorColor = Color.Transparent,
-                ),
                 imeAction = ImeAction.Done,
                 onDone = launch,
                 trailingIcon = {
@@ -87,13 +81,17 @@ internal fun HomeLaunchDeepLinkBottomSheetContent(
 
             Spacer(modifier = Modifier.width(8.dp))
 
-            FilledTonalIconButton(
-                onClick = launch,
+            AnimatedVisibility(
+                visible = value.isNotEmpty(),
             ) {
-                Icon(
-                    painter = painterResource(MR.images.ic_launch_24dp),
-                    contentDescription = "Launch",
-                )
+                FilledTonalIconButton(
+                    onClick = launch,
+                ) {
+                    Icon(
+                        painter = painterResource(MR.images.ic_launch_24dp),
+                        contentDescription = "Launch",
+                    )
+                }
             }
         }
 
