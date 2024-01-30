@@ -31,6 +31,7 @@ import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
@@ -47,10 +48,23 @@ import dev.koga.deeplinklauncher.model.FileType
 import dev.koga.deeplinklauncher.usecase.deeplink.ExportDeepLinks
 import dev.koga.deeplinklauncher.usecase.deeplink.ExportDeepLinksOutput
 import kotlinx.collections.immutable.persistentListOf
+import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.launch
 import org.koin.compose.koinInject
 
 class ExportScreen : Screen {
+
+    private enum class ExportType(val label: String) {
+        JSON("JSON (.json)"),
+        PLAIN_TEXT("Plain text (.txt)");
+
+        companion object {
+            fun getByLabel(label: String): ExportType {
+                return entries.first { it.label == label }
+            }
+        }
+    }
+
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
     override fun Content() {
@@ -63,8 +77,8 @@ class ExportScreen : Screen {
 
         val exportDeepLinks = koinInject<ExportDeepLinks>()
 
-        var selectedIndex by remember { mutableIntStateOf(0) }
-        val options = persistentListOf("JSON (.json)", "Plain text (.txt)")
+        var selectedExportType by remember { mutableStateOf(ExportType.JSON) }
+
         val scrollBehavior =
             TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
 
@@ -91,10 +105,9 @@ class ExportScreen : Screen {
                         onClick = {
                             scope.launch {
                                 val response = exportDeepLinks.export(
-                                    type = when (selectedIndex) {
-                                        0 -> FileType.JSON
-                                        1 -> FileType.TXT
-                                        else -> throw IllegalStateException("Invalid index")
+                                    type = when (selectedExportType) {
+                                        ExportType.JSON -> FileType.JSON
+                                        ExportType.PLAIN_TEXT -> FileType.TXT
                                     },
                                 )
 
@@ -110,7 +123,7 @@ class ExportScreen : Screen {
                                     ExportDeepLinksOutput.Success -> {
                                         snackbarHostState.showSnackbar(
                                             message = "DeepLinks exported successfully. " +
-                                                "Check your downloads folder.",
+                                                    "Check your downloads folder.",
                                             duration = SnackbarDuration.Short,
                                         )
                                     }
@@ -149,10 +162,9 @@ class ExportScreen : Screen {
 
                     DLLSingleChoiceSegmentedButtonRow(
                         modifier = Modifier.align(Alignment.CenterHorizontally),
-                        options = options,
-                        selectedOption = options[selectedIndex],
-                        onOptionSelected = { selectedIndex = options.indexOf(it) },
-
+                        options = ExportType.entries.map { it.label }.toPersistentList(),
+                        selectedOption = selectedExportType.label,
+                        onOptionSelected = { selectedExportType = ExportType.getByLabel(it) },
                     )
 
                     Spacer(modifier = Modifier.height(16.dp))
@@ -167,23 +179,28 @@ class ExportScreen : Screen {
                     Spacer(modifier = Modifier.height(8.dp))
 
                     AnimatedContent(
-                        targetState = selectedIndex,
+                        targetState = selectedExportType,
                         label = "",
                         transitionSpec = {
                             if (targetState > initialState) {
                                 slideInHorizontally { width -> width } + fadeIn() togetherWith
-                                    slideOutHorizontally { width -> -width } + fadeOut()
+                                        slideOutHorizontally { width -> -width } + fadeOut()
                             } else {
                                 slideInHorizontally { width -> -width } + fadeIn() togetherWith
-                                    slideOutHorizontally { width -> width } + fadeOut()
+                                        slideOutHorizontally { width -> width } + fadeOut()
                             }.using(
                                 SizeTransform(clip = false),
                             )
                         },
                     ) { index ->
                         when (index) {
-                            0 -> BoxPreview(text = preview.jsonFormat)
-                            1 -> BoxPreview(text = preview.plainTextFormat)
+                            ExportType.JSON -> BoxPreview(
+                                text = preview.jsonFormat.ifEmpty { "No DeepLinks" }
+                            )
+
+                            ExportType.PLAIN_TEXT -> BoxPreview(
+                                text = preview.plainTextFormat.ifEmpty { "No DeepLinks" }
+                            )
                         }
                     }
                 }
