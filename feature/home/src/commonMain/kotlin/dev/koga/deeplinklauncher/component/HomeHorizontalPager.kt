@@ -33,18 +33,19 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import dev.koga.deeplinklauncher.DeepLinkItem
-import dev.koga.deeplinklauncher.FolderCard
+import dev.koga.deeplinklauncher.deeplink.DeepLinkItem
+import dev.koga.deeplinklauncher.folder.FolderCard
 import dev.koga.deeplinklauncher.HomeTabPage
 import dev.koga.deeplinklauncher.model.DeepLink
 import dev.koga.deeplinklauncher.model.Folder
+import kotlinx.collections.immutable.ImmutableList
 
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
 @Composable
-fun HomeHorizontalPager(
-    allDeepLinks: List<DeepLink>,
-    favoriteDeepLinks: List<DeepLink>,
-    folders: List<Folder>,
+internal fun HomeHorizontalPager(
+    allDeepLinks: ImmutableList<DeepLink>,
+    favoriteDeepLinks: ImmutableList<DeepLink>,
+    folders: ImmutableList<Folder>,
     pagerState: PagerState,
     scrollBehavior: TopAppBarScrollBehavior,
     paddingBottom: Dp,

@@ -36,6 +36,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -54,9 +55,12 @@ import cafe.adriel.voyager.koin.getScreenModel
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import dev.icerock.moko.resources.compose.painterResource
+import dev.koga.deeplinklauncher.component.DeleteDeepLinkConfirmationBottomSheet
+import dev.koga.deeplinklauncher.folder.SelectFolderBottomSheet
 import dev.koga.deeplinklauncher.model.Folder
 import dev.koga.resources.MR
-import org.jetbrains.compose.resources.ExperimentalResourceApi
+import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.toPersistentList
 import org.koin.core.parameter.parametersOf
 
 class DeepLinkDetailsScreen(private val deepLinkId: String) : Screen {
@@ -119,18 +123,17 @@ class DeepLinkDetailsScreen(private val deepLinkId: String) : Screen {
                 onAddFolder = screenModel::insertFolder,
                 onSelectFolder = screenModel::selectFolder,
                 onRemoveFolder = screenModel::removeFolderFromDeepLink,
-                folders = folders,
+                folders = folders.toPersistentList(),
             )
         }
     }
 }
 
-@OptIn(ExperimentalResourceApi::class)
 @Composable
 fun DeepLinkDetailsScreenContent(
     modifier: Modifier,
     details: DeepLinkDetails,
-    folders: List<Folder>,
+    folders: ImmutableList<Folder>,
     onNameChanged: (String) -> Unit,
     onDescriptionChanged: (String) -> Unit,
     onShare: () -> Unit,

@@ -36,6 +36,7 @@ import dev.koga.deeplinklauncher.component.HomeTabRow
 import dev.koga.deeplinklauncher.component.HomeTopBar
 import dev.koga.deeplinklauncher.provider.DeepLinkClipboardProvider
 import dev.koga.navigation.SharedScreen
+import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.launch
 import org.koin.compose.koinInject
 
@@ -121,9 +122,9 @@ private fun HomeScreenContent() {
             HomeTabRow(pagerState = pagerState)
 
             HomeHorizontalPager(
-                allDeepLinks = allDeepLinks,
-                favoriteDeepLinks = favoriteDeepLinks,
-                folders = folders,
+                allDeepLinks = allDeepLinks.toPersistentList(),
+                favoriteDeepLinks = favoriteDeepLinks.toPersistentList(),
+                folders = folders.toPersistentList(),
                 pagerState = pagerState,
                 scrollBehavior = scrollBehavior,
                 paddingBottom = 320.dp,

@@ -15,11 +15,12 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import kotlinx.collections.immutable.ImmutableList
 
 @Composable
 fun DLLSingleChoiceSegmentedButtonRow(
     modifier: Modifier = Modifier,
-    options: List<String>,
+    options: ImmutableList<String>,
     selectedOption: String,
     onOptionSelected: (String) -> Unit,
 ) {

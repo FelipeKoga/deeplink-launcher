@@ -51,6 +51,8 @@ import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.koin.getScreenModel
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
+import dev.koga.deeplinklauncher.component.DeleteFolderBottomSheet
+import dev.koga.deeplinklauncher.deeplink.DeepLinkItem
 import dev.koga.deeplinklauncher.model.DeepLink
 import dev.koga.deeplinklauncher.provider.DeepLinkClipboardProvider
 import dev.koga.deeplinklauncher.usecase.deeplink.LaunchDeepLink
@@ -84,67 +86,13 @@ class FolderDetailsScreen(private val folderId: String) : Screen {
 
         var showDeleteDialog by remember { mutableStateOf(false) }
         if (showDeleteDialog) {
-            ModalBottomSheet(
+            DeleteFolderBottomSheet(
                 onDismissRequest = { showDeleteDialog = false },
-                sheetState = rememberModalBottomSheetState(
-                    skipPartiallyExpanded = true,
-                ),
-            ) {
-                Column {
-                    Text(
-                        text = "Delete folder",
-                        style = MaterialTheme.typography.titleSmall.copy(
-                            fontWeight = FontWeight.Bold,
-                        ),
-                        modifier = Modifier.padding(24.dp),
-                    )
-
-                    Divider()
-
-                    Text(
-                        text = "Are you sure you want to delete this deep link?",
-                        style = MaterialTheme.typography.bodyMedium,
-                        modifier = Modifier.padding(24.dp),
-                    )
-
-                    Spacer(modifier = Modifier.height(12.dp))
-
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.End,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(24.dp),
-                    ) {
-                        TextButton(
-                            onClick = { showDeleteDialog = false },
-                            modifier = Modifier.padding(start = 12.dp),
-                        ) {
-                            Text(text = "Cancel", fontWeight = FontWeight.Bold)
-                        }
-
-                        Spacer(modifier = Modifier.width(24.dp))
-
-                        FilledTonalButton(
-                            onClick = {
-                                showDeleteDialog = false
-                                screenModel.delete()
-                            },
-                            modifier = Modifier.padding(end = 12.dp),
-                            colors = ButtonDefaults.filledTonalButtonColors(
-                                containerColor = MaterialTheme.colorScheme.errorContainer,
-                            ),
-                        ) {
-                            Text(
-                                text = "Delete",
-                                fontWeight = FontWeight.Bold,
-                            )
-                        }
-                    }
-
-                    Spacer(modifier = Modifier.height(24.dp))
-                }
-            }
+                onDelete = {
+                    showDeleteDialog = false
+                    screenModel.delete()
+                },
+            )
         }
 
         Scaffold(

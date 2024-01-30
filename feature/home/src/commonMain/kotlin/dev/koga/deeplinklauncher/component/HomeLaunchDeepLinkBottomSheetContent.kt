@@ -34,7 +34,7 @@ import dev.koga.resources.MR
 import org.koin.compose.koinInject
 
 @Composable
-fun HomeLaunchDeepLinkBottomSheetContent(
+internal fun HomeLaunchDeepLinkBottomSheetContent(
     modifier: Modifier = Modifier,
     value: String,
     onValueChange: (String) -> Unit,

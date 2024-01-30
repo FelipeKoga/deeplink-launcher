@@ -181,8 +181,8 @@ class ExportScreen : Screen {
                         },
                     ) { index ->
                         when (index) {
-                            0 -> JSONBoxViewer(text = preview.jsonFormat)
-                            1 -> JSONBoxViewer(text = preview.plainTextFormat)
+                            0 -> BoxPreview(text = preview.jsonFormat)
+                            1 -> BoxPreview(text = preview.plainTextFormat)
                         }
                     }
                 }

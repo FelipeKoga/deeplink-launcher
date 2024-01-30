@@ -24,7 +24,7 @@ import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun HomeTabRow(
+internal fun HomeTabRow(
     pagerState: PagerState,
 ) {
     val scope = rememberCoroutineScope()

@@ -1,4 +1,4 @@
-package dev.koga.deeplinklauncher
+package dev.koga.deeplinklauncher.folder
 
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.layout.Arrangement
@@ -27,12 +27,15 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import dev.koga.deeplinklauncher.AddFolderBottomSheetContent
+import dev.koga.deeplinklauncher.DLLTopBar
 import dev.koga.deeplinklauncher.model.Folder
+import kotlinx.collections.immutable.ImmutableList
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SelectFolderBottomSheet(
-    folders: List<Folder>,
+    folders: ImmutableList<Folder>,
     onClick: (Folder) -> Unit,
     onDismissRequest: () -> Unit,
     onAdd: (name: String, description: String) -> Unit,
@@ -51,39 +54,53 @@ fun SelectFolderBottomSheet(
                     },
                 )
             } else {
-                Scaffold(topBar = {
-                    DLLTopBar(title = "Select a folder", actions = {
-                        FilledTonalIconButton(onClick = { showAddFolderUI = true }) {
-                            Icon(imageVector = Icons.Rounded.Add, contentDescription = null)
-                        }
-                    })
-                }) { contentPadding ->
-                    LazyColumn(
-                        modifier = Modifier
-                            .padding(contentPadding)
-                            .fillMaxSize()
-                            .padding(24.dp),
-                        verticalArrangement = Arrangement.spacedBy(12.dp),
-                    ) {
-                        items(folders) {
-                            ElevatedCard(
-                                onClick = { onClick(it) },
-                                modifier = Modifier.fillMaxWidth(),
-                                shape = RoundedCornerShape(24.dp),
-                            ) {
-                                Column(modifier = Modifier.padding(24.dp)) {
-                                    Text(
-                                        text = it.name,
-                                        style = MaterialTheme.typography.titleSmall,
-                                    )
-                                    Spacer(modifier = Modifier.padding(4.dp))
-                                    Text(
-                                        text = "${it.deepLinkCount} deep links",
-                                        style = MaterialTheme.typography.bodyMedium,
-                                    )
-                                }
-                            }
-                        }
+                SelectFolderContent(
+                    folders = folders,
+                    onClick = onClick,
+                    onAdd = { showAddFolderUI = true },
+                )
+            }
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun SelectFolderContent(
+    folders: ImmutableList<Folder>,
+    onClick: (Folder) -> Unit,
+    onAdd: () -> Unit,
+) {
+    Scaffold(topBar = {
+        DLLTopBar(title = "Select a folder", actions = {
+            FilledTonalIconButton(onClick = onAdd) {
+                Icon(imageVector = Icons.Rounded.Add, contentDescription = null)
+            }
+        })
+    }) { contentPadding ->
+        LazyColumn(
+            modifier = Modifier
+                .padding(contentPadding)
+                .fillMaxSize()
+                .padding(24.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp),
+        ) {
+            items(folders) {
+                ElevatedCard(
+                    onClick = { onClick(it) },
+                    modifier = Modifier.fillMaxWidth(),
+                    shape = RoundedCornerShape(24.dp),
+                ) {
+                    Column(modifier = Modifier.padding(24.dp)) {
+                        Text(
+                            text = it.name,
+                            style = MaterialTheme.typography.titleSmall,
+                        )
+                        Spacer(modifier = Modifier.padding(4.dp))
+                        Text(
+                            text = "${it.deepLinkCount} deep links",
+                            style = MaterialTheme.typography.bodyMedium,
+                        )
                     }
                 }
             }

@@ -32,6 +32,7 @@ kotlin {
             implementation(compose.components.resources)
 
             implementation(libs.moko.resources.compose)
+            implementation(libs.kotlinx.immutable)
         }
     }
 }
