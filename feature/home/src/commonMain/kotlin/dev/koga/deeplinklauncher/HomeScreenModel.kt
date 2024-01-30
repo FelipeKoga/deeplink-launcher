@@ -25,10 +25,10 @@ import kotlinx.datetime.Clock
 @OptIn(ExperimentalCoroutinesApi::class)
 class HomeScreenModel(
     getDeepLinksStream: GetDeepLinksStream,
+    getFoldersStream: GetFoldersStream,
     private val upsertDeepLink: UpsertDeepLink,
     private val getDeepLinkByLink: GetDeepLinkByLink,
     private val launchDeepLink: LaunchDeepLink,
-    getFoldersStream: GetFoldersStream,
     private val upsertFolder: UpsertFolder,
 ) : ScreenModel {
 

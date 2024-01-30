@@ -1,15 +1,16 @@
-package dev.koga.deeplinklauncher
+package dev.koga.deeplinklauncher.component
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Clear
-import androidx.compose.material3.Button
+import androidx.compose.material3.FilledTonalIconButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -26,11 +27,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import dev.icerock.moko.resources.compose.painterResource
+import dev.koga.deeplinklauncher.DLLTextField
 import dev.koga.deeplinklauncher.provider.DeepLinkClipboardProvider
+import dev.koga.resources.MR
 import org.koin.compose.koinInject
 
 @Composable
-fun DeepLinkLaunchBottomSheetContent(
+fun HomeLaunchDeepLinkBottomSheetContent(
     modifier: Modifier = Modifier,
     value: String,
     onValueChange: (String) -> Unit,
@@ -51,31 +55,44 @@ fun DeepLinkLaunchBottomSheetContent(
             .fillMaxWidth()
             .padding(start = 24.dp, end = 24.dp, bottom = 24.dp),
     ) {
-        DLLTextField(
-            label = "Enter your deeplink here",
-            value = value,
-            onValueChange = onValueChange,
-            modifier = Modifier.clip(RoundedCornerShape(12.dp)),
-            colors = TextFieldDefaults.colors(
-                focusedIndicatorColor = Color.Transparent,
-                unfocusedIndicatorColor = Color.Transparent,
-                disabledIndicatorColor = Color.Transparent,
-                errorIndicatorColor = Color.Transparent,
-            ),
-            trailingIcon = {
-                AnimatedVisibility(visible = value.isNotEmpty()) {
-                    IconButton(onClick = {
-                        onValueChange("")
-                        focusManager.clearFocus(force = true)
-                    }) {
-                        Icon(
-                            imageVector = Icons.Rounded.Clear,
-                            contentDescription = "Clear",
-                        )
+        Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+            DLLTextField(
+                label = "Enter your deeplink here",
+                value = value,
+                onValueChange = onValueChange,
+                modifier = Modifier.clip(RoundedCornerShape(12.dp)).weight(1f),
+                colors = TextFieldDefaults.colors(
+                    focusedIndicatorColor = Color.Transparent,
+                    unfocusedIndicatorColor = Color.Transparent,
+                    disabledIndicatorColor = Color.Transparent,
+                    errorIndicatorColor = Color.Transparent,
+                ),
+                trailingIcon = {
+                    AnimatedVisibility(visible = value.isNotEmpty()) {
+                        IconButton(onClick = {
+                            onValueChange("")
+                            focusManager.clearFocus(force = true)
+                        }) {
+                            Icon(
+                                imageVector = Icons.Rounded.Clear,
+                                contentDescription = "Clear",
+                            )
+                        }
                     }
-                }
-            },
-        )
+                },
+            )
+
+            Spacer(modifier = Modifier.width(8.dp))
+
+            FilledTonalIconButton(
+                onClick = launch,
+            ) {
+                Icon(
+                    painter = painterResource(MR.images.ic_launch_24dp),
+                    contentDescription = "Launch",
+                )
+            }
+        }
 
         AnimatedVisibility(
             visible = errorMessage != null,
@@ -88,18 +105,6 @@ fun DeepLinkLaunchBottomSheetContent(
                     fontWeight = FontWeight.Bold,
                 ),
             )
-        }
-
-        Spacer(modifier = Modifier.height(12.dp))
-
-        Button(
-            onClick = launch,
-            enabled = value.isNotBlank(),
-            modifier = Modifier
-                .align(Alignment.CenterHorizontally)
-                .fillMaxWidth(.6f),
-        ) {
-            Text(text = "Launch")
         }
     }
 }
