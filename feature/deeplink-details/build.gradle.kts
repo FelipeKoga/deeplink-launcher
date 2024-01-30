@@ -1,3 +1,4 @@
+import extension.binariesFrameworkConfig
 import org.jetbrains.compose.ExperimentalComposeLibrary
 
 plugins {
@@ -6,16 +7,7 @@ plugins {
 }
 
 kotlin {
-    listOf(
-        iosX64(),
-        iosArm64(),
-        iosSimulatorArm64()
-    ).forEach {
-        it.binaries.framework {
-            baseName = "home"
-            isStatic = true
-        }
-    }
+    binariesFrameworkConfig("deeplink-details")
 
     sourceSets {
         commonMain.dependencies {
@@ -42,16 +34,6 @@ kotlin {
 
             implementation(libs.moko.resources.compose)
             implementation(libs.kotlinx.immutable)
-        }
-
-        val androidMain by getting {
-            dependencies {
-                implementation(libs.compose.toolingpreview)
-                implementation(libs.androidx.activity.compose)
-            }
-        }
-
-        commonTest.dependencies {
         }
     }
 }

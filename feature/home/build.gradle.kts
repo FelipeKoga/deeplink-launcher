@@ -1,3 +1,4 @@
+import extension.binariesFrameworkConfig
 import org.jetbrains.compose.ExperimentalComposeLibrary
 
 plugins {
@@ -6,16 +7,7 @@ plugins {
 }
 
 kotlin {
-    listOf(
-        iosX64(),
-        iosArm64(),
-        iosSimulatorArm64()
-    ).forEach {
-        it.binaries.framework {
-            baseName = "home"
-            isStatic = true
-        }
-    }
+    binariesFrameworkConfig("home")
 
     sourceSets {
         commonMain.dependencies {

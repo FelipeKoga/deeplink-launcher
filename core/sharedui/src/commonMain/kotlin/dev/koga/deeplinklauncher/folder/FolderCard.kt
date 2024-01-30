@@ -50,12 +50,12 @@ fun FolderCard(folder: Folder, onClick: (Folder) -> Unit) {
             Text(
                 text = MR.plurals.folder_deeplink_count.format(
                     folder.deepLinkCount,
-                    folder.deepLinkCount
+                    folder.deepLinkCount,
                 ).toString(),
                 style = MaterialTheme.typography.bodySmall.copy(
                     fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.onBackground.copy(alpha = .5f)
-                )
+                    color = MaterialTheme.colorScheme.onBackground.copy(alpha = .5f),
+                ),
             )
         }
     }

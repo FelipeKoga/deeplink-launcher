@@ -1,3 +1,4 @@
+import extension.binariesFrameworkConfig
 import org.jetbrains.compose.ExperimentalComposeLibrary
 
 plugins {
@@ -6,16 +7,7 @@ plugins {
 }
 
 kotlin {
-    listOf(
-        iosX64(),
-        iosArm64(),
-        iosSimulatorArm64()
-    ).forEach {
-        it.binaries.framework {
-            baseName = "home"
-            isStatic = true
-        }
-    }
+    binariesFrameworkConfig("import")
 
     sourceSets {
         commonMain.dependencies {
@@ -24,8 +16,8 @@ kotlin {
             implementation(projects.core.navigation)
             implementation(projects.core.sharedui)
 
-            implementation("com.darkrockstudios:mpfilepicker:3.1.0")
             implementation(libs.kotlinx.coroutines.core)
+            implementation(libs.kotlinx.immutable)
 
             implementation(libs.koin.compose)
 
