@@ -7,6 +7,9 @@ import dev.koga.deeplinklauncher.usecase.folder.DeleteFolder
 import dev.koga.deeplinklauncher.usecase.folder.GetFolderById
 import dev.koga.deeplinklauncher.usecase.folder.GetFolderDeepLinksStream
 import dev.koga.deeplinklauncher.usecase.folder.UpsertFolder
+import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.persistentListOf
+import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -33,7 +36,7 @@ class FolderDetailsScreenModel(
             FolderDetails(
                 name = it.name,
                 description = it.description.orEmpty(),
-                deepLinks = emptyList(),
+                deepLinks = persistentListOf(),
             )
         },
     )
@@ -49,7 +52,7 @@ class FolderDetailsScreenModel(
         deepLinks,
     ) { form, deepLinks ->
         form.copy(
-            deepLinks = deepLinks,
+            deepLinks = deepLinks.toPersistentList(),
         )
     }.stateIn(
         scope = screenModelScope,
@@ -88,5 +91,5 @@ class FolderDetailsScreenModel(
 data class FolderDetails(
     val name: String,
     val description: String,
-    val deepLinks: List<DeepLink>,
+    val deepLinks: ImmutableList<DeepLink>,
 )

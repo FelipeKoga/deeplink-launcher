@@ -1,6 +1,7 @@
 package dev.koga.deeplinklauncher
 
 import androidx.compose.animation.AnimatedContent
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -28,6 +29,7 @@ import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -50,8 +52,10 @@ import dev.koga.deeplinklauncher.component.DeleteFolderBottomSheet
 import dev.koga.deeplinklauncher.deeplink.DeepLinkItem
 import dev.koga.deeplinklauncher.model.DeepLink
 import dev.koga.deeplinklauncher.provider.DeepLinkClipboardProvider
+import dev.koga.deeplinklauncher.theme.LocalDimensions
 import dev.koga.deeplinklauncher.usecase.deeplink.LaunchDeepLink
 import dev.koga.navigation.SharedScreen
+import kotlinx.collections.immutable.ImmutableList
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import org.koin.compose.koinInject
@@ -150,167 +154,222 @@ fun FolderDetailsScreenContent(
     onDeepLinkLaunch: (DeepLink) -> Unit,
     onDeepLinkCopy: (DeepLink) -> Unit,
 ) {
+
+    val dimensions = LocalDimensions.current
+
+    Column(modifier = Modifier.padding(horizontal = dimensions.extraLarge)) {
+        Spacer(modifier = Modifier.height(dimensions.extraLarge))
+
+        FolderNameContent(
+            name = form.name,
+            onEditName = onEditName,
+        )
+
+        Spacer(modifier = Modifier.height(dimensions.extraLarge))
+
+        FolderDescriptionContent(
+            description = form.description,
+            onEditDescription = onEditDescription,
+        )
+
+        Divider(modifier = Modifier.padding(vertical = dimensions.extraLarge))
+
+        FolderDeepLinks(
+            deepLinks = form.deepLinks,
+            onClick = onDeepLinkClick,
+            onLaunch = onDeepLinkLaunch,
+            onCopy = onDeepLinkCopy
+        )
+    }
+}
+
+
+@Composable
+fun FolderNameContent(
+    name: String,
+    onEditName: (String) -> Unit,
+) {
+    val dimensions = LocalDimensions.current
+
     var showEditNameInput by rememberSaveable {
         mutableStateOf(false)
     }
+
+    val folderName by rememberSaveable(name) {
+        mutableStateOf(name)
+    }
+
+    AnimatedContent(
+        targetState = showEditNameInput,
+        label = "",
+    ) { target ->
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween,
+        ) {
+            when (target) {
+                true -> {
+                    DLLTextField(
+                        label = "Folder name",
+                        value = folderName,
+                        onValueChange = onEditName,
+                        trailingIcon = {
+                            IconButton(
+                                onClick = { showEditNameInput = false },
+                                modifier = Modifier.size(18.dp),
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Rounded.Done,
+                                    contentDescription = "Edit name",
+                                )
+                            }
+                        },
+                    )
+                }
+
+                false -> {
+                    Text(
+                        text = name,
+                        style = MaterialTheme.typography.headlineSmall.copy(
+                            fontWeight = FontWeight.Bold,
+                        ),
+                    )
+
+                    Spacer(modifier = Modifier.width(dimensions.mediumLarge))
+
+                    IconButton(
+                        onClick = { showEditNameInput = true },
+                        modifier = Modifier.size(18.dp),
+                        colors = IconButtonDefaults.iconButtonColors(
+                            contentColor = MaterialTheme.colorScheme.secondary,
+                        ),
+                    ) {
+                        Icon(
+                            imageVector = Icons.Rounded.Edit,
+                            contentDescription = "Edit name",
+                        )
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun FolderDescriptionContent(
+    description: String,
+    onEditDescription: (String) -> Unit,
+) {
+    val dimensions = LocalDimensions.current
 
     var showEditDescriptionInput by rememberSaveable {
         mutableStateOf(false)
     }
 
-    val folderName by rememberSaveable(form.name) {
-        mutableStateOf(form.name)
+    val folderDescription by rememberSaveable(description) {
+        mutableStateOf(description)
     }
 
-    val folderDescription by rememberSaveable(form.description) {
-        mutableStateOf(form.description)
-    }
-
-    Column(modifier = Modifier.padding(24.dp)) {
-        AnimatedContent(
-            targetState = showEditNameInput,
-            label = "",
-        ) { target ->
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween,
-            ) {
-                when (target) {
-                    true -> {
-                        DLLTextField(
-                            label = "Folder name",
-                            value = folderName,
-                            onValueChange = onEditName,
-                            trailingIcon = {
-                                IconButton(
-                                    onClick = { showEditNameInput = false },
-                                    modifier = Modifier.size(18.dp),
-                                ) {
-                                    Icon(
-                                        imageVector = Icons.Rounded.Done,
-                                        contentDescription = "Edit name",
-                                    )
-                                }
-                            },
-                        )
-                    }
-
-                    false -> {
-                        Text(
-                            text = form.name,
-                            style = MaterialTheme.typography.headlineSmall.copy(
-                                fontWeight = FontWeight.Bold,
-                            ),
-                        )
-
-                        Spacer(modifier = Modifier.width(12.dp))
-
-                        IconButton(
-                            onClick = { showEditNameInput = true },
-                            modifier = Modifier.size(18.dp),
-                            colors = IconButtonDefaults.iconButtonColors(
-                                contentColor = MaterialTheme.colorScheme.secondary,
-                            ),
-                        ) {
-                            Icon(
-                                imageVector = Icons.Rounded.Edit,
-                                contentDescription = "Edit name",
-                            )
-                        }
-                    }
-                }
-            }
-        }
-
-        Spacer(modifier = Modifier.height(24.dp))
-
-        AnimatedContent(
-            targetState = showEditDescriptionInput,
-            label = "",
-        ) { target ->
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween,
-            ) {
-                when (target) {
-                    true -> {
-                        DLLTextField(
-                            label = "Folder description",
-                            value = folderDescription,
-                            onValueChange = onEditDescription,
-                            trailingIcon = {
-                                IconButton(
-                                    onClick = { showEditDescriptionInput = false },
-                                    modifier = Modifier.size(18.dp),
-                                ) {
-                                    Icon(
-                                        imageVector = Icons.Rounded.Done,
-                                        contentDescription = "Edit name",
-                                    )
-                                }
-                            },
-                        )
-                    }
-
-                    false -> {
-                        Text(
-                            text = form.description.ifEmpty { "No description" },
-                            style = MaterialTheme.typography.bodySmall,
-                            modifier = Modifier.weight(1f),
-                        )
-
-                        Spacer(modifier = Modifier.width(12.dp))
-
-                        IconButton(
-                            onClick = { showEditDescriptionInput = true },
-                            modifier = Modifier.size(18.dp),
-                            colors = IconButtonDefaults.iconButtonColors(
-                                contentColor = MaterialTheme.colorScheme.secondary,
-                            ),
-                        ) {
-                            Icon(
-                                imageVector = Icons.Rounded.Edit,
-                                contentDescription = "Edit description",
-                            )
-                        }
-                    }
-                }
-            }
-        }
-
-        Divider(modifier = Modifier.padding(vertical = 24.dp))
-
-        if (form.deepLinks.isEmpty()) {
-            Text(
-                text = "No deeplinks vinculated to this folder",
-                style = MaterialTheme.typography.bodyMedium.copy(
-                    fontWeight = FontWeight.Normal,
-                ),
-            )
-        } else {
-            Text(
-                text = "Deeplinks",
-                style = MaterialTheme.typography.titleSmall.copy(
-                    fontWeight = FontWeight.Bold,
-                ),
-            )
-
-            Spacer(modifier = Modifier.padding(8.dp))
-
-            LazyColumn(
-                verticalArrangement = Arrangement.spacedBy(24.dp),
-            ) {
-                items(form.deepLinks) { deepLink ->
-                    DeepLinkItem(
-                        deepLink = deepLink,
-                        onClick = onDeepLinkClick,
-                        onLaunch = onDeepLinkLaunch,
-                        onCopy = onDeepLinkCopy,
+    AnimatedContent(
+        targetState = showEditDescriptionInput,
+        label = "",
+    ) { target ->
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween,
+        ) {
+            when (target) {
+                true -> {
+                    DLLTextField(
+                        label = "Folder description",
+                        value = folderDescription,
+                        onValueChange = onEditDescription,
+                        trailingIcon = {
+                            IconButton(
+                                onClick = { showEditDescriptionInput = false },
+                                modifier = Modifier.size(18.dp),
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Rounded.Done,
+                                    contentDescription = "Edit name",
+                                )
+                            }
+                        },
                     )
                 }
+
+                false -> {
+                    Text(
+                        text = description.ifEmpty { "No description" },
+                        style = MaterialTheme.typography.bodySmall,
+                        modifier = Modifier.weight(1f),
+                    )
+
+                    Spacer(modifier = Modifier.width(dimensions.mediumLarge))
+
+                    IconButton(
+                        onClick = { showEditDescriptionInput = true },
+                        modifier = Modifier.size(18.dp),
+                        colors = IconButtonDefaults.iconButtonColors(
+                            contentColor = MaterialTheme.colorScheme.secondary,
+                        ),
+                    ) {
+                        Icon(
+                            imageVector = Icons.Rounded.Edit,
+                            contentDescription = "Edit description",
+                        )
+                    }
+                }
             }
         }
     }
+}
+
+@OptIn(ExperimentalFoundationApi::class)
+@Composable
+private fun FolderDeepLinks(
+    deepLinks: ImmutableList<DeepLink>,
+    onClick: (DeepLink) -> Unit,
+    onLaunch: (DeepLink) -> Unit,
+    onCopy: (DeepLink) -> Unit,
+) {
+    val dimensions = LocalDimensions.current
+
+    if (deepLinks.isEmpty()) {
+        Text(
+            text = "No deeplinks vinculated to this folder",
+            style = MaterialTheme.typography.bodyMedium.copy(
+                fontWeight = FontWeight.Normal,
+            ),
+        )
+    } else {
+        Text(
+            text = "Deeplinks",
+            style = MaterialTheme.typography.titleMedium.copy(
+                fontWeight = FontWeight.Bold,
+            ),
+        )
+
+        Spacer(modifier = Modifier.height(dimensions.extraLarge))
+
+        LazyColumn(
+            verticalArrangement = Arrangement.spacedBy(dimensions.extraLarge),
+        ) {
+            items(deepLinks) { deepLink ->
+                DeepLinkItem(
+                    deepLink = deepLink,
+                    onClick = onClick,
+                    onLaunch = onLaunch,
+                    onCopy = onCopy,
+                )
+            }
+
+            item {
+                Spacer(modifier = Modifier.height(dimensions.extraLarge))
+            }
+        }
+    }
+
 }
