@@ -27,7 +27,7 @@ org-jetbrains-kotlin-jvm = "1.9.20"
 
 moko_resources = "0.23.0"
 
-ktlint = "10.2.0"
+ktlint = "0.50.0"
 detekt = "1.22.0"
 composerules = "0.0.26"
 
