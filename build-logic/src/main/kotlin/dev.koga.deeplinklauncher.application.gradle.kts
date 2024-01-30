@@ -7,6 +7,7 @@ import java.util.Properties
 plugins {
     id("com.android.application")
     id("kotlin-android")
+    id("dev.koga.deeplinklauncher.code-analysis")
 }
 
 val keystoreProperties = Properties()

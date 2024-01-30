@@ -2,13 +2,13 @@ package dev.koga.deeplinklauncher
 
 import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.screenModelScope
-import dev.koga.deeplinklauncher.usecase.deeplink.LaunchDeepLink
-import dev.koga.deeplinklauncher.usecase.deeplink.LaunchDeepLinkResult
 import dev.koga.deeplinklauncher.model.DeepLink
 import dev.koga.deeplinklauncher.model.Folder
 import dev.koga.deeplinklauncher.provider.UUIDProvider
 import dev.koga.deeplinklauncher.usecase.deeplink.GetDeepLinkByLink
 import dev.koga.deeplinklauncher.usecase.deeplink.GetDeepLinksStream
+import dev.koga.deeplinklauncher.usecase.deeplink.LaunchDeepLink
+import dev.koga.deeplinklauncher.usecase.deeplink.LaunchDeepLinkResult
 import dev.koga.deeplinklauncher.usecase.deeplink.UpsertDeepLink
 import dev.koga.deeplinklauncher.usecase.folder.GetFoldersStream
 import dev.koga.deeplinklauncher.usecase.folder.UpsertFolder
@@ -37,7 +37,7 @@ class HomeScreenModel(
     val deepLinks = getDeepLinksStream().stateIn(
         scope = screenModelScope,
         started = SharingStarted.WhileSubscribed(),
-        initialValue = emptyList()
+        initialValue = emptyList(),
     )
 
     val favoriteDeepLinks = deepLinks.mapLatest { deepLinks ->
@@ -45,15 +45,14 @@ class HomeScreenModel(
     }.stateIn(
         scope = screenModelScope,
         started = SharingStarted.WhileSubscribed(),
-        initialValue = emptyList()
+        initialValue = emptyList(),
     )
 
     val folders = getFoldersStream().stateIn(
         scope = screenModelScope,
         started = SharingStarted.WhileSubscribed(),
-        initialValue = emptyList()
+        initialValue = emptyList(),
     )
-
 
     private val dispatchErrorMessage = MutableStateFlow<String?>(null)
     val errorMessage = dispatchErrorMessage.asStateFlow()
@@ -68,8 +67,8 @@ class HomeScreenModel(
                     description = null,
                     createdAt = Clock.System.now(),
                     folder = null,
-                    isFavorite = false
-                )
+                    isFavorite = false,
+                ),
             )
         }
     }
@@ -113,8 +112,8 @@ class HomeScreenModel(
                 id = UUIDProvider.get(),
                 name = name,
                 description = description,
-                deepLinkCount = 0
-            )
+                deepLinkCount = 0,
+            ),
         )
     }
 }

@@ -9,7 +9,7 @@ import kotlinx.serialization.json.Json
 import java.io.File
 
 actual class ImportDeepLinks(
-    private val dataSource: DeepLinkDataSource
+    private val dataSource: DeepLinkDataSource,
 ) {
 
     actual fun invoke(filePath: String, fileType: FileType): ImportDeepLinksOutput {
@@ -27,7 +27,7 @@ actual class ImportDeepLinks(
 
                     if (invalidDeepLinks.isNotEmpty()) {
                         return ImportDeepLinksOutput.Error.InvalidDeepLinksFound(
-                            invalidDeepLinks.map { it.link }
+                            invalidDeepLinks.map { it.link },
                         )
                     }
 
@@ -52,7 +52,7 @@ actual class ImportDeepLinks(
                             isFavorite = newDeepLinkDto.isFavorite ?: databaseDeepLink.isFavorite,
                             createdAt = newDeepLinkDto.createdAt?.toInstant()
                                 ?: databaseDeepLink.createdAt,
-                            folder = newDeepLinkDto.folder?.toFolder() ?: databaseDeepLink.folder
+                            folder = newDeepLinkDto.folder?.toFolder() ?: databaseDeepLink.folder,
                         )
                     }
 
@@ -78,10 +78,9 @@ actual class ImportDeepLinks(
 
                     if (invalidDeepLinks.isNotEmpty()) {
                         return ImportDeepLinksOutput.Error.InvalidDeepLinksFound(
-                            invalidDeepLinks
+                            invalidDeepLinks,
                         )
                     }
-
 
                     newDeepLinksTexts.map(String::toDeepLink).forEach {
                         dataSource.upsertDeepLink(it)

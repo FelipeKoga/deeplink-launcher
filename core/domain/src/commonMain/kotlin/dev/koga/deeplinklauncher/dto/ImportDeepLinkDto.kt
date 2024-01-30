@@ -13,7 +13,6 @@ data class ImportDeepLinkDto(
     val isFavorite: Boolean?,
 )
 
-
 @Serializable
 data class ImportFolderDto(
     val id: String?,

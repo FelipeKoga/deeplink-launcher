@@ -1,10 +1,9 @@
 package dev.koga.deeplinklauncher.database
 
-import app.cash.sqldelight.db.SqlDriver
 import android.content.Context
+import app.cash.sqldelight.db.SqlDriver
 import app.cash.sqldelight.driver.android.AndroidSqliteDriver
 import dev.koga.deeplinklauncher.constant.defaultDeepLink
-import kotlinx.datetime.Clock
 import dev.koga.deeplinklauncher.model.DeepLink as DomainDeepLink
 
 internal class AndroidDriverFactory(
@@ -18,6 +17,6 @@ internal class AndroidDriverFactory(
         !context.getDatabasePath(databaseName).exists()
 
     override fun getPrepopulateData(): List<DomainDeepLink> = listOf(
-        defaultDeepLink
+        defaultDeepLink,
     )
 }

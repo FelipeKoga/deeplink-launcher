@@ -9,15 +9,14 @@ import dev.koga.deeplinklauncher.di.folderDetailsModule
 import dev.koga.deeplinklauncher.di.importModule
 import dev.koga.deeplinklauncher.navigation.deepLinkDetailsScreenModule
 import dev.koga.deeplinklauncher.navigation.exportScreenModule
-import dev.koga.deeplinklauncher.navigation.importScreenModule
 import dev.koga.deeplinklauncher.navigation.folderDetailsScreenModule
 import dev.koga.deeplinklauncher.navigation.homeScreenModule
+import dev.koga.deeplinklauncher.navigation.importScreenModule
 import org.koin.core.context.startKoin
 import org.koin.core.module.Module
 import org.koin.dsl.module
 
 fun initKoin(appModule: Module = module {}) {
-
     ScreenRegistry {
         exportScreenModule()
         importScreenModule()

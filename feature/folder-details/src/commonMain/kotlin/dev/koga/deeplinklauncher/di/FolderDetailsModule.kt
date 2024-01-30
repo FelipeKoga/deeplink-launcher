@@ -10,7 +10,7 @@ val folderDetailsModule = module {
             deleteFolder = get(),
             getFolderById = get(),
             getFolderDeepLinksStream = get(),
-            upsertFolder = get()
+            upsertFolder = get(),
         )
     }
 }

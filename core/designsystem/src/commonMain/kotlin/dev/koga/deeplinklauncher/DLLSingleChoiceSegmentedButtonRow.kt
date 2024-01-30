@@ -21,7 +21,7 @@ fun DLLSingleChoiceSegmentedButtonRow(
     modifier: Modifier = Modifier,
     options: List<String>,
     selectedOption: String,
-    onOptionSelected: (String) -> Unit
+    onOptionSelected: (String) -> Unit,
 ) {
     val scrollState = rememberScrollState()
 
@@ -29,9 +29,9 @@ fun DLLSingleChoiceSegmentedButtonRow(
         modifier = modifier.horizontalScroll(scrollState).border(
             width = 1.dp,
             color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.12f),
-            shape = RoundedCornerShape(24.dp)
+            shape = RoundedCornerShape(24.dp),
         ),
-        horizontalArrangement = Arrangement.Center
+        horizontalArrangement = Arrangement.Center,
     ) {
         options.forEach { option ->
             val isSelected = option == selectedOption
@@ -39,18 +39,27 @@ fun DLLSingleChoiceSegmentedButtonRow(
             OutlinedButton(
                 onClick = { onOptionSelected(option) },
                 colors = ButtonDefaults.outlinedButtonColors(
-                    containerColor = if (isSelected) MaterialTheme.colorScheme.primary.copy(alpha = 0.12f)
-                    else MaterialTheme.colorScheme.surface,
-                    contentColor = if (isSelected) MaterialTheme.colorScheme.primary
-                    else MaterialTheme.colorScheme.onSurface
+                    containerColor = if (isSelected) {
+                        MaterialTheme.colorScheme.primary.copy(alpha = 0.12f)
+                    } else {
+                        MaterialTheme.colorScheme.surface
+                    },
+                    contentColor = if (isSelected) {
+                        MaterialTheme.colorScheme.primary
+                    } else {
+                        MaterialTheme.colorScheme.onSurface
+                    },
                 ),
-                border = if (isSelected) BorderStroke(1.dp, MaterialTheme.colorScheme.primary)
-                else null,
-                modifier = Modifier.padding(horizontal = 4.dp)
+                border = if (isSelected) {
+                    BorderStroke(1.dp, MaterialTheme.colorScheme.primary)
+                } else {
+                    null
+                },
+                modifier = Modifier.padding(horizontal = 4.dp),
             ) {
                 Text(
                     text = option,
-                    style = MaterialTheme.typography.bodyMedium
+                    style = MaterialTheme.typography.bodyMedium,
                 )
             }
         }

@@ -45,13 +45,13 @@ fun ImportDeepLinkDto.toDeepLink() = DeepLink(
             id = folder.id ?: UUIDProvider.get(),
             name = folder.name,
             description = folder.description,
-            deepLinkCount = 0
+            deepLinkCount = 0,
         )
-    }
+    },
 )
 
 fun ImportFolderDto.toFolder() = Folder(
     id = id ?: UUIDProvider.get(),
-    name =name,
+    name = name,
     description = description,
 )

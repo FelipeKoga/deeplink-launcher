@@ -11,5 +11,4 @@ actual class DeepLinkClipboardProvider {
 
     actual fun dismissDeepLink() {
     }
-
 }

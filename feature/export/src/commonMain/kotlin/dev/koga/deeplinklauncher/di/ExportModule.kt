@@ -7,7 +7,7 @@ val exportModule = module {
     factory {
         ExportScreenModel(
             getDeepLinksPlainTextPreview = get(),
-            getDeepLinksJsonPreview = get()
+            getDeepLinksJsonPreview = get(),
         )
     }
 }

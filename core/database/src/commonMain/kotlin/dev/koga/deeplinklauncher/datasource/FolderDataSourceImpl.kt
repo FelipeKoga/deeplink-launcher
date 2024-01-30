@@ -13,7 +13,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.datetime.Instant
 
 internal class FolderDataSourceImpl(
-    private val databaseProvider: DatabaseProvider
+    private val databaseProvider: DatabaseProvider,
 ) : FolderDataSource {
 
     private val database: DeepLinkLauncherDatabase
@@ -31,10 +31,9 @@ internal class FolderDataSourceImpl(
                         id = it.id,
                         name = it.name,
                         description = it.description,
-                        deepLinkCount = it.deeplinkCount.toInt()
+                        deepLinkCount = it.deeplinkCount.toInt(),
                     )
                 }
-
             }
     }
 
@@ -67,7 +66,7 @@ internal class FolderDataSourceImpl(
                     id = it.id,
                     name = it.name,
                     description = it.description,
-                    deepLinkCount = it.deeplinkCount.toInt()
+                    deepLinkCount = it.deeplinkCount.toInt(),
                 )
             }
     }

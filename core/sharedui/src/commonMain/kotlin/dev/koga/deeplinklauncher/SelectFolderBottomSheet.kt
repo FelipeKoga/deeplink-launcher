@@ -37,7 +37,6 @@ fun SelectFolderBottomSheet(
     onDismissRequest: () -> Unit,
     onAdd: (name: String, description: String) -> Unit,
 ) {
-
     var showAddFolderUI by rememberSaveable {
         mutableStateOf(folders.isEmpty())
     }
@@ -49,7 +48,7 @@ fun SelectFolderBottomSheet(
                     onAdd = { name, description ->
                         showAddFolderUI = false
                         onAdd(name, description)
-                    }
+                    },
                 )
             } else {
                 Scaffold(topBar = {
@@ -70,28 +69,24 @@ fun SelectFolderBottomSheet(
                             ElevatedCard(
                                 onClick = { onClick(it) },
                                 modifier = Modifier.fillMaxWidth(),
-                                shape = RoundedCornerShape(24.dp)
+                                shape = RoundedCornerShape(24.dp),
                             ) {
                                 Column(modifier = Modifier.padding(24.dp)) {
                                     Text(
                                         text = it.name,
-                                        style = MaterialTheme.typography.titleSmall
+                                        style = MaterialTheme.typography.titleSmall,
                                     )
                                     Spacer(modifier = Modifier.padding(4.dp))
                                     Text(
                                         text = "${it.deepLinkCount} deep links",
-                                        style = MaterialTheme.typography.bodyMedium
+                                        style = MaterialTheme.typography.bodyMedium,
                                     )
                                 }
                             }
                         }
                     }
-
                 }
             }
-
         }
-
-
     }
 }

@@ -4,10 +4,10 @@ import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.screenModelScope
 import dev.koga.deeplinklauncher.model.Folder
 import dev.koga.deeplinklauncher.provider.UUIDProvider
-import dev.koga.deeplinklauncher.usecase.deeplink.LaunchDeepLink
-import dev.koga.deeplinklauncher.usecase.deeplink.ShareDeepLink
 import dev.koga.deeplinklauncher.usecase.deeplink.DeleteDeepLink
 import dev.koga.deeplinklauncher.usecase.deeplink.GetDeepLinkById
+import dev.koga.deeplinklauncher.usecase.deeplink.LaunchDeepLink
+import dev.koga.deeplinklauncher.usecase.deeplink.ShareDeepLink
 import dev.koga.deeplinklauncher.usecase.deeplink.UpsertDeepLink
 import dev.koga.deeplinklauncher.usecase.folder.GetFoldersStream
 import dev.koga.deeplinklauncher.usecase.folder.UpsertFolder
@@ -34,7 +34,7 @@ class DeepLinkDetailScreenModel(
     val folders = getFoldersStream().stateIn(
         scope = screenModelScope,
         started = SharingStarted.WhileSubscribed(),
-        initialValue = emptyList()
+        initialValue = emptyList(),
     )
 
     val details = MutableStateFlow(
@@ -46,7 +46,7 @@ class DeepLinkDetailScreenModel(
             link = deepLink.link,
             isFavorite = deepLink.isFavorite,
             deleted = false,
-        )
+        ),
     )
 
     init {
@@ -62,10 +62,9 @@ class DeepLinkDetailScreenModel(
                     description = it.description.ifEmpty { null },
                     folder = it.folder,
                     isFavorite = it.isFavorite,
-                )
+                ),
             )
         }.launchIn(screenModelScope)
-
     }
 
     fun updateDeepLinkName(s: String) {
@@ -115,7 +114,6 @@ class DeepLinkDetailScreenModel(
     fun removeFolderFromDeepLink() {
         details.update { it.copy(folder = null) }
     }
-
 }
 
 data class DeepLinkDetails(

@@ -28,19 +28,19 @@ fun DeleteDeepLinkConfirmationBottomSheet(
     onDismissRequest: () -> Unit,
     onDelete: () -> Unit,
 ) {
-
     ModalBottomSheet(
-        onDismissRequest = onDismissRequest, sheetState = rememberModalBottomSheetState(
-            skipPartiallyExpanded = true
-        )
+        onDismissRequest = onDismissRequest,
+        sheetState = rememberModalBottomSheetState(
+            skipPartiallyExpanded = true,
+        ),
     ) {
         Column {
             Text(
                 text = "Delete Deep Link",
                 style = MaterialTheme.typography.titleSmall.copy(
-                    fontWeight = FontWeight.Bold
+                    fontWeight = FontWeight.Bold,
                 ),
-                modifier = Modifier.padding(24.dp)
+                modifier = Modifier.padding(24.dp),
             )
 
             Divider()
@@ -48,7 +48,7 @@ fun DeleteDeepLinkConfirmationBottomSheet(
             Text(
                 text = "Are you sure you want to delete this deep link?",
                 style = MaterialTheme.typography.bodyMedium,
-                modifier = Modifier.padding(24.dp)
+                modifier = Modifier.padding(24.dp),
             )
 
             Spacer(modifier = Modifier.height(12.dp))
@@ -57,13 +57,11 @@ fun DeleteDeepLinkConfirmationBottomSheet(
                 horizontalArrangement = Arrangement.End,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(24.dp)
+                    .padding(24.dp),
             ) {
-
-
                 TextButton(
                     onClick = onDismissRequest,
-                    modifier = Modifier.padding(start = 12.dp)
+                    modifier = Modifier.padding(start = 12.dp),
                 ) {
                     Text(text = "Cancel", fontWeight = FontWeight.Bold)
                 }
@@ -74,8 +72,8 @@ fun DeleteDeepLinkConfirmationBottomSheet(
                     onClick = onDelete,
                     modifier = Modifier.padding(end = 12.dp),
                     colors = ButtonDefaults.filledTonalButtonColors(
-                        containerColor = MaterialTheme.colorScheme.errorContainer
-                    )
+                        containerColor = MaterialTheme.colorScheme.errorContainer,
+                    ),
                 ) {
                     Text(text = "Delete")
                 }

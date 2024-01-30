@@ -72,14 +72,14 @@ class ExportScreen : Screen {
                 DLLTopBar(
                     scrollBehavior = scrollBehavior,
                     title = "Export DeepLinks",
-                    onBack = navigator::pop
+                    onBack = navigator::pop,
                 )
             },
             bottomBar = {
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .background(MaterialTheme.colorScheme.surface)
+                        .background(MaterialTheme.colorScheme.surface),
                 ) {
                     Divider()
 
@@ -94,7 +94,7 @@ class ExportScreen : Screen {
                                         0 -> FileType.JSON
                                         1 -> FileType.TXT
                                         else -> throw IllegalStateException("Invalid index")
-                                    }
+                                    },
                                 )
 
                                 when (response) {
@@ -103,19 +103,19 @@ class ExportScreen : Screen {
                                     )
 
                                     is ExportDeepLinksOutput.Error -> snackbarHostState.showSnackbar(
-                                        message = "Something went wrong. "
+                                        message = "Something went wrong. ",
                                     )
 
                                     ExportDeepLinksOutput.Success -> {
                                         snackbarHostState.showSnackbar(
                                             message = "DeepLinks exported successfully. " +
-                                                    "Check your downloads folder.",
-                                            duration = SnackbarDuration.Short
+                                                "Check your downloads folder.",
+                                            duration = SnackbarDuration.Short,
                                         )
                                     }
                                 }
                             }
-                        }
+                        },
                     ) {
                         Text("Export")
                     }
@@ -127,7 +127,7 @@ class ExportScreen : Screen {
             Box(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(contentPadding)
+                    .padding(contentPadding),
             ) {
                 Column(
                     modifier = Modifier
@@ -135,14 +135,13 @@ class ExportScreen : Screen {
                         .nestedScroll(scrollBehavior.nestedScrollConnection)
                         .padding(horizontal = 24.dp)
                         .padding(top = 8.dp)
-                        .verticalScroll(rememberScrollState())
+                        .verticalScroll(rememberScrollState()),
                 ) {
-
                     Text(
                         text = "Select the file type to export",
                         style = MaterialTheme.typography.titleMedium.copy(
-                            fontWeight = FontWeight.Bold
-                        )
+                            fontWeight = FontWeight.Bold,
+                        ),
                     )
 
                     Spacer(modifier = Modifier.height(16.dp))
@@ -151,7 +150,7 @@ class ExportScreen : Screen {
                         modifier = Modifier.align(Alignment.CenterHorizontally),
                         options = options,
                         selectedOption = options[selectedIndex],
-                        onOptionSelected = { selectedIndex = options.indexOf(it) }
+                        onOptionSelected = { selectedIndex = options.indexOf(it) },
 
                     )
 
@@ -160,24 +159,26 @@ class ExportScreen : Screen {
                     Text(
                         text = "Preview",
                         style = MaterialTheme.typography.titleMedium.copy(
-                            fontWeight = FontWeight.Bold
-                        )
+                            fontWeight = FontWeight.Bold,
+                        ),
                     )
 
                     Spacer(modifier = Modifier.height(8.dp))
 
-                    AnimatedContent(targetState = selectedIndex, label = "",
+                    AnimatedContent(
+                        targetState = selectedIndex,
+                        label = "",
                         transitionSpec = {
                             if (targetState > initialState) {
                                 slideInHorizontally { width -> width } + fadeIn() togetherWith
-                                        slideOutHorizontally { width -> -width } + fadeOut()
+                                    slideOutHorizontally { width -> -width } + fadeOut()
                             } else {
                                 slideInHorizontally { width -> -width } + fadeIn() togetherWith
-                                        slideOutHorizontally { width -> width } + fadeOut()
+                                    slideOutHorizontally { width -> width } + fadeOut()
                             }.using(
-                                SizeTransform(clip = false)
+                                SizeTransform(clip = false),
                             )
-                        }
+                        },
                     ) { index ->
                         when (index) {
                             0 -> JSONBoxViewer(text = preview.jsonFormat)

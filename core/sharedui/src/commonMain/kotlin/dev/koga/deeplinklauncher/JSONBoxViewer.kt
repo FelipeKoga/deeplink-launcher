@@ -26,16 +26,17 @@ fun JSONBoxViewer(text: String) {
             .clip(RoundedCornerShape(12.dp))
             .background(MaterialTheme.colorScheme.background)
             .horizontalScroll(
-                rememberScrollState()
-            )
+                rememberScrollState(),
+            ),
     ) {
         Text(
-            text = text, modifier = Modifier.padding(24.dp),
+            text = text,
+            modifier = Modifier.padding(24.dp),
             style = TextStyle(
                 fontFamily = FontFamily.Monospace,
                 fontSize = 14.sp,
-                fontWeight = FontWeight.Normal
-            )
+                fontWeight = FontWeight.Normal,
+            ),
         )
     }
 }

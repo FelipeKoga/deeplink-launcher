@@ -45,7 +45,7 @@ fun DLLSearchBar(
         value = value,
         onValueChange = onChanged,
         keyboardOptions = KeyboardOptions.Default.copy(
-            imeAction = ImeAction.Search
+            imeAction = ImeAction.Search,
         ),
         modifier = modifier
             .fillMaxWidth()
@@ -68,24 +68,30 @@ fun DLLSearchBar(
             Icon(
                 imageVector = Icons.Rounded.Search,
                 contentDescription = "",
-                tint = if (isFocused) MaterialTheme.colorScheme.primary
-                else LocalContentColor.current
+                tint = if (isFocused) {
+                    MaterialTheme.colorScheme.primary
+                } else {
+                    LocalContentColor.current
+                },
             )
         },
         trailingIcon = {
             AnimatedVisibility(
-                visible = isFocused
+                visible = isFocused,
             ) {
                 Icon(
                     imageVector = Icons.Rounded.Close,
                     contentDescription = "",
-                    tint = if (isFocused) MaterialTheme.colorScheme.primary
-                    else LocalContentColor.current,
+                    tint = if (isFocused) {
+                        MaterialTheme.colorScheme.primary
+                    } else {
+                        LocalContentColor.current
+                    },
                     modifier = Modifier.clickable {
                         isFocused = false
                         focusManager.clearFocus()
                         onChanged("")
-                    }
+                    },
                 )
             }
         },

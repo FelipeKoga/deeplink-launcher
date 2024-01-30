@@ -33,17 +33,16 @@ fun DLLTopBar(
                 text = title,
                 style = MaterialTheme.typography.titleMedium.copy(
                     fontWeight = FontWeight.Bold,
-                )
+                ),
             )
         },
         navigationIcon = {
             if (onBack != null) {
-
                 IconButton(onClick = onBack) {
                     Icon(imageVector = Icons.Rounded.ArrowBack, contentDescription = "back")
                 }
             }
         },
-        actions = actions
+        actions = actions,
     )
 }

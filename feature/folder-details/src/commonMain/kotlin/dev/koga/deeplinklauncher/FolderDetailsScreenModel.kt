@@ -28,18 +28,20 @@ class FolderDetailsScreenModel(
 
     private val folder = getFolderById(folderId)!!
 
-    private val form = MutableStateFlow(folder.let {
-        FolderDetails(
-            name = it.name,
-            description = it.description.orEmpty(),
-            deepLinks = emptyList()
-        )
-    })
+    private val form = MutableStateFlow(
+        folder.let {
+            FolderDetails(
+                name = it.name,
+                description = it.description.orEmpty(),
+                deepLinks = emptyList(),
+            )
+        },
+    )
 
     private val deepLinks = getFolderDeepLinksStream(folderId).stateIn(
         scope = screenModelScope,
         started = SharingStarted.WhileSubscribed(),
-        initialValue = emptyList()
+        initialValue = emptyList(),
     )
 
     val state = combine(
@@ -47,12 +49,12 @@ class FolderDetailsScreenModel(
         deepLinks,
     ) { form, deepLinks ->
         form.copy(
-            deepLinks = deepLinks
+            deepLinks = deepLinks,
         )
     }.stateIn(
         scope = screenModelScope,
         started = SharingStarted.WhileSubscribed(),
-        initialValue = form.value
+        initialValue = form.value,
     )
 
     private val deleteDispatcher = Channel<Unit>()
@@ -64,7 +66,7 @@ class FolderDetailsScreenModel(
                 folder.copy(
                     name = it.name,
                     description = it.description,
-                )
+                ),
             )
         }.launchIn(screenModelScope)
     }
@@ -73,7 +75,6 @@ class FolderDetailsScreenModel(
         deleteFolder(folderId)
         screenModelScope.launch { deleteDispatcher.send(Unit) }
     }
-
 
     fun updateName(value: String) {
         form.update { it.copy(name = value) }

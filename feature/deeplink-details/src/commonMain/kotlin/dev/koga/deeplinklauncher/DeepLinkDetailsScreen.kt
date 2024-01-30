@@ -59,7 +59,6 @@ import dev.koga.resources.MR
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.koin.core.parameter.parametersOf
 
-
 class DeepLinkDetailsScreen(private val deepLinkId: String) : Screen {
 
     @OptIn(ExperimentalMaterial3Api::class)
@@ -68,7 +67,7 @@ class DeepLinkDetailsScreen(private val deepLinkId: String) : Screen {
         val navigator = LocalNavigator.currentOrThrow
 
         val screenModel = getScreenModel<DeepLinkDetailScreenModel>(
-            parameters = { parametersOf(deepLinkId) }
+            parameters = { parametersOf(deepLinkId) },
         )
 
         val details by screenModel.details.collectAsState()
@@ -97,8 +96,8 @@ class DeepLinkDetailsScreen(private val deepLinkId: String) : Screen {
                     FilledTonalIconButton(
                         onClick = { showDeleteDeepLinkConfirmation = true },
                         colors = IconButtonDefaults.filledTonalIconButtonColors(
-                            containerColor = Color.Red.copy(alpha = .2f)
-                        )
+                            containerColor = Color.Red.copy(alpha = .2f),
+                        ),
                     ) {
                         Icon(
                             imageVector = Icons.Rounded.Delete,
@@ -160,30 +159,29 @@ fun DeepLinkDetailsScreenContent(
             onClick = {
                 onSelectFolder(it)
                 showSelectFolderBottomSheet = false
-            }
+            },
         )
     }
 
     SelectionContainer(
-        modifier = modifier
+        modifier = modifier,
     ) {
         Column(
             Modifier
                 .padding(24.dp)
                 .fillMaxSize()
-                .verticalScroll(rememberScrollState())
+                .verticalScroll(rememberScrollState()),
         ) {
-
             Row(
-                verticalAlignment = Alignment.CenterVertically
+                verticalAlignment = Alignment.CenterVertically,
             ) {
                 Text(
                     text = details.link,
                     style = MaterialTheme.typography.bodyLarge.copy(
                         fontWeight = FontWeight.SemiBold,
-                        color = MaterialTheme.colorScheme.onBackground
+                        color = MaterialTheme.colorScheme.onBackground,
                     ),
-                    modifier = Modifier.weight(1f)
+                    modifier = Modifier.weight(1f),
                 )
 
                 Spacer(modifier = Modifier.width(8.dp))
@@ -198,11 +196,9 @@ fun DeepLinkDetailsScreenContent(
                         contentDescription = "Copy",
                     )
                 }
-
             }
 
             Spacer(modifier = Modifier.height(32.dp))
-
 
             DLLTextField(
                 value = details.name,
@@ -225,13 +221,14 @@ fun DeepLinkDetailsScreenContent(
             AnimatedContent(
                 targetState = details.folder,
                 label = "",
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
             ) { folder ->
 
                 when (folder) {
                     null -> ElevatedAssistChip(
                         modifier = Modifier
-                            .fillMaxWidth(), onClick = { showSelectFolderBottomSheet = true },
+                            .fillMaxWidth(),
+                        onClick = { showSelectFolderBottomSheet = true },
                         leadingIcon = {
                             Icon(
                                 imageVector = Icons.Rounded.Add,
@@ -239,7 +236,7 @@ fun DeepLinkDetailsScreenContent(
                                 modifier = Modifier.size(18.dp),
                             )
                         },
-                        label = { Text(text = "Add Folder") }
+                        label = { Text(text = "Add Folder") },
                     )
 
                     else -> ElevatedAssistChip(
@@ -258,7 +255,7 @@ fun DeepLinkDetailsScreenContent(
                                 contentDescription = "Remove folder",
                                 modifier = Modifier.clickable {
                                     onRemoveFolder()
-                                }
+                                },
                             )
                         },
                         label = {
@@ -267,11 +264,10 @@ fun DeepLinkDetailsScreenContent(
                                 modifier = Modifier.weight(1f),
                                 fontWeight = FontWeight.Bold,
                             )
-                        }
+                        },
                     )
                 }
             }
-
 
             Spacer(modifier = Modifier.height(24.dp))
 
@@ -283,7 +279,7 @@ fun DeepLinkDetailsScreenContent(
                 horizontalArrangement = Arrangement.Center,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(vertical = 24.dp)
+                    .padding(vertical = 24.dp),
             ) {
                 IconButton(onClick = onShare) {
                     Icon(
@@ -296,11 +292,17 @@ fun DeepLinkDetailsScreenContent(
 
                 IconButton(onClick = onFavorite) {
                     Icon(
-                        imageVector = if (details.isFavorite) Icons.Rounded.Favorite
-                        else Icons.Rounded.FavoriteBorder,
+                        imageVector = if (details.isFavorite) {
+                            Icons.Rounded.Favorite
+                        } else {
+                            Icons.Rounded.FavoriteBorder
+                        },
                         contentDescription = "Favorite",
-                        tint = if (details.isFavorite) Color.Red
-                        else MaterialTheme.colorScheme.onSurface,
+                        tint = if (details.isFavorite) {
+                            Color.Red
+                        } else {
+                            MaterialTheme.colorScheme.onSurface
+                        },
                     )
                 }
 
@@ -317,5 +319,4 @@ fun DeepLinkDetailsScreenContent(
             Spacer(modifier = Modifier.statusBarsPadding())
         }
     }
-
 }

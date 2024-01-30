@@ -37,7 +37,6 @@ fun DeepLinkLaunchBottomSheetContent(
     launch: () -> Unit,
     errorMessage: String? = null,
 ) {
-
     val focusManager = LocalFocusManager.current
 
     val deepLinkClipboardProvider = koinInject<DeepLinkClipboardProvider>()
@@ -86,8 +85,8 @@ fun DeepLinkLaunchBottomSheetContent(
                 modifier = Modifier.padding(top = 8.dp),
                 style = MaterialTheme.typography.labelMedium.copy(
                     color = MaterialTheme.colorScheme.error,
-                    fontWeight = FontWeight.Bold
-                )
+                    fontWeight = FontWeight.Bold,
+                ),
             )
         }
 
@@ -98,7 +97,7 @@ fun DeepLinkLaunchBottomSheetContent(
             enabled = value.isNotBlank(),
             modifier = Modifier
                 .align(Alignment.CenterHorizontally)
-                .fillMaxWidth(.6f)
+                .fillMaxWidth(.6f),
         ) {
             Text(text = "Launch")
         }

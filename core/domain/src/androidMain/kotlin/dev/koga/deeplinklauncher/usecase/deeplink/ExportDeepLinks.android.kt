@@ -24,7 +24,7 @@ import java.io.IOException
 
 actual class ExportDeepLinks(
     private val context: Context,
-    private val dataSource: DeepLinkDataSource
+    private val dataSource: DeepLinkDataSource,
 ) {
     actual suspend fun export(type: FileType): ExportDeepLinksOutput {
         val deepLinks = dataSource.getDeepLinks().filter { it != defaultDeepLink }.ifEmpty {
@@ -35,7 +35,7 @@ actual class ExportDeepLinks(
             val data = when (type) {
                 FileType.JSON -> Json.encodeToString(
                     serializer = ListSerializer(
-                        ImportDeepLinkDto.serializer()
+                        ImportDeepLinkDto.serializer(),
                     ),
                     value = deepLinks.map {
                         ImportDeepLinkDto(
@@ -48,19 +48,17 @@ actual class ExportDeepLinks(
                                 ImportFolderDto(
                                     id = folder.id,
                                     name = folder.name,
-                                    description = folder.description
+                                    description = folder.description,
                                 )
                             },
-                            isFavorite = it.isFavorite
+                            isFavorite = it.isFavorite,
                         )
-                    }
+                    },
                 )
-
 
                 FileType.TXT -> deepLinks.joinToString(separator = "\n") { deepLink ->
                     deepLink.link
                 }
-
             }
 
             val fileName = "deeplinks-${
@@ -71,12 +69,12 @@ actual class ExportDeepLinks(
                 context = context,
                 fileContent = data,
                 fileName = fileName,
-                type = type
+                type = type,
             )
 
             shareFile(
                 uri = uri,
-                fileType = type
+                fileType = type,
             )
 
             ExportDeepLinksOutput.Success

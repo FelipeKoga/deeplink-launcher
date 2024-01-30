@@ -5,7 +5,7 @@ import android.content.ClipboardManager
 import android.content.Context
 
 actual class CopyToClipboard(
-    private val context: Context
+    private val context: Context,
 ) {
     actual fun copy(label: String, value: String) {
         val clipboard: ClipboardManager =

@@ -21,28 +21,28 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import dev.koga.deeplinklauncher.model.Folder
 
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FolderCard(folder: Folder, onClick: (Folder) -> Unit) {
     ElevatedCard(
         onClick = { onClick(folder) },
         modifier = Modifier.size(184.dp),
-        shape = RoundedCornerShape(24.dp)
+        shape = RoundedCornerShape(24.dp),
     ) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(12.dp),
             verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally
+            horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Text(
-                text = folder.name, style = MaterialTheme.typography.titleSmall.copy(
-                    fontWeight = FontWeight.Bold
+                text = folder.name,
+                style = MaterialTheme.typography.titleSmall.copy(
+                    fontWeight = FontWeight.Bold,
                 ),
                 maxLines = 2,
-                overflow = TextOverflow.Ellipsis
+                overflow = TextOverflow.Ellipsis,
             )
 
             Spacer(modifier = Modifier.size(12.dp))

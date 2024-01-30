@@ -9,7 +9,7 @@ import org.koin.compose.koinInject
 
 class MainActivity : ComponentActivity() {
 
-    private lateinit var deepLinkClipboardProvider: DeepLinkClipboardProvider
+    private var deepLinkClipboardProvider: DeepLinkClipboardProvider? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -23,6 +23,6 @@ class MainActivity : ComponentActivity() {
     override fun onWindowFocusChanged(hasFocus: Boolean) {
         super.onWindowFocusChanged(hasFocus)
 
-        deepLinkClipboardProvider.initWithCurrentClipboardText()
+        deepLinkClipboardProvider?.initWithCurrentClipboardText()
     }
 }

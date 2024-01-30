@@ -5,7 +5,7 @@ import android.content.Intent
 import android.net.Uri
 
 actual class LaunchDeepLink(
-    private val context: Context
+    private val context: Context,
 ) {
     actual fun launch(url: String): LaunchDeepLinkResult {
         return try {
@@ -17,6 +17,5 @@ actual class LaunchDeepLink(
         } catch (e: Throwable) {
             LaunchDeepLinkResult.Failure(e)
         }
-
     }
 }

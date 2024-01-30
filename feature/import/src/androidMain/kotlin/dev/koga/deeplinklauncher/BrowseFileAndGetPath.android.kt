@@ -10,10 +10,11 @@ import dev.koga.deeplinklauncher.model.FileType
 import dev.koga.deeplinklauncher.util.getRealPathFromUri
 
 actual class BrowseFileAndGetPath(
-    private val context: Context
+    private val context: Context,
 ) {
 
     private var filePickerLauncher: ActivityResultLauncher<String>? = null
+
     @Composable
     actual fun Listen(onResult: (realPath: String, fileType: FileType?) -> Unit) {
         filePickerLauncher = rememberLauncherForActivityResult(
@@ -22,7 +23,7 @@ actual class BrowseFileAndGetPath(
                     return super.createIntent(context, input)
                         .putExtra(
                             Intent.EXTRA_MIME_TYPES,
-                            FileType.mimeTypes.toTypedArray()
+                            FileType.mimeTypes.toTypedArray(),
                         )
                 }
             },
@@ -36,7 +37,7 @@ actual class BrowseFileAndGetPath(
                 }
 
                 onResult(filePath, fileType)
-            }
+            },
         )
     }
 
