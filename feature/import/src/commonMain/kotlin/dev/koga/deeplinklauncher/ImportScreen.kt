@@ -206,7 +206,7 @@ class ImportScreen : Screen {
 
                                 Spacer(modifier = Modifier.height(8.dp))
 
-                                JSONBoxViewer(
+                                BoxPreview(
                                     text = """
                                         {
                                             "link": string
@@ -242,7 +242,7 @@ class ImportScreen : Screen {
 
                                 Spacer(modifier = Modifier.height(8.dp))
 
-                                JSONBoxViewer(
+                                BoxPreview(
                                     text = "test://myapplink\nhttps://myapplink2\ntest://myapplink3",
                                 )
                             }
@@ -275,5 +275,5 @@ fun JsonDisplayScreen() {
         ]
     """.trimIndent()
 
-    JSONBoxViewer(text = jsonText)
+    BoxPreview(text = jsonText)
 }

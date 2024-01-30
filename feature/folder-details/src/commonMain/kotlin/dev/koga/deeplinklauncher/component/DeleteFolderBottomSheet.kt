@@ -1,4 +1,4 @@
-package dev.koga.deeplinklauncher
+package dev.koga.deeplinklauncher.component
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -18,13 +18,14 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun DeleteDeepLinkConfirmationBottomSheet(
+fun DeleteFolderBottomSheet(
     onDismissRequest: () -> Unit,
     onDelete: () -> Unit,
 ) {
@@ -36,7 +37,7 @@ fun DeleteDeepLinkConfirmationBottomSheet(
     ) {
         Column {
             Text(
-                text = "Delete Deep Link",
+                text = "Delete folder",
                 style = MaterialTheme.typography.titleSmall.copy(
                     fontWeight = FontWeight.Bold,
                 ),
@@ -54,6 +55,7 @@ fun DeleteDeepLinkConfirmationBottomSheet(
             Spacer(modifier = Modifier.height(12.dp))
 
             Row(
+                verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.End,
                 modifier = Modifier
                     .fillMaxWidth()
@@ -75,7 +77,10 @@ fun DeleteDeepLinkConfirmationBottomSheet(
                         containerColor = MaterialTheme.colorScheme.errorContainer,
                     ),
                 ) {
-                    Text(text = "Delete")
+                    Text(
+                        text = "Delete",
+                        fontWeight = FontWeight.Bold,
+                    )
                 }
             }
 

@@ -21,7 +21,7 @@ import dev.koga.resources.MR
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeTopBar(
+internal fun HomeTopBar(
     scrollBehavior: TopAppBarScrollBehavior,
     onExportScreen: () -> Unit,
     onImportScreen: () -> Unit,

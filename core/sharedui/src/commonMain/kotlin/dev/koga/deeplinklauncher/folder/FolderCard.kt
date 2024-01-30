@@ -1,6 +1,4 @@
-@file:OptIn(ExperimentalMaterial3Api::class)
-
-package dev.koga.deeplinklauncher
+package dev.koga.deeplinklauncher.folder
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -19,7 +17,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import dev.icerock.moko.resources.format
 import dev.koga.deeplinklauncher.model.Folder
+import dev.koga.resources.MR
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -46,17 +46,17 @@ fun FolderCard(folder: Folder, onClick: (Folder) -> Unit) {
             )
 
             Spacer(modifier = Modifier.size(12.dp))
-//            Text(
-//                text = MR.images pluralStringResource(
-//                    R.plurals.folder_deeplink_count,
-//                    folder.deepLinkCount,
-//                    folder.deepLinkCount
-//                ),
-//                style = MaterialTheme.typography.bodySmall.copy(
-//                    fontWeight = FontWeight.Bold,
-//                    color = MaterialTheme.colorScheme.onBackground.copy(alpha = .5f)
-//                )
-//            )
+
+            Text(
+                text = MR.plurals.folder_deeplink_count.format(
+                    folder.deepLinkCount,
+                    folder.deepLinkCount
+                ).toString(),
+                style = MaterialTheme.typography.bodySmall.copy(
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.onBackground.copy(alpha = .5f)
+                )
+            )
         }
     }
 }

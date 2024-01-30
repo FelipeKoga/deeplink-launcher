@@ -1,4 +1,4 @@
-package dev.koga.deeplinklauncher
+package dev.koga.deeplinklauncher.deeplink
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
