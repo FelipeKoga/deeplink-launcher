@@ -1,5 +1,6 @@
 package dev.koga.deeplinklauncher.usecase.deeplink
 
+import dev.koga.deeplinklauncher.constant.defaultDeepLink
 import dev.koga.deeplinklauncher.datasource.DeepLinkDataSource
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.encodeToString
@@ -27,22 +28,24 @@ class GetDeepLinksJsonPreview(
     }
 
     operator fun invoke(): String {
-        val deepLinks = dataSource.getDeepLinks().map {
-            DeepLinkJson(
-                id = it.id,
-                link = it.link,
-                name = it.name,
-                description = it.description,
-                isFavorite = it.isFavorite,
-                folder = it.folder?.let { folder ->
-                    DeepLinkJson.FolderJson(
-                        id = folder.id,
-                        name = folder.name,
-                        description = folder.description,
-                    )
-                },
-            )
-        }
+        val deepLinks = dataSource.getDeepLinks()
+            .filter { it != defaultDeepLink }
+            .map {
+                DeepLinkJson(
+                    id = it.id,
+                    link = it.link,
+                    name = it.name,
+                    description = it.description,
+                    isFavorite = it.isFavorite,
+                    folder = it.folder?.let { folder ->
+                        DeepLinkJson.FolderJson(
+                            id = folder.id,
+                            name = folder.name,
+                            description = folder.description,
+                        )
+                    },
+                )
+            }
 
         val json = Json { prettyPrint = true }
 
