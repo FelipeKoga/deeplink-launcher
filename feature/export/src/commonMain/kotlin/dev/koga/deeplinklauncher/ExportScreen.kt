@@ -46,6 +46,7 @@ import cafe.adriel.voyager.navigator.currentOrThrow
 import dev.koga.deeplinklauncher.model.FileType
 import dev.koga.deeplinklauncher.usecase.deeplink.ExportDeepLinks
 import dev.koga.deeplinklauncher.usecase.deeplink.ExportDeepLinksOutput
+import kotlinx.collections.immutable.persistentListOf
 import kotlinx.coroutines.launch
 import org.koin.compose.koinInject
 
@@ -63,7 +64,7 @@ class ExportScreen : Screen {
         val exportDeepLinks = koinInject<ExportDeepLinks>()
 
         var selectedIndex by remember { mutableIntStateOf(0) }
-        val options = listOf("JSON (.json)", "Plain text (.txt)")
+        val options = persistentListOf("JSON (.json)", "Plain text (.txt)")
         val scrollBehavior =
             TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
 

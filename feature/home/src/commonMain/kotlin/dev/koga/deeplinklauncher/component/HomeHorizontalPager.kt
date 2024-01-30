@@ -33,9 +33,9 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import dev.koga.deeplinklauncher.HomeTabPage
 import dev.koga.deeplinklauncher.deeplink.DeepLinkItem
 import dev.koga.deeplinklauncher.folder.FolderCard
-import dev.koga.deeplinklauncher.HomeTabPage
 import dev.koga.deeplinklauncher.model.DeepLink
 import dev.koga.deeplinklauncher.model.Folder
 import kotlinx.collections.immutable.ImmutableList

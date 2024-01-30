@@ -1,3 +1,4 @@
+import extension.binariesFrameworkConfig
 import org.jetbrains.compose.ExperimentalComposeLibrary
 
 plugins {
@@ -6,16 +7,7 @@ plugins {
 }
 
 kotlin {
-    listOf(
-        iosX64(),
-        iosArm64(),
-        iosSimulatorArm64()
-    ).forEach {
-        it.binaries.framework {
-            baseName = "home"
-            isStatic = true
-        }
-    }
+    binariesFrameworkConfig("export")
 
     sourceSets {
         commonMain.dependencies {
@@ -38,16 +30,8 @@ kotlin {
             implementation(compose.ui)
             @OptIn(ExperimentalComposeLibrary::class)
             implementation(compose.components.resources)
-        }
 
-        val androidMain by getting {
-            dependencies {
-                implementation(libs.compose.toolingpreview)
-                implementation(libs.androidx.activity.compose)
-            }
-        }
-
-        commonTest.dependencies {
+            implementation(libs.kotlinx.immutable)
         }
     }
 }

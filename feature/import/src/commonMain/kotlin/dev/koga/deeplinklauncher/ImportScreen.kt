@@ -42,6 +42,7 @@ import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import dev.koga.deeplinklauncher.usecase.deeplink.ImportDeepLinks
 import dev.koga.deeplinklauncher.usecase.deeplink.ImportDeepLinksOutput
+import kotlinx.collections.immutable.persistentListOf
 import kotlinx.coroutines.launch
 import org.koin.compose.koinInject
 
@@ -57,7 +58,7 @@ class ImportScreen : Screen {
 
         val scope = rememberCoroutineScope()
         val snackbarHostState = remember { SnackbarHostState() }
-        val options = listOf("JSON (.json)", "Plain text (.txt)")
+        val options = persistentListOf("JSON (.json)", "Plain text (.txt)")
         var selectedIndex by remember { mutableIntStateOf(0) }
 
         browseFileAndGetPath.Listen(
