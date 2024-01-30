@@ -4,41 +4,35 @@ import dev.koga.deeplinklauncher.model.DeepLink
 import dev.koga.deeplinklauncher.model.Folder
 import dev.koga.deeplinklauncher.provider.UUIDProvider
 import kotlinx.datetime.Clock
+import kotlinx.datetime.toInstant
 import kotlinx.serialization.Serializable
 
 @Serializable
 data class ImportExportDeepLinkDto(
-    val id: String?,
-    val createdAt: String?,
     val link: String,
-    val name: String?,
-    val description: String?,
-    val folder: ImportExportFolderDto?,
-    val isFavorite: Boolean?,
+    val id: String? = null,
+    val createdAt: String? = null,
+    val name: String? = null,
+    val description: String? = null,
+    val folder: ImportExportFolderDto? = null,
+    val isFavorite: Boolean? = false,
 )
 
 @Serializable
 data class ImportExportFolderDto(
-    val id: String?,
     val name: String,
-    val description: String?,
+    val id: String? = null,
+    val description: String? = null,
 )
 
 fun ImportExportDeepLinkDto.toDeepLink() = DeepLink(
     id = this.id ?: UUIDProvider.get(),
-    createdAt = Clock.System.now(),
+    createdAt = createdAt?.toInstant() ?: Clock.System.now(),
     link = this.link,
     name = this.name,
     description = this.description,
     isFavorite = this.isFavorite ?: false,
-    folder = this.folder?.let { folder ->
-        Folder(
-            id = folder.id ?: UUIDProvider.get(),
-            name = folder.name,
-            description = folder.description,
-            deepLinkCount = 0,
-        )
-    },
+    folder = this.folder?.toFolder()
 )
 
 fun ImportExportFolderDto.toFolder() = Folder(
