@@ -4,13 +4,11 @@ import dev.koga.deeplinklauncher.datasource.DeepLinkDataSource
 import dev.koga.deeplinklauncher.datasource.FolderDataSource
 import dev.koga.deeplinklauncher.dto.ImportExportDto
 import dev.koga.deeplinklauncher.dto.toModel
-import dev.koga.deeplinklauncher.model.DeepLink
+import dev.koga.deeplinklauncher.ext.toDeepLink
 import dev.koga.deeplinklauncher.model.FileType
-import dev.koga.deeplinklauncher.provider.UUIDProvider
 import dev.koga.deeplinklauncher.usecase.GetFileContent
 import dev.koga.deeplinklauncher.usecase.ValidateDeepLink
-import kotlinx.datetime.Clock
-import kotlinx.datetime.toInstant
+import kotlinx.datetime.toLocalDateTime
 import kotlinx.serialization.json.Json
 
 class ImportDeepLinks(
@@ -39,7 +37,9 @@ class ImportDeepLinks(
                         )
                     }
 
-                    val folders = importExportDto.folders?.map(ImportExportDto.Folder::toModel) ?: emptyList()
+                    val folders = importExportDto.folders
+                        ?.map(ImportExportDto.Folder::toModel)
+                        ?: emptyList()
 
                     folders.forEach {
                         folderDataSource.upsertFolder(it)
@@ -66,7 +66,7 @@ class ImportDeepLinks(
                             description = newDeepLinkDto.description
                                 ?: databaseDeepLink.description,
                             isFavorite = newDeepLinkDto.isFavorite ?: databaseDeepLink.isFavorite,
-                            createdAt = newDeepLinkDto.createdAt?.toInstant()
+                            createdAt = newDeepLinkDto.createdAt?.toLocalDateTime()
                                 ?: databaseDeepLink.createdAt,
                             folder = folders.find { folder -> folder.id == newDeepLinkDto.folderId }
                                 ?: databaseDeepLink.folder,
@@ -119,16 +119,4 @@ interface ImportDeepLinksOutput {
         data class InvalidDeepLinksFound(val invalidDeepLinks: List<String>) : Error
         data object Unknown : Error
     }
-}
-
-fun String.toDeepLink(): DeepLink {
-    return DeepLink(
-        id = UUIDProvider.get(),
-        createdAt = Clock.System.now(),
-        link = this,
-        name = null,
-        description = null,
-        isFavorite = false,
-        folder = null,
-    )
 }

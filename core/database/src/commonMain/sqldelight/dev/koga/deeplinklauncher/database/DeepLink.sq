@@ -1,9 +1,12 @@
+import kotlinx.datetime.LocalDate;
+import kotlinx.datetime.LocalDateTime;
+
 CREATE TABLE deeplink(
   id TEXT PRIMARY KEY,
   link TEXT NOT NULL UNIQUE,
   name TEXT,
   description TEXT,
-  createdAt INTEGER NOT NULL,
+  createdAt INTEGER AS LocalDateTime NOT NULL,
   folderId TEXT,
   isFavorite INTEGER DEFAULT 0,
   FOREIGN KEY(folderId) REFERENCES folder(id) ON UPDATE CASCADE

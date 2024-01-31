@@ -2,11 +2,16 @@ package dev.koga.deeplinklauncher.converter
 
 import app.cash.sqldelight.ColumnAdapter
 import kotlinx.datetime.Instant
+import kotlinx.datetime.LocalDateTime
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toInstant
+import kotlinx.datetime.toLocalDateTime
 
-val instantAdapter = object : ColumnAdapter<Instant, Long> {
-    override fun decode(databaseValue: Long): Instant =
+val localDateTimeAdapter = object : ColumnAdapter<LocalDateTime, Long> {
+    override fun decode(databaseValue: Long): LocalDateTime =
         Instant.fromEpochMilliseconds(databaseValue)
+            .toLocalDateTime(TimeZone.currentSystemDefault())
 
-    override fun encode(value: Instant): Long =
-        value.toEpochMilliseconds()
+    override fun encode(value: LocalDateTime): Long =
+        value.toInstant(TimeZone.currentSystemDefault()).toEpochMilliseconds()
 }

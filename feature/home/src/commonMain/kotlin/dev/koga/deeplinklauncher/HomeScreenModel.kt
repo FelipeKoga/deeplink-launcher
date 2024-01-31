@@ -21,6 +21,8 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.datetime.Clock
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toLocalDateTime
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class HomeScreenModel(
@@ -65,7 +67,9 @@ class HomeScreenModel(
                     link = link,
                     name = null,
                     description = null,
-                    createdAt = Clock.System.now(),
+                    createdAt = Clock.System.now().toLocalDateTime(
+                        TimeZone.currentSystemDefault()
+                    ),
                     folder = null,
                     isFavorite = false,
                 ),
