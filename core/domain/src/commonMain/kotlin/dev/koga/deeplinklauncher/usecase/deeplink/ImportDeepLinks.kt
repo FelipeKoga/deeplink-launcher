@@ -40,7 +40,7 @@ class ImportDeepLinks(
                         )
                     }
 
-                    val folders = importDto.folders.map(ImportDto.Folder::toModel)
+                    val folders = importDto.folders?.map(ImportDto.Folder::toModel) ?: emptyList()
 
                     folders.forEach {
                         folderDataSource.upsertFolder(it)

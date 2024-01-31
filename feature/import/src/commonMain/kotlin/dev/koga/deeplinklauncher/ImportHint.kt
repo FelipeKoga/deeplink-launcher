@@ -98,10 +98,10 @@ val createdAtHint: AnnotatedString
                     fontWeight = FontWeight.Bold,
                 ),
             ) {
-                append("createdAt ")
+                append("createdAt")
             }
 
-            append("property, if you want to include it, you must use the ")
+            append(", if you want to include it, you must use the ")
 
             withStyle(
                 style = SpanStyle(
@@ -125,7 +125,12 @@ val createdAtHint: AnnotatedString
 
 val basicJsonPreview = """
     {
-        "link": string
+        "deepLinks": [
+            {
+                "link": string
+            },
+            ...
+        ],
     }
 """.trimIndent()
 

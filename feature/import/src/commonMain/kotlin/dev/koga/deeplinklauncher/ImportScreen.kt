@@ -265,6 +265,13 @@ fun JSONTutorial() {
 
         Spacer(modifier = Modifier.height(8.dp))
 
+        Text(
+            text = "JSON structure:",
+            style = MaterialTheme.typography.labelSmall.copy(
+                fontWeight = FontWeight.Normal,
+            ),
+        )
+
         BoxPreview(text = jsonStructurePreview)
 
         Spacer(modifier = Modifier.height(24.dp))
