@@ -32,6 +32,8 @@ kotlin {
             implementation(compose.components.resources)
 
             implementation(libs.kotlinx.immutable)
+
+            implementation("dev.icerock.moko:permissions-compose:0.16.0")
         }
     }
 }

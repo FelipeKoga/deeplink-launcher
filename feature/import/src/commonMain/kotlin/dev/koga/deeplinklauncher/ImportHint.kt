@@ -7,10 +7,8 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
 import dev.koga.deeplinklauncher.dto.dateFormat
+import dev.koga.deeplinklauncher.util.currentLocalDateTime
 import dev.koga.deeplinklauncher.util.ext.format
-import kotlinx.datetime.Clock
-import kotlinx.datetime.TimeZone
-import kotlinx.datetime.toLocalDateTime
 
 val generalPropertiesHint: AnnotatedString
     @Composable get() {
@@ -121,9 +119,7 @@ val createdAtHint: AnnotatedString
                 ),
             ) {
                 append(
-                    Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).format(
-                        dateFormat,
-                    ),
+                    currentLocalDateTime.format(dateFormat),
                 )
             }
         }
