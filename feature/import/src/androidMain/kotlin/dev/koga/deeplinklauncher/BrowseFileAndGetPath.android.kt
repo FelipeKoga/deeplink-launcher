@@ -23,7 +23,11 @@ actual class BrowseFileAndGetPath(
                     return super.createIntent(context, input)
                         .putExtra(
                             Intent.EXTRA_MIME_TYPES,
-                            FileType.mimeTypes.toTypedArray(),
+                            arrayOf(
+                                FileType.TXT.mimeType,
+                                FileType.JSON.mimeType,
+                                "application/*",
+                            )
                         )
                 }
             },
