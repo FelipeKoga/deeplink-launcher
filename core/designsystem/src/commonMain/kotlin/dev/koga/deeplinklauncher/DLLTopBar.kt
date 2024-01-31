@@ -18,6 +18,7 @@ import androidx.compose.ui.text.font.FontWeight
 @Composable
 fun DLLTopBar(
     title: String = "",
+    navigationIcon: @Composable (() -> Unit)? = null,
     onBack: (() -> Unit)? = null,
     actions: @Composable (RowScope.() -> Unit) = {},
     scrollBehavior: TopAppBarScrollBehavior? = null,
@@ -39,7 +40,10 @@ fun DLLTopBar(
         navigationIcon = {
             if (onBack != null) {
                 IconButton(onClick = onBack) {
-                    Icon(imageVector = Icons.Rounded.ArrowBack, contentDescription = "back")
+                    navigationIcon ?: Icon(
+                        imageVector = Icons.Rounded.ArrowBack,
+                        contentDescription = "back"
+                    )
                 }
             }
         },

@@ -49,7 +49,6 @@ import dev.koga.deeplinklauncher.model.DeepLink
 import dev.koga.deeplinklauncher.provider.DeepLinkClipboardProvider
 import dev.koga.deeplinklauncher.theme.LocalDimensions
 import dev.koga.deeplinklauncher.usecase.deeplink.LaunchDeepLink
-import dev.koga.navigation.SharedScreen
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import org.koin.compose.koinInject

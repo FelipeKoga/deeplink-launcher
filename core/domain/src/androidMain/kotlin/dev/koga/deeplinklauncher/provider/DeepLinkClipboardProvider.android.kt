@@ -28,6 +28,7 @@ actual class DeepLinkClipboardProvider(
         }
 
     private var inited = false
+
     private val stream = MutableStateFlow<String?>(null)
     actual val clipboardText = stream.asStateFlow()
 

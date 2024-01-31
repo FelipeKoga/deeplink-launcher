@@ -10,4 +10,5 @@ interface DeepLinkDataSource {
     fun getDeepLinkByLink(link: String): DeepLink?
     fun upsertDeepLink(deepLink: DeepLink)
     fun deleteDeepLink(id: String)
+    fun deleteAll()
 }

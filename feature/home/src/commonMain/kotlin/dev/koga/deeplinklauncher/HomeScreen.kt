@@ -1,6 +1,6 @@
 package dev.koga.deeplinklauncher
 
-import androidx.compose.foundation.ExperimentalFoundationApi
+import  androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -35,7 +35,6 @@ import dev.koga.deeplinklauncher.component.HomeLaunchDeepLinkBottomSheetContent
 import dev.koga.deeplinklauncher.component.HomeTabRow
 import dev.koga.deeplinklauncher.component.HomeTopBar
 import dev.koga.deeplinklauncher.provider.DeepLinkClipboardProvider
-import dev.koga.navigation.SharedScreen
 import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.launch
 import org.koin.compose.koinInject
@@ -50,8 +49,8 @@ object HomeScreen : Screen {
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
 private fun HomeScreenContent() {
-    val exportScreen = rememberScreen(SharedScreen.ExportDeepLinks)
-    val importScreen = rememberScreen(SharedScreen.ImportDeepLinks)
+    val settingsScreen = rememberScreen(SharedScreen.Settings)
+
     val deepLinkClipboardProvider = koinInject<DeepLinkClipboardProvider>()
 
     val navigator = LocalNavigator.currentOrThrow
@@ -97,8 +96,7 @@ private fun HomeScreenContent() {
         topBar = {
             HomeTopBar(
                 scrollBehavior = scrollBehavior,
-                onExportScreen = { navigator.push(exportScreen) },
-                onImportScreen = { navigator.push(importScreen) },
+                onSettingsScreen = { navigator.push(settingsScreen) },
             )
         },
         scaffoldState = rememberBottomSheetScaffoldState(

@@ -1,9 +1,9 @@
 package dev.koga.deeplinklauncher.navigation
 
 import cafe.adriel.voyager.core.registry.screenModule
-import dev.koga.deeplinklauncher.ExportScreen
+import dev.koga.deeplinklauncher.SettingsScreen
 import dev.koga.deeplinklauncher.SharedScreen
 
-val exportScreenModule = screenModule {
-    register<SharedScreen.ExportDeepLinks> { ExportScreen() }
+val settingsScreenModule = screenModule {
+    register<SharedScreen.Settings> { SettingsScreen() }
 }

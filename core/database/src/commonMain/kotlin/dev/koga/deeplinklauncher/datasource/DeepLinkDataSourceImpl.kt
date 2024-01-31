@@ -71,8 +71,10 @@ internal class DeepLinkDataSourceImpl(
     }
 
     override fun deleteDeepLink(id: String) {
-        database.transaction {
-            database.deepLinkQueries.deleteDeeplinkById(id)
-        }
+        database.deepLinkQueries.deleteDeeplinkById(id)
+    }
+
+    override fun deleteAll() {
+        database.deepLinkQueries.deleteAllDeeplinks()
     }
 }
