@@ -1,7 +1,10 @@
 package dev.koga.deeplinklauncher
 
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -47,7 +50,6 @@ import dev.koga.deeplinklauncher.provider.DeepLinkClipboardProvider
 import dev.koga.deeplinklauncher.theme.LocalDimensions
 import dev.koga.deeplinklauncher.usecase.deeplink.LaunchDeepLink
 import dev.koga.navigation.SharedScreen
-import kotlinx.collections.immutable.ImmutableList
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import org.koin.compose.koinInject
@@ -106,37 +108,35 @@ class FolderDetailsScreen(private val folderId: String) : Screen {
             containerColor = MaterialTheme.colorScheme.surface,
             snackbarHost = { SnackbarHost(snackbarHostState) },
         ) { contentPadding ->
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(contentPadding),
-            ) {
-                FolderDetailsScreenContent(
-                    form = state,
-                    onEditName = screenModel::updateName,
-                    onEditDescription = screenModel::updateDescription,
-                    onDeepLinkClick = { deepLink ->
-                        val screen = ScreenRegistry.get(SharedScreen.DeepLinkDetails(deepLink.id))
-                        navigator.push(screen)
-                    },
-                    onDeepLinkLaunch = launchDeepLink::launch,
-                    onDeepLinkCopy = {
-                        scope.launch {
-                            deepLinkClipboardProvider.copy(it.link)
-                            snackbarHostState.showSnackbar(
-                                message = "Copied to clipboard",
-                                actionLabel = "Dismiss",
-                            )
-                        }
-                    },
-                )
-            }
+
+            FolderDetailsScreenContent(
+                modifier = Modifier.fillMaxSize().padding(contentPadding),
+                form = state,
+                onEditName = screenModel::updateName,
+                onEditDescription = screenModel::updateDescription,
+                onDeepLinkClick = { deepLink ->
+                    val screen = ScreenRegistry.get(SharedScreen.DeepLinkDetails(deepLink.id))
+                    navigator.push(screen)
+                },
+                onDeepLinkLaunch = launchDeepLink::launch,
+                onDeepLinkCopy = {
+                    scope.launch {
+                        deepLinkClipboardProvider.copy(it.link)
+                        snackbarHostState.showSnackbar(
+                            message = "Copied to clipboard",
+                            actionLabel = "Dismiss",
+                        )
+                    }
+                },
+            )
         }
     }
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun FolderDetailsScreenContent(
+    modifier: Modifier = Modifier,
     form: FolderDetails,
     onEditName: (String) -> Unit,
     onEditDescription: (String) -> Unit,
@@ -146,110 +146,107 @@ fun FolderDetailsScreenContent(
 ) {
     val dimensions = LocalDimensions.current
 
-    Column(modifier = Modifier.padding(horizontal = dimensions.extraLarge)) {
-        Spacer(modifier = Modifier.height(dimensions.extraLarge))
+    LazyColumn(
+        modifier = modifier,
+        contentPadding = PaddingValues(horizontal = dimensions.extraLarge),
+        verticalArrangement = Arrangement.spacedBy(24.dp),
+    ) {
+        item {
+            Spacer(modifier = Modifier.height(dimensions.extraLarge))
+        }
 
-        Text(
-            text = "Name",
-            style = MaterialTheme.typography.labelSmall.copy(
-                fontWeight = FontWeight.Light,
-            ),
-        )
-
-        Spacer(modifier = Modifier.height(8.dp))
-
-        EditableText(
-            value = form.name,
-            onSave = onEditName,
-            inputLabel = "Enter a name",
-            editButtonEnabled = form.name.isNotBlank(),
-            modifier = Modifier.fillMaxWidth(),
-        ) {
-            Text(
-                text = form.name,
-                style = MaterialTheme.typography.titleMedium.copy(
-                    fontWeight = FontWeight.Bold,
+        item {
+            Column {
+                Text(
+                    text = "Name",
+                    style = MaterialTheme.typography.labelSmall.copy(
+                        fontWeight = FontWeight.Light,
+                    ),
                 )
+
+                Spacer(modifier = Modifier.height(8.dp))
+
+                EditableText(
+                    value = form.name,
+                    onSave = onEditName,
+                    inputLabel = "Enter a name",
+                    editButtonEnabled = form.name.isNotBlank(),
+                    modifier = Modifier.fillMaxWidth(),
+                ) {
+                    Text(
+                        text = form.name,
+                        style = MaterialTheme.typography.headlineMedium.copy(
+                            fontWeight = FontWeight.Bold,
+                        ),
+                    )
+                }
+            }
+        }
+
+        item {
+            Column {
+                Text(
+                    text = "Description",
+                    style = MaterialTheme.typography.labelSmall.copy(
+                        fontWeight = FontWeight.Light,
+                    ),
+                )
+
+                Spacer(modifier = Modifier.height(8.dp))
+
+                EditableText(
+                    value = form.description,
+                    onSave = onEditDescription,
+                    inputLabel = "Enter a description",
+                    modifier = Modifier.fillMaxWidth(),
+                ) {
+                    Text(
+                        text = form.description.ifEmpty { "--" },
+                        style = MaterialTheme.typography.bodyMedium.copy(
+                            fontWeight = FontWeight.Normal,
+                        ),
+                    )
+                }
+            }
+        }
+
+        item {
+            Divider(modifier = Modifier.padding(vertical = dimensions.extraLarge))
+        }
+
+        stickyHeader {
+            if (form.deepLinks.isEmpty()) {
+                Text(
+                    text = "No deeplinks vinculated to this folder",
+                    style = MaterialTheme.typography.bodyMedium.copy(
+                        fontWeight = FontWeight.Normal,
+                    ),
+                )
+            } else {
+                Text(
+                    text = "Deeplinks",
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(MaterialTheme.colorScheme.surface)
+                        .padding(bottom = dimensions.mediumLarge),
+                    style = MaterialTheme.typography.labelMedium.copy(
+                        fontWeight = FontWeight.Bold,
+                    ),
+                )
+            }
+        }
+
+        items(form.deepLinks) {
+            DeepLinkItem(
+                deepLink = it,
+                onClick = onDeepLinkClick,
+                onLaunch = onDeepLinkLaunch,
+                onCopy = onDeepLinkCopy,
             )
         }
 
-        Spacer(modifier = Modifier.height(dimensions.extraLarge))
-
-        Text(
-            text = "Description",
-            style = MaterialTheme.typography.labelSmall.copy(
-                fontWeight = FontWeight.Light,
-            ),
-        )
-
-        Spacer(modifier = Modifier.height(8.dp))
-
-        EditableText(
-            value = form.description,
-            onSave = onEditDescription,
-            inputLabel = "Enter a description",
-            modifier = Modifier.fillMaxWidth(),
-        ) {
-            Text(
-                text = form.description.ifEmpty { "--" },
-                style = MaterialTheme.typography.bodyMedium.copy(
-                    fontWeight = FontWeight.Normal,
-                )
-            )
-        }
-
-        Divider(modifier = Modifier.padding(vertical = dimensions.extraLarge))
-
-        FolderDeepLinks(
-            deepLinks = form.deepLinks,
-            onClick = onDeepLinkClick,
-            onLaunch = onDeepLinkLaunch,
-            onCopy = onDeepLinkCopy,
-        )
-    }
-}
-
-@Composable
-private fun FolderDeepLinks(
-    deepLinks: ImmutableList<DeepLink>,
-    onClick: (DeepLink) -> Unit,
-    onLaunch: (DeepLink) -> Unit,
-    onCopy: (DeepLink) -> Unit,
-) {
-    val dimensions = LocalDimensions.current
-
-    if (deepLinks.isEmpty()) {
-        Text(
-            text = "No deeplinks vinculated to this folder",
-            style = MaterialTheme.typography.bodyMedium.copy(
-                fontWeight = FontWeight.Normal,
-            ),
-        )
-    } else {
-        Text(
-            text = "Deeplinks",
-            style = MaterialTheme.typography.titleMedium.copy(
-                fontWeight = FontWeight.Bold,
-            ),
-        )
-
-        Spacer(modifier = Modifier.height(dimensions.extraLarge))
-
-        LazyColumn(
-            verticalArrangement = Arrangement.spacedBy(dimensions.extraLarge),
-        ) {
-            items(deepLinks) { deepLink ->
-                DeepLinkItem(
-                    deepLink = deepLink,
-                    onClick = onClick,
-                    onLaunch = onLaunch,
-                    onCopy = onCopy,
-                )
-            }
-
-            item {
-                Spacer(modifier = Modifier.height(dimensions.extraLarge))
-            }
+        item {
+            Spacer(modifier = Modifier.height(dimensions.extraLarge))
         }
     }
 }
