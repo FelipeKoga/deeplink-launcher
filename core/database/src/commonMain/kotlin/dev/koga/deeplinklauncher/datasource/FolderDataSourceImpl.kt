@@ -68,4 +68,15 @@ internal class FolderDataSourceImpl(
             database.folderQueries.deleteFolderById(id)
         }
     }
+
+    override fun deleteAll() {
+        database.transaction {
+            val folders = database.folderQueries.selectAllFoldersIds().executeAsList()
+            folders.forEach { folderId ->
+                database.folderQueries.removeFolderFromDeeplinks(folderId)
+            }
+
+            database.folderQueries.deleteAllFolders()
+        }
+    }
 }

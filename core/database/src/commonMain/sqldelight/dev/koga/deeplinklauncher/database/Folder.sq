@@ -10,6 +10,9 @@ FROM folder f
 LEFT JOIN deeplink d ON f.id = d.folderId
 GROUP BY f.id;
 
+selectAllFoldersIds:
+SELECT id FROM folder;
+
 upsertFolder:
 INSERT OR REPLACE INTO folder (id, name, description)
 VALUES (?, ?, ?);
@@ -30,3 +33,6 @@ WHERE d.folderId = ?;
 
 removeFolderFromDeeplinks:
 UPDATE deeplink SET folderId = NULL WHERE folderId = ?;
+
+deleteAllFolders:
+DELETE FROM folder;

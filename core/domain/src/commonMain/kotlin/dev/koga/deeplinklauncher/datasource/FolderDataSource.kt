@@ -11,4 +11,5 @@ interface FolderDataSource {
     fun getFolderById(id: String): Folder?
     fun upsertFolder(folder: Folder)
     fun deleteFolder(id: String)
+    fun deleteAll()
 }

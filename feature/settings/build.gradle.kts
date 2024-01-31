@@ -3,36 +3,25 @@ import org.jetbrains.compose.ExperimentalComposeLibrary
 
 plugins {
     id("dev.koga.deeplinklauncher.multiplatform")
-    id(libs.plugins.moko.multiplatform.resources.get().pluginId)
     alias(libs.plugins.jetbrainsCompose)
 }
 
 kotlin {
-    binariesFrameworkConfig("shared")
+    binariesFrameworkConfig("settings")
 
     sourceSets {
         commonMain.dependencies {
-            implementation(projects.feature.home)
-            implementation(projects.feature.import)
-            implementation(projects.feature.export)
-            implementation(projects.feature.deeplinkDetails)
-            implementation(projects.feature.folderDetails)
-            implementation(projects.feature.settings)
-
-            api(projects.core.domain)
+            implementation(projects.core.domain)
             implementation(projects.core.designsystem)
             implementation(projects.core.navigation)
-            implementation(projects.core.database)
+            implementation(projects.core.sharedui)
 
-            implementation(libs.koin.core)
             implementation(libs.kotlinx.coroutines.core)
 
             implementation(libs.koin.compose)
 
             implementation(libs.voyager.screenmodel)
             implementation(libs.voyager.navigator)
-            implementation(libs.voyager.transitions)
-
             implementation(libs.voyager.koin)
 
             implementation(compose.runtime)
@@ -42,23 +31,12 @@ kotlin {
             @OptIn(ExperimentalComposeLibrary::class)
             implementation(compose.components.resources)
 
-            implementation(libs.moko.resources.core)
-        }
-
-        androidMain {
-            dependsOn(commonMain.get())
-        }
-
-        iosMain {
-            dependsOn(commonMain.get())
+            implementation(libs.moko.resources.compose)
+            implementation(libs.kotlinx.immutable)
         }
     }
 }
 
 android {
-    namespace = "dev.koga.shared"
-}
-
-multiplatformResources {
-    multiplatformResourcesPackage = "dev.koga.deeplinklauncher"
+    namespace = "dev.koga.settings"
 }
