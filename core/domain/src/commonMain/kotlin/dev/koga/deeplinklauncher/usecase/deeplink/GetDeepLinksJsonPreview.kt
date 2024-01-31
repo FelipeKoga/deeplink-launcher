@@ -1,9 +1,9 @@
 package dev.koga.deeplinklauncher.usecase.deeplink
 
-import dev.koga.deeplinklauncher.util.constant.defaultDeepLink
 import dev.koga.deeplinklauncher.datasource.DeepLinkDataSource
 import dev.koga.deeplinklauncher.datasource.FolderDataSource
 import dev.koga.deeplinklauncher.dto.dateFormat
+import dev.koga.deeplinklauncher.util.constant.defaultDeepLink
 import dev.koga.deeplinklauncher.util.ext.format
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.encodeToString

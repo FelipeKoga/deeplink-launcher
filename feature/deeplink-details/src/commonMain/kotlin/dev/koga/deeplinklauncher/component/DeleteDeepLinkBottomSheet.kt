@@ -46,7 +46,7 @@ fun DeleteDeepLinkConfirmationBottomSheet(
             Divider()
 
             Text(
-                text = "Are you sure you want to delete this deep link?",
+                text = "Are you sure you want to delete this deeplink?",
                 style = MaterialTheme.typography.bodyMedium,
                 modifier = Modifier.padding(24.dp),
             )

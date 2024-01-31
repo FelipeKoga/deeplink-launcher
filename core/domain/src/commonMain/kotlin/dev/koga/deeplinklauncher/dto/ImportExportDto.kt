@@ -43,7 +43,7 @@ fun ImportExportDto.Folder.toModel() = Folder(
 fun ImportExportDto.DeepLink.toModel(folder: Folder?) = DeepLink(
     id = id ?: UUIDProvider.get(),
     createdAt = createdAt?.toLocalDateTime() ?: Clock.System.now().toLocalDateTime(
-        TimeZone.currentSystemDefault()
+        TimeZone.currentSystemDefault(),
     ),
     link = link,
     name = name,

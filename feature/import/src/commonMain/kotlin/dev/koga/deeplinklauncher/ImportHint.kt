@@ -17,7 +17,7 @@ val generalPropertiesHint: AnnotatedString
         return buildAnnotatedString {
             append(
                 "It's possible to add more properties to the object, " +
-                        "such as",
+                    "such as",
             )
 
             withStyle(
@@ -122,8 +122,8 @@ val createdAtHint: AnnotatedString
             ) {
                 append(
                     Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).format(
-                        dateFormat
-                    )
+                        dateFormat,
+                    ),
                 )
             }
         }
