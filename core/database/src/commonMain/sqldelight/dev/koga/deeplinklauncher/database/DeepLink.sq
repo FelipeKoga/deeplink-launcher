@@ -16,7 +16,7 @@ selectAllDeeplinks:
 SELECT d.*, f.*
 FROM deeplink d
 LEFT JOIN folder f ON d.folderId = f.id
-ORDER BY lastLaunchedAt DESC;
+ORDER BY d.lastLaunchedAt DESC, d.createdAt DESC, d.name ASC;
 
 deleteDeeplinkById:
 DELETE FROM deeplink WHERE id = ?;
