@@ -12,7 +12,7 @@ data class DeepLink(
     val description: String?,
     val createdAt: LocalDateTime = currentLocalDateTime,
     val isFavorite: Boolean,
-    val lastLaunchedAt: LocalDateTime? = createdAt,
+    val lastLaunchedAt: LocalDateTime? = null,
     val folder: Folder? = null,
 ) {
     val hasNameAndDescription: Boolean
