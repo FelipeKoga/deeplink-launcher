@@ -21,6 +21,8 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material.icons.rounded.Clear
 import androidx.compose.material.icons.rounded.Delete
+import androidx.compose.material.icons.rounded.Done
+import androidx.compose.material.icons.rounded.Edit
 import androidx.compose.material.icons.rounded.Favorite
 import androidx.compose.material.icons.rounded.FavoriteBorder
 import androidx.compose.material.icons.rounded.Share
@@ -34,12 +36,16 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -55,11 +61,14 @@ import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import dev.icerock.moko.resources.compose.painterResource
 import dev.koga.deeplinklauncher.component.DeleteDeepLinkConfirmationBottomSheet
+import dev.koga.deeplinklauncher.folder.EditableText
 import dev.koga.deeplinklauncher.folder.SelectFolderBottomSheet
 import dev.koga.deeplinklauncher.model.Folder
+import dev.koga.deeplinklauncher.theme.LocalDimensions
 import dev.koga.resources.MR
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.toPersistentList
+import kotlinx.coroutines.launch
 import org.koin.core.parameter.parametersOf
 
 class DeepLinkDetailsScreen(private val deepLinkId: String) : Screen {
@@ -68,7 +77,8 @@ class DeepLinkDetailsScreen(private val deepLinkId: String) : Screen {
     @Composable
     override fun Content() {
         val navigator = LocalNavigator.currentOrThrow
-
+        val snackbarHostState = remember { SnackbarHostState() }
+        val scope = rememberCoroutineScope()
         val screenModel = getScreenModel<DeepLinkDetailScreenModel>(
             parameters = { parametersOf(deepLinkId) },
         )
@@ -110,6 +120,7 @@ class DeepLinkDetailsScreen(private val deepLinkId: String) : Screen {
                 })
             },
             containerColor = MaterialTheme.colorScheme.surface,
+            snackbarHost = { SnackbarHost(snackbarHostState) },
         ) { contentPadding ->
             DeepLinkDetailsScreenContent(
                 modifier = Modifier.padding(contentPadding),
@@ -122,6 +133,13 @@ class DeepLinkDetailsScreen(private val deepLinkId: String) : Screen {
                 onAddFolder = screenModel::insertFolder,
                 onSelectFolder = screenModel::selectFolder,
                 onRemoveFolder = screenModel::removeFolderFromDeepLink,
+                onCopy = {
+                    scope.launch {
+                        snackbarHostState.showSnackbar(
+                            "Copied to clipboard",
+                        )
+                    }
+                },
                 folders = folders.toPersistentList(),
             )
         }
@@ -141,6 +159,7 @@ fun DeepLinkDetailsScreenContent(
     onAddFolder: (String, String) -> Unit,
     onSelectFolder: (Folder) -> Unit,
     onRemoveFolder: () -> Unit,
+    onCopy: () -> Unit,
 ) {
     val clipboardManager = LocalClipboardManager.current
 
@@ -174,51 +193,37 @@ fun DeepLinkDetailsScreenContent(
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState()),
         ) {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
+            EditableText(
+                value = details.name,
+                onValueChanged = onNameChanged,
+                modifier = Modifier.fillMaxWidth(),
+                inputLabel = "Name"
             ) {
                 Text(
-                    text = details.link,
-                    style = MaterialTheme.typography.bodyLarge.copy(
+                    text = details.name,
+                    style = MaterialTheme.typography.titleLarge.copy(
                         fontWeight = FontWeight.SemiBold,
-                        color = MaterialTheme.colorScheme.onBackground,
                     ),
-                    modifier = Modifier.weight(1f),
                 )
-
-                Spacer(modifier = Modifier.width(8.dp))
-
-                IconButton(
-                    onClick = {
-                        clipboardManager.setText(AnnotatedString(details.link))
-                    },
-                ) {
-                    Icon(
-                        painter = painterResource(MR.images.ic_content_copy_24dp),
-                        contentDescription = "Copy",
-                    )
-                }
             }
 
-            Spacer(modifier = Modifier.height(32.dp))
+            Spacer(modifier = Modifier.height(24.dp))
 
-            DLLTextField(
-                value = details.name,
-                onValueChange = onNameChanged,
-                label = "Name",
-            )
-
-            Spacer(modifier = Modifier.height(12.dp))
-
-            DLLTextField(
-                modifier = Modifier.defaultMinSize(minHeight = 120.dp),
+            EditableText(
                 value = details.description,
-                onValueChange = onDescriptionChanged,
-                label = "Description",
-                imeAction = ImeAction.Done,
-            )
+                onValueChanged = onDescriptionChanged,
+                modifier = Modifier.fillMaxWidth(),
+                inputLabel = "Description"
+            ) {
+                Text(
+                    text = details.description.ifEmpty { "No description provided" },
+                    style = MaterialTheme.typography.bodyMedium.copy(
+                        fontWeight = FontWeight.Normal,
+                    ),
+                )
+            }
 
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(24.dp))
 
             AnimatedContent(
                 targetState = details.folder,
@@ -271,7 +276,36 @@ fun DeepLinkDetailsScreenContent(
                 }
             }
 
-            Spacer(modifier = Modifier.height(24.dp))
+            Divider(modifier = Modifier.padding(vertical = 24.dp))
+
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.fillMaxWidth(),
+            ) {
+                Text(
+                    text = details.link,
+                    style = MaterialTheme.typography.titleMedium.copy(
+                        fontWeight = FontWeight.SemiBold,
+                        color = MaterialTheme.colorScheme.onBackground,
+                    ),
+                    modifier = Modifier.weight(1f),
+                )
+
+                Spacer(modifier = Modifier.width(24.dp))
+
+                IconButton(
+                    onClick = {
+                        clipboardManager.setText(AnnotatedString(details.link))
+                        onCopy()
+                    },
+                ) {
+                    Icon(
+                        painter = painterResource(MR.images.ic_content_copy_24dp),
+                        contentDescription = "Copy",
+                    )
+                }
+            }
+
 
             Spacer(modifier = Modifier.weight(1f))
 

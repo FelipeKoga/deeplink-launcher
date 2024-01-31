@@ -73,7 +73,10 @@ internal fun HomeHorizontalPager(
                     ),
                     verticalArrangement = Arrangement.spacedBy(12.dp),
                 ) {
-                    items(allDeepLinks) { deepLink ->
+                    items(
+                        key = { it.id },
+                        items = allDeepLinks,
+                    ) { deepLink ->
                         DeepLinkItem(
                             deepLink = deepLink,
                             onClick = { onDeepLinkClicked(deepLink) },
@@ -97,7 +100,10 @@ internal fun HomeHorizontalPager(
                     ),
                     verticalArrangement = Arrangement.spacedBy(12.dp),
                 ) {
-                    items(favoriteDeepLinks) { deepLink ->
+                    items(
+                        key = { it.id },
+                        items = favoriteDeepLinks,
+                    ) { deepLink ->
                         DeepLinkItem(
                             deepLink = deepLink,
                             onClick = { onDeepLinkClicked(deepLink) },

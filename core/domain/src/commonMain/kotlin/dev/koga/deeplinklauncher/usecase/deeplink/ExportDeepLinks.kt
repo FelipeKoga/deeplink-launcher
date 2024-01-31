@@ -3,10 +3,13 @@ package dev.koga.deeplinklauncher.usecase.deeplink
 import dev.koga.deeplinklauncher.constant.defaultDeepLink
 import dev.koga.deeplinklauncher.datasource.DeepLinkDataSource
 import dev.koga.deeplinklauncher.dto.ImportExportDto
+import dev.koga.deeplinklauncher.dto.dateFormat
+import dev.koga.deeplinklauncher.ext.format
 import dev.koga.deeplinklauncher.model.FileType
 import dev.koga.deeplinklauncher.usecase.SaveFile
 import dev.koga.deeplinklauncher.usecase.ShareFile
 import kotlinx.datetime.Clock
+import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 import kotlinx.serialization.builtins.ListSerializer
@@ -38,7 +41,7 @@ class ExportDeepLinks(
                     ImportExportDto.DeepLink(
                         link = it.link,
                         id = it.id,
-                        createdAt = it.createdAt.toString(),
+                        createdAt = it.createdAt.format(dateFormat),
                         name = it.name,
                         description = it.description,
                         folderId = it.folder?.id,

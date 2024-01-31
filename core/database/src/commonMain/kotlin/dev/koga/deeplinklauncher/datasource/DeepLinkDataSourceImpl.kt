@@ -12,7 +12,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
-import kotlinx.datetime.Instant
 
 internal class DeepLinkDataSourceImpl(
     private val databaseProvider: DatabaseProvider,
@@ -34,7 +33,7 @@ internal class DeepLinkDataSourceImpl(
                         link = data.link,
                         name = data.name,
                         description = data.description,
-                        createdAt = Instant.fromEpochMilliseconds(data.createdAt),
+                        createdAt = data.createdAt,
                         isFavorite = data.isFavorite == 1L,
                         folder = data.folderId?.let { folderId ->
                             Folder(
@@ -58,7 +57,7 @@ internal class DeepLinkDataSourceImpl(
                     link = data.link,
                     name = data.name,
                     description = data.description,
-                    createdAt = Instant.fromEpochMilliseconds(data.createdAt),
+                    createdAt = data.createdAt,
                     isFavorite = data.isFavorite == 1L,
                     folder = data.folderId?.let { folderId ->
                         Folder(
@@ -88,8 +87,8 @@ internal class DeepLinkDataSourceImpl(
 
     override fun upsertDeepLink(deepLink: DeepLink) {
         database.transaction {
-            deepLink.folder?.let { folder ->
-                folderDataSource.upsertFolder(folder)
+            deepLink.folder?.let {
+                folderDataSource.upsertFolder(it)
             }
 
             database.deepLinkQueries.upsertDeeplink(
@@ -97,7 +96,7 @@ internal class DeepLinkDataSourceImpl(
                 link = deepLink.link,
                 name = deepLink.name,
                 description = deepLink.description,
-                createdAt = deepLink.createdAt.toEpochMilliseconds(),
+                createdAt = deepLink.createdAt,
                 isFavorite = if (deepLink.isFavorite) 1L else 0L,
                 folderId = deepLink.folder?.id,
             )
@@ -116,7 +115,7 @@ private fun GetDeepLinkById.toModel() = DeepLink(
     link = link,
     name = name,
     description = description,
-    createdAt = Instant.fromEpochMilliseconds(createdAt),
+    createdAt = createdAt,
     isFavorite = isFavorite == 1L,
     folder = folderId?.let { folderId ->
         Folder(
@@ -132,7 +131,7 @@ private fun GetDeepLinkByLink.toModel() = DeepLink(
     link = link,
     name = name,
     description = description,
-    createdAt = Instant.fromEpochMilliseconds(createdAt),
+    createdAt = createdAt,
     isFavorite = isFavorite == 1L,
     folder = folderId?.let { folderId ->
         Folder(

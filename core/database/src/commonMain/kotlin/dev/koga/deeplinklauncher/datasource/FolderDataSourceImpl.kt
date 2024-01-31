@@ -10,7 +10,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
-import kotlinx.datetime.Instant
 
 internal class FolderDataSourceImpl(
     private val databaseProvider: DatabaseProvider,
@@ -65,7 +64,7 @@ internal class FolderDataSourceImpl(
                         link = data.link,
                         name = data.name,
                         description = data.description,
-                        createdAt = Instant.fromEpochMilliseconds(data.createdAt),
+                        createdAt = data.createdAt,
                         isFavorite = data.isFavorite == 1L,
                     )
                 }

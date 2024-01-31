@@ -3,6 +3,8 @@ package dev.koga.deeplinklauncher.usecase.deeplink
 import dev.koga.deeplinklauncher.constant.defaultDeepLink
 import dev.koga.deeplinklauncher.datasource.DeepLinkDataSource
 import dev.koga.deeplinklauncher.datasource.FolderDataSource
+import dev.koga.deeplinklauncher.dto.dateFormat
+import dev.koga.deeplinklauncher.ext.format
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
@@ -36,6 +38,7 @@ class GetDeepLinksJsonPreview(
                         name = it.name,
                         description = it.description,
                         isFavorite = it.isFavorite,
+                        createdAt = it.createdAt.format(dateFormat),
                         folderId = it.folder?.id,
                     )
                 },
@@ -55,6 +58,7 @@ class GetDeepLinksJsonPreview(
             val name: String?,
             val description: String?,
             val isFavorite: Boolean,
+            val createdAt: String?,
             val folderId: String?,
         )
 

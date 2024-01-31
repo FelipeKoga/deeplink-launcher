@@ -6,14 +6,18 @@ import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
+import dev.koga.deeplinklauncher.dto.dateFormat
+import dev.koga.deeplinklauncher.ext.format
 import kotlinx.datetime.Clock
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toLocalDateTime
 
 val generalPropertiesHint: AnnotatedString
     @Composable get() {
         return buildAnnotatedString {
             append(
                 "It's possible to add more properties to the object, " +
-                    "such as",
+                        "such as",
             )
 
             withStyle(
@@ -116,7 +120,11 @@ val createdAtHint: AnnotatedString
                     fontWeight = FontWeight.Bold,
                 ),
             ) {
-                append(Clock.System.now().toString())
+                append(
+                    Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).format(
+                        dateFormat
+                    )
+                )
             }
         }
     }

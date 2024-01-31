@@ -4,8 +4,11 @@ import dev.koga.deeplinklauncher.model.DeepLink
 import dev.koga.deeplinklauncher.model.Folder
 import dev.koga.deeplinklauncher.provider.UUIDProvider
 import kotlinx.datetime.Clock
-import kotlinx.datetime.toInstant
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toLocalDateTime
 import kotlinx.serialization.Serializable
+
+const val dateFormat = "yyyy-MM-dd'T'HH:mm:ss"
 
 @Serializable
 data class ImportExportDto(
@@ -39,7 +42,9 @@ fun ImportExportDto.Folder.toModel() = Folder(
 
 fun ImportExportDto.DeepLink.toModel(folder: Folder?) = DeepLink(
     id = id ?: UUIDProvider.get(),
-    createdAt = createdAt?.toInstant() ?: Clock.System.now(),
+    createdAt = createdAt?.toLocalDateTime() ?: Clock.System.now().toLocalDateTime(
+        TimeZone.currentSystemDefault()
+    ),
     link = link,
     name = name,
     description = description,
