@@ -47,7 +47,8 @@ fun DeleteFolderBottomSheet(
             Divider()
 
             Text(
-                text = "Are you sure you want to delete this deep link?",
+                text = "Are you sure you want to delete this folder? " +
+                    "\nNote: The deeplinks vinculated to this folder will not be deleted",
                 style = MaterialTheme.typography.bodyMedium,
                 modifier = Modifier.padding(24.dp),
             )
