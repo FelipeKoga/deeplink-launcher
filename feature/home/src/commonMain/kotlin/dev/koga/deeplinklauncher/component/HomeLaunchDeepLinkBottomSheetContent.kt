@@ -64,7 +64,7 @@ internal fun HomeLaunchDeepLinkBottomSheetContent(
                 imeAction = ImeAction.Done,
                 onDone = launch,
                 textStyle = LocalTextStyle.current.copy(
-                    fontWeight = FontWeight.Bold,
+                    fontWeight = FontWeight.SemiBold,
                 ),
                 trailingIcon = {
                     AnimatedVisibility(visible = value.isNotEmpty()) {
