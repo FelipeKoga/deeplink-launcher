@@ -25,10 +25,12 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.SnackbarResult
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -43,43 +45,59 @@ import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.koin.getScreenModel
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
-import dev.koga.deeplinklauncher.model.FileType
-import dev.koga.deeplinklauncher.usecase.deeplink.ExportDeepLinks
-import dev.koga.deeplinklauncher.usecase.deeplink.ExportDeepLinksOutput
+import dev.icerock.moko.permissions.DeniedAlwaysException
+import dev.icerock.moko.permissions.DeniedException
+import dev.icerock.moko.permissions.Permission
+import dev.icerock.moko.permissions.PermissionsController
+import dev.icerock.moko.permissions.compose.BindEffect
+import dev.icerock.moko.permissions.compose.PermissionsControllerFactory
+import dev.icerock.moko.permissions.compose.rememberPermissionsControllerFactory
+import dev.koga.deeplinklauncher.util.shouldAskForPermission
 import kotlinx.collections.immutable.toPersistentList
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
-import org.koin.compose.koinInject
 
 class ExportScreen : Screen {
-
-    private enum class ExportType(val label: String) {
-        JSON("JSON (.json)"),
-        PLAIN_TEXT("Plain text (.txt)"),
-        ;
-
-        companion object {
-            fun getByLabel(label: String): ExportType {
-                return entries.first { it.label == label }
-            }
-        }
-    }
 
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
     override fun Content() {
         val navigator = LocalNavigator.currentOrThrow
+        val permissionFactory: PermissionsControllerFactory = rememberPermissionsControllerFactory()
+        val permissionController: PermissionsController = remember(permissionFactory) {
+            permissionFactory.createPermissionsController()
+        }
+
         val scope = rememberCoroutineScope()
+
         val snackbarHostState = remember { SnackbarHostState() }
 
         val screenModel = getScreenModel<ExportScreenModel>()
         val preview = screenModel.preview
 
-        val exportDeepLinks = koinInject<ExportDeepLinks>()
-
-        var selectedExportType by remember { mutableStateOf(ExportType.JSON) }
+        var selectedExportType by remember { mutableStateOf(ExportFileType.JSON) }
+        var isPermissionGranted by remember { mutableStateOf(false) }
 
         val scrollBehavior =
             TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
+
+        LaunchedEffect(Unit) {
+            screenModel.messages.collectLatest { message ->
+                snackbarHostState.showSnackbar(
+                    message = message,
+                    duration = SnackbarDuration.Short,
+                )
+            }
+        }
+
+        BindEffect(permissionController)
+
+        LaunchedEffect(true) {
+            isPermissionGranted = !shouldAskForPermission(
+                permissionsController = permissionController,
+                permission = Permission.WRITE_STORAGE,
+            )
+        }
 
         Scaffold(
             topBar = {
@@ -102,35 +120,49 @@ class ExportScreen : Screen {
                             .fillMaxWidth()
                             .padding(24.dp),
                         onClick = {
-                            scope.launch {
-                                val response = exportDeepLinks.export(
-                                    type = when (selectedExportType) {
-                                        ExportType.JSON -> FileType.JSON
-                                        ExportType.PLAIN_TEXT -> FileType.TXT
-                                    },
-                                )
-
-                                when (response) {
-                                    ExportDeepLinksOutput.Empty -> snackbarHostState.showSnackbar(
-                                        message = "No DeepLinks to export.",
+                            when (isPermissionGranted) {
+                                true -> {
+                                    screenModel.export(
+                                        exportType = selectedExportType,
                                     )
+                                }
 
-                                    is ExportDeepLinksOutput.Error -> snackbarHostState.showSnackbar(
-                                        message = "Something went wrong. ",
-                                    )
+                                false -> {
+                                    scope.launch {
+                                        try {
+                                            permissionController.providePermission(Permission.WRITE_STORAGE)
 
-                                    ExportDeepLinksOutput.Success -> {
-                                        snackbarHostState.showSnackbar(
-                                            message = "DeepLinks exported successfully. " +
-                                                "Check your downloads folder.",
-                                            duration = SnackbarDuration.Short,
-                                        )
+                                            isPermissionGranted = true
+                                        } catch (e: DeniedAlwaysException) {
+                                            val result = snackbarHostState.showSnackbar(
+                                                message = "Permission denied always. " +
+                                                    "Please enable it in settings",
+                                                duration = SnackbarDuration.Short,
+                                                actionLabel = "Settings",
+                                            )
+
+                                            when (result) {
+                                                SnackbarResult.Dismissed -> Unit
+                                                SnackbarResult.ActionPerformed ->
+                                                    permissionController.openAppSettings()
+                                            }
+                                        } catch (e: DeniedException) {
+                                            snackbarHostState.showSnackbar(
+                                                message = "Permission denied",
+                                                duration = SnackbarDuration.Short,
+                                            )
+                                        }
                                     }
                                 }
                             }
                         },
                     ) {
-                        Text("Export")
+                        Text(
+                            text = when (isPermissionGranted) {
+                                true -> "Export"
+                                false -> "Grant permission"
+                            },
+                        )
                     }
                 }
             },
@@ -161,9 +193,11 @@ class ExportScreen : Screen {
 
                     DLLSingleChoiceSegmentedButtonRow(
                         modifier = Modifier.align(Alignment.CenterHorizontally),
-                        options = ExportType.entries.map { it.label }.toPersistentList(),
+                        options = ExportFileType.entries.map { it.label }.toPersistentList(),
                         selectedOption = selectedExportType.label,
-                        onOptionSelected = { selectedExportType = ExportType.getByLabel(it) },
+                        onOptionSelected = {
+                            selectedExportType = ExportFileType.getByLabel(it)
+                        },
                     )
 
                     Spacer(modifier = Modifier.height(16.dp))
@@ -193,11 +227,11 @@ class ExportScreen : Screen {
                         },
                     ) { index ->
                         when (index) {
-                            ExportType.JSON -> BoxPreview(
+                            ExportFileType.JSON -> BoxPreview(
                                 text = preview.jsonFormat.ifEmpty { "No DeepLinks" },
                             )
 
-                            ExportType.PLAIN_TEXT -> BoxPreview(
+                            ExportFileType.PLAIN_TEXT -> BoxPreview(
                                 text = preview.plainTextFormat.ifEmpty { "No DeepLinks" },
                             )
                         }

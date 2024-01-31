@@ -2,14 +2,12 @@ package dev.koga.deeplinklauncher.util.ext
 
 import dev.koga.deeplinklauncher.model.DeepLink
 import dev.koga.deeplinklauncher.provider.UUIDProvider
-import kotlinx.datetime.Clock
-import kotlinx.datetime.TimeZone
-import kotlinx.datetime.toLocalDateTime
+import dev.koga.deeplinklauncher.util.currentLocalDateTime
 
 fun String.toDeepLink(): DeepLink {
     return DeepLink(
         id = UUIDProvider.get(),
-        createdAt = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()),
+        createdAt = currentLocalDateTime,
         link = this,
         name = null,
         description = null,

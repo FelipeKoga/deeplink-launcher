@@ -1,13 +1,13 @@
 package dev.koga.deeplinklauncher.android
 
 import android.os.Bundle
-import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.fragment.app.FragmentActivity
 import dev.koga.deeplinklauncher.MainApp
 import dev.koga.deeplinklauncher.provider.DeepLinkClipboardProvider
 import org.koin.compose.koinInject
 
-class MainActivity : ComponentActivity() {
+class MainActivity : FragmentActivity() {
 
     private var deepLinkClipboardProvider: DeepLinkClipboardProvider? = null
 

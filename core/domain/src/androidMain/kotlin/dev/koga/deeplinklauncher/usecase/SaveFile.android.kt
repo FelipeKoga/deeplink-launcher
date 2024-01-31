@@ -5,7 +5,6 @@ import android.content.Context
 import android.os.Build
 import android.os.Environment
 import android.provider.MediaStore
-import androidx.core.content.FileProvider
 import dev.koga.deeplinklauncher.model.FileType
 import java.io.File
 import java.io.FileOutputStream
@@ -38,19 +37,14 @@ actual class SaveFile(
         } else {
             val downloadsPath =
                 Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
+
             val file = File(downloadsPath, fileName)
 
             FileOutputStream(file).use { outputStream ->
                 outputStream.write(fileContent.toByteArray())
             }
 
-            val uri = FileProvider.getUriForFile(
-                context,
-                context.packageName + ".provider",
-                file,
-            )
-
-            uri.toString()
+            file.absolutePath
         }
     }
 }
