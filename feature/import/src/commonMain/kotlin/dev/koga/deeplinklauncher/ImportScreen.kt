@@ -8,6 +8,7 @@ import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -27,6 +28,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
@@ -43,10 +45,22 @@ import cafe.adriel.voyager.navigator.currentOrThrow
 import dev.koga.deeplinklauncher.usecase.deeplink.ImportDeepLinks
 import dev.koga.deeplinklauncher.usecase.deeplink.ImportDeepLinksOutput
 import kotlinx.collections.immutable.persistentListOf
+import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.launch
 import org.koin.compose.koinInject
 
 class ImportScreen : Screen {
+
+    private enum class ImportType(val label: String) {
+        JSON("JSON (.json)"),
+        PLAIN_TEXT("Plain text (.txt)");
+
+        companion object {
+            fun getByLabel(label: String): ImportType {
+                return entries.first { it.label == label }
+            }
+        }
+    }
 
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
@@ -58,8 +72,7 @@ class ImportScreen : Screen {
 
         val scope = rememberCoroutineScope()
         val snackbarHostState = remember { SnackbarHostState() }
-        val options = persistentListOf("JSON (.json)", "Plain text (.txt)")
-        var selectedIndex by remember { mutableIntStateOf(0) }
+        var selectedType by remember { mutableStateOf(ImportType.JSON) }
 
         browseFileAndGetPath.Listen(
             onResult = { realPath, fileType ->
@@ -173,14 +186,15 @@ class ImportScreen : Screen {
                 DLLSingleChoiceSegmentedButtonRow(
                     modifier = Modifier
                         .align(Alignment.CenterHorizontally),
-                    options = options,
-                    selectedOption = options[selectedIndex],
-                    onOptionSelected = { selectedIndex = options.indexOf(it) },
+                    options = ImportType.entries.map { it.label }.toPersistentList(),
+                    selectedOption = selectedType.label,
+                    onOptionSelected = { selectedType = ImportType.getByLabel(it) },
                 )
 
                 Spacer(modifier = Modifier.height(12.dp))
+
                 AnimatedContent(
-                    targetState = selectedIndex,
+                    targetState = selectedType,
                     transitionSpec = {
                         if (targetState > initialState) {
                             slideInHorizontally { width -> width } + fadeIn() togetherWith
@@ -193,135 +207,10 @@ class ImportScreen : Screen {
                         )
                     },
                     label = "",
-                ) { index ->
-                    when (index) {
-                        0 -> {
-                            Column {
-                                Text(
-                                    text = "The most basic JSON format is an object that only " +
-                                            "contains a link property.",
-                                    style = MaterialTheme.typography.titleSmall.copy(
-                                        fontWeight = FontWeight.Normal,
-                                    ),
-                                )
-
-                                Spacer(modifier = Modifier.height(8.dp))
-
-                                BoxPreview(
-                                    text = """
-                                        {
-                                            "link": string
-                                        }
-                                    """.trimIndent(),
-                                )
-
-                                Spacer(modifier = Modifier.height(8.dp))
-
-                                val generalPropertiesHint = buildAnnotatedString {
-                                    append(
-                                        "It's possible to add more properties to the object, " +
-                                                "such as"
-                                    )
-
-                                    withStyle(
-                                        style = SpanStyle(
-                                            fontWeight = FontWeight.Bold,
-                                        ),
-                                    ) {
-                                        append(" id, name, description, createdAt, isFavorite, ")
-                                    }
-
-                                    append("and ")
-
-                                    withStyle(
-                                        style = SpanStyle(
-                                            fontWeight = FontWeight.Bold,
-                                        ),
-                                    ) {
-                                        append("folder.")
-                                    }
-                                }
-
-                                Text(
-                                    text = generalPropertiesHint,
-                                    style = MaterialTheme.typography.titleSmall.copy(
-                                        fontWeight = FontWeight.Normal,
-                                    ),
-                                )
-
-                                Spacer(modifier = Modifier.height(8.dp))
-
-                                val folderHint = buildAnnotatedString {
-                                    append("The folder property is an object that contains: ")
-                                    withStyle(
-                                        style = SpanStyle(
-                                            fontWeight = FontWeight.Bold,
-                                        ),
-                                    ) {
-                                        append("id, name, ")
-                                    }
-
-                                    append("and ")
-
-                                    withStyle(
-                                        style = SpanStyle(
-                                            fontWeight = FontWeight.Bold,
-                                        ),
-                                    ) {
-                                        append("description.")
-                                    }
-                                }
-
-                                Text(
-                                    text = folderHint,
-                                    style = MaterialTheme.typography.titleSmall.copy(
-                                        fontWeight = FontWeight.Normal,
-                                    ),
-                                )
-
-                                Spacer(modifier = Modifier.height(8.dp))
-
-                                val idHint = buildAnnotatedString {
-                                    append("We recommend using the ")
-                                    withStyle(
-                                        style = SpanStyle(
-                                            fontWeight = FontWeight.Bold,
-                                        ),
-                                    ) {
-                                        append("UUID ")
-                                    }
-                                    append("format for the id property.")
-                                }
-
-                                Text(
-                                    text = idHint,
-                                    style = MaterialTheme.typography.titleSmall.copy(
-                                        fontWeight = FontWeight.Normal,
-                                    ),
-                                )
-
-                                Spacer(modifier = Modifier.height(8.dp))
-
-                                JsonDisplayScreen()
-                            }
-                        }
-
-                        1 -> {
-                            Column {
-                                Text(
-                                    text = "The plain text format is a simple list of deeplinks, one per line.",
-                                    style = MaterialTheme.typography.titleSmall.copy(
-                                        fontWeight = FontWeight.Normal,
-                                    ),
-                                )
-
-                                Spacer(modifier = Modifier.height(8.dp))
-
-                                BoxPreview(
-                                    text = "test://myapplink\nhttps://myapplink2\ntest://myapplink3",
-                                )
-                            }
-                        }
+                ) { selectedType ->
+                    when (selectedType) {
+                        ImportType.JSON -> JSONTutorial()
+                        ImportType.PLAIN_TEXT -> PlainTextTutorial()
                     }
                 }
             }
@@ -330,25 +219,73 @@ class ImportScreen : Screen {
 }
 
 @Composable
-fun JsonDisplayScreen() {
-    val jsonText = """
-        [
-          {
-            "id": string,               // optional
-            "link": string,             // required
-            "name": string,             // optional
-            "description": null,        // optional
-            "createdAt": string,        // optional
-            "isFavorite": boolean       // optional,
-            "folder": {                 // optional
-                "id": string,           // required
-                "name": string,         // required
-                "description": string   // optional
-            }
-          },
-          ...
-        ]
-    """.trimIndent()
+fun JSONTutorial() {
+    Column(
+        verticalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        Text(
+            text = "The most basic JSON format is an object that only " +
+                    "contains a link property.",
+            style = MaterialTheme.typography.titleSmall.copy(
+                fontWeight = FontWeight.Normal,
+            ),
+        )
 
-    BoxPreview(text = jsonText)
+        BoxPreview(
+            text = basicJsonPreview,
+        )
+
+        Text(
+            text = generalPropertiesHint,
+            style = MaterialTheme.typography.titleSmall.copy(
+                fontWeight = FontWeight.Normal,
+            ),
+        )
+
+        Text(
+            text = folderPropertiesHint,
+            style = MaterialTheme.typography.titleSmall.copy(
+                fontWeight = FontWeight.Normal,
+            ),
+        )
+
+        Text(
+            text = uuidHint,
+            style = MaterialTheme.typography.titleSmall.copy(
+                fontWeight = FontWeight.Normal,
+            ),
+        )
+
+        Text(
+            text = createdAtHint,
+            style = MaterialTheme.typography.titleSmall.copy(
+                fontWeight = FontWeight.Normal,
+            ),
+        )
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        BoxPreview(text = jsonStructurePreview)
+
+        Spacer(modifier = Modifier.height(24.dp))
+    }
+}
+
+@Composable
+fun PlainTextTutorial() {
+    Column {
+        Text(
+            text = "The plain text format is a simple list of deeplinks, " +
+                    "one per line.",
+            style = MaterialTheme.typography.titleSmall.copy(
+                fontWeight = FontWeight.Normal,
+            ),
+        )
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        BoxPreview(
+            text = plainTextPreview,
+        )
+    }
 }

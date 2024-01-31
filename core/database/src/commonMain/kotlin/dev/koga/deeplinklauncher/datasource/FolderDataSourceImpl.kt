@@ -37,6 +37,21 @@ internal class FolderDataSourceImpl(
             }
     }
 
+    override fun getFolders(): List<Folder> {
+        return database
+            .folderQueries
+            .selectFoldersWithDeeplinkCount()
+            .executeAsList()
+            .map {
+                Folder(
+                    id = it.id,
+                    name = it.name,
+                    description = it.description,
+                    deepLinkCount = it.deeplinkCount.toInt(),
+                )
+            }
+    }
+
     override fun getFolderDeepLinksStream(id: String): Flow<List<DeepLink>> {
         return database
             .folderQueries

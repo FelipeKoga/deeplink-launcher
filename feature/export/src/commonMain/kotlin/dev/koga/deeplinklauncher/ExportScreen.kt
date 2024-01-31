@@ -54,8 +54,7 @@ class ExportScreen : Screen {
 
     private enum class ExportType(val label: String) {
         JSON("JSON (.json)"),
-        PLAIN_TEXT("Plain text (.txt)"),
-        ;
+        PLAIN_TEXT("Plain text (.txt)");
 
         companion object {
             fun getByLabel(label: String): ExportType {

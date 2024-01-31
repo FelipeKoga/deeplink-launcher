@@ -129,8 +129,8 @@ internal fun HomeHorizontalPager(
                                 onClick = onFolderAdd,
                                 shape = RoundedCornerShape(24.dp),
                                 border = BorderStroke(
-                                    1.dp,
-                                    MaterialTheme.colorScheme.onSurface.copy(alpha = .3f),
+                                    width = 1.dp,
+                                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = .3f),
                                 ),
                             ) {
                                 Column(
@@ -156,6 +156,7 @@ internal fun HomeHorizontalPager(
                                 }
                             }
                         }
+
                         items(folders.size) { index ->
                             FolderCard(
                                 folder = folders[index],

@@ -2,8 +2,7 @@ package dev.koga.deeplinklauncher.usecase.deeplink
 
 import dev.koga.deeplinklauncher.constant.defaultDeepLink
 import dev.koga.deeplinklauncher.datasource.DeepLinkDataSource
-import dev.koga.deeplinklauncher.dto.ImportExportDeepLinkDto
-import dev.koga.deeplinklauncher.dto.ImportExportFolderDto
+import dev.koga.deeplinklauncher.dto.ImportDto
 import dev.koga.deeplinklauncher.model.FileType
 import dev.koga.deeplinklauncher.usecase.SaveFile
 import dev.koga.deeplinklauncher.usecase.ShareFile
@@ -24,29 +23,42 @@ class ExportDeepLinks(
         }
 
         val serializedData = when (type) {
-            FileType.JSON -> Json.encodeToString(
-                serializer = ListSerializer(
-                    ImportExportDeepLinkDto.serializer(),
-                ),
+            FileType.JSON -> {
+                val foldersDto = deepLinks
+                    .mapNotNull { it.folder }
+                    .map {
+                        ImportDto.Folder(
+                            id = it.id,
+                            name = it.name,
+                            description = it.description,
+                        )
+                    }.distinct()
 
-                value = deepLinks.map {
-                    ImportExportDeepLinkDto(
+                val deepLinksDto = deepLinks.map {
+                    ImportDto.DeepLink(
+                        link = it.link,
                         id = it.id,
                         createdAt = it.createdAt.toString(),
-                        link = it.link,
                         name = it.name,
                         description = it.description,
-                        folder = it.folder?.let { folder ->
-                            ImportExportFolderDto(
-                                id = folder.id,
-                                name = folder.name,
-                                description = folder.description,
-                            )
-                        },
-                        isFavorite = it.isFavorite,
+                        folderId = it.folder?.id,
+                        isFavorite = it.isFavorite
                     )
-                },
-            )
+                }
+
+                Json.encodeToString(
+                    serializer = ListSerializer(
+                        ImportDto.serializer(),
+                    ),
+
+                    value = deepLinks.map {
+                        ImportDto(
+                            folders = foldersDto,
+                            deepLinks = deepLinksDto
+                        )
+                    },
+                )
+            }
 
             FileType.TXT -> deepLinks.joinToString(separator = "\n") { deepLink ->
                 deepLink.link

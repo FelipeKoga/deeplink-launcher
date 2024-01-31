@@ -1,9 +1,9 @@
 package dev.koga.deeplinklauncher.usecase.deeplink
 
 import dev.koga.deeplinklauncher.datasource.DeepLinkDataSource
-import dev.koga.deeplinklauncher.dto.ImportExportDeepLinkDto
-import dev.koga.deeplinklauncher.dto.toDeepLink
-import dev.koga.deeplinklauncher.dto.toFolder
+import dev.koga.deeplinklauncher.datasource.FolderDataSource
+import dev.koga.deeplinklauncher.dto.ImportDto
+import dev.koga.deeplinklauncher.dto.toModel
 import dev.koga.deeplinklauncher.model.DeepLink
 import dev.koga.deeplinklauncher.model.FileType
 import dev.koga.deeplinklauncher.provider.UUIDProvider
@@ -16,7 +16,8 @@ import kotlinx.serialization.json.Json
 class ImportDeepLinks(
     private val getFileContent: GetFileContent,
     private val validateDeepLink: ValidateDeepLink,
-    private val dataSource: DeepLinkDataSource,
+    private val deepLinkDataSource: DeepLinkDataSource,
+    private val folderDataSource: FolderDataSource,
 ) {
     fun invoke(filePath: String, fileType: FileType): ImportDeepLinksOutput {
         return try {
@@ -24,10 +25,12 @@ class ImportDeepLinks(
 
             when (fileType) {
                 FileType.JSON -> {
-                    val deepLinksFromJson =
-                        Json.decodeFromString<List<ImportExportDeepLinkDto>>(fileContents)
 
-                    val invalidDeepLinks = deepLinksFromJson.filter {
+                    val importDto = Json.decodeFromString<ImportDto>(fileContents)
+
+                    val deepLinksFromDto = importDto.deepLinks
+
+                    val invalidDeepLinks = deepLinksFromDto.filter {
                         !validateDeepLink(it.link)
                     }
 
@@ -37,15 +40,23 @@ class ImportDeepLinks(
                         )
                     }
 
-                    val databaseDeepLinks = deepLinksFromJson.mapNotNull {
-                        dataSource.getDeepLinkByLink(it.link)
+                    val folders = importDto.folders.map(ImportDto.Folder::toModel)
+
+                    folders.forEach {
+                        folderDataSource.upsertFolder(it)
                     }
 
-                    val newDeepLinks = deepLinksFromJson.filter {
-                        databaseDeepLinks.none { databaseDeepLink -> databaseDeepLink.link == it.link }
-                    }.map(ImportExportDeepLinkDto::toDeepLink)
+                    val databaseDeepLinks = deepLinksFromDto.mapNotNull {
+                        deepLinkDataSource.getDeepLinkByLink(it.link)
+                    }
 
-                    val updatedDeepLinks = deepLinksFromJson.mapNotNull { newDeepLinkDto ->
+                    val newDeepLinks = deepLinksFromDto.filter {
+                        databaseDeepLinks.none { databaseDeepLink -> databaseDeepLink.link == it.link }
+                    }.map {
+                        it.toModel(folders.find { folder -> folder.id == it.folderId })
+                    }
+
+                    val updatedDeepLinks = deepLinksFromDto.mapNotNull { newDeepLinkDto ->
                         val databaseDeepLink = databaseDeepLinks.find { databaseDeepLink ->
                             databaseDeepLink.link == newDeepLinkDto.link
                         } ?: return@mapNotNull null
@@ -58,12 +69,13 @@ class ImportDeepLinks(
                             isFavorite = newDeepLinkDto.isFavorite ?: databaseDeepLink.isFavorite,
                             createdAt = newDeepLinkDto.createdAt?.toInstant()
                                 ?: databaseDeepLink.createdAt,
-                            folder = newDeepLinkDto.folder?.toFolder() ?: databaseDeepLink.folder,
+                            folder = folders.find { folder -> folder.id == newDeepLinkDto.folderId }
+                                ?: databaseDeepLink.folder,
                         )
                     }
 
                     (newDeepLinks + updatedDeepLinks).forEach {
-                        dataSource.upsertDeepLink(it)
+                        deepLinkDataSource.upsertDeepLink(it)
                     }
                 }
 
@@ -71,7 +83,7 @@ class ImportDeepLinks(
                     val deepLinksTexts = fileContents.split("\n")
 
                     val databaseDeepLinks = deepLinksTexts.mapNotNull {
-                        dataSource.getDeepLinkByLink(it)
+                        deepLinkDataSource.getDeepLinkByLink(it)
                     }
 
                     val newDeepLinksTexts = deepLinksTexts.filter {
@@ -89,7 +101,7 @@ class ImportDeepLinks(
                     }
 
                     newDeepLinksTexts.map(String::toDeepLink).forEach {
-                        dataSource.upsertDeepLink(it)
+                        deepLinkDataSource.upsertDeepLink(it)
                     }
                 }
             }
