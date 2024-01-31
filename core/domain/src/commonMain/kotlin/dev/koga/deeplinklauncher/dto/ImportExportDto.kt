@@ -9,16 +9,9 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class ImportDto(
-    val folders: List<Folder>,
+    val folders: List<Folder>? = null,
     val deepLinks: List<DeepLink>
 ) {
-    @Serializable
-    data class Folder(
-        val id: String,
-        val name: String,
-        val description: String?
-    )
-
     @Serializable
     data class DeepLink(
         val link: String,
@@ -28,6 +21,13 @@ data class ImportDto(
         val description: String? = null,
         val folderId: String? = null,
         val isFavorite: Boolean? = false,
+    )
+
+    @Serializable
+    data class Folder(
+        val id: String,
+        val name: String,
+        val description: String? = null,
     )
 }
 
