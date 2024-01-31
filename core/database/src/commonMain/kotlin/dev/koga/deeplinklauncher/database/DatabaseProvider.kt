@@ -19,7 +19,7 @@ internal class DatabaseProvider(
             Deeplink.Adapter(
                 createdAtAdapter = localDateTimeAdapter,
                 lastLaunchedAtAdapter = localDateTimeAdapter,
-            )
+            ),
         )
 
         prepopulateDatabase(database)

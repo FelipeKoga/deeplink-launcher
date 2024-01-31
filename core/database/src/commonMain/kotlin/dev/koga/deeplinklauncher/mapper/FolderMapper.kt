@@ -5,12 +5,6 @@ import dev.koga.deeplinklauncher.database.SelectFoldersWithDeeplinkCount
 import dev.koga.deeplinklauncher.model.Folder
 import dev.koga.deeplinklauncher.database.Folder as DatabaseFolder
 
-fun DatabaseFolder.toDomain() = Folder(
-    id = id,
-    name = name,
-    description = description,
-)
-
 fun SelectFoldersWithDeeplinkCount.toDomain() = Folder(
     id = id,
     name = name,

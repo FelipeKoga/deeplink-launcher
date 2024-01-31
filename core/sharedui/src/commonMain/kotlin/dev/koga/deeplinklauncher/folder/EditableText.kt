@@ -76,8 +76,8 @@ fun EditableText(
                                     enabled = editButtonEnabled,
                                     modifier = Modifier.size(18.dp),
                                     colors = IconButtonDefaults.filledTonalIconButtonColors(
-                                        containerColor = MaterialTheme.colorScheme.primary
-                                    )
+                                        containerColor = MaterialTheme.colorScheme.primary,
+                                    ),
                                 ) {
                                     Icon(
                                         imageVector = Icons.Rounded.Done,

@@ -21,9 +21,6 @@ import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlinx.datetime.Clock
-import kotlinx.datetime.TimeZone
-import kotlinx.datetime.toLocalDateTime
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class HomeScreenModel(
@@ -70,6 +67,7 @@ class HomeScreenModel(
                     description = null,
                     folder = null,
                     isFavorite = false,
+                    lastLaunchedAt = currentLocalDateTime,
                 ),
             )
         }

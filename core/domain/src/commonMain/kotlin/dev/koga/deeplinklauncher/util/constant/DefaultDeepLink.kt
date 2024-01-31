@@ -11,7 +11,7 @@ val defaultDeepLink = DeepLink(
     name = "Thanks for trying out DeepLink Launcher!",
     description = "If you like this app, leave a star on my GitHub repository and on the PlayStore!",
     createdAt = Clock.System.now().toLocalDateTime(
-        TimeZone.currentSystemDefault()
+        TimeZone.currentSystemDefault(),
     ),
     isFavorite = false,
     folder = null,
