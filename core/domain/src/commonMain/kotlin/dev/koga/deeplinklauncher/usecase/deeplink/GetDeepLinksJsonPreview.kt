@@ -3,14 +3,13 @@ package dev.koga.deeplinklauncher.usecase.deeplink
 import dev.koga.deeplinklauncher.constant.defaultDeepLink
 import dev.koga.deeplinklauncher.datasource.DeepLinkDataSource
 import dev.koga.deeplinklauncher.datasource.FolderDataSource
-import dev.koga.deeplinklauncher.dto.ImportDto
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 
 class GetDeepLinksJsonPreview(
     private val deepLinkDataSource: DeepLinkDataSource,
-    private val folderDataSource: FolderDataSource
+    private val folderDataSource: FolderDataSource,
 ) {
 
     operator fun invoke(): String {
@@ -39,8 +38,8 @@ class GetDeepLinksJsonPreview(
                         isFavorite = it.isFavorite,
                         folderId = it.folder?.id,
                     )
-                }
-            )
+                },
+            ),
         )
     }
 

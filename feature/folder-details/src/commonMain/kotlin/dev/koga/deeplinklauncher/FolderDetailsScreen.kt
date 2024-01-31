@@ -29,7 +29,6 @@ import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -154,7 +153,6 @@ fun FolderDetailsScreenContent(
     onDeepLinkLaunch: (DeepLink) -> Unit,
     onDeepLinkCopy: (DeepLink) -> Unit,
 ) {
-
     val dimensions = LocalDimensions.current
 
     Column(modifier = Modifier.padding(horizontal = dimensions.extraLarge)) {
@@ -178,11 +176,10 @@ fun FolderDetailsScreenContent(
             deepLinks = form.deepLinks,
             onClick = onDeepLinkClick,
             onLaunch = onDeepLinkLaunch,
-            onCopy = onDeepLinkCopy
+            onCopy = onDeepLinkCopy,
         )
     }
 }
-
 
 @Composable
 fun FolderNameContent(
@@ -371,5 +368,4 @@ private fun FolderDeepLinks(
             }
         }
     }
-
 }

@@ -2,7 +2,7 @@ package dev.koga.deeplinklauncher.usecase.deeplink
 
 import dev.koga.deeplinklauncher.datasource.DeepLinkDataSource
 import dev.koga.deeplinklauncher.datasource.FolderDataSource
-import dev.koga.deeplinklauncher.dto.ImportDto
+import dev.koga.deeplinklauncher.dto.ImportExportDto
 import dev.koga.deeplinklauncher.dto.toModel
 import dev.koga.deeplinklauncher.model.DeepLink
 import dev.koga.deeplinklauncher.model.FileType
@@ -25,10 +25,9 @@ class ImportDeepLinks(
 
             when (fileType) {
                 FileType.JSON -> {
+                    val importExportDto = Json.decodeFromString<ImportExportDto>(fileContents)
 
-                    val importDto = Json.decodeFromString<ImportDto>(fileContents)
-
-                    val deepLinksFromDto = importDto.deepLinks
+                    val deepLinksFromDto = importExportDto.deepLinks
 
                     val invalidDeepLinks = deepLinksFromDto.filter {
                         !validateDeepLink(it.link)
@@ -40,7 +39,7 @@ class ImportDeepLinks(
                         )
                     }
 
-                    val folders = importDto.folders?.map(ImportDto.Folder::toModel) ?: emptyList()
+                    val folders = importExportDto.folders?.map(ImportExportDto.Folder::toModel) ?: emptyList()
 
                     folders.forEach {
                         folderDataSource.upsertFolder(it)
