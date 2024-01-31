@@ -7,6 +7,7 @@ import dev.koga.deeplinklauncher.model.FileType
 import dev.koga.deeplinklauncher.usecase.SaveFile
 import dev.koga.deeplinklauncher.usecase.ShareFile
 import dev.koga.deeplinklauncher.util.constant.defaultDeepLink
+import dev.koga.deeplinklauncher.util.currentLocalDateTime
 import dev.koga.deeplinklauncher.util.ext.format
 import kotlinx.serialization.builtins.ListSerializer
 import kotlinx.serialization.json.Json
@@ -64,7 +65,7 @@ class ExportDeepLinks(
             }
         }
 
-        val fileName = "deeplinks-$currentLocalDateTime.${type.extension}"
+        val fileName = "deeplinks-${currentLocalDateTime}.${type.extension}"
 
         val filePath = saveFile(
             fileName = fileName,
