@@ -204,7 +204,7 @@ fun DeepLinkDetailsScreenContent(
             ) {
                 Text(
                     text = details.name.ifEmpty { "--" },
-                    style = MaterialTheme.typography.titleLarge.copy(
+                    style = MaterialTheme.typography.headlineMedium.copy(
                         fontWeight = FontWeight.SemiBold,
                     ),
                 )
@@ -225,7 +225,7 @@ fun DeepLinkDetailsScreenContent(
                 value = details.description,
                 onSave = onDescriptionChanged,
                 modifier = Modifier.fillMaxWidth(),
-                inputLabel = "Enter a description"
+                inputLabel = "Enter a description",
             ) {
                 Text(
                     text = details.description.ifEmpty { "--" },
@@ -317,7 +317,6 @@ fun DeepLinkDetailsScreenContent(
                     )
                 }
             }
-
 
             Spacer(modifier = Modifier.weight(1f))
 
