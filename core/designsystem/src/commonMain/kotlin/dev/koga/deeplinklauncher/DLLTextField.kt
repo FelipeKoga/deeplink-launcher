@@ -60,7 +60,7 @@ fun DLLTextField(
             Text(
                 text = label,
                 style = MaterialTheme.typography.labelSmall.copy(
-                    fontWeight = FontWeight.SemiBold,
+                    fontWeight = FontWeight.Normal,
                 ),
             )
         },
