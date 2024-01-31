@@ -16,9 +16,8 @@ object Configuration {
 
     const val targetSdk = 34
     const val compileSdk = 34
-    const val minSdk = 24
+    const val minSdk = 26
     const val jvmTarget = "1.8"
-
 
     private fun getDateVersionBuild(): Int {
         val instant: Instant = Clock.System.now()
