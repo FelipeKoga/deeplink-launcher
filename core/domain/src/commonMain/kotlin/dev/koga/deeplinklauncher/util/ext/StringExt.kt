@@ -1,4 +1,4 @@
-package dev.koga.deeplinklauncher.ext
+package dev.koga.deeplinklauncher.util.ext
 
 import dev.koga.deeplinklauncher.model.DeepLink
 import dev.koga.deeplinklauncher.provider.UUIDProvider

@@ -4,7 +4,7 @@ import dev.koga.deeplinklauncher.datasource.DeepLinkDataSource
 import dev.koga.deeplinklauncher.datasource.FolderDataSource
 import dev.koga.deeplinklauncher.dto.ImportExportDto
 import dev.koga.deeplinklauncher.dto.toModel
-import dev.koga.deeplinklauncher.ext.toDeepLink
+import dev.koga.deeplinklauncher.util.ext.toDeepLink
 import dev.koga.deeplinklauncher.model.FileType
 import dev.koga.deeplinklauncher.usecase.GetFileContent
 import dev.koga.deeplinklauncher.usecase.ValidateDeepLink

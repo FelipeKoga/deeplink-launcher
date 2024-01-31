@@ -4,6 +4,9 @@ import app.cash.sqldelight.coroutines.asFlow
 import app.cash.sqldelight.coroutines.mapToList
 import dev.koga.deeplinklauncher.database.DatabaseProvider
 import dev.koga.deeplinklauncher.database.DeepLinkLauncherDatabase
+import dev.koga.deeplinklauncher.database.GetFolderById
+import dev.koga.deeplinklauncher.database.SelectFoldersWithDeeplinkCount
+import dev.koga.deeplinklauncher.mapper.toDomain
 import dev.koga.deeplinklauncher.model.DeepLink
 import dev.koga.deeplinklauncher.model.Folder
 import kotlinx.coroutines.Dispatchers
@@ -24,16 +27,7 @@ internal class FolderDataSourceImpl(
             .selectFoldersWithDeeplinkCount()
             .asFlow()
             .mapToList(Dispatchers.IO)
-            .map { data ->
-                data.map {
-                    Folder(
-                        id = it.id,
-                        name = it.name,
-                        description = it.description,
-                        deepLinkCount = it.deeplinkCount.toInt(),
-                    )
-                }
-            }
+            .map { data -> data.map(SelectFoldersWithDeeplinkCount::toDomain) }
     }
 
     override fun getFolders(): List<Folder> {
@@ -41,14 +35,7 @@ internal class FolderDataSourceImpl(
             .folderQueries
             .selectFoldersWithDeeplinkCount()
             .executeAsList()
-            .map {
-                Folder(
-                    id = it.id,
-                    name = it.name,
-                    description = it.description,
-                    deepLinkCount = it.deeplinkCount.toInt(),
-                )
-            }
+            .map(SelectFoldersWithDeeplinkCount::toDomain)
     }
 
     override fun getFolderDeepLinksStream(id: String): Flow<List<DeepLink>> {
@@ -57,32 +44,14 @@ internal class FolderDataSourceImpl(
             .getFolderDeepLinks(id)
             .asFlow()
             .mapToList(Dispatchers.IO)
-            .map {
-                it.map { data ->
-                    DeepLink(
-                        id = data.id,
-                        link = data.link,
-                        name = data.name,
-                        description = data.description,
-                        createdAt = data.createdAt,
-                        isFavorite = data.isFavorite == 1L,
-                    )
-                }
-            }
+            .map { it.map { data -> data.toDomain() } }
     }
 
-    override fun getFolderById(id: String): Folder? {
+    override fun getFolderById(id: String): Folder {
         return database.folderQueries
             .getFolderById(id)
             .executeAsOne()
-            .let {
-                Folder(
-                    id = it.id,
-                    name = it.name,
-                    description = it.description,
-                    deepLinkCount = it.deeplinkCount.toInt(),
-                )
-            }
+            .let(GetFolderById::toDomain)
     }
 
     override fun upsertFolder(folder: Folder) {

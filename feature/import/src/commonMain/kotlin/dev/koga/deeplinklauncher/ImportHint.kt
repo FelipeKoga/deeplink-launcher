@@ -7,7 +7,7 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
 import dev.koga.deeplinklauncher.dto.dateFormat
-import dev.koga.deeplinklauncher.ext.format
+import dev.koga.deeplinklauncher.util.ext.format
 import kotlinx.datetime.Clock
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime

@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -21,8 +20,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material.icons.rounded.Clear
 import androidx.compose.material.icons.rounded.Delete
-import androidx.compose.material.icons.rounded.Done
-import androidx.compose.material.icons.rounded.Edit
 import androidx.compose.material.icons.rounded.Favorite
 import androidx.compose.material.icons.rounded.FavoriteBorder
 import androidx.compose.material.icons.rounded.Share
@@ -45,7 +42,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -53,7 +49,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.koin.getScreenModel
@@ -64,7 +59,6 @@ import dev.koga.deeplinklauncher.component.DeleteDeepLinkConfirmationBottomSheet
 import dev.koga.deeplinklauncher.folder.EditableText
 import dev.koga.deeplinklauncher.folder.SelectFolderBottomSheet
 import dev.koga.deeplinklauncher.model.Folder
-import dev.koga.deeplinklauncher.theme.LocalDimensions
 import dev.koga.resources.MR
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.toPersistentList
@@ -193,14 +187,23 @@ fun DeepLinkDetailsScreenContent(
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState()),
         ) {
+            Text(
+                text = "Name",
+                style = MaterialTheme.typography.labelSmall.copy(
+                    fontWeight = FontWeight.Light,
+                ),
+            )
+
+            Spacer(modifier = Modifier.height(8.dp))
+
             EditableText(
                 value = details.name,
-                onValueChanged = onNameChanged,
+                onSave = onNameChanged,
                 modifier = Modifier.fillMaxWidth(),
-                inputLabel = "Name"
+                inputLabel = "Enter a name",
             ) {
                 Text(
-                    text = details.name,
+                    text = details.name.ifEmpty { "--" },
                     style = MaterialTheme.typography.titleLarge.copy(
                         fontWeight = FontWeight.SemiBold,
                     ),
@@ -209,14 +212,23 @@ fun DeepLinkDetailsScreenContent(
 
             Spacer(modifier = Modifier.height(24.dp))
 
+            Text(
+                text = "Description",
+                style = MaterialTheme.typography.labelSmall.copy(
+                    fontWeight = FontWeight.Light,
+                ),
+            )
+
+            Spacer(modifier = Modifier.height(8.dp))
+
             EditableText(
                 value = details.description,
-                onValueChanged = onDescriptionChanged,
+                onSave = onDescriptionChanged,
                 modifier = Modifier.fillMaxWidth(),
-                inputLabel = "Description"
+                inputLabel = "Enter a description"
             ) {
                 Text(
-                    text = details.description.ifEmpty { "No description provided" },
+                    text = details.description.ifEmpty { "--" },
                     style = MaterialTheme.typography.bodyMedium.copy(
                         fontWeight = FontWeight.Normal,
                     ),

@@ -1,4 +1,4 @@
-package dev.koga.deeplinklauncher.constant
+package dev.koga.deeplinklauncher.util.constant
 
 import dev.koga.deeplinklauncher.model.DeepLink
 import kotlinx.datetime.Clock

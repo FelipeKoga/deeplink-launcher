@@ -12,6 +12,7 @@ import dev.koga.deeplinklauncher.usecase.deeplink.LaunchDeepLinkResult
 import dev.koga.deeplinklauncher.usecase.deeplink.UpsertDeepLink
 import dev.koga.deeplinklauncher.usecase.folder.GetFoldersStream
 import dev.koga.deeplinklauncher.usecase.folder.UpsertFolder
+import dev.koga.deeplinklauncher.util.currentLocalDateTime
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -67,9 +68,6 @@ class HomeScreenModel(
                     link = link,
                     name = null,
                     description = null,
-                    createdAt = Clock.System.now().toLocalDateTime(
-                        TimeZone.currentSystemDefault()
-                    ),
                     folder = null,
                     isFavorite = false,
                 ),
@@ -102,7 +100,7 @@ class HomeScreenModel(
     }
 
     fun launchDeepLink(deepLink: DeepLink) {
-        launchDeepLink.launch(deepLink.link)
+        launchDeepLink.launch(deepLink)
     }
 
     fun onDeepLinkTextChanged(text: String) {

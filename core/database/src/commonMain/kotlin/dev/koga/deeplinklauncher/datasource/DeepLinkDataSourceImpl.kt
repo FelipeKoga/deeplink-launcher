@@ -6,8 +6,9 @@ import dev.koga.deeplinklauncher.database.DatabaseProvider
 import dev.koga.deeplinklauncher.database.DeepLinkLauncherDatabase
 import dev.koga.deeplinklauncher.database.GetDeepLinkById
 import dev.koga.deeplinklauncher.database.GetDeepLinkByLink
+import dev.koga.deeplinklauncher.database.SelectAllDeeplinks
+import dev.koga.deeplinklauncher.mapper.toDomain
 import dev.koga.deeplinklauncher.model.DeepLink
-import dev.koga.deeplinklauncher.model.Folder
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.flow.Flow
@@ -26,63 +27,28 @@ internal class DeepLinkDataSourceImpl(
             .selectAllDeeplinks()
             .asFlow()
             .mapToList(Dispatchers.IO)
-            .map {
-                it.map { data ->
-                    DeepLink(
-                        id = data.id,
-                        link = data.link,
-                        name = data.name,
-                        description = data.description,
-                        createdAt = data.createdAt,
-                        isFavorite = data.isFavorite == 1L,
-                        folder = data.folderId?.let { folderId ->
-                            Folder(
-                                id = folderId,
-                                name = data.name_.orEmpty(),
-                                description = data.description_,
-                            )
-                        },
-                    )
-                }
-            }
+            .map { it.map(SelectAllDeeplinks::toDomain) }
     }
 
     override fun getDeepLinks(): List<DeepLink> {
         return database.deepLinkQueries
             .selectAllDeeplinks()
             .executeAsList()
-            .map { data ->
-                DeepLink(
-                    id = data.id,
-                    link = data.link,
-                    name = data.name,
-                    description = data.description,
-                    createdAt = data.createdAt,
-                    isFavorite = data.isFavorite == 1L,
-                    folder = data.folderId?.let { folderId ->
-                        Folder(
-                            id = folderId,
-                            name = data.name_.orEmpty(),
-                            description = data.description_,
-                            deepLinkCount = 1,
-                        )
-                    },
-                )
-            }
+            .map(SelectAllDeeplinks::toDomain)
     }
 
     override fun getDeepLinkById(id: String): DeepLink {
         return database.deepLinkQueries
             .getDeepLinkById(id)
             .executeAsOne()
-            .let(GetDeepLinkById::toModel)
+            .let(GetDeepLinkById::toDomain)
     }
 
     override fun getDeepLinkByLink(link: String): DeepLink? {
         return database.deepLinkQueries
             .getDeepLinkByLink(link)
             .executeAsOneOrNull()
-            ?.let(GetDeepLinkByLink::toModel)
+            ?.let(GetDeepLinkByLink::toDomain)
     }
 
     override fun upsertDeepLink(deepLink: DeepLink) {
@@ -98,6 +64,7 @@ internal class DeepLinkDataSourceImpl(
                 description = deepLink.description,
                 createdAt = deepLink.createdAt,
                 isFavorite = if (deepLink.isFavorite) 1L else 0L,
+                lastLaunchedAt = deepLink.lastLaunchedAt,
                 folderId = deepLink.folder?.id,
             )
         }
@@ -109,35 +76,3 @@ internal class DeepLinkDataSourceImpl(
         }
     }
 }
-
-private fun GetDeepLinkById.toModel() = DeepLink(
-    id = id,
-    link = link,
-    name = name,
-    description = description,
-    createdAt = createdAt,
-    isFavorite = isFavorite == 1L,
-    folder = folderId?.let { folderId ->
-        Folder(
-            id = folderId,
-            name = name_.orEmpty(),
-            description = description_,
-        )
-    },
-)
-
-private fun GetDeepLinkByLink.toModel() = DeepLink(
-    id = id,
-    link = link,
-    name = name,
-    description = description,
-    createdAt = createdAt,
-    isFavorite = isFavorite == 1L,
-    folder = folderId?.let { folderId ->
-        Folder(
-            id = folderId,
-            name = name_.orEmpty(),
-            description = description_,
-        )
-    },
-)

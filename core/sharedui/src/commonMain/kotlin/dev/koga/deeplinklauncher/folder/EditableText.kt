@@ -2,13 +2,17 @@ package dev.koga.deeplinklauncher.folder
 
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.Close
 import androidx.compose.material.icons.rounded.Done
 import androidx.compose.material.icons.rounded.Edit
+import androidx.compose.material3.FilledTonalIconButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
@@ -28,22 +32,23 @@ import dev.koga.deeplinklauncher.theme.LocalDimensions
 fun EditableText(
     modifier: Modifier,
     value: String,
-    onValueChanged: (String) -> Unit,
+    onSave: (String) -> Unit,
     inputLabel: String,
+    editButtonEnabled: Boolean = true,
     textContent: @Composable () -> Unit,
 ) {
     val dimensions = LocalDimensions.current
 
-    var showEditDescriptionInput by rememberSaveable {
+    var inEditMode by rememberSaveable {
         mutableStateOf(false)
     }
 
-    val folderDescription by rememberSaveable(value) {
+    var inputValue by rememberSaveable(value) {
         mutableStateOf(value)
     }
 
     AnimatedContent(
-        targetState = showEditDescriptionInput,
+        targetState = inEditMode,
         label = "",
     ) { target ->
         Row(
@@ -55,29 +60,60 @@ fun EditableText(
                 true -> {
                     DLLTextField(
                         label = inputLabel,
-                        value = folderDescription,
-                        onValueChange = onValueChanged,
+                        value = inputValue,
+                        onValueChange = {
+                            inputValue = it
+                        },
                         trailingIcon = {
-                            IconButton(
-                                onClick = { showEditDescriptionInput = false },
-                                modifier = Modifier.size(18.dp),
-                            ) {
-                                Icon(
-                                    imageVector = Icons.Rounded.Done,
-                                    contentDescription = "Save",
-                                )
+                            Row {
+                                Spacer(modifier = Modifier.width(dimensions.mediumLarge))
+
+                                FilledTonalIconButton(
+                                    onClick = {
+                                        inEditMode = false
+                                        onSave(inputValue)
+                                    },
+                                    enabled = editButtonEnabled,
+                                    modifier = Modifier.size(18.dp),
+                                    colors = IconButtonDefaults.filledTonalIconButtonColors(
+                                        containerColor = MaterialTheme.colorScheme.primary
+                                    )
+                                ) {
+                                    Icon(
+                                        imageVector = Icons.Rounded.Done,
+                                        contentDescription = "Save",
+                                    )
+                                }
+
+                                Spacer(modifier = Modifier.width(dimensions.mediumLarge))
+
+                                IconButton(
+                                    onClick = {
+                                        inEditMode = false
+                                    },
+                                    modifier = Modifier.size(18.dp),
+                                ) {
+                                    Icon(
+                                        imageVector = Icons.Rounded.Close,
+                                        contentDescription = "Close",
+                                    )
+                                }
+
+                                Spacer(modifier = Modifier.width(dimensions.mediumLarge))
                             }
                         },
                     )
                 }
 
                 false -> {
-                    textContent()
+                    Box(modifier = Modifier.fillMaxWidth().weight(1f)) {
+                        textContent()
+                    }
 
                     Spacer(modifier = Modifier.width(dimensions.mediumLarge))
 
                     IconButton(
-                        onClick = { showEditDescriptionInput = true },
+                        onClick = { inEditMode = true },
                         modifier = Modifier.size(18.dp),
                         colors = IconButtonDefaults.iconButtonColors(
                             contentColor = MaterialTheme.colorScheme.secondary,

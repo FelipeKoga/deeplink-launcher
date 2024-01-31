@@ -1,5 +1,6 @@
 package dev.koga.deeplinklauncher.model
 
+import dev.koga.deeplinklauncher.util.currentLocalDateTime
 import kotlinx.datetime.LocalDateTime
 import kotlinx.serialization.Serializable
 
@@ -9,8 +10,9 @@ data class DeepLink(
     val link: String,
     val name: String?,
     val description: String?,
-    val createdAt: LocalDateTime,
+    val createdAt: LocalDateTime = currentLocalDateTime,
     val isFavorite: Boolean,
+    val lastLaunchedAt: LocalDateTime? = createdAt,
     val folder: Folder? = null,
 ) {
     val hasNameAndDescription: Boolean
