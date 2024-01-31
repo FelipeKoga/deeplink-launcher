@@ -1,6 +1,6 @@
 package dev.koga.deeplinklauncher.usecase.deeplink
 
-import dev.koga.deeplinklauncher.constant.defaultDeepLink
+import dev.koga.deeplinklauncher.util.constant.defaultDeepLink
 import dev.koga.deeplinklauncher.datasource.DeepLinkDataSource
 
 class GetDeepLinksPlainTextPreview(

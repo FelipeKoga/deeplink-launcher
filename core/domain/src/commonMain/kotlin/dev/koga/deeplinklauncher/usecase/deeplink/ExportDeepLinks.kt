@@ -1,10 +1,10 @@
 package dev.koga.deeplinklauncher.usecase.deeplink
 
-import dev.koga.deeplinklauncher.constant.defaultDeepLink
+import dev.koga.deeplinklauncher.util.constant.defaultDeepLink
 import dev.koga.deeplinklauncher.datasource.DeepLinkDataSource
 import dev.koga.deeplinklauncher.dto.ImportExportDto
 import dev.koga.deeplinklauncher.dto.dateFormat
-import dev.koga.deeplinklauncher.ext.format
+import dev.koga.deeplinklauncher.util.ext.format
 import dev.koga.deeplinklauncher.model.FileType
 import dev.koga.deeplinklauncher.usecase.SaveFile
 import dev.koga.deeplinklauncher.usecase.ShareFile

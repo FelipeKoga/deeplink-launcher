@@ -1,23 +1,17 @@
 package dev.koga.deeplinklauncher
 
-import androidx.compose.animation.AnimatedContent
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Delete
-import androidx.compose.material.icons.rounded.Done
-import androidx.compose.material.icons.rounded.Edit
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -35,9 +29,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
@@ -127,9 +119,7 @@ class FolderDetailsScreen(private val folderId: String) : Screen {
                         val screen = ScreenRegistry.get(SharedScreen.DeepLinkDetails(deepLink.id))
                         navigator.push(screen)
                     },
-                    onDeepLinkLaunch = { deepLink ->
-                        launchDeepLink.launch(deepLink.link)
-                    },
+                    onDeepLinkLaunch = launchDeepLink::launch,
                     onDeepLinkCopy = {
                         scope.launch {
                             deepLinkClipboardProvider.copy(it.link)
@@ -159,10 +149,20 @@ fun FolderDetailsScreenContent(
     Column(modifier = Modifier.padding(horizontal = dimensions.extraLarge)) {
         Spacer(modifier = Modifier.height(dimensions.extraLarge))
 
+        Text(
+            text = "Name",
+            style = MaterialTheme.typography.labelSmall.copy(
+                fontWeight = FontWeight.Light,
+            ),
+        )
+
+        Spacer(modifier = Modifier.height(8.dp))
+
         EditableText(
             value = form.name,
-            onValueChanged = onEditName,
-            inputLabel = "Name",
+            onSave = onEditName,
+            inputLabel = "Enter a name",
+            editButtonEnabled = form.name.isNotBlank(),
             modifier = Modifier.fillMaxWidth(),
         ) {
             Text(
@@ -175,14 +175,23 @@ fun FolderDetailsScreenContent(
 
         Spacer(modifier = Modifier.height(dimensions.extraLarge))
 
+        Text(
+            text = "Description",
+            style = MaterialTheme.typography.labelSmall.copy(
+                fontWeight = FontWeight.Light,
+            ),
+        )
+
+        Spacer(modifier = Modifier.height(8.dp))
+
         EditableText(
             value = form.description,
-            onValueChanged = onEditDescription,
-            inputLabel = "Description",
+            onSave = onEditDescription,
+            inputLabel = "Enter a description",
             modifier = Modifier.fillMaxWidth(),
         ) {
             Text(
-                text = form.description.ifEmpty { "No description" },
+                text = form.description.ifEmpty { "--" },
                 style = MaterialTheme.typography.bodyMedium.copy(
                     fontWeight = FontWeight.Normal,
                 )

@@ -1,4 +1,3 @@
-import kotlinx.datetime.LocalDate;
 import kotlinx.datetime.LocalDateTime;
 
 CREATE TABLE deeplink(
@@ -7,6 +6,7 @@ CREATE TABLE deeplink(
   name TEXT,
   description TEXT,
   createdAt INTEGER AS LocalDateTime NOT NULL,
+  lastLaunchedAt INTEGER AS LocalDateTime,
   folderId TEXT,
   isFavorite INTEGER DEFAULT 0,
   FOREIGN KEY(folderId) REFERENCES folder(id) ON UPDATE CASCADE
@@ -16,14 +16,14 @@ selectAllDeeplinks:
 SELECT d.*, f.*
 FROM deeplink d
 LEFT JOIN folder f ON d.folderId = f.id
-ORDER BY createdAt DESC;
+ORDER BY lastLaunchedAt DESC;
 
 deleteDeeplinkById:
 DELETE FROM deeplink WHERE id = ?;
 
 upsertDeeplink:
-INSERT OR REPLACE INTO deeplink (id, link, name, description, createdAt, isFavorite, folderId)
-VALUES (?, ?, ?, ?, ?, ?, ?);
+INSERT OR REPLACE INTO deeplink (id, link, name, description, createdAt, lastLaunchedAt, isFavorite, folderId)
+VALUES (?, ?, ?, ?, ?, ?, ?, ?);
 
 getDeepLinkByLink:
 SELECT d.*, f.*

@@ -84,7 +84,7 @@ class DeepLinkDetailScreenModel(
     }
 
     fun launch() {
-        launchDeepLink.launch(deepLink.link)
+        launchDeepLink.launch(deepLink)
     }
 
     fun delete() {

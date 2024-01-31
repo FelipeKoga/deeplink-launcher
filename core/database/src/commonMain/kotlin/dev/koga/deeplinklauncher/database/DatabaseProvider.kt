@@ -18,6 +18,7 @@ internal class DatabaseProvider(
             driver = driver,
             Deeplink.Adapter(
                 createdAtAdapter = localDateTimeAdapter,
+                lastLaunchedAtAdapter = localDateTimeAdapter,
             )
         )
 
@@ -34,6 +35,7 @@ internal class DatabaseProvider(
                     name = deeplink.name,
                     description = deeplink.description,
                     createdAt = deeplink.createdAt,
+                    lastLaunchedAt = null,
                     isFavorite = deeplink.isFavorite.let { if (it) 1L else 0L },
                     folderId = deeplink.folder?.id,
                 )

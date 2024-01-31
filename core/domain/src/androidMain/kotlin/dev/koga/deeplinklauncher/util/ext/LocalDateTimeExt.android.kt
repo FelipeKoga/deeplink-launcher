@@ -1,4 +1,4 @@
-package dev.koga.deeplinklauncher.ext
+package dev.koga.deeplinklauncher.util.ext
 
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.toJavaLocalDateTime
