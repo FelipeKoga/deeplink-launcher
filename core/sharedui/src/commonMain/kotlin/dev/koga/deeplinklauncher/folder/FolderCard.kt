@@ -17,12 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import dev.icerock.moko.resources.compose.localized
 import dev.icerock.moko.resources.compose.stringResource
-import dev.icerock.moko.resources.desc.Plural
-import dev.icerock.moko.resources.desc.PluralFormatted
-import dev.icerock.moko.resources.desc.StringDesc
-import dev.icerock.moko.resources.format
 import dev.koga.deeplinklauncher.model.Folder
 import dev.koga.resources.MR
 
@@ -53,11 +48,15 @@ fun FolderCard(folder: Folder, onClick: (Folder) -> Unit) {
             Spacer(modifier = Modifier.size(12.dp))
 
             Text(
-                text = if (folder.deepLinkCount > 0) stringResource(
-                    resource = MR.plurals.folder_deeplink_count,
-                    quantity = folder.deepLinkCount,
-                    folder.deepLinkCount,
-                ) else "No deep links",
+                text = if (folder.deepLinkCount > 0) {
+                    stringResource(
+                        resource = MR.plurals.folder_deeplink_count,
+                        quantity = folder.deepLinkCount,
+                        folder.deepLinkCount,
+                    )
+                } else {
+                    "No deep links"
+                },
                 style = MaterialTheme.typography.bodySmall.copy(
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.onBackground.copy(alpha = .5f),

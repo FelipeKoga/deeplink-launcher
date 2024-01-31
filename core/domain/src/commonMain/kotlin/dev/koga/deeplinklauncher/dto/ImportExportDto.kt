@@ -8,9 +8,9 @@ import kotlinx.datetime.toInstant
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class ImportDto(
+data class ImportExportDto(
     val folders: List<Folder>? = null,
-    val deepLinks: List<DeepLink>
+    val deepLinks: List<DeepLink>,
 ) {
     @Serializable
     data class DeepLink(
@@ -31,19 +31,18 @@ data class ImportDto(
     )
 }
 
-
-fun ImportDto.Folder.toModel() = Folder(
+fun ImportExportDto.Folder.toModel() = Folder(
     id = id,
     name = name,
     description = description,
 )
 
-fun ImportDto.DeepLink.toModel(folder: Folder?) = DeepLink(
+fun ImportExportDto.DeepLink.toModel(folder: Folder?) = DeepLink(
     id = id ?: UUIDProvider.get(),
     createdAt = createdAt?.toInstant() ?: Clock.System.now(),
     link = link,
     name = name,
     description = description,
     isFavorite = isFavorite ?: false,
-    folder = folder
+    folder = folder,
 )

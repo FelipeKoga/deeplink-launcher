@@ -8,13 +8,12 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
 import kotlinx.datetime.Clock
 
-
 val generalPropertiesHint: AnnotatedString
     @Composable get() {
         return buildAnnotatedString {
             append(
                 "It's possible to add more properties to the object, " +
-                        "such as"
+                    "such as",
             )
 
             withStyle(
@@ -41,7 +40,7 @@ val folderPropertiesHint: AnnotatedString
     @Composable get() {
         return buildAnnotatedString {
             append(
-                "The folder object has the following properties: "
+                "The folder object has the following properties: ",
             )
 
             withStyle(
@@ -63,7 +62,6 @@ val folderPropertiesHint: AnnotatedString
             }
         }
     }
-
 
 val uuidHint: AnnotatedString
     @Composable get() {
@@ -157,8 +155,7 @@ val jsonStructurePreview = """
                 ...
             ]
         ]
-    """.trimIndent()
-
+""".trimIndent()
 
 val plainTextPreview = """
     test://myapplink

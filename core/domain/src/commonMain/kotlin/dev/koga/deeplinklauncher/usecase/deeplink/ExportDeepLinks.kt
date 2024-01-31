@@ -2,7 +2,7 @@ package dev.koga.deeplinklauncher.usecase.deeplink
 
 import dev.koga.deeplinklauncher.constant.defaultDeepLink
 import dev.koga.deeplinklauncher.datasource.DeepLinkDataSource
-import dev.koga.deeplinklauncher.dto.ImportDto
+import dev.koga.deeplinklauncher.dto.ImportExportDto
 import dev.koga.deeplinklauncher.model.FileType
 import dev.koga.deeplinklauncher.usecase.SaveFile
 import dev.koga.deeplinklauncher.usecase.ShareFile
@@ -27,7 +27,7 @@ class ExportDeepLinks(
                 val foldersDto = deepLinks
                     .mapNotNull { it.folder }
                     .map {
-                        ImportDto.Folder(
+                        ImportExportDto.Folder(
                             id = it.id,
                             name = it.name,
                             description = it.description,
@@ -35,26 +35,26 @@ class ExportDeepLinks(
                     }.distinct()
 
                 val deepLinksDto = deepLinks.map {
-                    ImportDto.DeepLink(
+                    ImportExportDto.DeepLink(
                         link = it.link,
                         id = it.id,
                         createdAt = it.createdAt.toString(),
                         name = it.name,
                         description = it.description,
                         folderId = it.folder?.id,
-                        isFavorite = it.isFavorite
+                        isFavorite = it.isFavorite,
                     )
                 }
 
                 Json.encodeToString(
                     serializer = ListSerializer(
-                        ImportDto.serializer(),
+                        ImportExportDto.serializer(),
                     ),
 
                     value = deepLinks.map {
-                        ImportDto(
+                        ImportExportDto(
                             folders = foldersDto,
-                            deepLinks = deepLinksDto
+                            deepLinks = deepLinksDto,
                         )
                     },
                 )
