@@ -6,7 +6,7 @@ import kotlinx.datetime.toLocalDateTime
 object Configuration {
     private const val majorVersion = 1
     private const val minorVersion = 0
-    private const val patchVersion = 3
+    private const val patchVersion = 4
 
     const val versionName = "$majorVersion.$minorVersion.$patchVersion"
     val versionCode = (majorVersion * 10000) +
