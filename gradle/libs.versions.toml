@@ -35,6 +35,8 @@ firebase-bom = "32.7.1"
 firebase-crashlytics-plugin = "2.9.9"
 google-services = "4.4.0"
 
+aboutlibraries = "10.10.0"
+
 [libraries]
 android-gradle-plugin = { module = "com.android.tools.build:gradle", version.ref = "androidGradlePlugin" }
 kotlin-gradle-plugin = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin" }
@@ -78,6 +80,8 @@ composerules = { module = "com.twitter.compose.rules:detekt", version.ref = "com
 firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebase-bom" }
 firebase-crashlytics = { module = "com.google.firebase:firebase-crashlytics" }
 
+aboutlibraries_compose = { module = "com.mikepenz:aboutlibraries-compose", version.ref = "aboutlibraries" }
+
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "androidGradlePlugin" }
 androidLibrary = { id = "com.android.library", version.ref = "androidGradlePlugin" }
@@ -91,6 +95,8 @@ moko-multiplatform-resources = { id = "dev.icerock.mobile.multiplatform-resource
 
 google-services = { id = "com.google.gms.google-services", version.ref = "google-services" }
 crashlytics = { id = "com.google.firebase.crashlytics", version.ref = "firebase-crashlytics-plugin" }
+
+aboutlibraries_plugin = { id = "com.mikepenz.aboutlibraries.plugin", version.ref = "aboutlibraries" }
 
 [bundles]
 compose = [

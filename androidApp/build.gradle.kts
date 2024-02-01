@@ -1,7 +1,10 @@
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+
 plugins {
     id("dev.koga.deeplinklauncher.application")
     alias(libs.plugins.google.services)
     alias(libs.plugins.crashlytics)
+    id("com.mikepenz.aboutlibraries.plugin")
 }
 
 android {
@@ -22,4 +25,8 @@ dependencies {
 
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.crashlytics)
+}
+
+tasks.withType(KotlinCompile::class.java) {
+    dependsOn("exportLibraryDefinitions")
 }
