@@ -27,7 +27,8 @@ object Configuration {
         val month = localDateTime.monthNumber
         val day = localDateTime.dayOfMonth
         val hour = localDateTime.hour
+        val minute = localDateTime.minute
 
-        return year * 1000000 + month * 10000 + day * 100 + hour
+        return (year * 1000000) + (month * 10000) + (day * 100) + (hour * 10) + minute
     }
 }
