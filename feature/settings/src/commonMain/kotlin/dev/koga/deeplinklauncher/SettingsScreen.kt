@@ -227,7 +227,7 @@ fun SettingsScreenUI(
             item {
                 SettingsListItem(
                     title = "Open-source licenses",
-                    description = "View the open-source licenses for the libraries used in this app",
+                    description = "View the open-source licenses for the libraries that make this app possible",
                     onClick = onNavigateToOpenSourceLicenses,
                     trailingContent = {
                         Icon(
