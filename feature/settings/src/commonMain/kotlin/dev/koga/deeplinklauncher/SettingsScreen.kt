@@ -34,6 +34,7 @@ import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import dev.icerock.moko.resources.compose.painterResource
 import dev.koga.deeplinklauncher.components.DeleteDataBottomSheet
+import dev.koga.deeplinklauncher.components.OpenSourceLicensesScreen
 import dev.koga.resources.MR
 import kotlinx.coroutines.launch
 
@@ -42,9 +43,11 @@ class SettingsScreen : Screen {
     override fun Content() {
         val navigator = LocalNavigator.currentOrThrow
         val screenModel = getScreenModel<SettingsScreenModel>()
+        val scope = rememberCoroutineScope()
 
         val importScreen = rememberScreen(SharedScreen.ImportDeepLinks)
         val exportScreen = rememberScreen(SharedScreen.ExportDeepLinks)
+        val snackbarHostState = remember { SnackbarHostState() }
 
         var showDeleteDataBottomSheet by rememberSaveable { mutableStateOf(false) }
 
@@ -54,27 +57,40 @@ class SettingsScreen : Screen {
                 onDeleteAll = {
                     screenModel.deleteAllData()
                     showDeleteDataBottomSheet = false
+
+                    scope.launch {
+                        snackbarHostState.showSnackbar("All data deleted")
+                    }
                 },
                 onDeleteDeepLinks = {
                     showDeleteDataBottomSheet = false
                     screenModel.deleteAllDeepLinks()
+
+                    scope.launch {
+                        snackbarHostState.showSnackbar("Deep links deleted")
+                    }
                 },
                 onDeleteFolders = {
                     screenModel.deleteAllFolders()
                     showDeleteDataBottomSheet = false
+
+                    scope.launch {
+                        snackbarHostState.showSnackbar("Folders deleted")
+                    }
                 }
 
             )
         }
 
         SettingsScreenUI(
+            snackbarHostState = snackbarHostState,
             appVersion = screenModel.appVersion,
             onBack = navigator::pop,
             onNavigateToExport = { navigator.push(importScreen) },
             onNavigateToImport = { navigator.push(exportScreen) },
             onShowDeleteDataBottomSheet = { showDeleteDataBottomSheet = true },
             onNavigateToStore = screenModel::navigateToStore,
-            onNavigateToOpenSourceLicenses = {},
+            onNavigateToOpenSourceLicenses = { navigator.push(OpenSourceLicensesScreen()) },
             onNavigateToGithub = screenModel::navigateToGithub
         )
     }
@@ -84,6 +100,7 @@ class SettingsScreen : Screen {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SettingsScreenUI(
+    snackbarHostState: SnackbarHostState,
     appVersion: String,
     onBack: () -> Unit,
     onNavigateToExport: () -> Unit,
@@ -94,7 +111,6 @@ fun SettingsScreenUI(
     onShowDeleteDataBottomSheet: () -> Unit,
 ) {
     val clipboardManager = LocalClipboardManager.current
-    val snackbarHostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
 
     Scaffold(
@@ -166,7 +182,7 @@ fun SettingsScreenUI(
             }
 
             item {
-                Divider()
+                Divider(modifier = Modifier.padding(vertical = 12.dp))
             }
 
             item {
