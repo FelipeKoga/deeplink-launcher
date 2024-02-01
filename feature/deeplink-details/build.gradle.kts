@@ -39,5 +39,5 @@ kotlin {
 }
 
 android {
-    namespace = "dev.koga.deeplink_details"
+    namespace = "dev.koga.deeplink.details"
 }

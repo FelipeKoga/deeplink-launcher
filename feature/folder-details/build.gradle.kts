@@ -37,5 +37,5 @@ kotlin {
 }
 
 android {
-    namespace = "dev.koga.folder_details"
+    namespace = "dev.koga.folder.details"
 }
