@@ -43,13 +43,6 @@ internal fun HomeLaunchDeepLinkBottomSheetContent(
 ) {
     val focusManager = LocalFocusManager.current
 
-    val deepLinkClipboardProvider = koinInject<DeepLinkClipboardProvider>()
-    val clipboardText by deepLinkClipboardProvider.clipboardText.collectAsState()
-
-    LaunchedEffect(clipboardText) {
-        onValueChange(clipboardText.orEmpty())
-    }
-
     Column(
         modifier = modifier
             .fillMaxWidth()
