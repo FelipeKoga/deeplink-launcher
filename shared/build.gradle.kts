@@ -13,13 +13,14 @@ kotlin {
     sourceSets {
         commonMain.dependencies {
             implementation(projects.feature.home)
-            implementation(projects.feature.import)
             implementation(projects.feature.export)
             implementation(projects.feature.deeplinkDetails)
             implementation(projects.feature.folderDetails)
 
             implementation(projects.feature.settings.domain)
             implementation(projects.feature.settings.ui)
+            implementation(projects.feature.importDeeplink.domain)
+            implementation(projects.feature.importDeeplink.ui)
 
             api(projects.core.domain)
             implementation(projects.core.designsystem)

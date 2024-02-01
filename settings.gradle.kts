@@ -1,19 +1,5 @@
 @file:Suppress("UnstableApiUsage")
 
-include(":feature:settings:ui")
-
-
-include(":feature:settings:domain")
-
-
-include(":navigation")
-
-
-include(":core")
-
-
-include(":feature")
-
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 pluginManagement {
     includeBuild("build-logic")
@@ -41,10 +27,12 @@ include(":core:sharedui")
 include(":core:navigation")
 include(":core:resources")
 include(":feature:home")
-include(":feature:import")
 include(":feature:export")
 include(":feature:deeplink-details")
 include(":feature:folder-details")
+
+include(":feature:import-deeplink:ui")
+include(":feature:import-deeplink:domain")
 
 include(":feature:settings:domain")
 include(":feature:settings:ui")

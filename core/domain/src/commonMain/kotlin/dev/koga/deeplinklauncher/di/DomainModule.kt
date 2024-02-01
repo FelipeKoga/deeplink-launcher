@@ -8,7 +8,6 @@ import dev.koga.deeplinklauncher.usecase.deeplink.GetDeepLinkByLink
 import dev.koga.deeplinklauncher.usecase.deeplink.GetDeepLinksJsonPreview
 import dev.koga.deeplinklauncher.usecase.deeplink.GetDeepLinksPlainTextPreview
 import dev.koga.deeplinklauncher.usecase.deeplink.GetDeepLinksStream
-import dev.koga.deeplinklauncher.usecase.deeplink.ImportDeepLinks
 import dev.koga.deeplinklauncher.usecase.deeplink.UpsertDeepLink
 import dev.koga.deeplinklauncher.usecase.folder.DeleteFolder
 import dev.koga.deeplinklauncher.usecase.folder.GetFolderById
@@ -20,7 +19,6 @@ import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
 
 val domainModule = module {
-    singleOf(::ImportDeepLinks)
     singleOf(::ExportDeepLinks)
 
     singleOf(::DeleteFolder)
