@@ -231,7 +231,7 @@ fun SettingsScreenUI(
                     onClick = onNavigateToOpenSourceLicenses,
                     trailingContent = {
                         Icon(
-                            painter = painterResource(MR.images.ic_launch_24dp),
+                            painter = painterResource(MR.images.ic_chevron_right_24dp),
                             contentDescription = "navigate"
                         )
                     }
