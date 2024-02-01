@@ -7,7 +7,7 @@ plugins {
 }
 
 kotlin {
-    binariesFrameworkConfig("importdeeplink.ui")
+    binariesFrameworkConfig("importdeeplinks.ui")
 
     sourceSets {
         commonMain.dependencies {
@@ -16,7 +16,7 @@ kotlin {
             implementation(projects.core.navigation)
             implementation(projects.core.sharedui)
 
-            implementation(projects.feature.importDeeplink.domain)
+            implementation(projects.feature.importDeeplinks.domain)
 
             implementation(libs.kotlinx.coroutines.core)
             implementation(libs.kotlinx.immutable)
@@ -42,5 +42,5 @@ kotlin {
 }
 
 android {
-    namespace = "dev.koga.importdeeplink.ui"
+    namespace = "dev.koga.importdeeplinks.ui"
 }
