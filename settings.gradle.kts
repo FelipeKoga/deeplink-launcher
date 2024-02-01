@@ -1,5 +1,11 @@
 @file:Suppress("UnstableApiUsage")
 
+include(":feature:settings:ui")
+
+
+include(":feature:settings:domain")
+
+
 include(":navigation")
 
 
@@ -39,4 +45,6 @@ include(":feature:import")
 include(":feature:export")
 include(":feature:deeplink-details")
 include(":feature:folder-details")
-include(":feature:settings")
+
+include(":feature:settings:domain")
+include(":feature:settings:ui")
