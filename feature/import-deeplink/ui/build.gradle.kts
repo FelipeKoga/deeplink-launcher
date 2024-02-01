@@ -7,7 +7,7 @@ plugins {
 }
 
 kotlin {
-    binariesFrameworkConfig("home")
+    binariesFrameworkConfig("importdeeplink.ui")
 
     sourceSets {
         commonMain.dependencies {
@@ -15,9 +15,11 @@ kotlin {
             implementation(projects.core.designsystem)
             implementation(projects.core.navigation)
             implementation(projects.core.sharedui)
-            implementation(projects.core.resources)
+
+            implementation(projects.feature.importDeeplink.domain)
 
             implementation(libs.kotlinx.coroutines.core)
+            implementation(libs.kotlinx.immutable)
 
             implementation(libs.koin.compose)
 
@@ -31,13 +33,14 @@ kotlin {
             implementation(compose.ui)
             @OptIn(ExperimentalComposeLibrary::class)
             implementation(compose.components.resources)
+        }
 
-            implementation(libs.moko.resources.compose)
-            implementation(libs.kotlinx.immutable)
+        androidMain.dependencies {
+            implementation(libs.androidx.activity.compose)
         }
     }
 }
 
 android {
-    namespace = "dev.koga.home"
+    namespace = "dev.koga.importdeeplink.ui"
 }
