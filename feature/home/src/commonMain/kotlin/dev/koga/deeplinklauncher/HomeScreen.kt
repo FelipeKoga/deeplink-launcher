@@ -1,6 +1,6 @@
 package dev.koga.deeplinklauncher
 
-import  androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -23,6 +23,8 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalClipboardManager
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.registry.ScreenRegistry
 import cafe.adriel.voyager.core.registry.rememberScreen
@@ -34,10 +36,8 @@ import dev.koga.deeplinklauncher.component.HomeHorizontalPager
 import dev.koga.deeplinklauncher.component.HomeLaunchDeepLinkBottomSheetContent
 import dev.koga.deeplinklauncher.component.HomeTabRow
 import dev.koga.deeplinklauncher.component.HomeTopBar
-import dev.koga.deeplinklauncher.provider.DeepLinkClipboardProvider
 import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.launch
-import org.koin.compose.koinInject
 
 object HomeScreen : Screen {
     @Composable
@@ -51,7 +51,7 @@ object HomeScreen : Screen {
 private fun HomeScreenContent() {
     val settingsScreen = rememberScreen(SharedScreen.Settings)
 
-    val deepLinkClipboardProvider = koinInject<DeepLinkClipboardProvider>()
+    val clipboardManager = LocalClipboardManager.current
 
     val navigator = LocalNavigator.currentOrThrow
     val scope = rememberCoroutineScope()
@@ -133,7 +133,7 @@ private fun HomeScreenContent() {
                 onDeepLinkLaunch = screenModel::launchDeepLink,
                 onDeepLinkCopy = {
                     scope.launch {
-                        deepLinkClipboardProvider.copy(it.link)
+                        clipboardManager.setText(AnnotatedString(it.link))
                         snackbarHostState.showSnackbar(
                             message = "Copied to clipboard",
                             actionLabel = "Dismiss",
