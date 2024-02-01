@@ -19,8 +19,8 @@ kotlin {
 
             implementation(projects.feature.settings.domain)
             implementation(projects.feature.settings.ui)
-            implementation(projects.feature.importDeeplink.domain)
-            implementation(projects.feature.importDeeplink.ui)
+            implementation(projects.feature.importDeeplinks.domain)
+            implementation(projects.feature.importDeeplinks.ui)
 
             api(projects.core.domain)
             implementation(projects.core.designsystem)

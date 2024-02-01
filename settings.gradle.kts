@@ -31,8 +31,8 @@ include(":feature:export")
 include(":feature:deeplink-details")
 include(":feature:folder-details")
 
-include(":feature:import-deeplink:ui")
-include(":feature:import-deeplink:domain")
+include(":feature:import-deeplinks:ui")
+include(":feature:import-deeplinks:domain")
 
 include(":feature:settings:domain")
 include(":feature:settings:ui")
