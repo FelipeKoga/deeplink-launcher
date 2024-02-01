@@ -17,7 +17,9 @@ kotlin {
             implementation(projects.feature.export)
             implementation(projects.feature.deeplinkDetails)
             implementation(projects.feature.folderDetails)
-            implementation(projects.feature.settings)
+
+            implementation(projects.feature.settings.domain)
+            implementation(projects.feature.settings.ui)
 
             api(projects.core.domain)
             implementation(projects.core.designsystem)
