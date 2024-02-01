@@ -3,7 +3,6 @@ package dev.koga.deeplinklauncher.usecase.deeplink
 import dev.koga.deeplinklauncher.datasource.DeepLinkDataSource
 import dev.koga.deeplinklauncher.datasource.FolderDataSource
 import dev.koga.deeplinklauncher.dto.dateFormat
-import dev.koga.deeplinklauncher.util.constant.defaultDeepLink
 import dev.koga.deeplinklauncher.util.ext.format
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.encodeToString
@@ -15,7 +14,7 @@ class GetDeepLinksJsonPreview(
 ) {
 
     operator fun invoke(): String {
-        val deepLinks = deepLinkDataSource.getDeepLinks().filter { it.id != defaultDeepLink.id }
+        val deepLinks = deepLinkDataSource.getDeepLinks()
         val folders = folderDataSource.getFolders()
 
         if (deepLinks.isEmpty() && folders.isEmpty()) return ""

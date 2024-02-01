@@ -6,7 +6,6 @@ import dev.koga.deeplinklauncher.dto.dateFormat
 import dev.koga.deeplinklauncher.model.FileType
 import dev.koga.deeplinklauncher.usecase.SaveFile
 import dev.koga.deeplinklauncher.usecase.ShareFile
-import dev.koga.deeplinklauncher.util.constant.defaultDeepLink
 import dev.koga.deeplinklauncher.util.currentLocalDateTime
 import dev.koga.deeplinklauncher.util.ext.format
 import kotlinx.serialization.builtins.ListSerializer
@@ -18,7 +17,7 @@ class ExportDeepLinks(
     private val shareFile: ShareFile,
 ) {
     fun export(type: FileType): ExportDeepLinksOutput {
-        val deepLinks = dataSource.getDeepLinks().filter { it.id != defaultDeepLink.id }.ifEmpty {
+        val deepLinks = dataSource.getDeepLinks().ifEmpty {
             return ExportDeepLinksOutput.Empty
         }
 
