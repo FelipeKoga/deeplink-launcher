@@ -1,4 +1,4 @@
-package dev.koga.deeplinklauncher.component
+package dev.koga.deeplinklauncher.screen.component
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Column
@@ -17,9 +17,6 @@ import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -29,9 +26,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import dev.icerock.moko.resources.compose.painterResource
 import dev.koga.deeplinklauncher.DLLTextField
-import dev.koga.deeplinklauncher.provider.DeepLinkClipboardProvider
 import dev.koga.resources.MR
-import org.koin.compose.koinInject
 
 @Composable
 internal fun HomeLaunchDeepLinkBottomSheetContent(

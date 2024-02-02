@@ -1,4 +1,4 @@
-package dev.koga.deeplinklauncher.component
+package dev.koga.deeplinklauncher.screen.component
 
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.ExperimentalMaterial3Api
