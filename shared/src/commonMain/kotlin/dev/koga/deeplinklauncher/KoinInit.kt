@@ -14,6 +14,7 @@ import dev.koga.deeplinklauncher.di.importUiModule
 import dev.koga.deeplinklauncher.di.settingsDomainModule
 import dev.koga.deeplinklauncher.di.settingsUiModule
 import dev.koga.deeplinklauncher.di.homeUiModule
+import dev.koga.deeplinklauncher.screen.DeepLinkDetailsScreen
 import dev.koga.deeplinklauncher.screen.ExportScreen
 import dev.koga.deeplinklauncher.screen.ImportScreen
 import org.koin.core.context.startKoin
