@@ -1,19 +1,12 @@
+import extension.binariesFrameworkConfig
+
 plugins {
     id("dev.koga.deeplinklauncher.multiplatform")
     kotlin("plugin.serialization") version "1.9.20"
 }
 
 kotlin {
-    listOf(
-        iosX64(),
-        iosArm64(),
-        iosSimulatorArm64()
-    ).forEach {
-        it.binaries.framework {
-            baseName = "domain"
-            isStatic = true
-        }
-    }
+    binariesFrameworkConfig("domain")
 
     sourceSets {
         commonMain.dependencies {
