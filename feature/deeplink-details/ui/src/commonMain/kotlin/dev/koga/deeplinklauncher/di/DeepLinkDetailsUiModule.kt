@@ -4,6 +4,6 @@ import dev.koga.deeplinklauncher.DeepLinkDetailScreenModel
 import org.koin.core.module.dsl.factoryOf
 import org.koin.dsl.module
 
-val deepLinkDetailsModule = module {
+val deepLinkDetailsUiModule = module {
     factoryOf(::DeepLinkDetailScreenModel)
 }

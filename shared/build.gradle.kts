@@ -13,7 +13,6 @@ kotlin {
     sourceSets {
         commonMain.dependencies {
             implementation(projects.feature.home)
-            implementation(projects.feature.deeplinkDetails)
             implementation(projects.feature.folderDetails)
 
             implementation(projects.feature.settings.domain)
@@ -24,6 +23,8 @@ kotlin {
 
             implementation(projects.feature.importDeeplinks.domain)
             implementation(projects.feature.importDeeplinks.ui)
+
+            implementation(projects.feature.deeplinkDetails.ui)
 
             api(projects.core.domain)
             implementation(projects.core.designsystem)
