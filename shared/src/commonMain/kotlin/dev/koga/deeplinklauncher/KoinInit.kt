@@ -2,7 +2,7 @@ package dev.koga.deeplinklauncher
 
 import cafe.adriel.voyager.core.registry.ScreenRegistry
 import dev.koga.deeplinklauncher.di.databaseModule
-import dev.koga.deeplinklauncher.di.deepLinkDetailsModule
+import dev.koga.deeplinklauncher.di.deepLinkDetailsUiModule
 import dev.koga.deeplinklauncher.di.domainModule
 import dev.koga.deeplinklauncher.di.exportDeepLinksDomainModule
 import dev.koga.deeplinklauncher.di.exportDeepLinksUiModule
@@ -34,7 +34,7 @@ fun initKoin(appModule: Module = module {}) {
         modules(
             homeScreenModule,
             folderDetailsModule,
-            deepLinkDetailsModule,
+            deepLinkDetailsUiModule,
             settingsDomainModule,
             settingsUiModule,
             importUiModule,
