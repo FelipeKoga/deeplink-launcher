@@ -1,12 +1,13 @@
-package dev.koga.deeplinklauncher
+package dev.koga.deeplinklauncher.screen
 
 import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.screenModelScope
+import dev.koga.deeplinklauncher.usecase.ExportDeepLinks
+import dev.koga.deeplinklauncher.usecase.ExportDeepLinksOutput
+import dev.koga.deeplinklauncher.model.ExportFileType
+import dev.koga.deeplinklauncher.usecase.GetDeepLinksJsonPreview
+import dev.koga.deeplinklauncher.usecase.GetDeepLinksPlainTextPreview
 import dev.koga.deeplinklauncher.model.FileType
-import dev.koga.deeplinklauncher.usecase.deeplink.ExportDeepLinks
-import dev.koga.deeplinklauncher.usecase.deeplink.ExportDeepLinksOutput
-import dev.koga.deeplinklauncher.usecase.deeplink.GetDeepLinksJsonPreview
-import dev.koga.deeplinklauncher.usecase.deeplink.GetDeepLinksPlainTextPreview
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch

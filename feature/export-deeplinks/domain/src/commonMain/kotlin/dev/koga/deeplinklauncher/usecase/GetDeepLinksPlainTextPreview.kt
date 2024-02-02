@@ -1,4 +1,4 @@
-package dev.koga.deeplinklauncher.usecase.deeplink
+package dev.koga.deeplinklauncher.usecase
 
 import dev.koga.deeplinklauncher.datasource.DeepLinkDataSource
 

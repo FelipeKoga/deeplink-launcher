@@ -1,4 +1,4 @@
-package dev.koga.deeplinklauncher
+package dev.koga.deeplinklauncher.model
 
 enum class ExportFileType(val label: String) {
     JSON("JSON (.json)"),

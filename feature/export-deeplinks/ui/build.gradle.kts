@@ -7,7 +7,7 @@ plugins {
 }
 
 kotlin {
-    binariesFrameworkConfig("export")
+    binariesFrameworkConfig("exportDeeplinks.ui")
 
     sourceSets {
         commonMain.dependencies {
@@ -15,6 +15,7 @@ kotlin {
             implementation(projects.core.designsystem)
             implementation(projects.core.navigation)
             implementation(projects.core.sharedui)
+            implementation(projects.feature.exportDeeplinks.domain)
 
             implementation(libs.kotlinx.coroutines.core)
 
@@ -31,7 +32,10 @@ kotlin {
             @OptIn(ExperimentalComposeLibrary::class)
             implementation(compose.components.resources)
 
+            implementation(libs.moko.resources.compose)
             implementation(libs.kotlinx.immutable)
+
+            implementation(libs.aboutlibraries.compose)
 
             implementation("dev.icerock.moko:permissions-compose:0.16.0")
         }
@@ -39,5 +43,5 @@ kotlin {
 }
 
 android {
-    namespace = "dev.koga.export"
+    namespace = "dev.koga.exportDeeplinks.ui"
 }

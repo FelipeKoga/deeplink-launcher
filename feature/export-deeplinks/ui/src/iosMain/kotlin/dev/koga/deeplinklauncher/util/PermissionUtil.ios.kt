@@ -5,7 +5,7 @@ import dev.icerock.moko.permissions.PermissionsController
 
 actual suspend fun shouldAskForPermission(
     permissionsController: PermissionsController,
-    permission: Permission,
+    permission: Permission
 ): Boolean {
     TODO("Not yet implemented")
 }
