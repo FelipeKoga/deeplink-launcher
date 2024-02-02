@@ -12,12 +12,16 @@ kotlin {
 
     sourceSets {
         commonMain.dependencies {
-            implementation(projects.feature.home)
-            implementation(projects.feature.import)
-            implementation(projects.feature.export)
-            implementation(projects.feature.deeplinkDetails)
-            implementation(projects.feature.folderDetails)
-            implementation(projects.feature.settings)
+            implementation(projects.feature.home.ui)
+            implementation(projects.feature.home.domain)
+            implementation(projects.feature.settings.domain)
+            implementation(projects.feature.settings.ui)
+            implementation(projects.feature.exportDeeplinks.domain)
+            implementation(projects.feature.exportDeeplinks.ui)
+            implementation(projects.feature.importDeeplinks.domain)
+            implementation(projects.feature.importDeeplinks.ui)
+            implementation(projects.feature.deeplinkDetails.ui)
+            implementation(projects.feature.folderDetails.ui)
 
             api(projects.core.domain)
             implementation(projects.core.designsystem)
@@ -59,6 +63,6 @@ android {
     namespace = "dev.koga.shared"
 }
 
-multiplatformResources {
-    multiplatformResourcesPackage = "dev.koga.deeplinklauncher"
-}
+//multiplatformResources {
+//    multiplatformResourcesPackage = "dev.koga.deeplinklauncher"
+//}
