@@ -7,7 +7,7 @@ plugins {
 }
 
 kotlin {
-    binariesFrameworkConfig("folder-details")
+    binariesFrameworkConfig("folderDetails.ui")
 
     sourceSets {
         commonMain.dependencies {
@@ -15,6 +15,7 @@ kotlin {
             implementation(projects.core.designsystem)
             implementation(projects.core.navigation)
             implementation(projects.core.sharedui)
+            implementation(projects.feature.exportDeeplinks.domain)
 
             implementation(libs.kotlinx.coroutines.core)
 
@@ -31,11 +32,14 @@ kotlin {
             @OptIn(ExperimentalComposeLibrary::class)
             implementation(compose.components.resources)
 
+            implementation(libs.moko.resources.compose)
             implementation(libs.kotlinx.immutable)
+
+            implementation(libs.aboutlibraries.compose)
         }
     }
 }
 
 android {
-    namespace = "dev.koga.folder.details"
+    namespace = "dev.koga.folderDetails.ui"
 }
