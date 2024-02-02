@@ -1,4 +1,4 @@
-package dev.koga.deeplinklauncher
+package dev.koga.deeplinklauncher.screen
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Column
@@ -32,11 +32,12 @@ import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.koin.getNavigatorScreenModel
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
-import dev.koga.deeplinklauncher.component.HomeHorizontalPager
-import dev.koga.deeplinklauncher.component.HomeLaunchDeepLinkBottomSheetContent
-import dev.koga.deeplinklauncher.component.HomeTabRow
-import dev.koga.deeplinklauncher.component.HomeTopBar
-import kotlinx.collections.immutable.toPersistentList
+import dev.koga.deeplinklauncher.AddFolderBottomSheet
+import dev.koga.deeplinklauncher.SharedScreen
+import dev.koga.deeplinklauncher.screen.component.HomeHorizontalPager
+import dev.koga.deeplinklauncher.screen.component.HomeLaunchDeepLinkBottomSheetContent
+import dev.koga.deeplinklauncher.screen.component.HomeTabRow
+import dev.koga.deeplinklauncher.screen.component.HomeTopBar
 import kotlinx.coroutines.launch
 
 object HomeScreen : Screen {
@@ -45,6 +46,7 @@ object HomeScreen : Screen {
         HomeScreenContent()
     }
 }
+
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
@@ -67,11 +69,7 @@ private fun HomeScreenContent() {
     )
 
     val screenModel = navigator.getNavigatorScreenModel<HomeScreenModel>()
-    val allDeepLinks by screenModel.deepLinks.collectAsState()
-    val favoriteDeepLinks by screenModel.favoriteDeepLinks.collectAsState()
-    val folders by screenModel.folders.collectAsState()
-    val errorMessage by screenModel.errorMessage.collectAsState()
-    val deepLinkText by screenModel.deepLinkText.collectAsState()
+    val uiState by screenModel.uiState.collectAsState()
 
     val scrollBehavior = TopAppBarDefaults
         .exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
@@ -105,10 +103,10 @@ private fun HomeScreenContent() {
         snackbarHost = { SnackbarHost(snackbarHostState) },
         sheetContent = {
             HomeLaunchDeepLinkBottomSheetContent(
-                value = deepLinkText,
+                value = uiState.inputText,
                 onValueChange = screenModel::onDeepLinkTextChanged,
                 launch = screenModel::launchDeepLink,
-                errorMessage = errorMessage,
+                errorMessage = uiState.errorMessage,
             )
         },
     ) { contentPadding ->
@@ -120,9 +118,9 @@ private fun HomeScreenContent() {
             HomeTabRow(pagerState = pagerState)
 
             HomeHorizontalPager(
-                allDeepLinks = allDeepLinks.toPersistentList(),
-                favoriteDeepLinks = favoriteDeepLinks.toPersistentList(),
-                folders = folders.toPersistentList(),
+                allDeepLinks = uiState.deepLinks,
+                favoriteDeepLinks = uiState.favorites,
+                folders = uiState.folders,
                 pagerState = pagerState,
                 scrollBehavior = scrollBehavior,
                 paddingBottom = 320.dp,

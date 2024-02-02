@@ -7,7 +7,7 @@ plugins {
 }
 
 kotlin {
-    binariesFrameworkConfig("home")
+    binariesFrameworkConfig("home.ui")
 
     sourceSets {
         commonMain.dependencies {
@@ -15,7 +15,7 @@ kotlin {
             implementation(projects.core.designsystem)
             implementation(projects.core.navigation)
             implementation(projects.core.sharedui)
-            implementation(projects.core.resources)
+            implementation(projects.feature.home.domain)
 
             implementation(libs.kotlinx.coroutines.core)
 
@@ -34,10 +34,12 @@ kotlin {
 
             implementation(libs.moko.resources.compose)
             implementation(libs.kotlinx.immutable)
+
+            implementation(libs.aboutlibraries.compose)
         }
     }
 }
 
 android {
-    namespace = "dev.koga.home"
+    namespace = "dev.koga.home.ui"
 }

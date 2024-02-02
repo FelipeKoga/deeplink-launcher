@@ -1,4 +1,4 @@
-package dev.koga.deeplinklauncher
+package dev.koga.deeplinklauncher.screen
 
 enum class HomeTabPage {
     HISTORY,

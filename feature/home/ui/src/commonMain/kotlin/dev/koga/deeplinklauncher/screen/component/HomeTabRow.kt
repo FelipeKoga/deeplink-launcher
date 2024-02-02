@@ -1,4 +1,4 @@
-package dev.koga.deeplinklauncher.component
+package dev.koga.deeplinklauncher.screen.component
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Row
@@ -18,7 +18,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import dev.icerock.moko.resources.compose.painterResource
-import dev.koga.deeplinklauncher.HomeTabPage
+import dev.koga.deeplinklauncher.screen.HomeTabPage
 import dev.koga.resources.MR
 import kotlinx.coroutines.launch
 

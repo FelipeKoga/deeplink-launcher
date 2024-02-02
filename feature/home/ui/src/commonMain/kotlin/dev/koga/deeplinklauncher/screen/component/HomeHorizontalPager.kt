@@ -1,4 +1,4 @@
-package dev.koga.deeplinklauncher.component
+package dev.koga.deeplinklauncher.screen.component
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -33,7 +33,7 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import dev.koga.deeplinklauncher.HomeTabPage
+import dev.koga.deeplinklauncher.screen.HomeTabPage
 import dev.koga.deeplinklauncher.deeplink.DeepLinkItem
 import dev.koga.deeplinklauncher.folder.FolderCard
 import dev.koga.deeplinklauncher.model.DeepLink

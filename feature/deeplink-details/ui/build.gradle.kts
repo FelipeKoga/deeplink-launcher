@@ -15,7 +15,6 @@ kotlin {
             implementation(projects.core.designsystem)
             implementation(projects.core.navigation)
             implementation(projects.core.sharedui)
-            implementation(projects.feature.exportDeeplinks.domain)
 
             implementation(libs.kotlinx.coroutines.core)
 
