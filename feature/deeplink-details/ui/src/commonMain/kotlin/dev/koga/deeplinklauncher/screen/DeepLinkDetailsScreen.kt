@@ -1,4 +1,4 @@
-package dev.koga.deeplinklauncher
+package dev.koga.deeplinklauncher.screen
 
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.clickable
@@ -55,13 +55,12 @@ import cafe.adriel.voyager.koin.getScreenModel
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import dev.icerock.moko.resources.compose.painterResource
+import dev.koga.deeplinklauncher.DLLTopBar
 import dev.koga.deeplinklauncher.component.DeleteDeepLinkConfirmationBottomSheet
 import dev.koga.deeplinklauncher.folder.EditableText
 import dev.koga.deeplinklauncher.folder.SelectFolderBottomSheet
 import dev.koga.deeplinklauncher.model.Folder
 import dev.koga.resources.MR
-import kotlinx.collections.immutable.ImmutableList
-import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.launch
 import org.koin.core.parameter.parametersOf
 
@@ -77,10 +76,9 @@ class DeepLinkDetailsScreen(private val deepLinkId: String) : Screen {
             parameters = { parametersOf(deepLinkId) },
         )
 
-        val details by screenModel.details.collectAsState()
-        val folders by screenModel.folders.collectAsState()
+        val uiState by screenModel.uiState.collectAsState()
 
-        if (details.deleted) {
+        if (uiState.form.deleted) {
             navigator.pop()
         }
 
@@ -118,7 +116,7 @@ class DeepLinkDetailsScreen(private val deepLinkId: String) : Screen {
         ) { contentPadding ->
             DeepLinkDetailsScreenContent(
                 modifier = Modifier.padding(contentPadding),
-                details = details,
+                uiState = uiState,
                 onNameChanged = screenModel::updateDeepLinkName,
                 onDescriptionChanged = screenModel::updateDeepLinkDescription,
                 onShare = screenModel::share,
@@ -134,7 +132,6 @@ class DeepLinkDetailsScreen(private val deepLinkId: String) : Screen {
                         )
                     }
                 },
-                folders = folders.toPersistentList(),
             )
         }
     }
@@ -143,8 +140,7 @@ class DeepLinkDetailsScreen(private val deepLinkId: String) : Screen {
 @Composable
 fun DeepLinkDetailsScreenContent(
     modifier: Modifier,
-    details: DeepLinkDetails,
-    folders: ImmutableList<Folder>,
+    uiState: DeepLinkDetailsUiState,
     onNameChanged: (String) -> Unit,
     onDescriptionChanged: (String) -> Unit,
     onShare: () -> Unit,
@@ -157,13 +153,15 @@ fun DeepLinkDetailsScreenContent(
 ) {
     val clipboardManager = LocalClipboardManager.current
 
+    val form = uiState.form
+
     var showSelectFolderBottomSheet by remember {
         mutableStateOf(false)
     }
 
     if (showSelectFolderBottomSheet) {
         SelectFolderBottomSheet(
-            folders = folders,
+            folders = uiState.folders,
             onDismissRequest = {
                 showSelectFolderBottomSheet = false
             },
@@ -197,13 +195,13 @@ fun DeepLinkDetailsScreenContent(
             Spacer(modifier = Modifier.height(8.dp))
 
             EditableText(
-                value = details.name,
+                value = form.name,
                 onSave = onNameChanged,
                 modifier = Modifier.fillMaxWidth(),
                 inputLabel = "Enter a name",
             ) {
                 Text(
-                    text = details.name.ifEmpty { "--" },
+                    text = form.name.ifEmpty { "--" },
                     style = MaterialTheme.typography.headlineMedium.copy(
                         fontWeight = FontWeight.SemiBold,
                     ),
@@ -222,13 +220,13 @@ fun DeepLinkDetailsScreenContent(
             Spacer(modifier = Modifier.height(8.dp))
 
             EditableText(
-                value = details.description,
+                value = form.description,
                 onSave = onDescriptionChanged,
                 modifier = Modifier.fillMaxWidth(),
                 inputLabel = "Enter a description",
             ) {
                 Text(
-                    text = details.description.ifEmpty { "--" },
+                    text = form.description.ifEmpty { "--" },
                     style = MaterialTheme.typography.bodyMedium.copy(
                         fontWeight = FontWeight.Normal,
                     ),
@@ -238,7 +236,7 @@ fun DeepLinkDetailsScreenContent(
             Spacer(modifier = Modifier.height(24.dp))
 
             AnimatedContent(
-                targetState = details.folder,
+                targetState = form.folder,
                 label = "",
                 modifier = Modifier.fillMaxWidth(),
             ) { folder ->
@@ -295,7 +293,7 @@ fun DeepLinkDetailsScreenContent(
                 modifier = Modifier.fillMaxWidth(),
             ) {
                 Text(
-                    text = details.link,
+                    text = form.link,
                     style = MaterialTheme.typography.titleMedium.copy(
                         fontWeight = FontWeight.SemiBold,
                         color = MaterialTheme.colorScheme.onBackground,
@@ -307,7 +305,7 @@ fun DeepLinkDetailsScreenContent(
 
                 IconButton(
                     onClick = {
-                        clipboardManager.setText(AnnotatedString(details.link))
+                        clipboardManager.setText(AnnotatedString(form.link))
                         onCopy()
                     },
                 ) {
@@ -339,13 +337,13 @@ fun DeepLinkDetailsScreenContent(
 
                 IconButton(onClick = onFavorite) {
                     Icon(
-                        imageVector = if (details.isFavorite) {
+                        imageVector = if (form.isFavorite) {
                             Icons.Rounded.Favorite
                         } else {
                             Icons.Rounded.FavoriteBorder
                         },
                         contentDescription = "Favorite",
-                        tint = if (details.isFavorite) {
+                        tint = if (form.isFavorite) {
                             Color.Red
                         } else {
                             MaterialTheme.colorScheme.onSurface
