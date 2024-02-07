@@ -1,3 +1,5 @@
+![DeepLink Launcher Logo](androidApp/src/main/res/mipmap-xxxhdpi/ic_launcher_round.webp)
+
 # DeepLink Launcher
 
 DeepLink Launcher streamlines the management of deeplinks for developers and QA. Featuring a user-friendly interface built on Compose Multiplatform and Material3, it simplifies executing, organizing, tracking, and sharing deeplinks.
