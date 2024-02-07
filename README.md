@@ -39,7 +39,7 @@ DeepLink Launcher streamlines the management of deeplinks for developers and QA.
 - [ ] **Desktop App**.
 - [ ] **CI/CD with GitHub Actions**
 - [ ] **Unit and Integration Tests**.
-- [ ] **Integration with [Maestro](https://github.com/FelipeKoga/maestro)**.
+- [ ] **Integration with [Maestro](https://maestro.mobile.dev/)**.
 - [ ] **Theme Support**.
 - [ ] **In-App Updates**.
 - [ ] **Clipboard Autofill**.
