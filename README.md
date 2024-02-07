@@ -24,8 +24,8 @@ DeepLink Launcher streamlines the management of deeplinks for developers and QA.
 - **[Compose Multiplatform](https://github.com/JetBrains/compose-jb)**
 - **[Voyager](https://github.com/halilozercan/voyager)**
 - **[Koin](https://insert-koin.io/)**
-- **[SQLDelight](https://cashapp.github.io/sqldelight/)**.
-- **[Material3](https://m3.material.io/)**.
+- **[SQLDelight](https://cashapp.github.io/sqldelight/)**
+- **[Material3](https://m3.material.io/)**
 - **[Kotlinx Immutable](https://github.com/Kotlin/kotlinx.collections.immutable)**
 - **[Kotlinx DateTime](https://github.com/Kotlin/kotlinx-datetime)**
 - **[AboutLibraries](https://github.com/mikepenz/AboutLibraries)**
