@@ -27,7 +27,7 @@ class OpenSourceLicensesScreen : Screen {
             topBar = {
                 DLLTopBar(
                     title = "Open Source Licenses",
-                    onBack = navigator::pop
+                    onNavigationActionClicked = navigator::pop
                 )
             }
         ) { contentPadding ->

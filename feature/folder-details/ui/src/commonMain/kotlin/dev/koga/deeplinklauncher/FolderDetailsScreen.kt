@@ -89,7 +89,7 @@ class FolderDetailsScreen(private val folderId: String) : Screen {
 
         Scaffold(
             topBar = {
-                DLLTopBar(onBack = navigator::pop, actions = {
+                DLLTopBar(onNavigationActionClicked = navigator::pop, actions = {
                     IconButton(
                         onClick = { showDeleteDialog = true },
                         colors = IconButtonDefaults.filledTonalIconButtonColors(
@@ -238,9 +238,9 @@ fun FolderDetailsScreenContent(
         items(form.deepLinks) {
             DeepLinkItem(
                 deepLink = it,
-                onClick = onDeepLinkClick,
-                onLaunch = onDeepLinkLaunch,
-                onCopy = onDeepLinkCopy,
+                onClick = { onDeepLinkClick(it) },
+                onLaunch = { onDeepLinkLaunch(it) },
+                onLongClick = {}
             )
         }
 
