@@ -11,12 +11,19 @@ DeepLink Launcher streamlines the management of deeplinks for developers and QA.
 ![Pull Requests](https://img.shields.io/github/issues-pr/FelipeKoga/deeplink-launcher)
 
 ## Features
+- [x] **Execute Deeplinks**: Quickly and easily execute deeplinks.
+- [x] **Deeplink History**: Track all executed deeplinks.
+- [x] **Favorites**: Mark deeplinks as favorites for quick access.
+- [x] **Folders**: Organize deeplinks into folders for efficient management.
+- [x] **Export/Import**: Share or backup deeplinks and folders in JSON or TXT formats.
+- [ ] **Theme Support**: Customize your experience by switching between Light and Dark modes
+- [ ] **Clipboard Suggestion**:  Automatically detects and suggests executing the deeplink copied to your clipboard.
+- [ ] **Internationalization**: Starting with Portuguese (Brazil)
+- [ ] **Duplicate DeepLink**: Easily duplicate existing deeplinks, saving time when creating similar entries or variations.
 
-- **Execute Deeplinks**: Quickly and easily execute deeplinks.
-- **Deeplink History**: Track all executed deeplinks.
-- **Favorites**: Mark deeplinks as favorites for quick access.
-- **Folders**: Organize deeplinks into folders for efficient management.
-- **Export/Import**: Share or backup deeplinks and folders in JSON or TXT formats.
+## Multiplatform
+
+Currently, DeepLink Launcher is available only on **Android**. However, since I developed the app entirely with **Compose Multiplatform**, I plan to soon launch the **iOS** app and develop for **Desktop**! Stay tuned!
 
 ## Built With
 
@@ -32,16 +39,11 @@ DeepLink Launcher streamlines the management of deeplinks for developers and QA.
 - **[Detekt](https://github.com/detekt/detekt)**
 - **[Ktlint](https://github.com/pinterest/ktlint)**
 - **Moko [Resources](https://github.com/icerockdev/moko-resources) & [Permissions](https://github.com/icerockdev/moko-permissions)**
+  
+## Tech Roadmap
 
-## Roadmap
-
-- [ ] **iOS App**
-- [ ] **Desktop App**
 - [ ] **CI/CD with GitHub Actions**
 - [ ] **Unit and Integration Tests**
 - [ ] **Integration with [Maestro](https://maestro.mobile.dev/)**
-- [ ] **Theme Support**
 - [ ] **In-App Updates**
 - [ ] **App Shortcuts**
-- [ ] **Clipboard Autofill**
-- [ ] **Internationalization**: Starting with Portuguese (Brazil)
