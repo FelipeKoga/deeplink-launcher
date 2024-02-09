@@ -20,7 +20,7 @@ DeepLink Launcher streamlines the management of deeplinks for developers and QA.
 
 ## Built With
 
-- **MVVM Architecture and Clean Architecture**
+- **MVVM and Clean Architecture**
 - **[Compose Multiplatform](https://github.com/JetBrains/compose-jb)**
 - **[Voyager](https://github.com/adrielcafe/voyager)**
 - **[Koin](https://insert-koin.io/)**
