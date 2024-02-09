@@ -10,6 +10,7 @@ DeepLink Launcher streamlines the management of deeplinks for developers and QA.
 ![Issues](https://img.shields.io/github/issues/FelipeKoga/deeplink-launcher)
 ![Pull Requests](https://img.shields.io/github/issues-pr/FelipeKoga/deeplink-launcher)
 
+
 ## Features
 - [x] **Execute Deeplinks**: Quickly and easily execute deeplinks.
 - [x] **Deeplink History**: Track all executed deeplinks.
@@ -42,6 +43,8 @@ Currently, DeepLink Launcher is available only on **Android**. However, since I 
   
 ## Tech Roadmap
 
+- [x] **Compose Multiplatform project**
+- [x] **Modularization by feature**
 - [ ] **CI/CD with GitHub Actions**
 - [ ] **Unit and Integration Tests**
 - [ ] **Integration with [Maestro](https://maestro.mobile.dev/)**
