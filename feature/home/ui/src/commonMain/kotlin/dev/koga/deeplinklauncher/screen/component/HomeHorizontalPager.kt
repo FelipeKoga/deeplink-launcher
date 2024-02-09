@@ -51,7 +51,7 @@ internal fun HomeHorizontalPager(
     paddingBottom: Dp,
     onDeepLinkClicked: (DeepLink) -> Unit,
     onDeepLinkLaunch: (DeepLink) -> Unit,
-    onDeepLinkCopy: (DeepLink) -> Unit,
+    onOpenDeepLinkActions: (DeepLink) -> Unit,
     onFolderClicked: (Folder) -> Unit,
     onFolderAdd: () -> Unit,
 ) {
@@ -81,7 +81,7 @@ internal fun HomeHorizontalPager(
                             deepLink = deepLink,
                             onClick = { onDeepLinkClicked(deepLink) },
                             onLaunch = { onDeepLinkLaunch(deepLink) },
-                            onCopy = { onDeepLinkCopy(it) },
+                            onLongClick = { onOpenDeepLinkActions(deepLink) }
                         )
                     }
                 }
@@ -108,7 +108,7 @@ internal fun HomeHorizontalPager(
                             deepLink = deepLink,
                             onClick = { onDeepLinkClicked(deepLink) },
                             onLaunch = { onDeepLinkLaunch(deepLink) },
-                            onCopy = { onDeepLinkCopy(deepLink) },
+                            onLongClick = { onOpenDeepLinkActions(deepLink) }
                         )
                     }
                 }

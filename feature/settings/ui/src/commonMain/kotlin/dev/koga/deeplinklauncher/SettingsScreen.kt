@@ -117,7 +117,7 @@ fun SettingsScreenUI(
         topBar = {
             DLLTopBar(
                 title = "",
-                onBack = onBack
+                onNavigationActionClicked = onBack
             )
         },
         containerColor = MaterialTheme.colorScheme.surface,

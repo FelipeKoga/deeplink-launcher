@@ -57,6 +57,7 @@ import cafe.adriel.voyager.navigator.currentOrThrow
 import dev.icerock.moko.resources.compose.painterResource
 import dev.koga.deeplinklauncher.DLLTopBar
 import dev.koga.deeplinklauncher.component.DeleteDeepLinkConfirmationBottomSheet
+import dev.koga.deeplinklauncher.deeplink.DeepLinkActionsRow
 import dev.koga.deeplinklauncher.folder.EditableText
 import dev.koga.deeplinklauncher.folder.SelectFolderBottomSheet
 import dev.koga.deeplinklauncher.model.Folder
@@ -70,8 +71,6 @@ class DeepLinkDetailsScreen(private val deepLinkId: String) : Screen {
     @Composable
     override fun Content() {
         val navigator = LocalNavigator.currentOrThrow
-        val snackbarHostState = remember { SnackbarHostState() }
-        val scope = rememberCoroutineScope()
         val screenModel = getScreenModel<DeepLinkDetailScreenModel>(
             parameters = { parametersOf(deepLinkId) },
         )
@@ -97,7 +96,7 @@ class DeepLinkDetailsScreen(private val deepLinkId: String) : Screen {
 
         Scaffold(
             topBar = {
-                DLLTopBar(title = "", onBack = navigator::pop, actions = {
+                DLLTopBar(title = "", onNavigationActionClicked = navigator::pop, actions = {
                     FilledTonalIconButton(
                         onClick = { showDeleteDeepLinkConfirmation = true },
                         colors = IconButtonDefaults.filledTonalIconButtonColors(
@@ -112,7 +111,6 @@ class DeepLinkDetailsScreen(private val deepLinkId: String) : Screen {
                 })
             },
             containerColor = MaterialTheme.colorScheme.surface,
-            snackbarHost = { SnackbarHost(snackbarHostState) },
         ) { contentPadding ->
             DeepLinkDetailsScreenContent(
                 modifier = Modifier.padding(contentPadding),
@@ -125,13 +123,6 @@ class DeepLinkDetailsScreen(private val deepLinkId: String) : Screen {
                 onAddFolder = screenModel::insertFolder,
                 onSelectFolder = screenModel::selectFolder,
                 onRemoveFolder = screenModel::removeFolderFromDeepLink,
-                onCopy = {
-                    scope.launch {
-                        snackbarHostState.showSnackbar(
-                            "Copied to clipboard",
-                        )
-                    }
-                },
             )
         }
     }
@@ -149,10 +140,7 @@ fun DeepLinkDetailsScreenContent(
     onAddFolder: (String, String) -> Unit,
     onSelectFolder: (Folder) -> Unit,
     onRemoveFolder: () -> Unit,
-    onCopy: () -> Unit,
 ) {
-    val clipboardManager = LocalClipboardManager.current
-
     val form = uiState.form
 
     var showSelectFolderBottomSheet by remember {
@@ -288,78 +276,28 @@ fun DeepLinkDetailsScreenContent(
 
             Divider(modifier = Modifier.padding(vertical = 24.dp))
 
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.fillMaxWidth(),
-            ) {
-                Text(
-                    text = form.link,
-                    style = MaterialTheme.typography.titleMedium.copy(
-                        fontWeight = FontWeight.SemiBold,
-                        color = MaterialTheme.colorScheme.onBackground,
-                    ),
-                    modifier = Modifier.weight(1f),
-                )
+            Text(
+                text = form.link,
+                style = MaterialTheme.typography.titleMedium.copy(
+                    fontWeight = FontWeight.SemiBold,
+                    color = MaterialTheme.colorScheme.onBackground,
+                ),
+                modifier = Modifier.weight(1f),
+            )
 
-                Spacer(modifier = Modifier.width(24.dp))
-
-                IconButton(
-                    onClick = {
-                        clipboardManager.setText(AnnotatedString(form.link))
-                        onCopy()
-                    },
-                ) {
-                    Icon(
-                        painter = painterResource(MR.images.ic_content_copy_24dp),
-                        contentDescription = "Copy",
-                    )
-                }
-            }
 
             Spacer(modifier = Modifier.weight(1f))
 
             Divider()
 
-            Row(
-                horizontalArrangement = Arrangement.Center,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 24.dp),
-            ) {
-                IconButton(onClick = onShare) {
-                    Icon(
-                        imageVector = Icons.Rounded.Share,
-                        contentDescription = "Share",
-                    )
-                }
-
-                Spacer(modifier = Modifier.width(24.dp))
-
-                IconButton(onClick = onFavorite) {
-                    Icon(
-                        imageVector = if (form.isFavorite) {
-                            Icons.Rounded.Favorite
-                        } else {
-                            Icons.Rounded.FavoriteBorder
-                        },
-                        contentDescription = "Favorite",
-                        tint = if (form.isFavorite) {
-                            Color.Red
-                        } else {
-                            MaterialTheme.colorScheme.onSurface
-                        },
-                    )
-                }
-
-                Spacer(modifier = Modifier.width(24.dp))
-
-                FilledTonalIconButton(onClick = onLaunch) {
-                    Icon(
-                        painter = painterResource(MR.images.ic_launch_24dp),
-                        contentDescription = "Launch",
-                    )
-                }
-            }
+            DeepLinkActionsRow(
+                link = form.link,
+                isFavorite = form.isFavorite,
+                onShare = onShare,
+                onFavorite = onFavorite,
+                onLaunch = onLaunch,
+                onDuplicate = {},
+            )
 
             Spacer(modifier = Modifier.statusBarsPadding())
         }

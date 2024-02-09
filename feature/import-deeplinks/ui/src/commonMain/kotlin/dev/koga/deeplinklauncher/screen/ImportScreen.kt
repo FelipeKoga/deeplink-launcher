@@ -111,7 +111,7 @@ class ImportScreen : Screen {
             topBar = {
                 DLLTopBar(
                     title = "Import DeepLinks",
-                    onBack = navigator::pop,
+                    onNavigationActionClicked = navigator::pop,
                 )
             },
             snackbarHost = {

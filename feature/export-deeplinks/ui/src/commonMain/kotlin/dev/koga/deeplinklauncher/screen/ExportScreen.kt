@@ -108,7 +108,7 @@ class ExportScreen : Screen {
                 DLLTopBar(
                     scrollBehavior = scrollBehavior,
                     title = "Export DeepLinks",
-                    onBack = navigator::pop,
+                    onNavigationActionClicked = navigator::pop,
                 )
             },
             bottomBar = {

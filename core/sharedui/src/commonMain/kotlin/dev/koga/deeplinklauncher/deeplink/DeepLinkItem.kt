@@ -29,32 +29,9 @@ import dev.icerock.moko.resources.compose.painterResource
 import dev.koga.deeplinklauncher.model.DeepLink
 import dev.koga.resources.MR
 
-@Composable
-fun DeepLinkItem(
-    modifier: Modifier = Modifier,
-    deepLink: DeepLink,
-    onClick: (DeepLink) -> Unit,
-    onLaunch: (DeepLink) -> Unit,
-    onCopy: (DeepLink) -> Unit,
-) {
-    DeepLinkCard(
-        deepLink = deepLink,
-        modifier = modifier,
-        onLongClick = {
-            onCopy(deepLink)
-        },
-        onClick = {
-            onClick(deepLink)
-        },
-        onLaunch = {
-            onLaunch(deepLink)
-        },
-    )
-}
-
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun DeepLinkCard(
+fun DeepLinkItem(
     modifier: Modifier = Modifier,
     deepLink: DeepLink,
     onClick: () -> Unit,

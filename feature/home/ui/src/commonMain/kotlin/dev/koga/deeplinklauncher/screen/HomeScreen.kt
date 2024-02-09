@@ -31,9 +31,13 @@ import cafe.adriel.voyager.core.registry.rememberScreen
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.koin.getNavigatorScreenModel
 import cafe.adriel.voyager.navigator.LocalNavigator
+import cafe.adriel.voyager.navigator.Navigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import dev.koga.deeplinklauncher.AddFolderBottomSheet
 import dev.koga.deeplinklauncher.SharedScreen
+import dev.koga.deeplinklauncher.deeplink.DeepLinkActionsBottomSheet
+import dev.koga.deeplinklauncher.model.DeepLink
+import dev.koga.deeplinklauncher.navigateToDeepLinkDetails
 import dev.koga.deeplinklauncher.screen.component.HomeHorizontalPager
 import dev.koga.deeplinklauncher.screen.component.HomeLaunchDeepLinkBottomSheetContent
 import dev.koga.deeplinklauncher.screen.component.HomeTabRow
@@ -47,17 +51,19 @@ object HomeScreen : Screen {
     }
 }
 
+private sealed interface BottomSheetAction {
+    data class DeepLinkActions(val id: String) : BottomSheetAction
+    data object AddFolder : BottomSheetAction
+    data object Idle : BottomSheetAction
+}
+
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
 private fun HomeScreenContent() {
     val settingsScreen = rememberScreen(SharedScreen.Settings)
 
-    val clipboardManager = LocalClipboardManager.current
-
     val navigator = LocalNavigator.currentOrThrow
-    val scope = rememberCoroutineScope()
-    val snackbarHostState = remember { SnackbarHostState() }
     val bottomSheetState = rememberStandardBottomSheetState(
         initialValue = SheetValue.Expanded,
     )
@@ -74,21 +80,41 @@ private fun HomeScreenContent() {
     val scrollBehavior = TopAppBarDefaults
         .exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
 
-    var openFolderBottomSheet by rememberSaveable {
-        mutableStateOf(false)
+    var bottomSheetAction by remember {
+        mutableStateOf<BottomSheetAction>(BottomSheetAction.Idle)
     }
 
-    if (openFolderBottomSheet) {
-        AddFolderBottomSheet(
-            onDismiss = {
-                openFolderBottomSheet = false
-            },
+    when (bottomSheetAction) {
+        BottomSheetAction.AddFolder -> AddFolderBottomSheet(
+            onDismiss = { bottomSheetAction = BottomSheetAction.Idle },
             onAdd = { name, description ->
-                openFolderBottomSheet = false
+                bottomSheetAction = BottomSheetAction.Idle
                 screenModel.addFolder(name, description)
             },
         )
+
+        is BottomSheetAction.DeepLinkActions -> {
+            val deepLink = remember(uiState.deepLinks) {
+                val deepLinkId = (bottomSheetAction as BottomSheetAction.DeepLinkActions).id
+                uiState.deepLinks.firstOrNull { it.id == deepLinkId }
+            } ?: return
+
+            DeepLinkActionsBottomSheet(
+                deepLink = deepLink,
+                onDismiss = { bottomSheetAction = BottomSheetAction.Idle },
+                onShare = { screenModel.share(deepLink) },
+                onFavorite = { screenModel.toggleFavorite(deepLink) },
+                onLaunch = { screenModel.launchDeepLink(deepLink) },
+                onDetails = {
+                    bottomSheetAction = BottomSheetAction.Idle
+                    navigator.navigateToDeepLinkDetails(deepLink.id)
+                },
+            )
+        }
+
+        BottomSheetAction.Idle -> Unit
     }
+
 
     BottomSheetScaffold(
         topBar = {
@@ -100,7 +126,6 @@ private fun HomeScreenContent() {
         scaffoldState = rememberBottomSheetScaffoldState(
             bottomSheetState = bottomSheetState,
         ),
-        snackbarHost = { SnackbarHost(snackbarHostState) },
         sheetContent = {
             HomeLaunchDeepLinkBottomSheetContent(
                 value = uiState.inputText,
@@ -124,26 +149,15 @@ private fun HomeScreenContent() {
                 pagerState = pagerState,
                 scrollBehavior = scrollBehavior,
                 paddingBottom = 320.dp,
-                onDeepLinkClicked = {
-                    val screen = ScreenRegistry.get(SharedScreen.DeepLinkDetails(it.id))
-                    navigator.push(screen)
-                },
+                onDeepLinkClicked = { navigator.navigateToDeepLinkDetails(it.id) },
                 onDeepLinkLaunch = screenModel::launchDeepLink,
-                onDeepLinkCopy = {
-                    scope.launch {
-                        clipboardManager.setText(AnnotatedString(it.link))
-                        snackbarHostState.showSnackbar(
-                            message = "Copied to clipboard",
-                            actionLabel = "Dismiss",
-                        )
-                    }
-                },
                 onFolderClicked = {
                     val screen = ScreenRegistry.get(SharedScreen.FolderDetails(it.id))
                     navigator.push(screen)
                 },
-                onFolderAdd = {
-                    openFolderBottomSheet = true
+                onFolderAdd = { bottomSheetAction = BottomSheetAction.AddFolder },
+                onOpenDeepLinkActions = {
+                    bottomSheetAction = BottomSheetAction.DeepLinkActions(it.id)
                 },
             )
         }
