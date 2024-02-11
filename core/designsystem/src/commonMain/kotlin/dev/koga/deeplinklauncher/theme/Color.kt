@@ -9,6 +9,7 @@ val colors = darkColorScheme(
     onSecondary = Color.White,
     background = Color(0xFF323232),
     surface = Color(0xFF28272a),
+    onSurface = Color.White,
     secondaryContainer = Color(0xFF1c1b1f),
     onSecondaryContainer = Color.White,
 )

@@ -4,19 +4,28 @@ import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.screenModelScope
 import dev.koga.deeplinklauncher.datasource.DeepLinkDataSource
 import dev.koga.deeplinklauncher.datasource.FolderDataSource
+import dev.koga.deeplinklauncher.model.DeepLink
 import dev.koga.deeplinklauncher.model.Folder
 import dev.koga.deeplinklauncher.provider.UUIDProvider
+import dev.koga.deeplinklauncher.screen.state.DeepLinkDetailsEvent
+import dev.koga.deeplinklauncher.screen.state.DeepLinkDetailsUiState
+import dev.koga.deeplinklauncher.usecase.deeplink.DuplicateDeepLink
 import dev.koga.deeplinklauncher.usecase.deeplink.LaunchDeepLink
 import dev.koga.deeplinklauncher.usecase.deeplink.ShareDeepLink
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toPersistentList
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 
 class DeepLinkDetailScreenModel(
     deepLinkId: String,
@@ -24,82 +33,80 @@ class DeepLinkDetailScreenModel(
     private val deepLinkDataSource: DeepLinkDataSource,
     private val launchDeepLink: LaunchDeepLink,
     private val shareDeepLink: ShareDeepLink,
+    private val duplicateDeepLink: DuplicateDeepLink,
 ) : ScreenModel {
 
-    private val deepLink = deepLinkDataSource.getDeepLinkById(deepLinkId)!!
+    private val coroutineDebouncer = CoroutineDebouncer()
+
+    private val deepLink = deepLinkDataSource.getDeepLinkById(deepLinkId)
+        .filterNotNull()
+        .stateIn(
+            scope = screenModelScope,
+            started = SharingStarted.WhileSubscribed(),
+            initialValue = DeepLink.empty,
+        )
+
     private val folders = folderDataSource.getFoldersStream().stateIn(
         scope = screenModelScope,
         started = SharingStarted.WhileSubscribed(),
         initialValue = emptyList(),
     )
-    private val form = MutableStateFlow(
-        DeepLinkForm(
-            name = deepLink.name.orEmpty(),
-            description = deepLink.description.orEmpty(),
-            folder = deepLink.folder,
-            link = deepLink.link,
-            isFavorite = deepLink.isFavorite,
-            deleted = false
-        ),
-    )
+
+    private val duplicateErrorMessage = MutableStateFlow<String?>(null)
 
     val uiState = combine(
         folders,
-        form,
-    ) { folders, form ->
+        deepLink,
+        duplicateErrorMessage
+    ) { folders, deepLink, duplicateErrorMessage ->
         DeepLinkDetailsUiState(
             folders = folders.toPersistentList(),
-            form = form,
+            deepLink = deepLink,
+            duplicateErrorMessage = duplicateErrorMessage,
         )
     }.stateIn(
         scope = screenModelScope,
         started = SharingStarted.WhileSubscribed(),
         initialValue = DeepLinkDetailsUiState(
             folders = persistentListOf(),
-            form = form.value,
+            deepLink = deepLink.value,
         ),
     )
 
-    init {
-        form.onEach {
-            if (it.deleted) {
-                deepLinkDataSource.deleteDeepLink(deepLinkId)
-                return@onEach
-            }
-
-            deepLinkDataSource.upsertDeepLink(
-                deepLink.copy(
-                    name = it.name.ifEmpty { null },
-                    description = it.description.ifEmpty { null },
-                    folder = it.folder,
-                    isFavorite = it.isFavorite,
-                ),
-            )
-        }.launchIn(screenModelScope)
-    }
+    private val eventDispatcher = Channel<DeepLinkDetailsEvent>(Channel.UNLIMITED)
+    val events = eventDispatcher.receiveAsFlow()
 
     fun updateDeepLinkName(s: String) {
-        form.update { it.copy(name = s) }
+        coroutineDebouncer.debounce(screenModelScope, "name") {
+            deepLinkDataSource.upsertDeepLink(deepLink.value.copy(name = s))
+        }
     }
 
     fun updateDeepLinkDescription(s: String) {
-        form.update { it.copy(description = s) }
+        coroutineDebouncer.debounce(screenModelScope, "description") {
+            deepLinkDataSource.upsertDeepLink(deepLink.value.copy(description = s))
+        }
     }
 
     fun favorite() {
-        form.update { it.copy(isFavorite = !it.isFavorite) }
+        deepLinkDataSource.upsertDeepLink(
+            deepLink.value.copy(isFavorite = !deepLink.value.isFavorite)
+        )
     }
 
     fun launch() {
-        launchDeepLink.launch(deepLink)
+        launchDeepLink.launch(deepLink.value)
     }
 
     fun delete() {
-        form.update { it.copy(deleted = true) }
+        screenModelScope.launch {
+            deepLinkDataSource.deleteDeepLink(deepLink.value.id)
+            eventDispatcher.send(DeepLinkDetailsEvent.Deleted)
+        }
     }
 
     fun share() {
-        shareDeepLink(deepLink)
+        shareDeepLink(deepLink.value)
     }
 
     fun insertFolder(name: String, description: String) {
@@ -115,10 +122,64 @@ class DeepLinkDetailScreenModel(
     }
 
     fun selectFolder(folder: Folder) {
-        form.update { it.copy(folder = folder) }
+        deepLinkDataSource.upsertDeepLink(deepLink.value.copy(folder = folder))
     }
 
     fun removeFolderFromDeepLink() {
-        form.update { it.copy(folder = null) }
+        deepLinkDataSource.upsertDeepLink(deepLink.value.copy(folder = null))
+    }
+
+    fun duplicate(
+        newLink: String,
+        copyAllFields: Boolean,
+    ) {
+
+        duplicateErrorMessage.update { null }
+
+        screenModelScope.launch {
+            val response = duplicateDeepLink(
+                deepLinkId = deepLink.value.id,
+                newLink = newLink,
+                copyAllFields = copyAllFields,
+            )
+
+            when (response) {
+                DuplicateDeepLink.Response.Error.InvalidLink -> {
+                    duplicateErrorMessage.update {
+                        "Something went wrong. Check if the deeplink \"$newLink\" is valid"
+                    }
+                }
+
+                DuplicateDeepLink.Response.Error.LinkAlreadyExists -> {
+                    duplicateErrorMessage.update { "Link already exists" }
+                }
+
+                DuplicateDeepLink.Response.Error.SameLink -> {
+                    duplicateErrorMessage.update { "Link is the same as the original one" }
+                }
+
+                is DuplicateDeepLink.Response.Success -> {
+                    eventDispatcher.send(DeepLinkDetailsEvent.Duplicated(response.deepLink))
+                }
+            }
+        }
+    }
+
+
+    private class CoroutineDebouncer {
+        private val jobs = mutableMapOf<String, Job>()
+
+        fun debounce(
+            coroutineScope: CoroutineScope,
+            key: String,
+            delayMillis: Long = 300L,
+            action: suspend () -> Unit,
+        ) {
+            jobs[key]?.cancel()
+            jobs[key] = coroutineScope.launch {
+                delay(delayMillis)
+                action()
+            }
+        }
     }
 }

@@ -10,7 +10,6 @@ import dev.koga.deeplinklauncher.provider.UUIDProvider
 import dev.koga.deeplinklauncher.usecase.GetDeepLinksAndFolderStream
 import dev.koga.deeplinklauncher.usecase.deeplink.LaunchDeepLink
 import dev.koga.deeplinklauncher.usecase.deeplink.LaunchDeepLinkResult
-import dev.koga.deeplinklauncher.usecase.deeplink.ShareDeepLink
 import dev.koga.deeplinklauncher.util.currentLocalDateTime
 import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -25,7 +24,6 @@ class HomeScreenModel(
     private val deepLinkDataSource: DeepLinkDataSource,
     private val folderDataSource: FolderDataSource,
     private val launchDeepLink: LaunchDeepLink,
-    private val shareDeepLink: ShareDeepLink,
 ) : ScreenModel {
 
     private val inputText = MutableStateFlow("")
@@ -100,16 +98,6 @@ class HomeScreenModel(
 
     fun launchDeepLink(deepLink: DeepLink) {
         launchDeepLink.launch(deepLink)
-    }
-
-    fun toggleFavorite(deepLink: DeepLink) {
-        deepLinkDataSource.upsertDeepLink(
-            deepLink.copy(isFavorite = !deepLink.isFavorite),
-        )
-    }
-
-    fun share(deepLink: DeepLink) {
-        shareDeepLink(deepLink)
     }
 
     fun onDeepLinkTextChanged(text: String) {

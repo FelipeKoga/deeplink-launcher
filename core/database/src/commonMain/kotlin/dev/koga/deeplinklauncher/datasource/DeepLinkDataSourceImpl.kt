@@ -13,6 +13,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.singleOrNull
 
 internal class DeepLinkDataSourceImpl(
     private val databaseProvider: DatabaseProvider,
@@ -37,11 +38,12 @@ internal class DeepLinkDataSourceImpl(
             .map(SelectAllDeeplinks::toDomain)
     }
 
-    override fun getDeepLinkById(id: String): DeepLink {
+    override fun getDeepLinkById(id: String): Flow<DeepLink?> {
         return database.deepLinkQueries
             .getDeepLinkById(id)
-            .executeAsOne()
-            .let(GetDeepLinkById::toDomain)
+            .asFlow()
+            .mapToList(Dispatchers.IO)
+            .map { it.singleOrNull()?.toDomain() }
     }
 
     override fun getDeepLinkByLink(link: String): DeepLink? {
