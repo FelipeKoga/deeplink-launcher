@@ -25,6 +25,7 @@ actual class LaunchDeepLink(
 
     actual fun launch(deepLink: DeepLink): LaunchDeepLinkResult {
         dataSource.upsertDeepLink(deepLink.copy(lastLaunchedAt = currentLocalDateTime))
+
         return launch(deepLink.link)
     }
 }

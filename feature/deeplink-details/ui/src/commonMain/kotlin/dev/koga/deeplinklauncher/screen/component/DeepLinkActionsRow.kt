@@ -1,4 +1,4 @@
-package dev.koga.deeplinklauncher.deeplink
+package dev.koga.deeplinklauncher.screen.component
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
@@ -116,21 +116,34 @@ fun DeepLinkActionsRow(
                 .fillMaxWidth()
                 .padding(vertical = 24.dp),
         ) {
-            FilledTonalButton(onClick = onDuplicate) {
-                Text(
-                    text = "Duplicate",
-                    style = MaterialTheme.typography.labelLarge.copy(
-                        fontWeight = FontWeight.Bold
-                    )
+            IconButton(onClick = onDuplicate) {
+                Icon(
+                    painterResource(MR.images.ic_duplicate_24dp),
+                    contentDescription = "Duplicate",
+                    tint = MaterialTheme.colorScheme.onSurface
                 )
             }
-
-            Spacer(modifier = Modifier.width(16.dp))
 
             IconButton(onClick = onShare) {
                 Icon(
                     imageVector = Icons.Rounded.Share,
                     contentDescription = "Share",
+                    tint = MaterialTheme.colorScheme.onSurface
+                )
+            }
+
+            IconButton(
+                modifier = Modifier.onGloballyPositioned {
+                    copyCoordinates = it
+                },
+                onClick = {
+                    clipboardManager.setText(AnnotatedString(link))
+                    showCopyPopUp = true
+                }) {
+                Icon(
+                    painter = painterResource(MR.images.ic_content_copy_24dp),
+                    contentDescription = "Copy Link",
+                    tint = MaterialTheme.colorScheme.onSurface
                 )
             }
 
@@ -150,21 +163,17 @@ fun DeepLinkActionsRow(
                 )
             }
 
-            IconButton(
-                modifier = Modifier.onGloballyPositioned {
-                    copyCoordinates = it
-                },
-                onClick = {
-                    clipboardManager.setText(AnnotatedString(link))
-                    showCopyPopUp = true
-                }) {
-                Icon(
-                    painter = painterResource(MR.images.ic_content_copy_24dp),
-                    contentDescription = "Copy Link",
+            Spacer(modifier = Modifier.weight(1f))
+            FilledTonalButton(onClick = onLaunch) {
+                Text(
+                    text = "Launch",
+                    style = MaterialTheme.typography.labelLarge.copy(
+                        fontWeight = FontWeight.Bold
+                    )
                 )
-            }
 
-            FilledTonalIconButton(onClick = onLaunch) {
+                Spacer(modifier = Modifier.width(8.dp))
+
                 Icon(
                     painter = painterResource(MR.images.ic_launch_24dp),
                     contentDescription = "Launch",

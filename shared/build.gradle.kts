@@ -34,6 +34,7 @@ kotlin {
             implementation(libs.koin.compose)
 
             implementation(libs.voyager.screenmodel)
+            implementation(libs.voyager.bottomSheet)
             implementation(libs.voyager.navigator)
             implementation(libs.voyager.transitions)
 
@@ -42,6 +43,7 @@ kotlin {
             implementation(compose.runtime)
             implementation(compose.foundation)
             implementation(compose.material3)
+            implementation(compose.material)
             implementation(compose.ui)
             @OptIn(ExperimentalComposeLibrary::class)
             implementation(compose.components.resources)

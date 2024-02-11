@@ -240,7 +240,6 @@ fun FolderDetailsScreenContent(
                 deepLink = it,
                 onClick = { onDeepLinkClick(it) },
                 onLaunch = { onDeepLinkLaunch(it) },
-                onLongClick = {}
             )
         }
 

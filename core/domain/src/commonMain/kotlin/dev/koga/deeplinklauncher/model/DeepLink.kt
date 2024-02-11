@@ -17,4 +17,14 @@ data class DeepLink(
 ) {
     val hasNameAndDescription: Boolean
         get() = !name.isNullOrBlank() && !description.isNullOrBlank()
+
+    companion object {
+        val empty = DeepLink(
+            id = "",
+            link = "",
+            name = "",
+            description = "",
+            isFavorite = false,
+        )
+    }
 }

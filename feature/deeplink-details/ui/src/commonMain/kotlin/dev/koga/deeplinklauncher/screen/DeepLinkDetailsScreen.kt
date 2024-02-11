@@ -1,305 +1,181 @@
 package dev.koga.deeplinklauncher.screen
 
 import androidx.compose.animation.AnimatedContent
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.statusBarsPadding
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.text.selection.SelectionContainer
-import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Add
-import androidx.compose.material.icons.rounded.Clear
-import androidx.compose.material.icons.rounded.Delete
-import androidx.compose.material.icons.rounded.Favorite
-import androidx.compose.material.icons.rounded.FavoriteBorder
-import androidx.compose.material.icons.rounded.Share
-import androidx.compose.material3.AssistChipDefaults
 import androidx.compose.material3.Divider
-import androidx.compose.material3.ElevatedAssistChip
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FilledTonalIconButton
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SnackbarHost
-import androidx.compose.material3.SnackbarHostState
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalClipboardManager
-import androidx.compose.ui.text.AnnotatedString
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.koin.getScreenModel
-import cafe.adriel.voyager.navigator.LocalNavigator
-import cafe.adriel.voyager.navigator.currentOrThrow
-import dev.icerock.moko.resources.compose.painterResource
-import dev.koga.deeplinklauncher.DLLTopBar
+import cafe.adriel.voyager.navigator.bottomSheet.LocalBottomSheetNavigator
 import dev.koga.deeplinklauncher.component.DeleteDeepLinkConfirmationBottomSheet
-import dev.koga.deeplinklauncher.deeplink.DeepLinkActionsRow
-import dev.koga.deeplinklauncher.folder.EditableText
-import dev.koga.deeplinklauncher.folder.SelectFolderBottomSheet
-import dev.koga.deeplinklauncher.model.Folder
-import dev.koga.resources.MR
+import dev.koga.deeplinklauncher.model.DeepLink
+import dev.koga.deeplinklauncher.navigateToDeepLinkDetails
+import dev.koga.deeplinklauncher.screen.component.DeepLinkActionsRow
+import dev.koga.deeplinklauncher.screen.component.DeepLinkDetailsCollapsedContent
+import dev.koga.deeplinklauncher.screen.component.DeepLinkDetailsExpandedContent
+import dev.koga.deeplinklauncher.screen.component.DuplicateDeepLinkBottomSheet
+import dev.koga.deeplinklauncher.screen.state.DeepLinkDetailsEvent
+import dev.koga.deeplinklauncher.screen.state.DeepLinkDetailsUiState
+import dev.koga.deeplinklauncher.usecase.deeplink.DuplicateDeepLink
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import org.koin.core.parameter.parametersOf
 
 class DeepLinkDetailsScreen(private val deepLinkId: String) : Screen {
 
-    @OptIn(ExperimentalMaterial3Api::class)
     @Composable
     override fun Content() {
-        val navigator = LocalNavigator.currentOrThrow
+        val navigator = LocalBottomSheetNavigator.current
         val screenModel = getScreenModel<DeepLinkDetailScreenModel>(
             parameters = { parametersOf(deepLinkId) },
         )
 
         val uiState by screenModel.uiState.collectAsState()
+        var detailsMode by remember { mutableStateOf<DetailsMode>(DetailsMode.Collapsed) }
+        var bottomSheetState by remember { mutableStateOf<BottomSheetState>(BottomSheetState.Idle) }
 
-        if (uiState.form.deleted) {
-            navigator.pop()
-        }
-
-        var showDeleteDeepLinkConfirmation by remember {
-            mutableStateOf(false)
-        }
-
-        if (showDeleteDeepLinkConfirmation) {
-            DeleteDeepLinkConfirmationBottomSheet(onDismissRequest = {
-                showDeleteDeepLinkConfirmation = false
-            }, onDelete = {
-                screenModel.delete()
-                showDeleteDeepLinkConfirmation = false
-            })
-        }
-
-        Scaffold(
-            topBar = {
-                DLLTopBar(title = "", onNavigationActionClicked = navigator::pop, actions = {
-                    FilledTonalIconButton(
-                        onClick = { showDeleteDeepLinkConfirmation = true },
-                        colors = IconButtonDefaults.filledTonalIconButtonColors(
-                            containerColor = Color.Red.copy(alpha = .2f),
-                        ),
-                    ) {
-                        Icon(
-                            imageVector = Icons.Rounded.Delete,
-                            contentDescription = "Delete",
-                        )
-                    }
-                })
-            },
-            containerColor = MaterialTheme.colorScheme.surface,
-        ) { contentPadding ->
-            DeepLinkDetailsScreenContent(
-                modifier = Modifier.padding(contentPadding),
-                uiState = uiState,
-                onNameChanged = screenModel::updateDeepLinkName,
-                onDescriptionChanged = screenModel::updateDeepLinkDescription,
-                onShare = screenModel::share,
-                onFavorite = screenModel::favorite,
-                onLaunch = screenModel::launch,
-                onAddFolder = screenModel::insertFolder,
-                onSelectFolder = screenModel::selectFolder,
-                onRemoveFolder = screenModel::removeFolderFromDeepLink,
-            )
-        }
-    }
-}
-
-@Composable
-fun DeepLinkDetailsScreenContent(
-    modifier: Modifier,
-    uiState: DeepLinkDetailsUiState,
-    onNameChanged: (String) -> Unit,
-    onDescriptionChanged: (String) -> Unit,
-    onShare: () -> Unit,
-    onFavorite: () -> Unit,
-    onLaunch: () -> Unit,
-    onAddFolder: (String, String) -> Unit,
-    onSelectFolder: (Folder) -> Unit,
-    onRemoveFolder: () -> Unit,
-) {
-    val form = uiState.form
-
-    var showSelectFolderBottomSheet by remember {
-        mutableStateOf(false)
-    }
-
-    if (showSelectFolderBottomSheet) {
-        SelectFolderBottomSheet(
-            folders = uiState.folders,
-            onDismissRequest = {
-                showSelectFolderBottomSheet = false
-            },
-            onAdd = { name, description ->
-                onAddFolder(name, description)
-                showSelectFolderBottomSheet = false
-            },
-            onClick = {
-                onSelectFolder(it)
-                showSelectFolderBottomSheet = false
-            },
+        DetailsEventHandler(
+            events = screenModel.events,
+            onDeleted = navigator::hide,
+            onDuplicated = { duplicatedDeepLink ->
+                CoroutineScope(Dispatchers.Main).launch {
+                    navigator.hide()
+                    delay(DELAY_TO_NAVIGATE_AFTER_DISMISS)
+                    navigator.navigateToDeepLinkDetails(duplicatedDeepLink.id)
+                }
+            }
         )
-    }
 
-    SelectionContainer(
-        modifier = modifier,
-    ) {
+        DetailsBottomSheetsHandler(
+            bottomSheetState = bottomSheetState,
+            uiState = uiState,
+            onDelete = {
+                bottomSheetState = BottomSheetState.Idle
+                screenModel.delete()
+            },
+            onDismiss = { bottomSheetState = BottomSheetState.Idle },
+            onConfirmDuplication = screenModel::duplicate,
+        )
+
         Column(
-            Modifier
-                .padding(24.dp)
-                .fillMaxSize()
-                .verticalScroll(rememberScrollState()),
+            modifier = Modifier
+                .background(MaterialTheme.colorScheme.surface)
         ) {
-            Text(
-                text = "Name",
-                style = MaterialTheme.typography.labelSmall.copy(
-                    fontWeight = FontWeight.Light,
-                ),
-            )
-
-            Spacer(modifier = Modifier.height(8.dp))
-
-            EditableText(
-                value = form.name,
-                onSave = onNameChanged,
-                modifier = Modifier.fillMaxWidth(),
-                inputLabel = "Enter a name",
-            ) {
-                Text(
-                    text = form.name.ifEmpty { "--" },
-                    style = MaterialTheme.typography.headlineMedium.copy(
-                        fontWeight = FontWeight.SemiBold,
-                    ),
-                )
-            }
-
-            Spacer(modifier = Modifier.height(24.dp))
-
-            Text(
-                text = "Description",
-                style = MaterialTheme.typography.labelSmall.copy(
-                    fontWeight = FontWeight.Light,
-                ),
-            )
-
-            Spacer(modifier = Modifier.height(8.dp))
-
-            EditableText(
-                value = form.description,
-                onSave = onDescriptionChanged,
-                modifier = Modifier.fillMaxWidth(),
-                inputLabel = "Enter a description",
-            ) {
-                Text(
-                    text = form.description.ifEmpty { "--" },
-                    style = MaterialTheme.typography.bodyMedium.copy(
-                        fontWeight = FontWeight.Normal,
-                    ),
-                )
-            }
-
-            Spacer(modifier = Modifier.height(24.dp))
-
             AnimatedContent(
-                targetState = form.folder,
+                targetState = detailsMode,
                 label = "",
-                modifier = Modifier.fillMaxWidth(),
-            ) { folder ->
-
-                when (folder) {
-                    null -> ElevatedAssistChip(
-                        modifier = Modifier
-                            .fillMaxWidth(),
-                        onClick = { showSelectFolderBottomSheet = true },
-                        leadingIcon = {
-                            Icon(
-                                imageVector = Icons.Rounded.Add,
-                                contentDescription = "",
-                                modifier = Modifier.size(18.dp),
-                            )
-                        },
-                        label = { Text(text = "Add Folder") },
+            ) { target ->
+                when (target) {
+                    DetailsMode.Collapsed -> DeepLinkDetailsCollapsedContent(
+                        modifier = Modifier,
+                        uiState = uiState,
+                        onExpand = { detailsMode = DetailsMode.Expanded },
                     )
 
-                    else -> ElevatedAssistChip(
-                        colors = AssistChipDefaults.elevatedAssistChipColors(),
-                        modifier = Modifier.fillMaxWidth(),
-                        onClick = { showSelectFolderBottomSheet = true },
-                        leadingIcon = {
-                            Icon(
-                                painter = painterResource(MR.images.ic_folder_24dp),
-                                contentDescription = null,
-                            )
+                    DetailsMode.Expanded -> DeepLinkDetailsExpandedContent(
+                        modifier = Modifier,
+                        uiState = uiState,
+                        onNameChanged = screenModel::updateDeepLinkName,
+                        onDescriptionChanged = screenModel::updateDeepLinkDescription,
+                        onDeleteDeepLink = {
+                            bottomSheetState = BottomSheetState.DeleteConfirmation
                         },
-                        trailingIcon = {
-                            Icon(
-                                imageVector = Icons.Rounded.Clear,
-                                contentDescription = "Remove folder",
-                                modifier = Modifier.clickable {
-                                    onRemoveFolder()
-                                },
-                            )
-                        },
-                        label = {
-                            Text(
-                                text = folder.name,
-                                modifier = Modifier.weight(1f),
-                                fontWeight = FontWeight.Bold,
-                            )
-                        },
+                        onAddFolder = screenModel::insertFolder,
+                        onSelectFolder = screenModel::selectFolder,
+                        onRemoveFolder = screenModel::removeFolderFromDeepLink,
+                        onCollapse = { detailsMode = DetailsMode.Collapsed },
                     )
                 }
             }
 
-            Divider(modifier = Modifier.padding(vertical = 24.dp))
-
-            Text(
-                text = form.link,
-                style = MaterialTheme.typography.titleMedium.copy(
-                    fontWeight = FontWeight.SemiBold,
-                    color = MaterialTheme.colorScheme.onBackground,
-                ),
-                modifier = Modifier.weight(1f),
-            )
-
-
-            Spacer(modifier = Modifier.weight(1f))
-
-            Divider()
+            Divider(modifier = Modifier.padding(top = 24.dp))
 
             DeepLinkActionsRow(
-                link = form.link,
-                isFavorite = form.isFavorite,
-                onShare = onShare,
-                onFavorite = onFavorite,
-                onLaunch = onLaunch,
-                onDuplicate = {},
+                link = uiState.deepLink.link,
+                isFavorite = uiState.deepLink.isFavorite,
+                onShare = screenModel::share,
+                onFavorite = screenModel::favorite,
+                onLaunch = screenModel::launch,
+                onDuplicate = { bottomSheetState = BottomSheetState.Duplicate },
             )
 
-            Spacer(modifier = Modifier.statusBarsPadding())
+            Spacer(modifier = Modifier.navigationBarsPadding())
         }
+    }
+
+    companion object {
+        private const val BOTTOM_SHEET_DISMISS_ANIM_DURATION = 500L
+        private const val DELAY_TO_NAVIGATE_AFTER_DISMISS =
+            BOTTOM_SHEET_DISMISS_ANIM_DURATION + 500L
+    }
+
+    private sealed interface DetailsMode {
+        data object Expanded : DetailsMode
+        data object Collapsed : DetailsMode
+    }
+}
+
+sealed interface BottomSheetState {
+    data object Idle : BottomSheetState
+    data object DeleteConfirmation : BottomSheetState
+    data object Duplicate : BottomSheetState
+}
+
+
+@Composable
+private fun DetailsEventHandler(
+    events: Flow<DeepLinkDetailsEvent>,
+    onDeleted: () -> Unit,
+    onDuplicated: (DeepLink) -> Unit,
+) {
+    LaunchedEffect(Unit) {
+        events.collect { event ->
+            when (event) {
+                DeepLinkDetailsEvent.Deleted -> onDeleted()
+                is DeepLinkDetailsEvent.Duplicated -> onDuplicated(event.duplicatedDeepLink)
+            }
+        }
+    }
+}
+
+
+@Composable
+private fun DetailsBottomSheetsHandler(
+    bottomSheetState: BottomSheetState,
+    uiState: DeepLinkDetailsUiState,
+    onDelete: () -> Unit,
+    onDismiss: () -> Unit,
+    onConfirmDuplication: (newLink: String, copyAllFields: Boolean) -> Unit,
+) {
+    when (bottomSheetState) {
+        BottomSheetState.Idle -> Unit
+        BottomSheetState.DeleteConfirmation -> DeleteDeepLinkConfirmationBottomSheet(
+            onDismissRequest = onDismiss,
+            onDelete = onDelete
+        )
+
+        BottomSheetState.Duplicate -> DuplicateDeepLinkBottomSheet(
+            currentLink = uiState.deepLink.link,
+            onConfirm = onConfirmDuplication,
+            onDismissRequest = onDismiss,
+            errorMessage = uiState.duplicateErrorMessage
+        )
     }
 }
