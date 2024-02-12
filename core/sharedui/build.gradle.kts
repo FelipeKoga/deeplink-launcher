@@ -15,16 +15,16 @@ kotlin {
             implementation(projects.core.designsystem)
             implementation(projects.core.resources)
 
+            implementation(libs.moko.resources.compose)
+            implementation(libs.kotlinx.immutable)
             implementation(libs.koin.compose)
+
             implementation(compose.runtime)
             implementation(compose.foundation)
             implementation(compose.material3)
             implementation(compose.ui)
             @OptIn(ExperimentalComposeLibrary::class)
             implementation(compose.components.resources)
-
-            implementation(libs.moko.resources.compose)
-            implementation(libs.kotlinx.immutable)
         }
     }
 }
