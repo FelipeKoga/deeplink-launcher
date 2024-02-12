@@ -4,7 +4,6 @@ plugins {
     id("dev.koga.deeplinklauncher.multiplatform")
 }
 
-
 kotlin {
     binariesFrameworkConfig("navigation")
 
