@@ -1,4 +1,4 @@
-package dev.koga.deeplinklauncher.util
+package dev.koga.deeplinklauncher.util.ext
 
 import android.content.Context
 import android.net.Uri

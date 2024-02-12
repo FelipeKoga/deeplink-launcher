@@ -11,22 +11,14 @@ kotlin {
     sourceSets {
         commonMain.dependencies {
             api(libs.kotlinx.datetime)
-
+            api(libs.kotlinx.immutable)
             implementation(libs.kotlinx.coroutines.core)
             implementation(libs.kotlinx.serialization.json)
             implementation(libs.koin.core)
-            implementation(libs.sql.coroutines.extensions)
         }
 
-        val androidMain by getting {
-            dependencies {
-                implementation(libs.sql.android.driver)
-                implementation(libs.koin.android)
-            }
-        }
-
-        commonTest.dependencies {
-            implementation(libs.kotlin.test)
+        androidMain.dependencies {
+            implementation("androidx.core:core-ktx:1.12.0")
         }
     }
 }

@@ -33,11 +33,11 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import dev.koga.deeplinklauncher.screen.HomeTabPage
 import dev.koga.deeplinklauncher.deeplink.DeepLinkItem
 import dev.koga.deeplinklauncher.folder.FolderCard
 import dev.koga.deeplinklauncher.model.DeepLink
 import dev.koga.deeplinklauncher.model.Folder
+import dev.koga.deeplinklauncher.screen.HomeTabPage
 import kotlinx.collections.immutable.ImmutableList
 
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
@@ -51,7 +51,6 @@ internal fun HomeHorizontalPager(
     paddingBottom: Dp,
     onDeepLinkClicked: (DeepLink) -> Unit,
     onDeepLinkLaunch: (DeepLink) -> Unit,
-    onDeepLinkCopy: (DeepLink) -> Unit,
     onFolderClicked: (Folder) -> Unit,
     onFolderAdd: () -> Unit,
 ) {
@@ -81,7 +80,6 @@ internal fun HomeHorizontalPager(
                             deepLink = deepLink,
                             onClick = { onDeepLinkClicked(deepLink) },
                             onLaunch = { onDeepLinkLaunch(deepLink) },
-                            onCopy = { onDeepLinkCopy(it) },
                         )
                     }
                 }
@@ -108,7 +106,6 @@ internal fun HomeHorizontalPager(
                             deepLink = deepLink,
                             onClick = { onDeepLinkClicked(deepLink) },
                             onLaunch = { onDeepLinkLaunch(deepLink) },
-                            onCopy = { onDeepLinkCopy(deepLink) },
                         )
                     }
                 }

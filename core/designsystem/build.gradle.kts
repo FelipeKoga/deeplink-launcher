@@ -3,7 +3,6 @@ import org.jetbrains.compose.ExperimentalComposeLibrary
 
 plugins {
     id("dev.koga.deeplinklauncher.multiplatform")
-//    id(libs.plugins.moko.multiplatform.resources.get().pluginId)
     alias(libs.plugins.jetbrainsCompose)
 }
 
@@ -13,7 +12,8 @@ kotlin {
     sourceSets {
         commonMain.dependencies {
             api(projects.core.resources)
-            implementation(libs.moko.resources.compose)
+            api(libs.moko.resources.compose)
+            implementation(libs.kotlinx.immutable)
 
             implementation(compose.runtime)
             implementation(compose.foundation)
@@ -21,7 +21,6 @@ kotlin {
             implementation(compose.ui)
             @OptIn(ExperimentalComposeLibrary::class)
             implementation(compose.components.resources)
-            implementation(libs.kotlinx.immutable)
         }
 
         androidMain {

@@ -15,14 +15,11 @@ kotlin {
             implementation(projects.core.designsystem)
             implementation(projects.core.navigation)
             implementation(projects.core.sharedui)
-
             implementation(projects.feature.importDeeplinks.domain)
 
             implementation(libs.kotlinx.coroutines.core)
             implementation(libs.kotlinx.immutable)
-
             implementation(libs.koin.compose)
-
             implementation(libs.voyager.screenmodel)
             implementation(libs.voyager.navigator)
             implementation(libs.voyager.koin)
