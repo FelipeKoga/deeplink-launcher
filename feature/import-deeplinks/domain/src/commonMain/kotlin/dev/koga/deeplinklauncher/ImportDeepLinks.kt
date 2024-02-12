@@ -9,6 +9,7 @@ import dev.koga.deeplinklauncher.usecase.GetFileContent
 import dev.koga.deeplinklauncher.usecase.deeplink.ValidateDeepLink
 import dev.koga.deeplinklauncher.util.ext.toDeepLink
 import kotlinx.datetime.toLocalDateTime
+import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
 
 class ImportDeepLinks(
@@ -17,13 +18,20 @@ class ImportDeepLinks(
     private val deepLinkDataSource: DeepLinkDataSource,
     private val folderDataSource: FolderDataSource,
 ) {
+    @OptIn(ExperimentalSerializationApi::class)
     fun invoke(filePath: String, fileType: FileType): ImportDeepLinksOutput {
         return try {
             val fileContents = getFileContent(filePath)
 
             when (fileType) {
                 FileType.JSON -> {
-                    val importExportDto = Json.decodeFromString<ImportExportDto>(fileContents)
+
+                    val json = Json {
+                        ignoreUnknownKeys = true
+                        allowTrailingComma = true
+                    }
+
+                    val importExportDto = json.decodeFromString<ImportExportDto>(fileContents)
 
                     val deepLinksFromDto = importExportDto.deepLinks
 
