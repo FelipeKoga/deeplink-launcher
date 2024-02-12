@@ -17,7 +17,7 @@ class DuplicateDeepLink(
         newLink: String,
         copyAllFields: Boolean
     ): Response {
-        val deepLink = dataSource.getDeepLinkById(deepLinkId).first()!!
+        val deepLink = dataSource.getDeepLinkByIdStream(deepLinkId).first()!!
 
         if (deepLink.link == newLink) {
             return Response.Error.SameLink

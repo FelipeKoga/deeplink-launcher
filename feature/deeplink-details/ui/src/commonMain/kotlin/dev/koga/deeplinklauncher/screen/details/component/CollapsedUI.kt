@@ -1,4 +1,4 @@
-package dev.koga.deeplinklauncher.screen.component
+package dev.koga.deeplinklauncher.screen.details.component
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -19,11 +19,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import dev.icerock.moko.resources.compose.painterResource
-import dev.koga.deeplinklauncher.screen.state.DeepLinkDetailsUiState
+import dev.koga.deeplinklauncher.screen.details.state.DeepLinkDetailsUiState
 import dev.koga.resources.MR
 
 @Composable
-fun DeepLinkDetailsCollapsedContent(
+fun DeepLinkDetailsCollapsedUI(
     modifier: Modifier,
     uiState: DeepLinkDetailsUiState,
     onExpand: () -> Unit,
@@ -81,6 +81,7 @@ fun DeepLinkDetailsCollapsedContent(
                 text = uiState.deepLink.name.orEmpty(),
                 style = MaterialTheme.typography.bodyMedium.copy(
                     color = MaterialTheme.colorScheme.onBackground,
+                    fontWeight = FontWeight.SemiBold
                 ),
                 maxLines = 3,
                 overflow = TextOverflow.Ellipsis,

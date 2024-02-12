@@ -38,12 +38,19 @@ internal class DeepLinkDataSourceImpl(
             .map(SelectAllDeeplinks::toDomain)
     }
 
-    override fun getDeepLinkById(id: String): Flow<DeepLink?> {
+    override fun getDeepLinkByIdStream(id: String): Flow<DeepLink?> {
         return database.deepLinkQueries
             .getDeepLinkById(id)
             .asFlow()
             .mapToList(Dispatchers.IO)
             .map { it.singleOrNull()?.toDomain() }
+    }
+
+    override fun getDeepLinkById(id: String): DeepLink? {
+        return database.deepLinkQueries
+            .getDeepLinkById(id)
+            .executeAsOneOrNull()
+            ?.toDomain()
     }
 
     override fun getDeepLinkByLink(link: String): DeepLink? {

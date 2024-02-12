@@ -1,4 +1,4 @@
-package dev.koga.deeplinklauncher.screen.component
+package dev.koga.deeplinklauncher.screen.details.component
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
