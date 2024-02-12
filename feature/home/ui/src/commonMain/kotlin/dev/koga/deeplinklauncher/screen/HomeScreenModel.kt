@@ -90,7 +90,7 @@ class HomeScreenModel(
 
             is LaunchDeepLinkResult.Failure -> {
                 errorMessage.update {
-                    "Something went wrong. Check if the deeplink \"$link\" is valid"
+                    "No app found to handle this deep link: $link"
                 }
             }
         }

@@ -12,6 +12,7 @@ import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -25,13 +26,17 @@ import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.koin.getScreenModel
 import cafe.adriel.voyager.navigator.bottomSheet.LocalBottomSheetNavigator
 import dev.koga.deeplinklauncher.component.DeleteDeepLinkConfirmationBottomSheet
-import dev.koga.deeplinklauncher.navigateToDeepLinkDetails
+import dev.koga.deeplinklauncher.model.DeepLink
 import dev.koga.deeplinklauncher.screen.details.component.DeepLinkActionsRow
 import dev.koga.deeplinklauncher.screen.details.component.DeepLinkDetailsCollapsedUI
 import dev.koga.deeplinklauncher.screen.details.component.DeepLinkDetailsExpandedUI
 import dev.koga.deeplinklauncher.screen.details.component.DuplicateDeepLinkUI
+import dev.koga.deeplinklauncher.screen.details.event.DeepLinkDetailsEvent
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import org.koin.core.parameter.parametersOf
 
@@ -59,18 +64,18 @@ class DeepLinkDetailsScreen(private val deepLinkId: String) : Screen {
             )
         }
 
-        if (uiState.deleted) {
-            navigator.hide()
-            return
-        }
 
-        if (uiState.duplicatedDeepLink != null) {
-            CoroutineScope(Dispatchers.Main).launch {
-                navigator.hide()
-                navigator.navigateToDeepLinkDetails(uiState.duplicatedDeepLink!!.id)
+        DetailsEvents(
+            events = screenModel.events,
+            onDeleted = navigator::hide,
+            onDuplicated = {
+                CoroutineScope(Dispatchers.Main).launch {
+                    navigator.hide()
+                    delay(DELAY_BEFORE_SHOW_DUPLICATE)
+                    navigator.show(DeepLinkDetailsScreen(it.id))
+                }
             }
-            return
-        }
+        )
 
         Column(
             modifier = Modifier
@@ -135,5 +140,25 @@ class DeepLinkDetailsScreen(private val deepLinkId: String) : Screen {
         data object Expanded : DetailsMode
         data object Collapsed : DetailsMode
         data class Duplicate(val lastMode: DetailsMode) : DetailsMode
+    }
+
+    companion object {
+        private const val DELAY_BEFORE_SHOW_DUPLICATE = 500L
+    }
+}
+
+@Composable
+private fun DetailsEvents(
+    events: Flow<DeepLinkDetailsEvent>,
+    onDeleted: () -> Unit,
+    onDuplicated: (DeepLink) -> Unit,
+) {
+    LaunchedEffect(Unit) {
+        events.collectLatest {
+            when (it) {
+                DeepLinkDetailsEvent.Deleted -> onDeleted()
+                is DeepLinkDetailsEvent.Duplicated -> onDuplicated(it.duplicatedDeepLink)
+            }
+        }
     }
 }
