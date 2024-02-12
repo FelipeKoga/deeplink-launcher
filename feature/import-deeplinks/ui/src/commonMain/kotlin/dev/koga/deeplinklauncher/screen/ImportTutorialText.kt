@@ -7,7 +7,7 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
 import dev.koga.deeplinklauncher.dto.dateFormat
-import dev.koga.deeplinklauncher.util.currentLocalDateTime
+import dev.koga.deeplinklauncher.util.ext.currentLocalDateTime
 import dev.koga.deeplinklauncher.util.ext.format
 
 val generalPropertiesHint: AnnotatedString

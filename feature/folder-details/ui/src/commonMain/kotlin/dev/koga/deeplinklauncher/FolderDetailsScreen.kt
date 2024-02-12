@@ -41,6 +41,7 @@ import cafe.adriel.voyager.core.registry.ScreenRegistry
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.koin.getScreenModel
 import cafe.adriel.voyager.navigator.LocalNavigator
+import cafe.adriel.voyager.navigator.bottomSheet.LocalBottomSheetNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import dev.koga.deeplinklauncher.component.DeleteFolderBottomSheet
 import dev.koga.deeplinklauncher.deeplink.DeepLinkItem
@@ -59,16 +60,11 @@ class FolderDetailsScreen(private val folderId: String) : Screen {
     @Composable
     override fun Content() {
         val navigator = LocalNavigator.currentOrThrow
+        val bottomSheetNavigator = LocalBottomSheetNavigator.current
 
         val screenModel = getScreenModel<FolderDetailsScreenModel>(
             parameters = { parametersOf(folderId) },
         )
-
-        val launchDeepLink = koinInject<LaunchDeepLink>()
-        val deepLinkClipboardProvider = koinInject<DeepLinkClipboardProvider>()
-
-        val snackbarHostState = remember { SnackbarHostState() }
-        val scope = rememberCoroutineScope()
 
         val state by screenModel.state.collectAsState()
 
@@ -105,7 +101,6 @@ class FolderDetailsScreen(private val folderId: String) : Screen {
                 })
             },
             containerColor = MaterialTheme.colorScheme.surface,
-            snackbarHost = { SnackbarHost(snackbarHostState) },
         ) { contentPadding ->
 
             FolderDetailsScreenContent(
@@ -115,18 +110,9 @@ class FolderDetailsScreen(private val folderId: String) : Screen {
                 onEditDescription = screenModel::updateDescription,
                 onDeepLinkClick = { deepLink ->
                     val screen = ScreenRegistry.get(SharedScreen.DeepLinkDetails(deepLink.id))
-                    navigator.push(screen)
+                    bottomSheetNavigator.show(screen)
                 },
-                onDeepLinkLaunch = launchDeepLink::launch,
-                onDeepLinkCopy = {
-                    scope.launch {
-                        deepLinkClipboardProvider.copy(it.link)
-                        snackbarHostState.showSnackbar(
-                            message = "Copied to clipboard",
-                            actionLabel = "Dismiss",
-                        )
-                    }
-                },
+                onDeepLinkLaunch = screenModel::launch,
             )
         }
     }
@@ -141,7 +127,6 @@ fun FolderDetailsScreenContent(
     onEditDescription: (String) -> Unit,
     onDeepLinkClick: (DeepLink) -> Unit,
     onDeepLinkLaunch: (DeepLink) -> Unit,
-    onDeepLinkCopy: (DeepLink) -> Unit,
 ) {
     val dimensions = LocalDimensions.current
 

@@ -4,7 +4,7 @@ import dev.koga.deeplinklauncher.datasource.DeepLinkDataSource
 import dev.koga.deeplinklauncher.model.DeepLink
 import dev.koga.deeplinklauncher.provider.UUIDProvider
 import dev.koga.deeplinklauncher.usecase.ValidateDeepLink
-import dev.koga.deeplinklauncher.util.currentLocalDateTime
+import dev.koga.deeplinklauncher.util.ext.currentLocalDateTime
 import kotlinx.coroutines.flow.first
 
 class DuplicateDeepLink(
