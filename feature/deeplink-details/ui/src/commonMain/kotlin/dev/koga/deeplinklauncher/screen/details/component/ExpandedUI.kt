@@ -1,4 +1,4 @@
-package dev.koga.deeplinklauncher.screen.component
+package dev.koga.deeplinklauncher.screen.details.component
 
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.clickable
@@ -39,11 +39,11 @@ import dev.icerock.moko.resources.compose.painterResource
 import dev.koga.deeplinklauncher.DLLTextField
 import dev.koga.deeplinklauncher.folder.SelectFolderBottomSheet
 import dev.koga.deeplinklauncher.model.Folder
-import dev.koga.deeplinklauncher.screen.state.DeepLinkDetailsUiState
+import dev.koga.deeplinklauncher.screen.details.state.DeepLinkDetailsUiState
 import dev.koga.resources.MR
 
 @Composable
-fun DeepLinkDetailsExpandedContent(
+fun DeepLinkDetailsExpandedUI(
     modifier: Modifier,
     uiState: DeepLinkDetailsUiState,
     onNameChanged: (String) -> Unit,
@@ -126,7 +126,7 @@ fun DeepLinkDetailsExpandedContent(
 
             DeepLinkDetailsTextField(
                 text = deepLink.name.orEmpty(),
-                onTextChange = onDescriptionChanged,
+                onTextChange = onNameChanged,
             )
 
 //            EditableText(

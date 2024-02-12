@@ -1,6 +1,6 @@
 package dev.koga.deeplinklauncher.di
 
-import dev.koga.deeplinklauncher.screen.DeepLinkDetailScreenModel
+import dev.koga.deeplinklauncher.screen.details.DeepLinkDetailScreenModel
 import org.koin.core.module.dsl.factoryOf
 import org.koin.dsl.module
 
