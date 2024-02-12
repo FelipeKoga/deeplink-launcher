@@ -1,4 +1,4 @@
-package dev.koga.deeplinklauncher.usecase
+package dev.koga.deeplinklauncher.usecase.deeplink
 
 actual class ValidateDeepLink {
     actual operator fun invoke(deepLink: String): Boolean {

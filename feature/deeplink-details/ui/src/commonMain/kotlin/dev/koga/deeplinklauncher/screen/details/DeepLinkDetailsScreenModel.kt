@@ -145,7 +145,7 @@ class DeepLinkDetailsScreenModel(
             when (response) {
                 DuplicateDeepLink.Response.Error.InvalidLink -> {
                     duplicateErrorMessage.update {
-                        "Something went wrong. Check if the deeplink \"$newLink\" is valid"
+                        "No app found to handle this deep link: $newLink"
                     }
                 }
 

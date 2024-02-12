@@ -3,7 +3,7 @@ package dev.koga.deeplinklauncher.provider
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
-import dev.koga.deeplinklauncher.usecase.ValidateDeepLink
+import dev.koga.deeplinklauncher.usecase.deeplink.ValidateDeepLink
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
