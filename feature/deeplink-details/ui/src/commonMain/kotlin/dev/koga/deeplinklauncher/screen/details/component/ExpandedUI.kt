@@ -83,17 +83,17 @@ fun DeepLinkDetailsExpandedUI(
         Column(
             modifier = Modifier
                 .padding(24.dp)
-                .verticalScroll(rememberScrollState())
+                .verticalScroll(rememberScrollState()),
         ) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween
+                horizontalArrangement = Arrangement.SpaceBetween,
             ) {
                 IconButton(
                     onClick = onDeleteDeepLink,
                     colors = IconButtonDefaults.iconButtonColors(
                         contentColor = MaterialTheme.colorScheme.error,
-                    )
+                    ),
                 ) {
                     Icon(
                         imageVector = Icons.Rounded.Delete,
@@ -103,7 +103,7 @@ fun DeepLinkDetailsExpandedUI(
 
                 FilledTonalIconButton(
                     modifier = Modifier,
-                    onClick = onCollapse
+                    onClick = onCollapse,
                 ) {
                     Icon(
                         painterResource(MR.images.ic_unfold_less_24dp),
@@ -205,7 +205,7 @@ fun DeepLinkDetailsExpandedUI(
                 text = "DeepLink",
                 style = MaterialTheme.typography.labelMedium.copy(
                     color = MaterialTheme.colorScheme.onBackground,
-                    fontWeight = FontWeight.Normal
+                    fontWeight = FontWeight.Normal,
                 ),
             )
 

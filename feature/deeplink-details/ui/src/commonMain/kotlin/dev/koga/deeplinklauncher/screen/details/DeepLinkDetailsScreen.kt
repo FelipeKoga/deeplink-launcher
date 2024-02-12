@@ -41,7 +41,7 @@ class DeepLinkDetailsScreen(private val deepLinkId: String) : Screen {
     @Composable
     override fun Content() {
         val navigator = LocalBottomSheetNavigator.current
-        val screenModel = getScreenModel<DeepLinkDetailScreenModel>(
+        val screenModel = getScreenModel<DeepLinkDetailsScreenModel>(
             parameters = { parametersOf(deepLinkId) },
         )
 
@@ -55,7 +55,7 @@ class DeepLinkDetailsScreen(private val deepLinkId: String) : Screen {
                 onDelete = {
                     showDeleteBottomSheet = false
                     screenModel.delete()
-                }
+                },
             )
         }
 
@@ -63,7 +63,6 @@ class DeepLinkDetailsScreen(private val deepLinkId: String) : Screen {
             navigator.hide()
             return
         }
-
 
         if (uiState.duplicatedDeepLink != null) {
             CoroutineScope(Dispatchers.Main).launch {
@@ -73,10 +72,9 @@ class DeepLinkDetailsScreen(private val deepLinkId: String) : Screen {
             return
         }
 
-
         Column(
             modifier = Modifier
-                .background(MaterialTheme.colorScheme.surface)
+                .background(MaterialTheme.colorScheme.surface),
         ) {
             BottomSheetDefaults.DragHandle(modifier = Modifier.align(Alignment.CenterHorizontally))
 
@@ -109,7 +107,7 @@ class DeepLinkDetailsScreen(private val deepLinkId: String) : Screen {
                             detailsMode = (detailsMode as DetailsMode.Duplicate).lastMode
                         },
                         errorMessage = uiState.duplicateErrorMessage,
-                        onDuplicate = screenModel::duplicate
+                        onDuplicate = screenModel::duplicate,
                     )
                 }
             }

@@ -42,7 +42,7 @@ fun DLLTopBar(
                 IconButton(onClick = onNavigationActionClicked) {
                     navigationIcon ?: Icon(
                         imageVector = Icons.Rounded.ArrowBack,
-                        contentDescription = "back"
+                        contentDescription = "back",
                     )
                 }
             }

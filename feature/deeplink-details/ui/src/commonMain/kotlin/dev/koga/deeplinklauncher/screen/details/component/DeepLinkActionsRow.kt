@@ -16,7 +16,6 @@ import androidx.compose.material.icons.rounded.Favorite
 import androidx.compose.material.icons.rounded.FavoriteBorder
 import androidx.compose.material.icons.rounded.Share
 import androidx.compose.material3.FilledTonalButton
-import androidx.compose.material3.FilledTonalIconButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -53,7 +52,6 @@ fun DeepLinkActionsRow(
     onLaunch: () -> Unit,
     onDuplicate: () -> Unit,
 ) {
-
     val clipboardManager = LocalClipboardManager.current
 
     var showCopyPopUp by remember { mutableStateOf(false) }
@@ -66,7 +64,7 @@ fun DeepLinkActionsRow(
 
             IntOffset(
                 x = position?.x?.toInt() ?: 0,
-                y = (position?.y?.toInt() ?: 0) + height + extraPadding
+                y = (position?.y?.toInt() ?: 0) + height + extraPadding,
             )
         }
     }
@@ -78,34 +76,32 @@ fun DeepLinkActionsRow(
         }
     }
 
-
     Row(modifier = Modifier.fillMaxWidth()) {
-
         AnimatedVisibility(
             visible = showCopyPopUp,
             enter = fadeIn(initialAlpha = 0.3f),
-            exit = fadeOut(targetAlpha = 0.0f)
+            exit = fadeOut(targetAlpha = 0.0f),
         ) {
             Popup(
                 offset = copyCoordinatesOffset,
                 properties = PopupProperties(
                     focusable = false,
                     dismissOnBackPress = true,
-                    dismissOnClickOutside = true
+                    dismissOnClickOutside = true,
                 ),
             ) {
                 Text(
                     text = "Copied!",
                     style = MaterialTheme.typography.labelMedium.copy(
                         fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.colorScheme.onPrimary
+                        color = MaterialTheme.colorScheme.onPrimary,
                     ),
                     modifier = Modifier
                         .background(
                             MaterialTheme.colorScheme.primary,
-                            RoundedCornerShape(12.dp)
+                            RoundedCornerShape(12.dp),
                         )
-                        .padding(vertical = 4.dp, horizontal = 8.dp)
+                        .padding(vertical = 4.dp, horizontal = 8.dp),
                 )
             }
         }
@@ -120,7 +116,7 @@ fun DeepLinkActionsRow(
                 Icon(
                     painterResource(MR.images.ic_duplicate_24dp),
                     contentDescription = "Duplicate",
-                    tint = MaterialTheme.colorScheme.onSurface
+                    tint = MaterialTheme.colorScheme.onSurface,
                 )
             }
 
@@ -128,7 +124,7 @@ fun DeepLinkActionsRow(
                 Icon(
                     imageVector = Icons.Rounded.Share,
                     contentDescription = "Share",
-                    tint = MaterialTheme.colorScheme.onSurface
+                    tint = MaterialTheme.colorScheme.onSurface,
                 )
             }
 
@@ -139,11 +135,12 @@ fun DeepLinkActionsRow(
                 onClick = {
                     clipboardManager.setText(AnnotatedString(link))
                     showCopyPopUp = true
-                }) {
+                },
+            ) {
                 Icon(
                     painter = painterResource(MR.images.ic_content_copy_24dp),
                     contentDescription = "Copy Link",
-                    tint = MaterialTheme.colorScheme.onSurface
+                    tint = MaterialTheme.colorScheme.onSurface,
                 )
             }
 
@@ -168,8 +165,8 @@ fun DeepLinkActionsRow(
                 Text(
                     text = "Launch",
                     style = MaterialTheme.typography.labelLarge.copy(
-                        fontWeight = FontWeight.Bold
-                    )
+                        fontWeight = FontWeight.Bold,
+                    ),
                 )
 
                 Spacer(modifier = Modifier.width(8.dp))
@@ -181,6 +178,4 @@ fun DeepLinkActionsRow(
             }
         }
     }
-
-
 }

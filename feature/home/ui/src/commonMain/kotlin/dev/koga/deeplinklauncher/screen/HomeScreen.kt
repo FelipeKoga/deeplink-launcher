@@ -29,7 +29,6 @@ import cafe.adriel.voyager.navigator.bottomSheet.LocalBottomSheetNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import dev.koga.deeplinklauncher.AddFolderBottomSheet
 import dev.koga.deeplinklauncher.SharedScreen
-import dev.koga.deeplinklauncher.model.DeepLink
 import dev.koga.deeplinklauncher.navigateToDeepLinkDetails
 import dev.koga.deeplinklauncher.screen.component.HomeHorizontalPager
 import dev.koga.deeplinklauncher.screen.component.HomeLaunchDeepLinkBottomSheetContent
@@ -79,7 +78,6 @@ private fun HomeScreenContent() {
         )
     }
 
-
     BottomSheetScaffold(
         topBar = {
             HomeTopBar(
@@ -124,4 +122,3 @@ private fun HomeScreenContent() {
         }
     }
 }
-

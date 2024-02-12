@@ -77,7 +77,7 @@ class SettingsScreen : Screen {
                     scope.launch {
                         snackbarHostState.showSnackbar("Folders deleted")
                     }
-                }
+                },
 
             )
         }
@@ -91,11 +91,10 @@ class SettingsScreen : Screen {
             onShowDeleteDataBottomSheet = { showDeleteDataBottomSheet = true },
             onNavigateToStore = screenModel::navigateToStore,
             onNavigateToOpenSourceLicenses = { navigator.push(OpenSourceLicensesScreen()) },
-            onNavigateToGithub = screenModel::navigateToGithub
+            onNavigateToGithub = screenModel::navigateToGithub,
         )
     }
 }
-
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -117,7 +116,7 @@ fun SettingsScreenUI(
         topBar = {
             DLLTopBar(
                 title = "",
-                onNavigationActionClicked = onBack
+                onNavigationActionClicked = onBack,
             )
         },
         containerColor = MaterialTheme.colorScheme.surface,
@@ -125,16 +124,15 @@ fun SettingsScreenUI(
     ) { contentPadding ->
         LazyColumn(
             modifier = Modifier.fillMaxSize().padding(contentPadding),
-            verticalArrangement = Arrangement.spacedBy(8.dp)
+            verticalArrangement = Arrangement.spacedBy(8.dp),
         ) {
-
             item {
                 Text(
                     text = "Settings",
                     modifier = Modifier.padding(horizontal = 12.dp),
                     style = MaterialTheme.typography.labelLarge.copy(
                         fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
+                        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f),
                     ),
                 )
             }
@@ -147,9 +145,9 @@ fun SettingsScreenUI(
                     trailingContent = {
                         Icon(
                             painter = painterResource(MR.images.ic_chevron_right_24dp),
-                            contentDescription = "navigate"
+                            contentDescription = "navigate",
                         )
-                    }
+                    },
                 )
             }
 
@@ -161,9 +159,9 @@ fun SettingsScreenUI(
                     trailingContent = {
                         Icon(
                             painter = painterResource(MR.images.ic_chevron_right_24dp),
-                            contentDescription = "navigate"
+                            contentDescription = "navigate",
                         )
-                    }
+                    },
                 )
             }
 
@@ -175,9 +173,9 @@ fun SettingsScreenUI(
                     trailingContent = {
                         Icon(
                             painter = painterResource(MR.images.ic_chevron_right_24dp),
-                            contentDescription = "navigate"
+                            contentDescription = "navigate",
                         )
-                    }
+                    },
                 )
             }
 
@@ -191,7 +189,7 @@ fun SettingsScreenUI(
                     modifier = Modifier.padding(horizontal = 12.dp),
                     style = MaterialTheme.typography.labelLarge.copy(
                         fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
+                        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f),
                     ),
                 )
             }
@@ -204,9 +202,9 @@ fun SettingsScreenUI(
                     trailingContent = {
                         Icon(
                             painter = painterResource(MR.images.ic_launch_24dp),
-                            contentDescription = "launch"
+                            contentDescription = "launch",
                         )
-                    }
+                    },
                 )
             }
 
@@ -218,9 +216,9 @@ fun SettingsScreenUI(
                     trailingContent = {
                         Icon(
                             painter = painterResource(MR.images.ic_launch_24dp),
-                            contentDescription = "navigate"
+                            contentDescription = "navigate",
                         )
-                    }
+                    },
                 )
             }
 
@@ -232,9 +230,9 @@ fun SettingsScreenUI(
                     trailingContent = {
                         Icon(
                             painter = painterResource(MR.images.ic_chevron_right_24dp),
-                            contentDescription = "navigate"
+                            contentDescription = "navigate",
                         )
-                    }
+                    },
                 )
             }
 
@@ -251,9 +249,9 @@ fun SettingsScreenUI(
                     trailingContent = {
                         Icon(
                             painter = painterResource(MR.images.ic_content_copy_24dp),
-                            contentDescription = "copy"
+                            contentDescription = "copy",
                         )
-                    }
+                    },
                 )
             }
         }
@@ -265,7 +263,7 @@ fun SettingsListItem(
     title: String,
     description: String,
     trailingContent: @Composable () -> Unit,
-    onClick: () -> Unit = {}
+    onClick: () -> Unit = {},
 ) {
     ListItem(
         modifier = Modifier.fillMaxWidth().clickable(onClick = onClick),
@@ -273,18 +271,18 @@ fun SettingsListItem(
             Text(
                 text = title,
                 style = MaterialTheme.typography.titleSmall.copy(
-                    fontWeight = FontWeight.Bold
-                )
+                    fontWeight = FontWeight.Bold,
+                ),
             )
         },
         supportingContent = {
             Text(
                 text = description,
                 style = MaterialTheme.typography.bodyMedium.copy(
-                    fontWeight = FontWeight.Normal
-                )
+                    fontWeight = FontWeight.Normal,
+                ),
             )
         },
-        trailingContent = trailingContent
+        trailingContent = trailingContent,
     )
 }

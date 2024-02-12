@@ -29,7 +29,6 @@ fun DeepLinkDetailsCollapsedUI(
     uiState: DeepLinkDetailsUiState,
     onExpand: () -> Unit,
 ) {
-
     Column(
         modifier = modifier
             .fillMaxWidth()
@@ -39,15 +38,14 @@ fun DeepLinkDetailsCollapsedUI(
             modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically,
         ) {
-
             uiState.deepLink.folder?.let {
                 Box(
                     modifier = Modifier
                         .background(
                             color = MaterialTheme.colorScheme.onSurface.copy(
-                                0.1f
+                                0.1f,
                             ),
-                            shape = RoundedCornerShape(12.dp)
+                            shape = RoundedCornerShape(12.dp),
                         ),
                 ) {
                     Text(
@@ -57,7 +55,7 @@ fun DeepLinkDetailsCollapsedUI(
                         ),
                         modifier = Modifier.padding(
                             vertical = 4.dp,
-                            horizontal = 12.dp
+                            horizontal = 12.dp,
                         ),
                     )
                 }
@@ -65,10 +63,9 @@ fun DeepLinkDetailsCollapsedUI(
 
             Spacer(modifier = Modifier.weight(1f))
 
-
             FilledTonalIconButton(
                 modifier = Modifier,
-                onClick = onExpand
+                onClick = onExpand,
             ) {
                 Icon(
                     painterResource(MR.images.ic_unfold_more_24dp),
@@ -82,7 +79,7 @@ fun DeepLinkDetailsCollapsedUI(
                 text = uiState.deepLink.name.orEmpty(),
                 style = MaterialTheme.typography.bodyMedium.copy(
                     color = MaterialTheme.colorScheme.onBackground,
-                    fontWeight = FontWeight.SemiBold
+                    fontWeight = FontWeight.SemiBold,
                 ),
                 maxLines = 3,
                 overflow = TextOverflow.Ellipsis,
@@ -109,7 +106,7 @@ fun DeepLinkDetailsCollapsedUI(
             text = "DeepLink",
             style = MaterialTheme.typography.labelMedium.copy(
                 color = MaterialTheme.colorScheme.onBackground,
-                fontWeight = FontWeight.Normal
+                fontWeight = FontWeight.Normal,
             ),
         )
 

@@ -22,8 +22,6 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SnackbarHost
-import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -31,7 +29,6 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -47,12 +44,9 @@ import dev.koga.deeplinklauncher.component.DeleteFolderBottomSheet
 import dev.koga.deeplinklauncher.deeplink.DeepLinkItem
 import dev.koga.deeplinklauncher.folder.EditableText
 import dev.koga.deeplinklauncher.model.DeepLink
-import dev.koga.deeplinklauncher.provider.DeepLinkClipboardProvider
 import dev.koga.deeplinklauncher.theme.LocalDimensions
-import dev.koga.deeplinklauncher.usecase.deeplink.LaunchDeepLink
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
-import org.koin.compose.koinInject
 import org.koin.core.parameter.parametersOf
 
 class FolderDetailsScreen(private val folderId: String) : Screen {
