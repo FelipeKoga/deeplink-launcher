@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.FilledTonalIconButton
@@ -103,6 +104,16 @@ fun DeepLinkDetailsCollapsedUI(
         }
 
         Spacer(modifier = Modifier.padding(top = 12.dp))
+
+        Text(
+            text = "DeepLink",
+            style = MaterialTheme.typography.labelMedium.copy(
+                color = MaterialTheme.colorScheme.onBackground,
+                fontWeight = FontWeight.Normal
+            ),
+        )
+
+        Spacer(modifier = Modifier.height(4.dp))
 
         Text(
             text = uiState.deepLink.link,
