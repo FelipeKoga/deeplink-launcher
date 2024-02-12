@@ -6,7 +6,7 @@ import dev.koga.deeplinklauncher.dto.ImportExportDto
 import dev.koga.deeplinklauncher.dto.toModel
 import dev.koga.deeplinklauncher.model.FileType
 import dev.koga.deeplinklauncher.usecase.GetFileContent
-import dev.koga.deeplinklauncher.usecase.ValidateDeepLink
+import dev.koga.deeplinklauncher.usecase.deeplink.ValidateDeepLink
 import dev.koga.deeplinklauncher.util.ext.toDeepLink
 import kotlinx.datetime.toLocalDateTime
 import kotlinx.serialization.json.Json
