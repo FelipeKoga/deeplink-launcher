@@ -4,6 +4,7 @@ import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.screenModelScope
 import dev.koga.deeplinklauncher.datasource.FolderDataSource
 import dev.koga.deeplinklauncher.model.DeepLink
+import dev.koga.deeplinklauncher.usecase.deeplink.LaunchDeepLink
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toPersistentList
@@ -21,6 +22,7 @@ import kotlinx.coroutines.launch
 class FolderDetailsScreenModel(
     private val folderId: String,
     private val folderDataSource: FolderDataSource,
+    private val launchDeepLink: LaunchDeepLink,
 ) : ScreenModel {
 
     private val folder = folderDataSource.getFolderById(folderId)!!
@@ -79,6 +81,10 @@ class FolderDetailsScreenModel(
 
     fun updateDescription(value: String) {
         form.update { it.copy(description = value) }
+    }
+
+    fun launch(deepLink: DeepLink) {
+        launchDeepLink.launch(deepLink)
     }
 }
 

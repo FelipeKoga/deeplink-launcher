@@ -10,7 +10,7 @@ import dev.koga.deeplinklauncher.provider.UUIDProvider
 import dev.koga.deeplinklauncher.usecase.GetDeepLinksAndFolderStream
 import dev.koga.deeplinklauncher.usecase.deeplink.LaunchDeepLink
 import dev.koga.deeplinklauncher.usecase.deeplink.LaunchDeepLinkResult
-import dev.koga.deeplinklauncher.util.currentLocalDateTime
+import dev.koga.deeplinklauncher.util.ext.currentLocalDateTime
 import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -41,7 +41,7 @@ class HomeScreenModel(
     val uiState = combine(
         inputText,
         dataStream,
-        errorMessage
+        errorMessage,
     ) { deepLinkText, dataStream, errorMessage ->
         HomeUiState(
             inputText = deepLinkText,
@@ -90,7 +90,7 @@ class HomeScreenModel(
 
             is LaunchDeepLinkResult.Failure -> {
                 errorMessage.update {
-                    "Something went wrong. Check if the deeplink \"$link\" is valid"
+                    "No app found to handle this deep link: $link"
                 }
             }
         }

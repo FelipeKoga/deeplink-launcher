@@ -17,12 +17,14 @@ kotlin {
             implementation(projects.core.sharedui)
 
             implementation(libs.kotlinx.coroutines.core)
-
             implementation(libs.koin.compose)
-
             implementation(libs.voyager.screenmodel)
             implementation(libs.voyager.navigator)
             implementation(libs.voyager.koin)
+            implementation(libs.voyager.bottomSheet)
+            implementation(libs.moko.resources.compose)
+            implementation(libs.kotlinx.immutable)
+            implementation(libs.aboutlibraries.compose)
 
             implementation(compose.runtime)
             implementation(compose.foundation)
@@ -30,11 +32,6 @@ kotlin {
             implementation(compose.ui)
             @OptIn(ExperimentalComposeLibrary::class)
             implementation(compose.components.resources)
-
-            implementation(libs.moko.resources.compose)
-            implementation(libs.kotlinx.immutable)
-
-            implementation(libs.aboutlibraries.compose)
         }
     }
 }

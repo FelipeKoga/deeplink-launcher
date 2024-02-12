@@ -5,7 +5,7 @@ import android.content.Intent
 import android.net.Uri
 import dev.koga.deeplinklauncher.datasource.DeepLinkDataSource
 import dev.koga.deeplinklauncher.model.DeepLink
-import dev.koga.deeplinklauncher.util.currentLocalDateTime
+import dev.koga.deeplinklauncher.util.ext.currentLocalDateTime
 
 actual class LaunchDeepLink(
     private val context: Context,
@@ -25,6 +25,7 @@ actual class LaunchDeepLink(
 
     actual fun launch(deepLink: DeepLink): LaunchDeepLinkResult {
         dataSource.upsertDeepLink(deepLink.copy(lastLaunchedAt = currentLocalDateTime))
+
         return launch(deepLink.link)
     }
 }

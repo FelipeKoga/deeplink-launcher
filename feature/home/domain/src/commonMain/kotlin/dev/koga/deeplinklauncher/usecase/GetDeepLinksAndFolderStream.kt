@@ -9,17 +9,17 @@ import kotlinx.coroutines.flow.combine
 
 class GetDeepLinksAndFolderStream(
     private val deepLinkDataSource: DeepLinkDataSource,
-    private val folderDataSource: FolderDataSource
+    private val folderDataSource: FolderDataSource,
 ) {
     operator fun invoke(): Flow<Output> {
         return combine(
             deepLinkDataSource.getDeepLinksStream(),
-            folderDataSource.getFoldersStream()
+            folderDataSource.getFoldersStream(),
         ) { deepLinks, folders ->
             Output(
                 deepLinks = deepLinks,
                 favorites = deepLinks.filter(DeepLink::isFavorite),
-                folders = folders
+                folders = folders,
             )
         }
     }
@@ -27,7 +27,6 @@ class GetDeepLinksAndFolderStream(
     data class Output(
         val deepLinks: List<DeepLink>,
         val favorites: List<DeepLink>,
-        val folders: List<Folder>
+        val folders: List<Folder>,
     )
 }
-

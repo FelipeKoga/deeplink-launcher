@@ -5,6 +5,7 @@ import app.cash.sqldelight.coroutines.mapToList
 import dev.koga.deeplinklauncher.database.DatabaseProvider
 import dev.koga.deeplinklauncher.database.DeepLinkLauncherDatabase
 import dev.koga.deeplinklauncher.database.GetFolderById
+import dev.koga.deeplinklauncher.database.GetFolderDeepLinks
 import dev.koga.deeplinklauncher.database.SelectFoldersWithDeeplinkCount
 import dev.koga.deeplinklauncher.mapper.toDomain
 import dev.koga.deeplinklauncher.model.DeepLink
@@ -44,7 +45,7 @@ internal class FolderDataSourceImpl(
             .getFolderDeepLinks(id)
             .asFlow()
             .mapToList(Dispatchers.IO)
-            .map { it.map { data -> data.toDomain() } }
+            .map { it.map(GetFolderDeepLinks::toDomain) }
     }
 
     override fun getFolderById(id: String): Folder {
