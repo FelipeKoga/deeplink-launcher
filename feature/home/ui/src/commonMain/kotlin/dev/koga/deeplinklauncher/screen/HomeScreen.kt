@@ -13,11 +13,13 @@ import androidx.compose.material3.rememberBottomSheetScaffoldState
 import androidx.compose.material3.rememberStandardBottomSheetState
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.registry.ScreenRegistry
@@ -35,90 +37,92 @@ import dev.koga.deeplinklauncher.screen.component.HomeLaunchDeepLinkBottomSheetC
 import dev.koga.deeplinklauncher.screen.component.HomeTabRow
 import dev.koga.deeplinklauncher.screen.component.HomeTopBar
 
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 object HomeScreen : Screen {
+
     @Composable
     override fun Content() {
-        HomeScreenContent()
-    }
-}
+        val settingsScreen = rememberScreen(SharedScreen.Settings)
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
-@Composable
-private fun HomeScreenContent() {
-    val settingsScreen = rememberScreen(SharedScreen.Settings)
+        val navigator = LocalNavigator.currentOrThrow
+        val bottomSheetNavigator = LocalBottomSheetNavigator.current
 
-    val navigator = LocalNavigator.currentOrThrow
-    val bottomSheetNavigator = LocalBottomSheetNavigator.current
+        val bottomSheetState = rememberStandardBottomSheetState(
+            initialValue = SheetValue.Expanded,
+        )
 
-    val bottomSheetState = rememberStandardBottomSheetState(
-        initialValue = SheetValue.Expanded,
-    )
-    val pagerState = rememberPagerState(
-        initialPage = HomeTabPage.HISTORY.ordinal,
-        pageCount = {
-            HomeTabPage.entries.size
-        },
-    )
-
-    val screenModel = navigator.getNavigatorScreenModel<HomeScreenModel>()
-    val uiState by screenModel.uiState.collectAsState()
-
-    val scrollBehavior = TopAppBarDefaults
-        .exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
-
-    var showAddFolderBottomSheet by remember { mutableStateOf(false) }
-
-    if (showAddFolderBottomSheet) {
-        AddFolderBottomSheet(
-            onDismiss = { showAddFolderBottomSheet = false },
-            onAdd = { name, description ->
-                showAddFolderBottomSheet = false
-                screenModel.addFolder(name, description)
+        val pagerState = rememberPagerState(
+            initialPage = HomeTabPage.HISTORY.ordinal,
+            pageCount = {
+                HomeTabPage.entries.size
             },
         )
-    }
 
-    BottomSheetScaffold(
-        topBar = {
-            HomeTopBar(
-                scrollBehavior = scrollBehavior,
-                onSettingsScreen = { navigator.push(settingsScreen) },
-            )
-        },
-        scaffoldState = rememberBottomSheetScaffoldState(
-            bottomSheetState = bottomSheetState,
-        ),
-        sheetContent = {
-            HomeLaunchDeepLinkBottomSheetContent(
-                value = uiState.inputText,
-                onValueChange = screenModel::onDeepLinkTextChanged,
-                launch = screenModel::launchDeepLink,
-                errorMessage = uiState.errorMessage,
-            )
-        },
-    ) { contentPadding ->
-        Column(
-            modifier = Modifier
-                .padding(contentPadding)
-                .fillMaxSize(),
-        ) {
-            HomeTabRow(pagerState = pagerState)
+        val screenModel = navigator.getNavigatorScreenModel<HomeScreenModel>()
+        val uiState by screenModel.uiState.collectAsState()
 
-            HomeHorizontalPager(
-                allDeepLinks = uiState.deepLinks,
-                favoriteDeepLinks = uiState.favorites,
-                folders = uiState.folders,
-                pagerState = pagerState,
-                scrollBehavior = scrollBehavior,
-                paddingBottom = 320.dp,
-                onDeepLinkClicked = { bottomSheetNavigator.navigateToDeepLinkDetails(it.id) },
-                onDeepLinkLaunch = screenModel::launchDeepLink,
-                onFolderClicked = {
-                    val screen = ScreenRegistry.get(SharedScreen.FolderDetails(it.id))
-                    navigator.push(screen)
+        val scrollBehavior = TopAppBarDefaults
+            .exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
+
+        var showAddFolderBottomSheet by remember { mutableStateOf(false) }
+
+        if (showAddFolderBottomSheet) {
+            AddFolderBottomSheet(
+                onDismiss = { showAddFolderBottomSheet = false },
+                onAdd = { name, description ->
+                    showAddFolderBottomSheet = false
+                    screenModel.addFolder(name, description)
                 },
-                onFolderAdd = { showAddFolderBottomSheet = true },
             )
+        }
+
+        LaunchedEffect(Unit) {
+            snapshotFlow { bottomSheetNavigator.isVisible }
+                .collect { isVisible -> if (isVisible) bottomSheetState.partialExpand() }
+        }
+
+        BottomSheetScaffold(
+            topBar = {
+                HomeTopBar(
+                    scrollBehavior = scrollBehavior,
+                    onSettingsScreen = { navigator.push(settingsScreen) },
+                )
+            },
+            scaffoldState = rememberBottomSheetScaffoldState(
+                bottomSheetState = bottomSheetState,
+            ),
+            sheetContent = {
+                HomeLaunchDeepLinkBottomSheetContent(
+                    value = uiState.inputText,
+                    onValueChange = screenModel::onDeepLinkTextChanged,
+                    launch = screenModel::launchDeepLink,
+                    errorMessage = uiState.errorMessage,
+                )
+            },
+        ) { contentPadding ->
+            Column(
+                modifier = Modifier
+                    .padding(contentPadding)
+                    .fillMaxSize(),
+            ) {
+                HomeTabRow(pagerState = pagerState)
+
+                HomeHorizontalPager(
+                    allDeepLinks = uiState.deepLinks,
+                    favoriteDeepLinks = uiState.favorites,
+                    folders = uiState.folders,
+                    pagerState = pagerState,
+                    scrollBehavior = scrollBehavior,
+                    paddingBottom = 320.dp,
+                    onDeepLinkClicked = { bottomSheetNavigator.navigateToDeepLinkDetails(it.id) },
+                    onDeepLinkLaunch = screenModel::launchDeepLink,
+                    onFolderClicked = {
+                        val screen = ScreenRegistry.get(SharedScreen.FolderDetails(it.id))
+                        navigator.push(screen)
+                    },
+                    onFolderAdd = { showAddFolderBottomSheet = true },
+                )
+            }
         }
     }
 }
