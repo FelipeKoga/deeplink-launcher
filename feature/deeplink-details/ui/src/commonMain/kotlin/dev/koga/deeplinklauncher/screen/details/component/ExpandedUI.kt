@@ -129,21 +129,6 @@ fun DeepLinkDetailsExpandedUI(
                 onTextChange = onNameChanged,
             )
 
-//            EditableText(
-//                value = deepLink.name.orEmpty(),
-//                onSave = onNameChanged,
-//                modifier = Modifier.fillMaxWidth(),
-//                inputLabel = "Enter a name",
-//            ) {
-//                Text(
-//                    text = deepLink.name.orEmpty().ifEmpty { "--" },
-//                    style = MaterialTheme.typography.headlineSmall.copy(
-//                        fontWeight = FontWeight.SemiBold,
-//                        color = MaterialTheme.colorScheme.onBackground,
-//                    ),
-//                )
-//            }
-
             Spacer(modifier = Modifier.height(24.dp))
 
             Text(
@@ -160,21 +145,6 @@ fun DeepLinkDetailsExpandedUI(
                 text = deepLink.description.orEmpty(),
                 onTextChange = onDescriptionChanged,
             )
-//
-//            EditableText(
-//                value = deepLink.description.orEmpty(),
-//                onSave = onDescriptionChanged,
-//                modifier = Modifier.fillMaxWidth(),
-//                inputLabel = "Enter a description",
-//            ) {
-//                Text(
-//                    text = deepLink.description.orEmpty().ifEmpty { "--" },
-//                    style = MaterialTheme.typography.bodyMedium.copy(
-//                        fontWeight = FontWeight.Normal,
-//                        color = MaterialTheme.colorScheme.onBackground,
-//                    ),
-//                )
-//            }
 
             Spacer(modifier = Modifier.height(24.dp))
 
@@ -233,11 +203,13 @@ fun DeepLinkDetailsExpandedUI(
 
             Text(
                 text = "DeepLink",
-                style = MaterialTheme.typography.labelSmall.copy(
-                    fontWeight = FontWeight.Light,
+                style = MaterialTheme.typography.labelMedium.copy(
                     color = MaterialTheme.colorScheme.onBackground,
+                    fontWeight = FontWeight.Normal
                 ),
             )
+
+            Spacer(modifier = Modifier.height(4.dp))
 
             Text(
                 text = deepLink.link,
