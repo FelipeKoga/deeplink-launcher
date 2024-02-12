@@ -64,7 +64,6 @@ class DeepLinkDetailsScreen(private val deepLinkId: String) : Screen {
             )
         }
 
-
         DetailsEvents(
             events = screenModel.events,
             onDeleted = navigator::hide,
@@ -74,7 +73,7 @@ class DeepLinkDetailsScreen(private val deepLinkId: String) : Screen {
                     delay(DELAY_BEFORE_SHOW_DUPLICATE)
                     navigator.show(DeepLinkDetailsScreen(it.id))
                 }
-            }
+            },
         )
 
         Column(
