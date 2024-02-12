@@ -4,7 +4,6 @@ import app.cash.sqldelight.coroutines.asFlow
 import app.cash.sqldelight.coroutines.mapToList
 import dev.koga.deeplinklauncher.database.DatabaseProvider
 import dev.koga.deeplinklauncher.database.DeepLinkLauncherDatabase
-import dev.koga.deeplinklauncher.database.GetDeepLinkById
 import dev.koga.deeplinklauncher.database.GetDeepLinkByLink
 import dev.koga.deeplinklauncher.database.SelectAllDeeplinks
 import dev.koga.deeplinklauncher.mapper.toDomain

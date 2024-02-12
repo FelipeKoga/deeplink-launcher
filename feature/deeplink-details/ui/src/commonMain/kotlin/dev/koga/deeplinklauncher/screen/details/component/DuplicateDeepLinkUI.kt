@@ -1,7 +1,6 @@
 package dev.koga.deeplinklauncher.screen.details.component
 
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -13,7 +12,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.ArrowBack
-import androidx.compose.material.icons.rounded.Close
 import androidx.compose.material3.Divider
 import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.Icon
@@ -36,15 +34,13 @@ import androidx.compose.ui.unit.dp
 import dev.koga.deeplinklauncher.DLLTextField
 import dev.koga.deeplinklauncher.model.DeepLink
 
-
 @Composable
 fun DuplicateDeepLinkUI(
     deepLink: DeepLink,
     errorMessage: String? = null,
     onDuplicate: (newLink: String, copyAllFields: Boolean) -> Unit,
-    onBack: () -> Unit
+    onBack: () -> Unit,
 ) {
-
     var newLink by rememberSaveable { mutableStateOf(deepLink.link) }
     var copyAllFields by rememberSaveable { mutableStateOf(true) }
 
@@ -55,12 +51,12 @@ fun DuplicateDeepLinkUI(
             verticalAlignment = Alignment.CenterVertically,
         ) {
             IconButton(
-                onClick = onBack
+                onClick = onBack,
             ) {
                 Icon(
                     imageVector = Icons.Rounded.ArrowBack,
                     contentDescription = "back",
-                    tint = MaterialTheme.colorScheme.onSurface
+                    tint = MaterialTheme.colorScheme.onSurface,
                 )
             }
 
@@ -68,13 +64,13 @@ fun DuplicateDeepLinkUI(
                 text = "Duplicate DeepLink",
                 style = MaterialTheme.typography.titleSmall.copy(
                     fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.onSurface
-                )
+                    color = MaterialTheme.colorScheme.onSurface,
+                ),
             )
         }
 
         Column(
-            modifier = Modifier.padding(24.dp)
+            modifier = Modifier.padding(24.dp),
         ) {
             DLLTextField(
                 label = "Enter your new deeplink",
@@ -112,22 +108,22 @@ fun DuplicateDeepLinkUI(
                         text = "Copy all fields",
                         style = MaterialTheme.typography.bodyMedium.copy(
                             fontWeight = FontWeight.SemiBold,
-                            color = MaterialTheme.colorScheme.onSurface
-                        )
+                            color = MaterialTheme.colorScheme.onSurface,
+                        ),
                     )
 
                     Text(
                         text = "All fields will be copied to the new deeplink",
                         style = MaterialTheme.typography.labelSmall.copy(
                             fontWeight = FontWeight.Normal,
-                            color = MaterialTheme.colorScheme.onSurface
-                        )
+                            color = MaterialTheme.colorScheme.onSurface,
+                        ),
                     )
                 }
 
                 Switch(
                     checked = copyAllFields,
-                    onCheckedChange = { copyAllFields = it }
+                    onCheckedChange = { copyAllFields = it },
                 )
             }
 
@@ -139,18 +135,17 @@ fun DuplicateDeepLinkUI(
 
             FilledTonalButton(
                 modifier = Modifier.align(Alignment.CenterHorizontally).fillMaxWidth(0.5f),
-                onClick = { onDuplicate(newLink, copyAllFields) }
+                onClick = { onDuplicate(newLink, copyAllFields) },
             ) {
                 Text(
                     text = "Duplicate",
                     style = MaterialTheme.typography.labelMedium.copy(
-                        fontWeight = FontWeight.Bold
-                    )
+                        fontWeight = FontWeight.Bold,
+                    ),
                 )
             }
         }
 
         Spacer(modifier = Modifier.navigationBarsPadding())
     }
-
 }

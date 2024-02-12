@@ -27,7 +27,7 @@ actual class BrowseFileAndGetPath(
                                 FileType.TXT.mimeType,
                                 FileType.JSON.mimeType,
                                 "application/*",
-                            )
+                            ),
                         )
                 }
             },

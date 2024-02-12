@@ -27,9 +27,9 @@ class OpenSourceLicensesScreen : Screen {
             topBar = {
                 DLLTopBar(
                     title = "Open Source Licenses",
-                    onNavigationActionClicked = navigator::pop
+                    onNavigationActionClicked = navigator::pop,
                 )
-            }
+            },
         ) { contentPadding ->
             LibrariesContainer(
                 modifier = Modifier.padding(contentPadding),
@@ -40,10 +40,9 @@ class OpenSourceLicensesScreen : Screen {
                     badgeContentColor = MaterialTheme.colorScheme.onPrimary,
                     badgeBackgroundColor = MaterialTheme.colorScheme.primary,
                     dialogConfirmButtonColor = MaterialTheme.colorScheme.primary,
-                )
+                ),
 
             )
         }
     }
-
 }

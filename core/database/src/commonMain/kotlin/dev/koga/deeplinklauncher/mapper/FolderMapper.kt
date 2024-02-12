@@ -20,7 +20,6 @@ fun GetFolderById.toDomain() = Folder(
     deepLinkCount = deeplinkCount.toInt(),
 )
 
-
 fun GetFolderDeepLinks.toDomain() = DeepLink(
     id = id,
     link = link,

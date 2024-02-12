@@ -7,7 +7,6 @@ import dev.koga.deeplinklauncher.datasource.FolderDataSource
 import dev.koga.deeplinklauncher.model.DeepLink
 import dev.koga.deeplinklauncher.model.Folder
 import dev.koga.deeplinklauncher.provider.UUIDProvider
-import dev.koga.deeplinklauncher.screen.details.state.DeepLinkDetailsEvent
 import dev.koga.deeplinklauncher.screen.details.state.DeepLinkDetailsUiState
 import dev.koga.deeplinklauncher.usecase.deeplink.DuplicateDeepLink
 import dev.koga.deeplinklauncher.usecase.deeplink.LaunchDeepLink
@@ -16,18 +15,16 @@ import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.filterNotNull
-import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-class DeepLinkDetailScreenModel(
+class DeepLinkDetailsScreenModel(
     deepLinkId: String,
     private val folderDataSource: FolderDataSource,
     private val deepLinkDataSource: DeepLinkDataSource,
@@ -61,14 +58,14 @@ class DeepLinkDetailScreenModel(
         deepLink,
         duplicateErrorMessage,
         duplicatedDeepLink,
-        deleted
+        deleted,
     ) { folders, deepLink, duplicateErrorMessage, duplicatedDeepLink, deleted ->
         DeepLinkDetailsUiState(
             folders = folders.toPersistentList(),
             deepLink = deepLink,
             duplicateErrorMessage = duplicateErrorMessage,
             duplicatedDeepLink = duplicatedDeepLink,
-            deleted = deleted
+            deleted = deleted,
         )
     }.stateIn(
         scope = screenModelScope,
@@ -94,7 +91,7 @@ class DeepLinkDetailScreenModel(
 
     fun favorite() {
         deepLinkDataSource.upsertDeepLink(
-            deepLink.value.copy(isFavorite = !deepLink.value.isFavorite)
+            deepLink.value.copy(isFavorite = !deepLink.value.isFavorite),
         )
     }
 

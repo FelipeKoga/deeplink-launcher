@@ -41,7 +41,7 @@ class HomeScreenModel(
     val uiState = combine(
         inputText,
         dataStream,
-        errorMessage
+        errorMessage,
     ) { deepLinkText, dataStream, errorMessage ->
         HomeUiState(
             inputText = deepLinkText,

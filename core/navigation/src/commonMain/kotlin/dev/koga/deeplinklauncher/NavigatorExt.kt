@@ -1,7 +1,6 @@
 package dev.koga.deeplinklauncher
 
 import cafe.adriel.voyager.core.registry.ScreenRegistry
-import cafe.adriel.voyager.navigator.Navigator
 import cafe.adriel.voyager.navigator.bottomSheet.BottomSheetNavigator
 
 fun BottomSheetNavigator.navigateToDeepLinkDetails(id: String) {

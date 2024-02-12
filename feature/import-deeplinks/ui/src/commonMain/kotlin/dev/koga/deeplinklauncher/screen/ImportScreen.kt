@@ -42,11 +42,11 @@ import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import dev.koga.deeplinklauncher.BoxPreview
-import dev.koga.deeplinklauncher.file.BrowseFileAndGetPath
 import dev.koga.deeplinklauncher.DLLSingleChoiceSegmentedButtonRow
 import dev.koga.deeplinklauncher.DLLTopBar
 import dev.koga.deeplinklauncher.ImportDeepLinks
 import dev.koga.deeplinklauncher.ImportDeepLinksOutput
+import dev.koga.deeplinklauncher.file.BrowseFileAndGetPath
 import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.launch
 import org.koin.compose.koinInject
@@ -55,7 +55,8 @@ class ImportScreen : Screen {
 
     private enum class ImportType(val label: String) {
         JSON("JSON (.json)"),
-        PLAIN_TEXT("Plain text (.txt)");
+        PLAIN_TEXT("Plain text (.txt)"),
+        ;
 
         companion object {
             fun getByLabel(label: String): ImportType {
@@ -99,7 +100,7 @@ class ImportScreen : Screen {
                         is ImportDeepLinksOutput.Error -> {
                             snackbarHostState.showSnackbar(
                                 "Something went wrong. " +
-                                        "Check the content structure and try again.",
+                                    "Check the content structure and try again.",
                             )
                         }
                     }
@@ -200,10 +201,10 @@ class ImportScreen : Screen {
                     transitionSpec = {
                         if (targetState > initialState) {
                             slideInHorizontally { width -> width } + fadeIn() togetherWith
-                                    slideOutHorizontally { width -> -width } + fadeOut()
+                                slideOutHorizontally { width -> -width } + fadeOut()
                         } else {
                             slideInHorizontally { width -> -width } + fadeIn() togetherWith
-                                    slideOutHorizontally { width -> width } + fadeOut()
+                                slideOutHorizontally { width -> width } + fadeOut()
                         }.using(
                             SizeTransform(clip = false),
                         )
@@ -227,7 +228,7 @@ fun JSONTutorial() {
     ) {
         Text(
             text = "The most basic JSON format is an object that only " +
-                    "contains a link property.",
+                "contains a link property.",
             style = MaterialTheme.typography.titleSmall.copy(
                 fontWeight = FontWeight.Normal,
             ),
@@ -285,7 +286,7 @@ fun PlainTextTutorial() {
     Column {
         Text(
             text = "The plain text format is a simple list of deeplinks, " +
-                    "one per line.",
+                "one per line.",
             style = MaterialTheme.typography.titleSmall.copy(
                 fontWeight = FontWeight.Normal,
             ),

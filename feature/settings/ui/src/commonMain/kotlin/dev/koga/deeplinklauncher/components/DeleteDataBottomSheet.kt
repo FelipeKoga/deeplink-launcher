@@ -27,7 +27,6 @@ fun DeleteDataBottomSheet(
     onDeleteDeepLinks: () -> Unit,
     onDeleteFolders: () -> Unit,
 ) {
-
     ModalBottomSheet(onDismissRequest = onDismissRequest) {
         DeleteDataBottomSheetContent(
             onDeleteAll = onDeleteAll,
@@ -46,12 +45,12 @@ private fun DeleteDataBottomSheetContent(
 ) {
     Column(
         modifier = Modifier.padding(24.dp).fillMaxWidth(),
-        horizontalAlignment = Alignment.CenterHorizontally
+        horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Text(
             text = "Delete data",
             style = MaterialTheme.typography.titleMedium.copy(
-                fontWeight = FontWeight.Bold
+                fontWeight = FontWeight.Bold,
             ),
         )
 
@@ -60,7 +59,7 @@ private fun DeleteDataBottomSheetContent(
         Text(
             text = "Choose an option and press to confirm.",
             style = MaterialTheme.typography.bodyMedium.copy(
-                fontWeight = FontWeight.Normal
+                fontWeight = FontWeight.Normal,
             ),
         )
 
@@ -69,7 +68,7 @@ private fun DeleteDataBottomSheetContent(
         Text(
             text = "This action cannot be undone",
             style = MaterialTheme.typography.labelSmall.copy(
-                fontWeight = FontWeight.SemiBold
+                fontWeight = FontWeight.SemiBold,
             ),
         )
 
@@ -79,7 +78,7 @@ private fun DeleteDataBottomSheetContent(
             colors = ButtonDefaults.outlinedButtonColors(
                 contentColor = MaterialTheme.colorScheme.error,
             ),
-            onClick = onDeleteDeepLinks
+            onClick = onDeleteDeepLinks,
         ) {
             Text(text = "Delete deeplinks only")
         }
@@ -90,7 +89,7 @@ private fun DeleteDataBottomSheetContent(
             colors = ButtonDefaults.outlinedButtonColors(
                 contentColor = MaterialTheme.colorScheme.error,
             ),
-            onClick = onDeleteFolders
+            onClick = onDeleteFolders,
         ) {
             Text(text = "Delete folders only")
         }
@@ -101,8 +100,8 @@ private fun DeleteDataBottomSheetContent(
             onClick = onDeleteAll,
             colors = ButtonDefaults.elevatedButtonColors(
                 containerColor = MaterialTheme.colorScheme.errorContainer,
-                contentColor = MaterialTheme.colorScheme.onErrorContainer
-            )
+                contentColor = MaterialTheme.colorScheme.onErrorContainer,
+            ),
         ) {
             Text(text = "Delete all")
         }

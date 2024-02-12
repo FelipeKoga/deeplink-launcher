@@ -15,7 +15,7 @@ class DuplicateDeepLink(
     suspend operator fun invoke(
         deepLinkId: String,
         newLink: String,
-        copyAllFields: Boolean
+        copyAllFields: Boolean,
     ): Response {
         val deepLink = dataSource.getDeepLinkByIdStream(deepLinkId).first()!!
 
