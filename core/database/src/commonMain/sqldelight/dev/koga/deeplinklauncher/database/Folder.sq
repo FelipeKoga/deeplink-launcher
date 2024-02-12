@@ -27,9 +27,11 @@ LEFT JOIN deeplink d ON f.id = d.folderId
 WHERE f.id = ?;
 
 getFolderDeepLinks:
-SELECT d.*
+SELECT d.*, f.*
 FROM deeplink d
-WHERE d.folderId = ?;
+LEFT JOIN folder f ON d.folderId = f.id
+WHERE d.folderId = ?
+ORDER BY d.lastLaunchedAt DESC, d.createdAt DESC, d.name ASC;
 
 removeFolderFromDeeplinks:
 UPDATE deeplink SET folderId = NULL WHERE folderId = ?;

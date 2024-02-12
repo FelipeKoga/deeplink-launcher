@@ -10,7 +10,7 @@ import dev.koga.deeplinklauncher.provider.UUIDProvider
 import dev.koga.deeplinklauncher.usecase.GetDeepLinksAndFolderStream
 import dev.koga.deeplinklauncher.usecase.deeplink.LaunchDeepLink
 import dev.koga.deeplinklauncher.usecase.deeplink.LaunchDeepLinkResult
-import dev.koga.deeplinklauncher.util.currentLocalDateTime
+import dev.koga.deeplinklauncher.util.ext.currentLocalDateTime
 import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted

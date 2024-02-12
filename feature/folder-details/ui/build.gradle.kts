@@ -21,6 +21,7 @@ kotlin {
             implementation(libs.voyager.screenmodel)
             implementation(libs.voyager.navigator)
             implementation(libs.voyager.koin)
+            implementation(libs.voyager.bottomSheet)
             implementation(libs.moko.resources.compose)
             implementation(libs.kotlinx.immutable)
 

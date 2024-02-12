@@ -1,6 +1,6 @@
 package dev.koga.deeplinklauncher.model
 
-import dev.koga.deeplinklauncher.util.currentLocalDateTime
+import dev.koga.deeplinklauncher.util.ext.currentLocalDateTime
 import kotlinx.datetime.LocalDateTime
 import kotlinx.serialization.Serializable
 

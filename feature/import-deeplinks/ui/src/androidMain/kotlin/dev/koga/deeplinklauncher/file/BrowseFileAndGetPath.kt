@@ -7,7 +7,7 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.Composable
 import dev.koga.deeplinklauncher.model.FileType
-import dev.koga.deeplinklauncher.util.getRealPathFromUri
+import dev.koga.deeplinklauncher.util.ext.getRealPathFromUri
 
 actual class BrowseFileAndGetPath(
     private val context: Context,
