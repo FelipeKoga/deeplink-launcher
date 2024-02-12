@@ -8,6 +8,4 @@ data class DeepLinkDetailsUiState(
     val folders: ImmutableList<Folder>,
     val deepLink: DeepLink,
     val duplicateErrorMessage: String? = null,
-    val duplicatedDeepLink: DeepLink? = null,
-    val deleted: Boolean,
 )

@@ -7,6 +7,7 @@ import dev.koga.deeplinklauncher.datasource.FolderDataSource
 import dev.koga.deeplinklauncher.model.DeepLink
 import dev.koga.deeplinklauncher.model.Folder
 import dev.koga.deeplinklauncher.provider.UUIDProvider
+import dev.koga.deeplinklauncher.screen.details.event.DeepLinkDetailsEvent
 import dev.koga.deeplinklauncher.screen.details.state.DeepLinkDetailsUiState
 import dev.koga.deeplinklauncher.usecase.deeplink.DuplicateDeepLink
 import dev.koga.deeplinklauncher.usecase.deeplink.LaunchDeepLink
@@ -15,11 +16,13 @@ import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -49,23 +52,17 @@ class DeepLinkDetailsScreenModel(
         initialValue = emptyList(),
     )
 
-    private val duplicatedDeepLink = MutableStateFlow<DeepLink?>(null)
     private val duplicateErrorMessage = MutableStateFlow<String?>(null)
-    private val deleted = MutableStateFlow(false)
 
     val uiState = combine(
         folders,
         deepLink,
         duplicateErrorMessage,
-        duplicatedDeepLink,
-        deleted,
-    ) { folders, deepLink, duplicateErrorMessage, duplicatedDeepLink, deleted ->
+    ) { folders, deepLink, duplicateErrorMessage ->
         DeepLinkDetailsUiState(
             folders = folders.toPersistentList(),
             deepLink = deepLink,
             duplicateErrorMessage = duplicateErrorMessage,
-            duplicatedDeepLink = duplicatedDeepLink,
-            deleted = deleted,
         )
     }.stateIn(
         scope = screenModelScope,
@@ -73,9 +70,11 @@ class DeepLinkDetailsScreenModel(
         initialValue = DeepLinkDetailsUiState(
             folders = persistentListOf(),
             deepLink = deepLink.value,
-            deleted = false,
         ),
     )
+
+    private val eventDispatcher = Channel<DeepLinkDetailsEvent>(Channel.UNLIMITED)
+    val events = eventDispatcher.receiveAsFlow()
 
     fun updateDeepLinkName(s: String) {
         coroutineDebouncer.debounce(screenModelScope, "name") {
@@ -102,7 +101,7 @@ class DeepLinkDetailsScreenModel(
     fun delete() {
         screenModelScope.launch {
             deepLinkDataSource.deleteDeepLink(deepLink.value.id)
-            deleted.update { true }
+            eventDispatcher.send(DeepLinkDetailsEvent.Deleted)
         }
     }
 
@@ -159,7 +158,7 @@ class DeepLinkDetailsScreenModel(
                 }
 
                 is DuplicateDeepLink.Response.Success -> {
-                    duplicatedDeepLink.update { response.deepLink }
+                    eventDispatcher.send(DeepLinkDetailsEvent.Duplicated(response.deepLink))
                 }
             }
         }

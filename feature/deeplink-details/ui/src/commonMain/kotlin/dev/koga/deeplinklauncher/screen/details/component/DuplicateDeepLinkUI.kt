@@ -145,7 +145,5 @@ fun DuplicateDeepLinkUI(
                 )
             }
         }
-
-        Spacer(modifier = Modifier.navigationBarsPadding())
     }
 }
