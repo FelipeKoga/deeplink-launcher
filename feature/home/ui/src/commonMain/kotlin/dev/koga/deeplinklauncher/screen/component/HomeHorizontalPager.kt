@@ -34,7 +34,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import dev.koga.deeplinklauncher.deeplink.DeepLinkItem
-import dev.koga.deeplinklauncher.deeplink.animatedListItem
 import dev.koga.deeplinklauncher.folder.FolderCard
 import dev.koga.deeplinklauncher.model.DeepLink
 import dev.koga.deeplinklauncher.model.Folder
@@ -119,7 +118,6 @@ fun DeepLinksLazyColumn(
             items = deepLinks,
         ) { deepLink ->
             DeepLinkItem(
-                modifier = Modifier.animatedListItem(key = deepLink.id),
                 deepLink = deepLink,
                 onClick = { onClick(deepLink) },
                 onLaunch = { onLaunch(deepLink) },
