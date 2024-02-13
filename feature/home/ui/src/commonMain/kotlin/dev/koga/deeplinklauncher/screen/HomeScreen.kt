@@ -100,7 +100,7 @@ object HomeScreen : Screen {
                     allDeepLinksListState.animateScrollToItem(index = 0)
                     favoritesDeepLinksListState.animateScrollToItem(index = 0)
                 }
-            }
+            },
         )
 
         BottomSheetScaffold(
@@ -121,9 +121,6 @@ object HomeScreen : Screen {
                     errorMessage = uiState.errorMessage,
                 )
             },
-            sheetContainerColor = Color(0xFF1d1d1d),
-            sheetTonalElevation = 12.dp,
-            sheetShadowElevation = 12.dp
         ) { contentPadding ->
             Column(
                 modifier = Modifier

@@ -3,7 +3,6 @@ package dev.koga.deeplinklauncher.usecase.deeplink
 import dev.koga.deeplinklauncher.datasource.DeepLinkDataSource
 import dev.koga.deeplinklauncher.model.DeepLink
 import dev.koga.deeplinklauncher.provider.UUIDProvider
-import dev.koga.deeplinklauncher.usecase.deeplink.ValidateDeepLink
 import dev.koga.deeplinklauncher.util.ext.currentLocalDateTime
 import kotlinx.coroutines.flow.first
 

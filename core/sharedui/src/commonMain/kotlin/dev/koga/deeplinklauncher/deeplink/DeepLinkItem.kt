@@ -4,7 +4,6 @@ import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -15,13 +14,10 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilledTonalIconButton
 import androidx.compose.material3.Icon
-import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -40,7 +36,6 @@ import dev.koga.resources.MR
 
 @Composable
 fun <T> Modifier.animatedListItem(key: T): Modifier {
-
     val animatedProgress = remember(key) {
         Animatable(initialValue = 0.85f)
     }
@@ -48,16 +43,15 @@ fun <T> Modifier.animatedListItem(key: T): Modifier {
     LaunchedEffect(key1 = key) {
         animatedProgress.animateTo(
             targetValue = 1f,
-            animationSpec = tween(300, easing = FastOutSlowInEasing)
+            animationSpec = tween(300, easing = FastOutSlowInEasing),
         )
     }
 
     return this.graphicsLayer(
         scaleX = animatedProgress.value,
-        scaleY = animatedProgress.value
+        scaleY = animatedProgress.value,
     )
 }
-
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -67,7 +61,6 @@ fun DeepLinkItem(
     onClick: () -> Unit,
     onLaunch: () -> Unit,
 ) {
-
     ElevatedCard(
         modifier = modifier
             .fillMaxWidth()

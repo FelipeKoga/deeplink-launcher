@@ -11,5 +11,5 @@ val colors = darkColorScheme(
     surface = Color(0xFF121212), // Matching the background for consistency
     onSurface = Color(0xFFE0E0E0), // Soft white for text/icons on surface
     secondaryContainer = Color(0xFF2C2C2C), // Very dark gray for secondary containers, for slight contrast
-    onSecondaryContainer = Color(0xFFE0E0E0) // Soft white for text/icons on secondary containers
+    onSecondaryContainer = Color(0xFFE0E0E0), // Soft white for text/icons on secondary containers
 )
