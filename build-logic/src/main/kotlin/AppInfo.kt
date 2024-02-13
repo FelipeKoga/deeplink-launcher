@@ -29,6 +29,6 @@ object Configuration {
         val hour = localDateTime.hour
         val minute = localDateTime.minute
 
-        return (year * 1000000) + (month * 10000) + (day * 100) + (hour * 10) + minute
+        return (year * 1000000) + (month * 10000) + (day * 1000) + (hour * 100) + minute * 10
     }
 }
