@@ -7,14 +7,18 @@ import dev.koga.deeplinklauncher.datasource.FolderDataSource
 import dev.koga.deeplinklauncher.model.DeepLink
 import dev.koga.deeplinklauncher.model.Folder
 import dev.koga.deeplinklauncher.provider.UUIDProvider
+import dev.koga.deeplinklauncher.screen.state.HomeEvent
+import dev.koga.deeplinklauncher.screen.state.HomeUiState
 import dev.koga.deeplinklauncher.usecase.GetDeepLinksAndFolderStream
 import dev.koga.deeplinklauncher.usecase.deeplink.LaunchDeepLink
 import dev.koga.deeplinklauncher.usecase.deeplink.LaunchDeepLinkResult
 import dev.koga.deeplinklauncher.util.ext.currentLocalDateTime
 import kotlinx.collections.immutable.toPersistentList
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -55,6 +59,9 @@ class HomeScreenModel(
         started = SharingStarted.WhileSubscribed(),
         initialValue = HomeUiState(),
     )
+
+    private val eventDispatcher = Channel<HomeEvent>(Channel.UNLIMITED)
+    val events = eventDispatcher.receiveAsFlow()
 
     private fun insertDeepLink(link: String) {
         screenModelScope.launch {
@@ -97,7 +104,11 @@ class HomeScreenModel(
     }
 
     fun launchDeepLink(deepLink: DeepLink) {
-        launchDeepLink.launch(deepLink)
+        screenModelScope.launch {
+            launchDeepLink.launch(deepLink)
+
+            eventDispatcher.send(HomeEvent.DeepLinksLaunched)
+        }
     }
 
     fun onDeepLinkTextChanged(text: String) {

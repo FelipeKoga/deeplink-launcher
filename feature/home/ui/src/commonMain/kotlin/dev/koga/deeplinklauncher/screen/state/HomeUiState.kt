@@ -1,4 +1,4 @@
-package dev.koga.deeplinklauncher.screen
+package dev.koga.deeplinklauncher.screen.state
 
 import dev.koga.deeplinklauncher.model.DeepLink
 import dev.koga.deeplinklauncher.model.Folder

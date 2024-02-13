@@ -127,6 +127,7 @@ fun DeepLinkDetailsExpandedUI(
             DeepLinkDetailsTextField(
                 text = deepLink.name.orEmpty(),
                 onTextChange = onNameChanged,
+                label = "Enter a name",
             )
 
             Spacer(modifier = Modifier.height(24.dp))
@@ -144,6 +145,7 @@ fun DeepLinkDetailsExpandedUI(
             DeepLinkDetailsTextField(
                 text = deepLink.description.orEmpty(),
                 onTextChange = onDescriptionChanged,
+                label = "Enter a description",
             )
 
             Spacer(modifier = Modifier.height(24.dp))
@@ -228,6 +230,7 @@ fun DeepLinkDetailsExpandedUI(
 fun DeepLinkDetailsTextField(
     text: String,
     onTextChange: (String) -> Unit,
+    label: String,
 ) {
     var textState by rememberSaveable { mutableStateOf(text) }
 
@@ -237,7 +240,7 @@ fun DeepLinkDetailsTextField(
             textState = it
             onTextChange(it)
         },
-        label = "Enter a name",
+        label = label,
         modifier = Modifier.fillMaxWidth(),
     )
 }

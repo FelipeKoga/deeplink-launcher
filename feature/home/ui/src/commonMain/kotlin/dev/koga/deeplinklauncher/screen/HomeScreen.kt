@@ -1,9 +1,11 @@
 package dev.koga.deeplinklauncher.screen
 
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.gestures.animateScrollBy
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.BottomSheetScaffold
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -18,6 +20,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
@@ -36,6 +39,9 @@ import dev.koga.deeplinklauncher.screen.component.HomeHorizontalPager
 import dev.koga.deeplinklauncher.screen.component.HomeLaunchDeepLinkBottomSheetContent
 import dev.koga.deeplinklauncher.screen.component.HomeTabRow
 import dev.koga.deeplinklauncher.screen.component.HomeTopBar
+import dev.koga.deeplinklauncher.screen.state.HomeEvent
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 object HomeScreen : Screen {
@@ -44,6 +50,7 @@ object HomeScreen : Screen {
     override fun Content() {
         val settingsScreen = rememberScreen(SharedScreen.Settings)
 
+        val scope = rememberCoroutineScope()
         val navigator = LocalNavigator.currentOrThrow
         val bottomSheetNavigator = LocalBottomSheetNavigator.current
 
@@ -57,6 +64,8 @@ object HomeScreen : Screen {
                 HomeTabPage.entries.size
             },
         )
+
+        val deepLinksLazyListState = rememberLazyListState()
 
         val screenModel = navigator.getNavigatorScreenModel<HomeScreenModel>()
         val uiState by screenModel.uiState.collectAsState()
@@ -80,6 +89,15 @@ object HomeScreen : Screen {
             snapshotFlow { bottomSheetNavigator.isVisible }
                 .collect { isVisible -> if (isVisible) bottomSheetState.partialExpand() }
         }
+
+        HomeEventsHandler(
+            events = screenModel.events,
+            onDeepLinkLaunched = {
+                scope.launch {
+                    deepLinksLazyListState.animateScrollToItem(index = 0)
+                }
+            }
+        )
 
         BottomSheetScaffold(
             topBar = {
@@ -121,7 +139,22 @@ object HomeScreen : Screen {
                         navigator.push(screen)
                     },
                     onFolderAdd = { showAddFolderBottomSheet = true },
+                    deepLinksListState = deepLinksLazyListState
                 )
+            }
+        }
+    }
+}
+
+@Composable
+fun HomeEventsHandler(
+    events: Flow<HomeEvent>,
+    onDeepLinkLaunched: () -> Unit,
+) {
+    LaunchedEffect(Unit) {
+        events.collect { event ->
+            when (event) {
+                is HomeEvent.DeepLinksLaunched -> onDeepLinkLaunched()
             }
         }
     }
