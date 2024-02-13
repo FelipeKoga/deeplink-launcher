@@ -24,7 +24,7 @@ import androidx.compose.ui.unit.dp
 val defaultTextFieldColors: TextFieldColors
     @Composable get() = TextFieldDefaults.colors(
         focusedContainerColor = MaterialTheme.colorScheme.secondaryContainer,
-        unfocusedContainerColor = MaterialTheme.colorScheme.secondaryContainer,
+        unfocusedContainerColor = Color(0xFF171717),
         disabledContainerColor = MaterialTheme.colorScheme.secondaryContainer,
         focusedIndicatorColor = Color.Transparent,
         unfocusedIndicatorColor = Color.Transparent,

@@ -8,7 +8,9 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.FilledTonalIconButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -32,7 +34,8 @@ fun DeepLinkDetailsCollapsedUI(
     Column(
         modifier = modifier
             .fillMaxWidth()
-            .padding(16.dp),
+            .padding(16.dp)
+            .verticalScroll(rememberScrollState()),
     ) {
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -77,12 +80,10 @@ fun DeepLinkDetailsCollapsedUI(
         if (!uiState.deepLink.name.isNullOrBlank()) {
             Text(
                 text = uiState.deepLink.name.orEmpty(),
-                style = MaterialTheme.typography.bodyMedium.copy(
+                style = MaterialTheme.typography.titleLarge.copy(
                     color = MaterialTheme.colorScheme.onBackground,
                     fontWeight = FontWeight.SemiBold,
                 ),
-                maxLines = 3,
-                overflow = TextOverflow.Ellipsis,
             )
         }
 
@@ -95,8 +96,6 @@ fun DeepLinkDetailsCollapsedUI(
                     fontWeight = FontWeight.Normal,
                     color = MaterialTheme.colorScheme.onBackground,
                 ),
-                overflow = TextOverflow.Ellipsis,
-                maxLines = 4,
             )
         }
 
@@ -104,13 +103,11 @@ fun DeepLinkDetailsCollapsedUI(
 
         Text(
             text = "DeepLink",
-            style = MaterialTheme.typography.labelMedium.copy(
+            style = MaterialTheme.typography.labelSmall.copy(
                 color = MaterialTheme.colorScheme.onBackground,
                 fontWeight = FontWeight.Normal,
             ),
         )
-
-        Spacer(modifier = Modifier.height(4.dp))
 
         Text(
             text = uiState.deepLink.link,

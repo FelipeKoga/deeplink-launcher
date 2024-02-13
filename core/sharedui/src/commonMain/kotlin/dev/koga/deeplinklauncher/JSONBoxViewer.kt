@@ -24,7 +24,7 @@ fun BoxPreview(text: String) {
         modifier = Modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(12.dp))
-            .background(MaterialTheme.colorScheme.background)
+            .background(MaterialTheme.colorScheme.secondaryContainer)
             .horizontalScroll(
                 rememberScrollState(),
             ),

@@ -1,5 +1,6 @@
 package dev.koga.deeplinklauncher.screen.component
 
+import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
@@ -34,6 +35,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import dev.koga.deeplinklauncher.deeplink.DeepLinkItem
+import dev.koga.deeplinklauncher.deeplink.animatedListItem
 import dev.koga.deeplinklauncher.folder.FolderCard
 import dev.koga.deeplinklauncher.model.DeepLink
 import dev.koga.deeplinklauncher.model.Folder
@@ -89,7 +91,7 @@ internal fun HomeHorizontalPager(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
 fun DeepLinksLazyColumn(
     deepLinks: List<DeepLink>,
@@ -105,8 +107,8 @@ fun DeepLinksLazyColumn(
             .fillMaxSize()
             .nestedScroll(scrollBehavior.nestedScrollConnection),
         contentPadding = PaddingValues(
-            start = 12.dp,
-            end = 12.dp,
+            start = 8.dp,
+            end = 8.dp,
             top = 12.dp,
             bottom = paddingBottom,
         ),
@@ -117,6 +119,7 @@ fun DeepLinksLazyColumn(
             items = deepLinks,
         ) { deepLink ->
             DeepLinkItem(
+                modifier = Modifier.animatedListItem(key = deepLink.id),
                 deepLink = deepLink,
                 onClick = { onClick(deepLink) },
                 onLaunch = { onLaunch(deepLink) },
