@@ -3,7 +3,6 @@ package dev.koga.deeplinklauncher.screen.component
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
@@ -12,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
@@ -47,6 +47,7 @@ internal fun HomeHorizontalPager(
     favoriteDeepLinks: ImmutableList<DeepLink>,
     folders: ImmutableList<Folder>,
     pagerState: PagerState,
+    deepLinksListState: LazyListState,
     scrollBehavior: TopAppBarScrollBehavior,
     paddingBottom: Dp,
     onDeepLinkClicked: (DeepLink) -> Unit,
@@ -59,116 +60,132 @@ internal fun HomeHorizontalPager(
         modifier = Modifier.fillMaxSize(),
     ) { page ->
         when (page) {
-            HomeTabPage.HISTORY.ordinal -> {
-                LazyColumn(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .nestedScroll(scrollBehavior.nestedScrollConnection),
-                    contentPadding = PaddingValues(
-                        start = 12.dp,
-                        end = 12.dp,
-                        top = 12.dp,
-                        bottom = paddingBottom,
-                    ),
-                    verticalArrangement = Arrangement.spacedBy(12.dp),
-                ) {
-                    items(
-                        key = { it.id },
-                        items = allDeepLinks,
-                    ) { deepLink ->
-                        DeepLinkItem(
-                            deepLink = deepLink,
-                            onClick = { onDeepLinkClicked(deepLink) },
-                            onLaunch = { onDeepLinkLaunch(deepLink) },
-                        )
-                    }
-                }
-            }
+            HomeTabPage.HISTORY.ordinal -> DeepLinksLazyColumn(
+                deepLinksListState = deepLinksListState,
+                deepLinks = allDeepLinks,
+                scrollBehavior = scrollBehavior,
+                paddingBottom = paddingBottom,
+                onClick = onDeepLinkClicked,
+                onLaunch = onDeepLinkLaunch,
+            )
 
-            HomeTabPage.FAVORITES.ordinal -> {
-                LazyColumn(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .nestedScroll(scrollBehavior.nestedScrollConnection),
-                    contentPadding = PaddingValues(
-                        start = 12.dp,
-                        end = 12.dp,
-                        top = 12.dp,
-                        bottom = paddingBottom,
-                    ),
-                    verticalArrangement = Arrangement.spacedBy(12.dp),
-                ) {
-                    items(
-                        key = { it.id },
-                        items = favoriteDeepLinks,
-                    ) { deepLink ->
-                        DeepLinkItem(
-                            deepLink = deepLink,
-                            onClick = { onDeepLinkClicked(deepLink) },
-                            onLaunch = { onDeepLinkLaunch(deepLink) },
-                        )
-                    }
-                }
-            }
+            HomeTabPage.FAVORITES.ordinal -> DeepLinksLazyColumn(
+                deepLinksListState = deepLinksListState,
+                deepLinks = favoriteDeepLinks,
+                scrollBehavior = scrollBehavior,
+                paddingBottom = paddingBottom,
+                onClick = onDeepLinkClicked,
+                onLaunch = onDeepLinkLaunch,
+            )
 
-            HomeTabPage.FOLDERS.ordinal -> {
-                Box(modifier = Modifier.fillMaxSize()) {
-                    LazyVerticalStaggeredGrid(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .nestedScroll(scrollBehavior.nestedScrollConnection),
-                        contentPadding = PaddingValues(
-                            start = 12.dp,
-                            end = 12.dp,
-                            top = 24.dp,
-                            bottom = paddingBottom,
+            HomeTabPage.FOLDERS.ordinal -> FoldersVerticalStaggeredGrid(
+                folders = folders,
+                scrollBehavior = scrollBehavior,
+                paddingBottom = paddingBottom,
+                onAdd = onFolderAdd,
+                onClick = onFolderClicked,
+            )
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun DeepLinksLazyColumn(
+    deepLinks: List<DeepLink>,
+    scrollBehavior: TopAppBarScrollBehavior,
+    paddingBottom: Dp,
+    onClick: (DeepLink) -> Unit,
+    onLaunch: (DeepLink) -> Unit,
+    deepLinksListState: LazyListState,
+) {
+    LazyColumn(
+        state = deepLinksListState,
+        modifier = Modifier
+            .fillMaxSize()
+            .nestedScroll(scrollBehavior.nestedScrollConnection),
+        contentPadding = PaddingValues(
+            start = 12.dp,
+            end = 12.dp,
+            top = 12.dp,
+            bottom = paddingBottom,
+        ),
+        verticalArrangement = Arrangement.spacedBy(12.dp),
+    ) {
+        items(
+            key = { it.id },
+            items = deepLinks,
+        ) { deepLink ->
+            DeepLinkItem(
+                deepLink = deepLink,
+                onClick = { onClick(deepLink) },
+                onLaunch = { onLaunch(deepLink) },
+            )
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun FoldersVerticalStaggeredGrid(
+    folders: ImmutableList<Folder>,
+    scrollBehavior: TopAppBarScrollBehavior,
+    paddingBottom: Dp,
+    onAdd: () -> Unit,
+    onClick: (Folder) -> Unit,
+) {
+    LazyVerticalStaggeredGrid(
+        modifier = Modifier
+            .fillMaxSize()
+            .nestedScroll(scrollBehavior.nestedScrollConnection),
+        contentPadding = PaddingValues(
+            start = 12.dp,
+            end = 12.dp,
+            top = 24.dp,
+            bottom = paddingBottom,
+        ),
+        horizontalArrangement = Arrangement.spacedBy(24.dp),
+        verticalItemSpacing = 24.dp,
+        columns = StaggeredGridCells.Fixed(2),
+    ) {
+        item {
+            OutlinedCard(
+                onClick = onAdd,
+                shape = RoundedCornerShape(24.dp),
+                border = BorderStroke(
+                    width = 1.dp,
+                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = .3f),
+                ),
+            ) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(184.dp),
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                ) {
+                    Icon(
+                        imageVector = Icons.Rounded.Add,
+                        contentDescription = null,
+                        modifier = Modifier.size(24.dp),
+                        tint = MaterialTheme.colorScheme.onSurface,
+                    )
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Text(
+                        text = "Create new folder",
+                        style = MaterialTheme.typography.titleSmall.copy(
+                            fontWeight = FontWeight.Bold,
                         ),
-                        horizontalArrangement = Arrangement.spacedBy(24.dp),
-                        verticalItemSpacing = 24.dp,
-                        columns = StaggeredGridCells.Fixed(2),
-                    ) {
-                        item {
-                            OutlinedCard(
-                                onClick = onFolderAdd,
-                                shape = RoundedCornerShape(24.dp),
-                                border = BorderStroke(
-                                    width = 1.dp,
-                                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = .3f),
-                                ),
-                            ) {
-                                Column(
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .height(184.dp),
-                                    verticalArrangement = Arrangement.Center,
-                                    horizontalAlignment = Alignment.CenterHorizontally,
-                                ) {
-                                    Icon(
-                                        imageVector = Icons.Rounded.Add,
-                                        contentDescription = null,
-                                        modifier = Modifier.size(24.dp),
-                                        tint = MaterialTheme.colorScheme.onSurface,
-                                    )
-                                    Spacer(modifier = Modifier.height(8.dp))
-                                    Text(
-                                        text = "Create new folder",
-                                        style = MaterialTheme.typography.titleSmall.copy(
-                                            fontWeight = FontWeight.Bold,
-                                        ),
-                                    )
-                                }
-                            }
-                        }
-
-                        items(folders.size) { index ->
-                            FolderCard(
-                                folder = folders[index],
-                                onClick = { onFolderClicked(it) },
-                            )
-                        }
-                    }
+                    )
                 }
             }
+        }
+
+        items(folders.size) { index ->
+            FolderCard(
+                folder = folders[index],
+                onClick = { onClick(it) },
+            )
         }
     }
 }
