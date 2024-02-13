@@ -1,7 +1,6 @@
 package dev.koga.deeplinklauncher.screen
 
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.gestures.animateScrollBy
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -25,7 +24,6 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.registry.ScreenRegistry
 import cafe.adriel.voyager.core.registry.rememberScreen
@@ -36,17 +34,21 @@ import cafe.adriel.voyager.navigator.bottomSheet.LocalBottomSheetNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import dev.koga.deeplinklauncher.AddFolderBottomSheet
 import dev.koga.deeplinklauncher.SharedScreen
+import dev.koga.deeplinklauncher.model.DeepLink
 import dev.koga.deeplinklauncher.navigateToDeepLinkDetails
 import dev.koga.deeplinklauncher.screen.component.HomeHorizontalPager
 import dev.koga.deeplinklauncher.screen.component.HomeLaunchDeepLinkBottomSheetContent
 import dev.koga.deeplinklauncher.screen.component.HomeTabRow
 import dev.koga.deeplinklauncher.screen.component.HomeTopBar
 import dev.koga.deeplinklauncher.screen.state.HomeEvent
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 object HomeScreen : Screen {
+    private const val DELAY_TO_SCROLL_TO_THE_TOP = 350L
 
     @Composable
     override fun Content() {
@@ -60,14 +62,13 @@ object HomeScreen : Screen {
             initialValue = SheetValue.Expanded,
         )
 
+        val deepLinksLazyListState = rememberLazyListState()
         val pagerState = rememberPagerState(
             initialPage = HomeTabPage.HISTORY.ordinal,
             pageCount = {
                 HomeTabPage.entries.size
             },
         )
-
-        val deepLinksLazyListState = rememberLazyListState()
 
         val screenModel = navigator.getNavigatorScreenModel<HomeScreenModel>()
         val uiState by screenModel.uiState.collectAsState()
@@ -96,6 +97,7 @@ object HomeScreen : Screen {
             events = screenModel.events,
             onDeepLinkLaunched = {
                 scope.launch {
+                    delay(DELAY_TO_SCROLL_TO_THE_TOP)
                     deepLinksLazyListState.animateScrollToItem(index = 0)
                 }
             }
