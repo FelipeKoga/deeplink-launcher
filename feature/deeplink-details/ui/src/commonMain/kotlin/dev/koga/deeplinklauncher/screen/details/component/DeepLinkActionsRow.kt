@@ -16,6 +16,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Favorite
 import androidx.compose.material.icons.rounded.FavoriteBorder
 import androidx.compose.material.icons.rounded.Share
+import androidx.compose.material3.Button
 import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -162,7 +163,7 @@ fun DeepLinkActionsRow(
             }
 
             Spacer(modifier = Modifier.weight(1f))
-            FilledTonalButton(onClick = onLaunch) {
+            Button(onClick = onLaunch) {
                 Text(
                     text = "Launch",
                     style = MaterialTheme.typography.labelLarge.copy(

@@ -116,19 +116,22 @@ class DeepLinkDetailsScreen(private val deepLinkId: String) : Screen {
                 }
             }
 
-            Divider(modifier = Modifier.padding(top = 24.dp))
 
             AnimatedVisibility(
                 visible = detailsMode !is DetailsMode.Duplicate,
             ) {
-                DeepLinkActionsRow(
-                    link = uiState.deepLink.link,
-                    isFavorite = uiState.deepLink.isFavorite,
-                    onShare = screenModel::share,
-                    onFavorite = screenModel::favorite,
-                    onLaunch = screenModel::launch,
-                    onDuplicate = { detailsMode = DetailsMode.Duplicate(detailsMode) },
-                )
+                Column {
+                    Divider(modifier = Modifier.padding(top = 24.dp))
+
+                    DeepLinkActionsRow(
+                        link = uiState.deepLink.link,
+                        isFavorite = uiState.deepLink.isFavorite,
+                        onShare = screenModel::share,
+                        onFavorite = screenModel::favorite,
+                        onLaunch = screenModel::launch,
+                        onDuplicate = { detailsMode = DetailsMode.Duplicate(detailsMode) },
+                    )
+                }
             }
 
             Spacer(modifier = Modifier.navigationBarsPadding())

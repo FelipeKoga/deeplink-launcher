@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.ArrowBack
+import androidx.compose.material3.Button
 import androidx.compose.material3.Divider
 import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.Icon
@@ -45,7 +46,7 @@ fun DuplicateDeepLinkUI(
 
     Column {
         Row(
-            modifier = Modifier.padding(start = 12.dp, end = 12.dp, top = 12.dp),
+            modifier = Modifier.padding(start = 8.dp),
             horizontalArrangement = Arrangement.spacedBy(12.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
@@ -68,72 +69,76 @@ fun DuplicateDeepLinkUI(
             )
         }
 
-        Column(
-            modifier = Modifier.padding(24.dp),
-        ) {
-            DLLTextField(
-                label = "Enter your new deeplink",
-                value = newLink,
-                onValueChange = { newLink = it },
-                modifier = Modifier.clip(RoundedCornerShape(12.dp)),
-                imeAction = ImeAction.Done,
-                textStyle = LocalTextStyle.current.copy(
-                    fontWeight = FontWeight.SemiBold,
-                ),
-            )
+        Column {
 
-            AnimatedVisibility(
-                visible = errorMessage != null,
-            ) {
-                Text(
-                    text = errorMessage.orEmpty(),
-                    modifier = Modifier.padding(top = 8.dp),
-                    style = MaterialTheme.typography.labelMedium.copy(
-                        color = MaterialTheme.colorScheme.error,
-                        fontWeight = FontWeight.Bold,
+            Column(modifier = Modifier.padding(horizontal = 24.dp, vertical = 8.dp)) {
+                DLLTextField(
+                    label = "Enter your new deeplink",
+                    value = newLink,
+                    onValueChange = { newLink = it },
+                    modifier = Modifier.clip(RoundedCornerShape(12.dp)),
+                    imeAction = ImeAction.Done,
+                    textStyle = LocalTextStyle.current.copy(
+                        fontWeight = FontWeight.SemiBold,
                     ),
                 )
-            }
 
-            Spacer(modifier = Modifier.height(16.dp))
-
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween,
-            ) {
-                Column {
+                AnimatedVisibility(
+                    visible = errorMessage != null,
+                ) {
                     Text(
-                        text = "Copy all fields",
-                        style = MaterialTheme.typography.bodyMedium.copy(
-                            fontWeight = FontWeight.SemiBold,
-                            color = MaterialTheme.colorScheme.onSurface,
-                        ),
-                    )
-
-                    Text(
-                        text = "All fields will be copied to the new deeplink",
-                        style = MaterialTheme.typography.labelSmall.copy(
-                            fontWeight = FontWeight.Normal,
-                            color = MaterialTheme.colorScheme.onSurface,
+                        text = errorMessage.orEmpty(),
+                        modifier = Modifier.padding(top = 8.dp),
+                        style = MaterialTheme.typography.labelMedium.copy(
+                            color = MaterialTheme.colorScheme.error,
+                            fontWeight = FontWeight.Bold,
                         ),
                     )
                 }
 
-                Switch(
-                    checked = copyAllFields,
-                    onCheckedChange = { copyAllFields = it },
-                )
+                Spacer(modifier = Modifier.height(24.dp))
+
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                ) {
+                    Column {
+                        Text(
+                            text = "Copy all fields",
+                            style = MaterialTheme.typography.bodyMedium.copy(
+                                fontWeight = FontWeight.SemiBold,
+                                color = MaterialTheme.colorScheme.onSurface,
+                            ),
+                        )
+
+                        Text(
+                            text = "All fields will be copied to the new deeplink",
+                            style = MaterialTheme.typography.labelSmall.copy(
+                                fontWeight = FontWeight.Normal,
+                                color = MaterialTheme.colorScheme.onSurface,
+                            ),
+                        )
+                    }
+
+                    Switch(
+                        checked = copyAllFields,
+                        onCheckedChange = { copyAllFields = it },
+                    )
+                }
+
             }
 
-            Spacer(modifier = Modifier.height(16.dp))
-
-            Divider()
 
             Spacer(modifier = Modifier.height(12.dp))
 
-            FilledTonalButton(
-                modifier = Modifier.align(Alignment.CenterHorizontally).fillMaxWidth(0.5f),
+            Divider()
+
+            Button(
+                modifier = Modifier
+                    .align(Alignment.CenterHorizontally)
+                    .fillMaxWidth(0.5f)
+                    .padding(24.dp),
                 onClick = { onDuplicate(newLink, copyAllFields) },
             ) {
                 Text(
