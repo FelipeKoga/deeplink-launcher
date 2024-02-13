@@ -5,6 +5,7 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -76,7 +77,7 @@ fun DeepLinkActionsRow(
         }
     }
 
-    Row(modifier = Modifier.fillMaxWidth()) {
+    Box(modifier = Modifier.fillMaxWidth()) {
         AnimatedVisibility(
             visible = showCopyPopUp,
             enter = fadeIn(initialAlpha = 0.3f),
@@ -110,7 +111,7 @@ fun DeepLinkActionsRow(
             horizontalArrangement = Arrangement.SpaceAround,
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(vertical = 24.dp),
+                .padding(vertical = 24.dp, horizontal = 8.dp),
         ) {
             IconButton(onClick = onDuplicate) {
                 Icon(
