@@ -1,6 +1,5 @@
 package dev.koga.deeplinklauncher.screen.component
 
-import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
@@ -49,7 +48,8 @@ internal fun HomeHorizontalPager(
     favoriteDeepLinks: ImmutableList<DeepLink>,
     folders: ImmutableList<Folder>,
     pagerState: PagerState,
-    deepLinksListState: LazyListState,
+    allDeepLinksListState: LazyListState,
+    favoritesDeepLinksListState: LazyListState,
     scrollBehavior: TopAppBarScrollBehavior,
     paddingBottom: Dp,
     onDeepLinkClicked: (DeepLink) -> Unit,
@@ -63,7 +63,7 @@ internal fun HomeHorizontalPager(
     ) { page ->
         when (page) {
             HomeTabPage.HISTORY.ordinal -> DeepLinksLazyColumn(
-                deepLinksListState = deepLinksListState,
+                deepLinksListState = allDeepLinksListState,
                 deepLinks = allDeepLinks,
                 scrollBehavior = scrollBehavior,
                 paddingBottom = paddingBottom,
@@ -72,7 +72,7 @@ internal fun HomeHorizontalPager(
             )
 
             HomeTabPage.FAVORITES.ordinal -> DeepLinksLazyColumn(
-                deepLinksListState = deepLinksListState,
+                deepLinksListState = favoritesDeepLinksListState,
                 deepLinks = favoriteDeepLinks,
                 scrollBehavior = scrollBehavior,
                 paddingBottom = paddingBottom,

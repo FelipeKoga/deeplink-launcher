@@ -8,7 +8,6 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.BottomSheetScaffold
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SheetValue
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberBottomSheetScaffoldState
@@ -24,6 +23,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.registry.ScreenRegistry
 import cafe.adriel.voyager.core.registry.rememberScreen
@@ -34,14 +34,12 @@ import cafe.adriel.voyager.navigator.bottomSheet.LocalBottomSheetNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import dev.koga.deeplinklauncher.AddFolderBottomSheet
 import dev.koga.deeplinklauncher.SharedScreen
-import dev.koga.deeplinklauncher.model.DeepLink
 import dev.koga.deeplinklauncher.navigateToDeepLinkDetails
 import dev.koga.deeplinklauncher.screen.component.HomeHorizontalPager
 import dev.koga.deeplinklauncher.screen.component.HomeLaunchDeepLinkBottomSheetContent
 import dev.koga.deeplinklauncher.screen.component.HomeTabRow
 import dev.koga.deeplinklauncher.screen.component.HomeTopBar
 import dev.koga.deeplinklauncher.screen.state.HomeEvent
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
@@ -62,7 +60,8 @@ object HomeScreen : Screen {
             initialValue = SheetValue.Expanded,
         )
 
-        val deepLinksLazyListState = rememberLazyListState()
+        val allDeepLinksListState = rememberLazyListState()
+        val favoritesDeepLinksListState = rememberLazyListState()
         val pagerState = rememberPagerState(
             initialPage = HomeTabPage.HISTORY.ordinal,
             pageCount = {
@@ -98,7 +97,8 @@ object HomeScreen : Screen {
             onDeepLinkLaunched = {
                 scope.launch {
                     delay(DELAY_TO_SCROLL_TO_THE_TOP)
-                    deepLinksLazyListState.animateScrollToItem(index = 0)
+                    allDeepLinksListState.animateScrollToItem(index = 0)
+                    favoritesDeepLinksListState.animateScrollToItem(index = 0)
                 }
             }
         )
@@ -113,7 +113,6 @@ object HomeScreen : Screen {
             scaffoldState = rememberBottomSheetScaffoldState(
                 bottomSheetState = bottomSheetState,
             ),
-            sheetContainerColor = MaterialTheme.colorScheme.surface,
             sheetContent = {
                 HomeLaunchDeepLinkBottomSheetContent(
                     value = uiState.inputText,
@@ -122,6 +121,9 @@ object HomeScreen : Screen {
                     errorMessage = uiState.errorMessage,
                 )
             },
+            sheetContainerColor = Color(0xFF1d1d1d),
+            sheetTonalElevation = 12.dp,
+            sheetShadowElevation = 12.dp
         ) { contentPadding ->
             Column(
                 modifier = Modifier
@@ -144,7 +146,8 @@ object HomeScreen : Screen {
                         navigator.push(screen)
                     },
                     onFolderAdd = { showAddFolderBottomSheet = true },
-                    deepLinksListState = deepLinksLazyListState
+                    allDeepLinksListState = allDeepLinksListState,
+                    favoritesDeepLinksListState = favoritesDeepLinksListState,
                 )
             }
         }
