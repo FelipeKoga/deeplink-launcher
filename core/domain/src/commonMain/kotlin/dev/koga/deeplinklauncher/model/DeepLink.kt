@@ -15,8 +15,8 @@ data class DeepLink(
     val lastLaunchedAt: LocalDateTime? = null,
     val folder: Folder? = null,
 ) {
-    val hasNameAndDescription: Boolean
-        get() = !name.isNullOrBlank() && !description.isNullOrBlank()
+    val hasNameOrDescription: Boolean
+        get() = !name.isNullOrBlank() || !description.isNullOrBlank()
 
     companion object {
         val empty = DeepLink(

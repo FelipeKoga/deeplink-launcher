@@ -93,6 +93,7 @@ class HomeScreenModel(
         when (launchDeepLink.launch(link)) {
             is LaunchDeepLinkResult.Success -> {
                 insertDeepLink(link)
+                eventDispatcher.send(HomeEvent.DeepLinksLaunched)
             }
 
             is LaunchDeepLinkResult.Failure -> {
