@@ -13,7 +13,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.ArrowBack
 import androidx.compose.material3.Button
 import androidx.compose.material3.Divider
-import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LocalTextStyle
@@ -70,7 +69,6 @@ fun DuplicateDeepLinkUI(
         }
 
         Column {
-
             Column(modifier = Modifier.padding(horizontal = 24.dp, vertical = 8.dp)) {
                 DLLTextField(
                     label = "Enter your new deeplink",
@@ -126,9 +124,7 @@ fun DuplicateDeepLinkUI(
                         onCheckedChange = { copyAllFields = it },
                     )
                 }
-
             }
-
 
             Spacer(modifier = Modifier.height(12.dp))
 

@@ -25,7 +25,6 @@ class ImportDeepLinks(
 
             when (fileType) {
                 FileType.JSON -> {
-
                     val json = Json {
                         ignoreUnknownKeys = true
                         allowTrailingComma = true

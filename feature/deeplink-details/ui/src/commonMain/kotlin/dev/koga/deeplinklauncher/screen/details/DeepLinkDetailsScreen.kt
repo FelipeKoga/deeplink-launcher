@@ -116,7 +116,6 @@ class DeepLinkDetailsScreen(private val deepLinkId: String) : Screen {
                 }
             }
 
-
             AnimatedVisibility(
                 visible = detailsMode !is DetailsMode.Duplicate,
             ) {
