@@ -1,7 +1,9 @@
 import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant
 import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toJavaLocalDateTime
 import kotlinx.datetime.toLocalDateTime
+import java.time.ZoneOffset
 
 object Configuration {
     private const val majorVersion = 1
@@ -22,13 +24,6 @@ object Configuration {
     private fun getDateVersionBuild(): Int {
         val instant: Instant = Clock.System.now()
         val localDateTime = instant.toLocalDateTime(TimeZone.currentSystemDefault())
-
-        val year = localDateTime.year % 100
-        val month = localDateTime.monthNumber
-        val day = localDateTime.dayOfMonth
-        val hour = localDateTime.hour
-        val minute = localDateTime.minute
-
-        return (year * 1000000) + (month * 10000) + (day * 1000) + (hour * 100) + minute * 10
+        return localDateTime.toJavaLocalDateTime().toEpochSecond(ZoneOffset.UTC).toInt()
     }
 }
