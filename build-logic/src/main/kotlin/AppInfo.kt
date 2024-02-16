@@ -22,8 +22,6 @@ object Configuration {
     const val jvmTarget = "1.8"
 
     private fun getDateVersionBuild(): Int {
-        val instant: Instant = Clock.System.now()
-        val localDateTime = instant.toLocalDateTime(TimeZone.currentSystemDefault())
-        return localDateTime.toJavaLocalDateTime().toEpochSecond(ZoneOffset.UTC).toInt()
+        return Clock.System.now().epochSeconds.toInt()
     }
 }
