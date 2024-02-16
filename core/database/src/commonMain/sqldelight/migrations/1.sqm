@@ -1,3 +1,0 @@
-import kotlinx.datetime.LocalDateTime;
-
-ALTER TABLE deeplink ADD COLUMN lastLaunchedAt INTEGER AS LocalDateTime;
