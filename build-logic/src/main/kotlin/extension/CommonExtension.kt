@@ -27,26 +27,6 @@ fun CommonExtension<*, *, *, *, *>.composeConfig(libs: VersionCatalog) {
     }
 }
 
-internal fun CommonExtension<*, *, *, *, *>.setupReleaseSigningConfig(
-    project: Project,
-) {
-    val file = project.rootProject.file("keystore.properties")
-
-    val keystoreProperties = Properties()
-    if (file.exists()) {
-        keystoreProperties.load(file.inputStream())
-    }
-
-    signingConfigs {
-        create("release") {
-            storeFile = project.file(keystoreProperties.getProperty("storeFile"))
-            storePassword = keystoreProperties.getProperty("KEYSTORE_PASSWORD", "")
-            keyAlias = keystoreProperties.getProperty("KEYSTORE_ALIAS", "")
-            keyPassword = keystoreProperties.getProperty("KEY_PASSWORD", "")
-        }
-    }
-}
-
 fun KotlinMultiplatformExtension.binariesFrameworkConfig(name: String) {
     listOf(
         iosX64(),

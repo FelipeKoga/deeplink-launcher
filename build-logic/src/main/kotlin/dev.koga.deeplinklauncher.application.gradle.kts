@@ -1,5 +1,4 @@
 import extension.composeConfig
-import extension.setupReleaseSigningConfig
 import org.gradle.api.artifacts.VersionCatalog
 import org.gradle.api.artifacts.VersionCatalogsExtension
 import java.util.Properties
@@ -11,10 +10,7 @@ plugins {
 }
 
 val keystoreProperties = Properties()
-val keystorePropertiesFile: File = project.rootProject.file("keystore.properties")
-if (keystorePropertiesFile.exists()) {
-    keystorePropertiesFile.inputStream().use { keystoreProperties.load(it) }
-}
+keystoreProperties.load(File(rootDir, "keystore.properties").inputStream())
 
 val libs: VersionCatalog = extensions.getByType<VersionCatalogsExtension>().named("libs")
 
@@ -44,8 +40,16 @@ android {
         }
     }
 
-    setupReleaseSigningConfig(project)
     composeConfig(libs)
+
+    signingConfigs {
+        create("release") {
+            storeFile = file("release.jks")
+            storePassword = keystoreProperties.getProperty("KEYSTORE_PASSWORD", "")
+            keyAlias = keystoreProperties.getProperty("KEYSTORE_ALIAS", "")
+            keyPassword = keystoreProperties.getProperty("KEY_PASSWORD", "")
+        }
+    }
 
     buildTypes {
         release {
