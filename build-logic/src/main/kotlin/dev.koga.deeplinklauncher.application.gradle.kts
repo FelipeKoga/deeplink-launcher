@@ -10,7 +10,9 @@ plugins {
 }
 
 val keystoreProperties = Properties()
-keystoreProperties.load(File(rootDir, "keystore.properties").inputStream())
+if (rootDir.resolve("keystore.properties").exists()) {
+    keystoreProperties.load(File(rootDir, "keystore.properties").inputStream())
+}
 
 val libs: VersionCatalog = extensions.getByType<VersionCatalogsExtension>().named("libs")
 
