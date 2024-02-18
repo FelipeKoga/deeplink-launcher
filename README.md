@@ -11,6 +11,10 @@ DeepLink Launcher streamlines the management of deeplinks for developers and QA.
 ![Pull Requests](https://img.shields.io/github/issues-pr/FelipeKoga/deeplink-launcher)
 
 
+## Screenshots
+<img src="screenshots/deeplink_launcher_1.png" alt="Screenshot">
+<img src="screenshots/deeplink_launcher_2.png" alt="Screenshot">
+
 ## Features
 - [x] **Execute Deeplinks**: Quickly and easily execute deeplinks.
 - [x] **Deeplink History**: Track all executed deeplinks.
