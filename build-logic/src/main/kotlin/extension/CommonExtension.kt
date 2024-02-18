@@ -40,9 +40,9 @@ internal fun CommonExtension<*, *, *, *, *>.setupReleaseSigningConfig(
     signingConfigs {
         create("release") {
             storeFile = project.file(keystoreProperties.getProperty("storeFile"))
-            storePassword = keystoreProperties.getProperty("storePassword", "")
-            keyAlias = keystoreProperties.getProperty("keyAlias", "")
-            keyPassword = keystoreProperties.getProperty("keyPassword", "")
+            storePassword = keystoreProperties.getProperty("KEYSTORE_PASSWORD", "")
+            keyAlias = keystoreProperties.getProperty("KEYSTORE_ALIAS", "")
+            keyPassword = keystoreProperties.getProperty("KEY_PASSWORD", "")
         }
     }
 }
