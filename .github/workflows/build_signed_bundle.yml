@@ -78,7 +78,7 @@ jobs:
           . './keystore.properties' &&
           echo "$KEYSTORE_SECRET" > ./androidApp/release.asc &&
           gpg -d \
-          --passphrase "$KEYSTORE_PASSWORD" \
+          --passphrase "${KEYSTORE_PASSWORD}" \
           --batch ./androidApp/release.asc > ./androidApp/release.jks &&
           rm ./androidApp/release.asc
         continue-on-error: false
