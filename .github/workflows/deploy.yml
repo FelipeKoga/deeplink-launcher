@@ -14,6 +14,6 @@ jobs:
     secrets: inherit
 
   create-github-release:
-      uses: ./.github/workflows/github-release.yml
+      uses: ./.github/workflows/github_release.yml
       needs: build-signed-bundle
       secrets: inherit
