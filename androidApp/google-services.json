@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "23464500627",
+    "project_id": "deeplink-launcher",
+    "storage_bucket": "deeplink-launcher.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:23464500627:android:561ab24a5f3decb5869c66",
+        "android_client_info": {
+          "package_name": "dev.koga.deeplinklauncher.android"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC5DJ-JLh0MmRJLeX40RZQpIXuhXr_uigg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
