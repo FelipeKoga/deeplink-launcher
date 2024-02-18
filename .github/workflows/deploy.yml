@@ -9,11 +9,10 @@ on:
 jobs:
 
   build-signed-bundle:
-    uses: ./.github/workflows/build-signed-bundle.yml
-    needs: create-release-notes
+    uses: ./.github/workflows/build_signed_bundle.yml
     secrets: inherit
 
   create-github-release:
-      uses: ./.github/workflows/github_release.yml
-      needs: build-signed-bundle
-      secrets: inherit
+    uses: ./.github/workflows/github_release.yml
+    needs: build-signed-bundle
+    secrets: inherit
