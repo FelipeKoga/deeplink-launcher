@@ -73,9 +73,6 @@ jobs:
           fi
         shell: bash
 
-      - name: Source Keystore Properties
-        run: . ./keystore.properties
-
       - name: Decode Release Key
         run: |
           . './keystore.properties' &&
