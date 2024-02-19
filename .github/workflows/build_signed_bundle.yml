@@ -77,7 +77,7 @@ jobs:
         run: |
           . './keystore.properties' &&
           echo "${{ secrets.KEYSTORE_DECRYPT_SECRET }}" > ./androidApp/release.asc &&
-          gpg --batch --yes --decrypt --passphrase "${KEYSTORE_PASSWORD}" ./androidApp/release.asc > ./androidApp/release.jks &&
+          gpg --batch --yes --decrypt --passphrase "${{ secrets.KEYSTORE_DECRYPT_PASSWORD }}" ./androidApp/release.asc > ./androidApp/release.jks &&
           rm ./androidApp/release.asc
         continue-on-error: false
 
