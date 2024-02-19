@@ -37,45 +37,8 @@ jobs:
       - name: Update dependencies
         run: ./gradlew dependencies
 
-      - name: Create Keystore Properties
-        run: |
-          echo "${{ secrets.KEYSTORE_PROPERTIES }}" > \
-          ${{ github.workspace }}/keystore.properties
-
-      - name: Check Keystore Properties file is created
-        run: |
-          if [ -f ./keystore.properties ]; then
-          echo "keystore.properties exists."
-          else
-          echo "keystore.properties does not exist." >&2
-          exit 1
-          fi
-        continue-on-error: false
-
-      - name: Check Keystore Properties contain required variables
-        run: |
-          required_vars=\
-          ("KEY_PASSWORD" "KEYSTORE_PASSWORD" "KEYSTORE_ALIAS" "KEYSTORE_SECRET")
-
-          missing_vars=()
-          
-          for var in "${required_vars[@]}"; do
-            if ! grep -q "^$var=" ./keystore.properties; then
-              missing_vars+=("$var")
-            fi
-          done  
-          
-          if [ ${#missing_vars[@]} -ne 0 ]; then
-            echo "Missing variables in keystore.properties: ${missing_vars[*]}"
-            exit 1
-          else
-            echo "All required variables are present in keystore.properties."
-          fi
-        shell: bash
-
       - name: Decode Release Key
         run: |
-          . './keystore.properties' &&
           echo "${{ secrets.KEYSTORE_DECRYPT_SECRET }}" > ./androidApp/release.asc &&
           gpg --batch --yes --decrypt --passphrase "${{ secrets.KEYSTORE_DECRYPT_PASSWORD }}" ./androidApp/release.asc > ./androidApp/release.jks &&
           rm ./androidApp/release.asc
