@@ -47,9 +47,9 @@ android {
     signingConfigs {
         create("release") {
             storeFile = file("release.jks")
-            storePassword = keystoreProperties.getProperty("KEYSTORE_PASSWORD", "")
-            keyAlias = keystoreProperties.getProperty("KEYSTORE_ALIAS", "")
-            keyPassword = keystoreProperties.getProperty("KEY_PASSWORD", "")
+            storePassword = getSigningKey(keystoreProperties, "KEYSTORE_PASSWORD")
+            keyAlias = getSigningKey(keystoreProperties, "KEYSTORE_ALIAS")
+            keyPassword = getSigningKey(keystoreProperties, "KEY_PASSWORD")
         }
     }
 
@@ -65,3 +65,10 @@ android {
         }
     }
 }
+
+fun getSigningKey(properties: Properties, secretKey: String): String =
+    if (!System.getenv(secretKey).isNullOrEmpty()) {
+        System.getenv(secretKey)
+    } else {
+        properties.getProperty(secretKey)
+    }
