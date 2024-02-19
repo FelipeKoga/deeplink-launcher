@@ -3,6 +3,11 @@ name: Build Signed Bundle
 on:
   workflow_call:
 
+env:
+  KEYSTORE_ALIAS: ${{ secrets.KEYSTORE_ALIAS }}
+  KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+  KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+
 jobs:
   build-and-sign-bundle:
     runs-on: ubuntu-latest
