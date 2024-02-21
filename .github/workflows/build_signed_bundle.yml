@@ -4,6 +4,7 @@ on:
   workflow_call:
 
 env:
+  KEYSTORE_FILE_NAME: ${{ secrets.KEYSTORE_FILE_NAME }}
   KEYSTORE_ALIAS: ${{ secrets.KEYSTORE_ALIAS }}
   KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
   KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
@@ -23,7 +24,6 @@ jobs:
           key: >
             ${{ runner.os }}-gradle-
             ${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
-          # It finds the cache by key "Linux-gradle-"
           restore-keys: ${{ runner.os }}-gradle-
 
       - name: Set up JDK 17
@@ -44,14 +44,14 @@ jobs:
 
       - name: Decode Release Key
         run: |
-          echo "${{ secrets.KEYSTORE_DECRYPT_SECRET }}" > ./androidApp/release.asc &&
-          gpg --batch --yes --decrypt --passphrase "${{ secrets.KEYSTORE_DECRYPT_PASSWORD }}" ./androidApp/release.asc > ./androidApp/release.jks &&
-          rm ./androidApp/release.asc
+          echo "${{ secrets.KEYSTORE_DECRYPT_SECRET }}" > ./androidApp/${{ secrets.KEYSTORE_FILE_NAME }}.asc &&
+          gpg --batch --yes --decrypt --passphrase "${{ secrets.KEYSTORE_DECRYPT_PASSWORD }}" ./androidApp/${{ secrets.KEYSTORE_FILE_NAME }}.asc > ./androidApp/${{ secrets.KEYSTORE_FILE_NAME }} &&
+          rm ./androidApp/${{ secrets.KEYSTORE_FILE_NAME }}.asc
         continue-on-error: false
 
       - name: Check Release Key is created
         run: |
-          if [ -f ./androidApp/release.jks ]; then
+          if [ -f ./androidApp/${{ secrets.KEYSTORE_FILE_NAME }} ]; then
           echo "Release key exists."
           else
           echo "Release key does not exist." >&2
@@ -63,7 +63,7 @@ jobs:
         run: ./gradlew clean bundleRelease --stacktrace --no-build-cache
 
       - name: Remove Release Key
-        run: rm ./androidApp/release.jks
+        run: rm ./androidApp/${{ secrets.KEYSTORE_FILE_NAME }}
 
       - name: Upload AAB to GitHub Artifacts
         uses: actions/upload-artifact@v4

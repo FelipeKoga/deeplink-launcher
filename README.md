@@ -49,7 +49,7 @@ Currently, DeepLink Launcher is available only on **Android**. However, since I 
 
 - [x] **Compose Multiplatform project**
 - [x] **Modularization by feature**
-- [ ] **CI/CD with GitHub Actions**
+- [x] **CI/CD with GitHub Actions**
 - [ ] **Unit and Integration Tests**
 - [ ] **Integration with [Maestro](https://maestro.mobile.dev/)**
 - [ ] **In-App Updates**
