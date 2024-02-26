@@ -29,7 +29,7 @@ Currently, DeepLink Launcher is available only on **Android**. However, since I 
 
 ## Built With
 
-- **MVVM and Clean Architecture**
+- **MVVM**
 - **[Compose Multiplatform](https://github.com/JetBrains/compose-jb)**
 - **[Voyager](https://github.com/adrielcafe/voyager)**
 - **[Koin](https://insert-koin.io/)**
