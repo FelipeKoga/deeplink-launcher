@@ -4,12 +4,9 @@
 
 DeepLink Launcher streamlines the management of deeplinks for developers and QA. Featuring a user-friendly interface built on Compose Multiplatform and Material3, it simplifies executing, organizing, tracking, and sharing deeplinks.
 
-![License](https://img.shields.io/github/license/FelipeKoga/deeplink-launcher)
 ![Stars](https://img.shields.io/github/stars/FelipeKoga/deeplink-launcher)
-![Forks](https://img.shields.io/github/forks/FelipeKoga/deeplink-launcher)
-![Issues](https://img.shields.io/github/issues/FelipeKoga/deeplink-launcher)
-![Pull Requests](https://img.shields.io/github/issues-pr/FelipeKoga/deeplink-launcher)
-
+<a href="https://github.com/FelipeKoga/deeplink-launcher/actions/workflows/run_tests.yml"><img alt="Test Status" src="https://github.com/FelipeKoga/deeplink-launcher/actions/workflows/run_tests.yml/badge.svg"/></a>
+<a href="https://github.com/FelipeKoga/deeplink-launcher/actions/workflows/deploy.yml"><img alt="Deploy" src="https://github.com/FelipeKoga/deeplink-launcher/actions/workflows/deploy.yml/badge.svg"/></a>
 
 ## Screenshots
 <img src="screenshots/deeplink_launcher_1.png" alt="Screenshot">
