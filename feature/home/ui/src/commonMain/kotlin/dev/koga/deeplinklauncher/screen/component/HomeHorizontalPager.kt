@@ -33,7 +33,7 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import dev.koga.deeplinklauncher.deeplink.DeepLinkItem
+import dev.koga.deeplinklauncher.deeplink.DeepLinkCard
 import dev.koga.deeplinklauncher.folder.FolderCard
 import dev.koga.deeplinklauncher.model.DeepLink
 import dev.koga.deeplinklauncher.model.Folder
@@ -117,7 +117,7 @@ fun DeepLinksLazyColumn(
             key = { it.id },
             items = deepLinks,
         ) { deepLink ->
-            DeepLinkItem(
+            DeepLinkCard(
                 deepLink = deepLink,
                 onClick = { onClick(deepLink) },
                 onLaunch = { onLaunch(deepLink) },

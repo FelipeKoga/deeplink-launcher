@@ -1,6 +1,13 @@
 package dev.koga.deeplinklauncher
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.imePadding
+import androidx.compose.foundation.layout.navigationBars
+import androidx.compose.foundation.layout.safeDrawing
+import androidx.compose.foundation.layout.systemBars
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material3.MaterialTheme
@@ -24,9 +31,12 @@ import kotlinx.coroutines.flow.map
 fun MainApp() {
     DLLTheme {
         BottomSheetNavigator(
-            modifier = Modifier.imePadding(),
+            modifier = Modifier
+                .fillMaxSize()
+                .background(MaterialTheme.colorScheme.background)
+                .imePadding()
+                .windowInsetsPadding(WindowInsets.safeDrawing),
             sheetBackgroundColor = MaterialTheme.colorScheme.surface,
-            sheetContentColor = Color.White,
             sheetElevation = 12.dp,
             sheetShape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp),
         ) {

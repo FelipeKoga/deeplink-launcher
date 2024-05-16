@@ -25,6 +25,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import dev.icerock.moko.resources.compose.painterResource
+import dev.koga.deeplinklauncher.DLLSearchBar
 import dev.koga.deeplinklauncher.DLLTextField
 import dev.koga.resources.MR
 
@@ -41,46 +42,29 @@ internal fun HomeLaunchDeepLinkBottomSheetContent(
     Column(
         modifier = modifier
             .fillMaxWidth()
-            .padding(start = 24.dp, end = 24.dp, bottom = 24.dp),
+            .padding(start = 24.dp, end = 24.dp, bottom = 12.dp),
     ) {
         Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-            DLLTextField(
-                label = "Enter your deeplink here",
+            DLLSearchBar(
+                modifier = Modifier.weight(1f),
                 value = value,
-                onValueChange = onValueChange,
-                modifier = Modifier.clip(RoundedCornerShape(12.dp)).weight(1f),
-                imeAction = ImeAction.Done,
-                onDone = launch,
-                textStyle = LocalTextStyle.current.copy(
-                    fontWeight = FontWeight.SemiBold,
-                ),
-                trailingIcon = {
-                    AnimatedVisibility(visible = value.isNotEmpty()) {
-                        IconButton(onClick = {
-                            onValueChange("")
-                            focusManager.clearFocus(force = true)
-                        }) {
-                            Icon(
-                                imageVector = Icons.Rounded.Clear,
-                                contentDescription = "Clear",
-                            )
-                        }
-                    }
-                },
+                onChanged = onValueChange,
+                hint = "Enter your deeplink"
             )
-
-            Spacer(modifier = Modifier.width(8.dp))
 
             AnimatedVisibility(
                 visible = value.isNotEmpty(),
             ) {
-                FilledTonalIconButton(
-                    onClick = launch,
-                ) {
-                    Icon(
-                        painter = painterResource(MR.images.ic_launch_24dp),
-                        contentDescription = "Launch",
-                    )
+                Row {
+                    Spacer(modifier = Modifier.width(8.dp))
+                    FilledTonalIconButton(
+                        onClick = launch,
+                    ) {
+                        Icon(
+                            painter = painterResource(MR.images.ic_launch_24dp),
+                            contentDescription = "Launch",
+                        )
+                    }
                 }
             }
         }
