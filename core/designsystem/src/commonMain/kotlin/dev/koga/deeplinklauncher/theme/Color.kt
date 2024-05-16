@@ -1,18 +1,61 @@
 package dev.koga.deeplinklauncher.theme
 
-import androidx.compose.material3.darkColorScheme
 import androidx.compose.ui.graphics.Color
 
-val primaryTextColor = Color(0xFFE0E0E0)
-val secondaryTextColor = Color(0xFFB3B3B3)
+val primaryLight = Color(0xFF0C0C10)
+val onPrimaryLight = Color(0xFFFFFFFF)
+val primaryContainerLight = Color(0xFF2D2C31)
+val onPrimaryContainerLight = Color(0xFFBCB8BF)
+val secondaryLight = Color(0xFF605E60)
+val onSecondaryLight = Color(0xFFFFFFFF)
+val secondaryContainerLight = Color(0xFFE9E5E8)
+val onSecondaryContainerLight = Color(0xFF4B4A4C)
+val tertiaryLight = Color(0xFF110B0E)
+val onTertiaryLight = Color(0xFFFFFFFF)
+val tertiaryContainerLight = Color(0xFF332B2E)
+val onTertiaryContainerLight = Color(0xFFC3B7BB)
+val errorLight = Color(0xFFBA1A1A)
+val onErrorLight = Color(0xFFFFFFFF)
+val errorContainerLight = Color(0xFFFFDAD6)
+val onErrorContainerLight = Color(0xFF410002)
+val backgroundLight = Color(0xFFFDF8F8)
+val onBackgroundLight = Color(0xFF1C1B1C)
+val surfaceLight = Color(0xFFFDF8F8)
+val onSurfaceLight = Color(0xFF1C1B1C)
+val surfaceVariantLight = Color(0xFFE5E1E7)
+val onSurfaceVariantLight = Color(0xFF48464B)
+val outlineLight = Color(0xFF78767B)
+val outlineVariantLight = Color(0xFFC9C5CB)
+val scrimLight = Color(0xFF000000)
+val inverseSurfaceLight = Color(0xFF313030)
+val inverseOnSurfaceLight = Color(0xFFF4F0F0)
+val inversePrimaryLight = Color(0xFFC9C5CC)
 
-val colors = darkColorScheme(
-    primary = Color(0xFFE0E0E0), // Soft white for primary elements
-    onPrimary = Color(0xFF2C2C2C), // Very dark gray for text/icons on primary, softer than pure black
-    onSecondary = Color(0xFFE0E0E0), // Soft white for text/icons on secondary elements
-    background = Color(0xFF121212), // Slightly lighter dark gray for background, less harsh than pure black
-    surface = Color(0xFF121212), // Matching the background for consistency
-    onSurface = Color(0xFFE0E0E0), // Soft white for text/icons on surface
-    secondaryContainer = Color(0xFF2C2C2C), // Very dark gray for secondary containers, for slight contrast
-    onSecondaryContainer = Color(0xFFE0E0E0), // Soft white for text/icons on secondary containers
-)
+val primaryDark = Color(0xFFC9C5CC)
+val onPrimaryDark = Color(0xFF313035)
+val primaryContainerDark = Color(0xFF19181D)
+val onPrimaryContainerDark = Color(0xFFA6A3A9)
+val secondaryDark = Color(0xFFC9C5C8)
+val onSecondaryDark = Color(0xFF313032)
+val secondaryContainerDark = Color(0xFF3E3D3F)
+val onSecondaryContainerDark = Color(0xFFD4D0D3)
+val tertiaryDark = Color(0xFFD0C3C7)
+val onTertiaryDark = Color(0xFF362E31)
+val tertiaryContainerDark = Color(0xFF1D171A)
+val onTertiaryContainerDark = Color(0xFFADA1A5)
+val errorDark = Color(0xFFFFB4AB)
+val onErrorDark = Color(0xFF690005)
+val errorContainerDark = Color(0xFF93000A)
+val onErrorContainerDark = Color(0xFFFFDAD6)
+val backgroundDark = Color(0xFF141314)
+val onBackgroundDark = Color(0xFFE5E1E2)
+val surfaceDark = Color(0xFF141314)
+val onSurfaceDark = Color(0xFFE5E1E2)
+val surfaceVariantDark = Color(0xFF48464B)
+val onSurfaceVariantDark = Color(0xFFC9C5CB)
+val outlineDark = Color(0xFF929095)
+val outlineVariantDark = Color(0xFF48464B)
+val scrimDark = Color(0xFF000000)
+val inverseSurfaceDark = Color(0xFFE5E1E2)
+val inverseOnSurfaceDark = Color(0xFF313030)
+val inversePrimaryDark = Color(0xFF5F5D63)
