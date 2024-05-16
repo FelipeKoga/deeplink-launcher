@@ -1,13 +1,17 @@
 package dev.koga.deeplinklauncher
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Close
 import androidx.compose.material.icons.rounded.Search
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
@@ -22,12 +26,17 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.focus.onFocusChanged
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DLLSearchBar(
     modifier: Modifier = Modifier,
@@ -41,7 +50,7 @@ fun DLLSearchBar(
         mutableStateOf(false)
     }
 
-    TextField(
+    BasicTextField(
         value = value,
         onValueChange = onChanged,
         keyboardOptions = KeyboardOptions.Default.copy(
@@ -49,56 +58,78 @@ fun DLLSearchBar(
         ),
         modifier = modifier
             .fillMaxWidth()
-            .zIndex(1f)
-            .shadow(
-                elevation = 4.dp,
-                shape = CircleShape,
-            )
+            .border(.4.dp, MaterialTheme.colorScheme.outlineVariant, CircleShape)
             .onFocusChanged {
                 isFocused = it.isFocused
             },
-        colors = TextFieldDefaults.colors(
-            cursorColor = MaterialTheme.colorScheme.onSurface,
-            focusedLeadingIconColor = MaterialTheme.colorScheme.primary,
-            focusedIndicatorColor = Color.Transparent,
-            unfocusedIndicatorColor = Color.Transparent,
-            focusedLabelColor = MaterialTheme.colorScheme.onSurface,
+
+        textStyle = MaterialTheme.typography.bodyLarge.copy(
+            fontWeight = FontWeight.SemiBold,
+            color = MaterialTheme.colorScheme.secondary,
         ),
-        leadingIcon = {
-            Icon(
-                imageVector = Icons.Rounded.Search,
-                contentDescription = "",
-                tint = if (isFocused) {
-                    MaterialTheme.colorScheme.primary
-                } else {
-                    LocalContentColor.current
-                },
-            )
-        },
-        trailingIcon = {
-            AnimatedVisibility(
-                visible = isFocused,
-            ) {
+        cursorBrush = Brush.linearGradient(
+            listOf(MaterialTheme.colorScheme.onBackground, MaterialTheme.colorScheme.onBackground)
+        )
+    ) {
+        TextFieldDefaults.DecorationBox(
+            value = value,
+            innerTextField = it,
+            enabled = true,
+            singleLine = true,
+            visualTransformation = VisualTransformation.None,
+            interactionSource = MutableInteractionSource(),
+            colors = TextFieldDefaults.colors(
+                focusedContainerColor = Color.Transparent,
+                unfocusedContainerColor = Color.Transparent,
+                focusedIndicatorColor = Color.Transparent,
+                unfocusedIndicatorColor = Color.Transparent,
+                disabledIndicatorColor = Color.Transparent,
+                errorIndicatorColor = Color.Transparent,
+            ),
+            shape = CircleShape,
+            placeholder = {
+                Text(
+                    text = hint,
+                    style = MaterialTheme.typography.bodyMedium.copy(
+                        fontWeight = FontWeight.SemiBold,
+                    ),
+                )
+            },
+            leadingIcon = {
                 Icon(
-                    imageVector = Icons.Rounded.Close,
+                    imageVector = Icons.Rounded.Search,
                     contentDescription = "",
                     tint = if (isFocused) {
                         MaterialTheme.colorScheme.primary
                     } else {
                         LocalContentColor.current
                     },
-                    modifier = Modifier.clickable {
-                        isFocused = false
-                        focusManager.clearFocus()
-                        onChanged("")
-                    },
                 )
-            }
-        },
-        label = {
-            Text(
-                text = hint,
-            )
-        },
-    )
+            },
+            trailingIcon = {
+                AnimatedVisibility(
+                    visible = value.isNotEmpty(),
+                ) {
+                    Icon(
+                        imageVector = Icons.Rounded.Close,
+                        contentDescription = "",
+                        tint = if (isFocused) {
+                            MaterialTheme.colorScheme.primary
+                        } else {
+                            LocalContentColor.current
+                        },
+                        modifier = Modifier.clickable {
+                            isFocused = false
+                            focusManager.clearFocus()
+                            onChanged("")
+                        },
+                    )
+                }
+            },
+            contentPadding = TextFieldDefaults.contentPaddingWithoutLabel(
+                top = 0.dp,
+                bottom = 0.dp,
+            ),
+        )
+    }
 }

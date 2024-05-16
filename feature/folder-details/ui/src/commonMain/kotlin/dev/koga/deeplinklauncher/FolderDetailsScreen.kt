@@ -41,12 +41,11 @@ import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.bottomSheet.LocalBottomSheetNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import dev.koga.deeplinklauncher.component.DeleteFolderBottomSheet
-import dev.koga.deeplinklauncher.deeplink.DeepLinkItem
+import dev.koga.deeplinklauncher.deeplink.DeepLinkCard
 import dev.koga.deeplinklauncher.folder.EditableText
 import dev.koga.deeplinklauncher.model.DeepLink
 import dev.koga.deeplinklauncher.theme.LocalDimensions
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.launch
 import org.koin.core.parameter.parametersOf
 
 class FolderDetailsScreen(private val folderId: String) : Screen {
@@ -215,7 +214,7 @@ fun FolderDetailsScreenContent(
         }
 
         items(form.deepLinks) {
-            DeepLinkItem(
+            DeepLinkCard(
                 deepLink = it,
                 onClick = { onDeepLinkClick(it) },
                 onLaunch = { onDeepLinkLaunch(it) },
