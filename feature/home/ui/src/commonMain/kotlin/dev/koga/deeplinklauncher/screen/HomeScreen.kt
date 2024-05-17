@@ -51,13 +51,18 @@ object HomeScreen : Screen {
     override fun Content() {
         val settingsScreen = rememberScreen(SharedScreen.Settings)
 
+        val bottomSheetState = rememberStandardBottomSheetState(
+            initialValue = SheetValue.Expanded,
+            confirmValueChange = { it != SheetValue.Hidden },
+        )
+
+        val scaffoldState = rememberBottomSheetScaffoldState(
+            bottomSheetState = bottomSheetState,
+        )
+
         val scope = rememberCoroutineScope()
         val navigator = LocalNavigator.currentOrThrow
         val bottomSheetNavigator = LocalBottomSheetNavigator.current
-
-        val bottomSheetState = rememberStandardBottomSheetState(
-            initialValue = SheetValue.Expanded,
-        )
 
         val allDeepLinksListState = rememberLazyListState()
         val favoritesDeepLinksListState = rememberLazyListState()
@@ -103,15 +108,13 @@ object HomeScreen : Screen {
         )
 
         BottomSheetScaffold(
+            scaffoldState = scaffoldState,
             topBar = {
                 HomeTopBar(
                     scrollBehavior = scrollBehavior,
                     onSettingsScreen = { navigator.push(settingsScreen) },
                 )
             },
-            scaffoldState = rememberBottomSheetScaffoldState(
-                bottomSheetState = bottomSheetState,
-            ),
             sheetContent = {
                 HomeLaunchDeepLinkBottomSheetContent(
                     value = uiState.inputText,
