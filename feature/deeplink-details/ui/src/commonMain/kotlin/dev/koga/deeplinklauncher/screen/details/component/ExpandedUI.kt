@@ -114,38 +114,18 @@ fun DeepLinkDetailsExpandedUI(
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            Text(
-                text = "Name",
-                style = MaterialTheme.typography.labelSmall.copy(
-                    fontWeight = FontWeight.Light,
-                    color = MaterialTheme.colorScheme.onBackground,
-                ),
-            )
-
-            Spacer(modifier = Modifier.height(8.dp))
-
             DeepLinkDetailsTextField(
                 text = deepLink.name.orEmpty(),
                 onTextChange = onNameChanged,
-                label = "Enter a name",
+                label = "Name",
             )
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            Text(
-                text = "Description",
-                style = MaterialTheme.typography.labelSmall.copy(
-                    fontWeight = FontWeight.Light,
-                    color = MaterialTheme.colorScheme.onBackground,
-                ),
-            )
-
-            Spacer(modifier = Modifier.height(8.dp))
-
             DeepLinkDetailsTextField(
                 text = deepLink.description.orEmpty(),
                 onTextChange = onDescriptionChanged,
-                label = "Enter a description",
+                label = "Description",
             )
 
             Spacer(modifier = Modifier.height(24.dp))
