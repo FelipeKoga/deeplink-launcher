@@ -22,9 +22,13 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import cafe.adriel.voyager.core.registry.ScreenRegistry
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.koin.getScreenModel
+import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.bottomSheet.LocalBottomSheetNavigator
+import cafe.adriel.voyager.navigator.currentOrThrow
+import dev.koga.deeplinklauncher.SharedScreen
 import dev.koga.deeplinklauncher.component.DeleteDeepLinkConfirmationBottomSheet
 import dev.koga.deeplinklauncher.model.DeepLink
 import dev.koga.deeplinklauncher.screen.details.component.DeepLinkActionsRow
@@ -40,16 +44,20 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import org.koin.core.parameter.parametersOf
 
-class DeepLinkDetailsScreen(private val deepLinkId: String) : Screen {
+class DeepLinkDetailsScreen(
+    private val deepLinkId: String,
+    private val showFolder: Boolean,
+) : Screen {
 
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
     override fun Content() {
-        val navigator = LocalBottomSheetNavigator.current
+        val navigator = LocalNavigator.currentOrThrow.parent
+        val bottomSheetNavigator = LocalBottomSheetNavigator.current
+
         val screenModel = getScreenModel<DeepLinkDetailsScreenModel>(
             parameters = { parametersOf(deepLinkId) },
         )
-
         val uiState by screenModel.uiState.collectAsState()
         var detailsMode by remember { mutableStateOf<DetailsMode>(DetailsMode.Collapsed) }
         var showDeleteBottomSheet by rememberSaveable { mutableStateOf(false) }
@@ -66,12 +74,12 @@ class DeepLinkDetailsScreen(private val deepLinkId: String) : Screen {
 
         DetailsEvents(
             events = screenModel.events,
-            onDeleted = navigator::hide,
+            onDeleted = bottomSheetNavigator::hide,
             onDuplicated = {
                 CoroutineScope(Dispatchers.Main).launch {
-                    navigator.hide()
+                    bottomSheetNavigator.hide()
                     delay(DELAY_BEFORE_SHOW_DUPLICATE)
-                    navigator.show(DeepLinkDetailsScreen(it.id))
+                    bottomSheetNavigator.show(DeepLinkDetailsScreen(it.id, showFolder))
                 }
             },
         )
@@ -89,8 +97,19 @@ class DeepLinkDetailsScreen(private val deepLinkId: String) : Screen {
                 when (target) {
                     DetailsMode.Collapsed -> DeepLinkDetailsCollapsedUI(
                         modifier = Modifier,
+                        showFolder = showFolder,
                         uiState = uiState,
                         onExpand = { detailsMode = DetailsMode.Expanded },
+                        onFolderClicked = {
+                            bottomSheetNavigator.hide()
+
+                            val screen = ScreenRegistry.get(
+                                SharedScreen.FolderDetails(
+                                    uiState.deepLink.folder!!.id,
+                                ),
+                            )
+                            bottomSheetNavigator.show(screen)
+                        },
                     )
 
                     DetailsMode.Expanded -> DeepLinkDetailsExpandedUI(

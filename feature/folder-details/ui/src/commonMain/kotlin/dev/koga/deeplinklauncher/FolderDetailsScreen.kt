@@ -1,10 +1,7 @@
 package dev.koga.deeplinklauncher
 
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -41,12 +38,11 @@ import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.bottomSheet.LocalBottomSheetNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import dev.koga.deeplinklauncher.component.DeleteFolderBottomSheet
-import dev.koga.deeplinklauncher.deeplink.DeepLinkItem
+import dev.koga.deeplinklauncher.deeplink.DeepLinkCard
 import dev.koga.deeplinklauncher.folder.EditableText
 import dev.koga.deeplinklauncher.model.DeepLink
 import dev.koga.deeplinklauncher.theme.LocalDimensions
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.launch
 import org.koin.core.parameter.parametersOf
 
 class FolderDetailsScreen(private val folderId: String) : Screen {
@@ -103,7 +99,9 @@ class FolderDetailsScreen(private val folderId: String) : Screen {
                 onEditName = screenModel::updateName,
                 onEditDescription = screenModel::updateDescription,
                 onDeepLinkClick = { deepLink ->
-                    val screen = ScreenRegistry.get(SharedScreen.DeepLinkDetails(deepLink.id))
+                    val screen = ScreenRegistry.get(
+                        SharedScreen.DeepLinkDetails(deepLink.id, false),
+                    )
                     bottomSheetNavigator.show(screen)
                 },
                 onDeepLinkLaunch = screenModel::launch,
@@ -126,15 +124,13 @@ fun FolderDetailsScreenContent(
 
     LazyColumn(
         modifier = modifier,
-        contentPadding = PaddingValues(horizontal = dimensions.extraLarge),
-        verticalArrangement = Arrangement.spacedBy(24.dp),
     ) {
         item {
             Spacer(modifier = Modifier.height(dimensions.extraLarge))
         }
 
         item {
-            Column {
+            Column(modifier = Modifier.padding(horizontal = 12.dp)) {
                 Text(
                     text = "Name",
                     style = MaterialTheme.typography.labelSmall.copy(
@@ -158,11 +154,9 @@ fun FolderDetailsScreenContent(
                         ),
                     )
                 }
-            }
-        }
 
-        item {
-            Column {
+                Spacer(modifier = Modifier.height(24.dp))
+
                 Text(
                     text = "Description",
                     style = MaterialTheme.typography.labelSmall.copy(
@@ -189,36 +183,34 @@ fun FolderDetailsScreenContent(
         }
 
         item {
-            Divider(modifier = Modifier.padding(vertical = dimensions.extraLarge))
+            Divider(
+                modifier = Modifier.padding(vertical = dimensions.extraLarge),
+                thickness = .4.dp,
+            )
         }
 
         stickyHeader {
-            if (form.deepLinks.isEmpty()) {
-                Text(
-                    text = "No deeplinks vinculated to this folder",
-                    style = MaterialTheme.typography.bodyMedium.copy(
-                        fontWeight = FontWeight.Normal,
-                    ),
-                )
-            } else {
-                Text(
-                    text = "Deeplinks",
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .background(MaterialTheme.colorScheme.surface)
-                        .padding(bottom = dimensions.mediumLarge),
-                    style = MaterialTheme.typography.labelMedium.copy(
-                        fontWeight = FontWeight.Bold,
-                    ),
-                )
-            }
+            Text(
+                text = if (form.deepLinks.isNotEmpty()) {
+                    "Deeplinks"
+                } else {
+                    "No deeplinks vinculated to this folder"
+                },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 12.dp),
+                style = MaterialTheme.typography.titleMedium.copy(
+                    fontWeight = FontWeight.Normal,
+                ),
+            )
         }
 
         items(form.deepLinks) {
-            DeepLinkItem(
+            DeepLinkCard(
                 deepLink = it,
                 onClick = { onDeepLinkClick(it) },
                 onLaunch = { onDeepLinkLaunch(it) },
+                showFolder = false,
             )
         }
 

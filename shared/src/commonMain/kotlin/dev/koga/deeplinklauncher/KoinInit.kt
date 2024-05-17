@@ -25,7 +25,12 @@ private val screenModule = screenModule {
     register<SharedScreen.ImportDeepLinks> { ImportScreen() }
     register<SharedScreen.ExportDeepLinks> { ExportScreen() }
     register<SharedScreen.Settings> { SettingsScreen() }
-    register<SharedScreen.DeepLinkDetails> { provider -> DeepLinkDetailsScreen(provider.id) }
+    register<SharedScreen.DeepLinkDetails> { provider ->
+        DeepLinkDetailsScreen(
+            provider.id,
+            provider.showFolder,
+        )
+    }
     register<SharedScreen.FolderDetails> { provider -> FolderDetailsScreen(provider.id) }
 }
 
