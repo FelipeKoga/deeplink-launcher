@@ -7,25 +7,17 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Clear
 import androidx.compose.material3.FilledTonalIconButton
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import dev.icerock.moko.resources.compose.painterResource
-import dev.koga.deeplinklauncher.DLLTextField
+import dev.koga.deeplinklauncher.DLLSearchBar
 import dev.koga.resources.MR
 
 @Composable
@@ -36,51 +28,32 @@ internal fun HomeLaunchDeepLinkBottomSheetContent(
     launch: () -> Unit,
     errorMessage: String? = null,
 ) {
-    val focusManager = LocalFocusManager.current
-
     Column(
         modifier = modifier
             .fillMaxWidth()
-            .padding(start = 24.dp, end = 24.dp, bottom = 24.dp),
+            .padding(start = 24.dp, end = 24.dp, bottom = 12.dp),
     ) {
         Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-            DLLTextField(
-                label = "Enter your deeplink here",
+            DLLSearchBar(
+                modifier = Modifier.weight(1f),
                 value = value,
-                onValueChange = onValueChange,
-                modifier = Modifier.clip(RoundedCornerShape(12.dp)).weight(1f),
-                imeAction = ImeAction.Done,
-                onDone = launch,
-                textStyle = LocalTextStyle.current.copy(
-                    fontWeight = FontWeight.SemiBold,
-                ),
-                trailingIcon = {
-                    AnimatedVisibility(visible = value.isNotEmpty()) {
-                        IconButton(onClick = {
-                            onValueChange("")
-                            focusManager.clearFocus(force = true)
-                        }) {
-                            Icon(
-                                imageVector = Icons.Rounded.Clear,
-                                contentDescription = "Clear",
-                            )
-                        }
-                    }
-                },
+                onChanged = onValueChange,
+                hint = "Enter your deeplink",
             )
-
-            Spacer(modifier = Modifier.width(8.dp))
 
             AnimatedVisibility(
                 visible = value.isNotEmpty(),
             ) {
-                FilledTonalIconButton(
-                    onClick = launch,
-                ) {
-                    Icon(
-                        painter = painterResource(MR.images.ic_launch_24dp),
-                        contentDescription = "Launch",
-                    )
+                Row {
+                    Spacer(modifier = Modifier.width(8.dp))
+                    FilledTonalIconButton(
+                        onClick = launch,
+                    ) {
+                        Icon(
+                            painter = painterResource(MR.images.ic_launch_24dp),
+                            contentDescription = "Launch",
+                        )
+                    }
                 }
             }
         }

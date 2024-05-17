@@ -1,11 +1,12 @@
 package dev.koga.deeplinklauncher
 
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.SearchBarDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldColors
@@ -19,18 +20,16 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.unit.dp
 
 val defaultTextFieldColors: TextFieldColors
     @Composable get() = TextFieldDefaults.colors(
-        focusedContainerColor = Color(0xFF171717),
-        unfocusedContainerColor = Color(0xFF171717),
         focusedIndicatorColor = Color.Transparent,
         unfocusedIndicatorColor = Color.Transparent,
         disabledIndicatorColor = Color.Transparent,
         errorIndicatorColor = Color.Transparent,
     )
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DLLTextField(
     modifier: Modifier = Modifier,
@@ -51,7 +50,7 @@ fun DLLTextField(
         value = value,
         modifier = modifier
             .fillMaxWidth()
-            .clip(RoundedCornerShape(12.dp)),
+            .clip(SearchBarDefaults.dockedShape),
         onValueChange = onValueChange,
         readOnly = readOnly,
         textStyle = textStyle,
@@ -59,7 +58,7 @@ fun DLLTextField(
             Text(
                 text = label,
                 style = MaterialTheme.typography.labelSmall.copy(
-                    fontWeight = FontWeight.Normal,
+                    fontWeight = FontWeight.SemiBold,
                 ),
             )
         },

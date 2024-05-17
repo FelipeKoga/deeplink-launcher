@@ -33,7 +33,7 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import dev.koga.deeplinklauncher.deeplink.DeepLinkItem
+import dev.koga.deeplinklauncher.deeplink.DeepLinkCard
 import dev.koga.deeplinklauncher.folder.FolderCard
 import dev.koga.deeplinklauncher.model.DeepLink
 import dev.koga.deeplinklauncher.model.Folder
@@ -68,6 +68,7 @@ internal fun HomeHorizontalPager(
                 paddingBottom = paddingBottom,
                 onClick = onDeepLinkClicked,
                 onLaunch = onDeepLinkLaunch,
+                onFolderClicked = onFolderClicked,
             )
 
             HomeTabPage.FAVORITES.ordinal -> DeepLinksLazyColumn(
@@ -77,6 +78,7 @@ internal fun HomeHorizontalPager(
                 paddingBottom = paddingBottom,
                 onClick = onDeepLinkClicked,
                 onLaunch = onDeepLinkLaunch,
+                onFolderClicked = onFolderClicked,
             )
 
             HomeTabPage.FOLDERS.ordinal -> FoldersVerticalStaggeredGrid(
@@ -98,6 +100,7 @@ fun DeepLinksLazyColumn(
     paddingBottom: Dp,
     onClick: (DeepLink) -> Unit,
     onLaunch: (DeepLink) -> Unit,
+    onFolderClicked: (Folder) -> Unit,
     deepLinksListState: LazyListState,
 ) {
     LazyColumn(
@@ -106,21 +109,19 @@ fun DeepLinksLazyColumn(
             .fillMaxSize()
             .nestedScroll(scrollBehavior.nestedScrollConnection),
         contentPadding = PaddingValues(
-            start = 8.dp,
-            end = 8.dp,
-            top = 12.dp,
             bottom = paddingBottom,
         ),
-        verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
         items(
             key = { it.id },
             items = deepLinks,
         ) { deepLink ->
-            DeepLinkItem(
+            DeepLinkCard(
+                modifier = Modifier.animateItemPlacement(),
                 deepLink = deepLink,
                 onClick = { onClick(deepLink) },
                 onLaunch = { onLaunch(deepLink) },
+                onFolderClicked = { onFolderClicked(deepLink.folder!!) },
             )
         }
     }

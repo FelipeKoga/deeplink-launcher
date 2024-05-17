@@ -1,15 +1,14 @@
 package dev.koga.deeplinklauncher.screen.details.component
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.ElevatedSuggestionChip
 import androidx.compose.material3.FilledTonalIconButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -26,8 +25,10 @@ import dev.koga.resources.MR
 @Composable
 fun DeepLinkDetailsCollapsedUI(
     modifier: Modifier,
+    showFolder: Boolean,
     uiState: DeepLinkDetailsUiState,
     onExpand: () -> Unit,
+    onFolderClicked: () -> Unit = {},
 ) {
     Column(
         modifier = modifier
@@ -39,27 +40,19 @@ fun DeepLinkDetailsCollapsedUI(
             modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            uiState.deepLink.folder?.let {
-                Box(
-                    modifier = Modifier
-                        .background(
-                            color = MaterialTheme.colorScheme.onSurface.copy(
-                                0.1f,
+            if (showFolder && uiState.deepLink.folder != null) {
+                ElevatedSuggestionChip(
+                    onClick = onFolderClicked,
+                    shape = CircleShape,
+                    label = {
+                        Text(
+                            text = uiState.deepLink.folder!!.name,
+                            style = MaterialTheme.typography.labelSmall.copy(
+                                fontWeight = FontWeight.Bold,
                             ),
-                            shape = RoundedCornerShape(12.dp),
-                        ),
-                ) {
-                    Text(
-                        text = it.name,
-                        style = MaterialTheme.typography.labelSmall.copy(
-                            color = MaterialTheme.colorScheme.onSurface,
-                        ),
-                        modifier = Modifier.padding(
-                            vertical = 4.dp,
-                            horizontal = 12.dp,
-                        ),
-                    )
-                }
+                        )
+                    },
+                )
             }
 
             Spacer(modifier = Modifier.weight(1f))
