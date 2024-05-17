@@ -1,19 +1,13 @@
 package dev.koga.deeplinklauncher.screen
 
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.BottomSheetScaffold
-import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SheetValue
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberBottomSheetScaffoldState
@@ -38,7 +32,6 @@ import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.bottomSheet.LocalBottomSheetNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import dev.koga.deeplinklauncher.AddFolderBottomSheet
-import dev.koga.deeplinklauncher.DLLSearchBar
 import dev.koga.deeplinklauncher.SharedScreen
 import dev.koga.deeplinklauncher.navigateToDeepLinkDetails
 import dev.koga.deeplinklauncher.screen.component.HomeHorizontalPager
@@ -58,15 +51,18 @@ object HomeScreen : Screen {
     override fun Content() {
         val settingsScreen = rememberScreen(SharedScreen.Settings)
 
+        val bottomSheetState = rememberStandardBottomSheetState(
+            initialValue = SheetValue.Expanded,
+            confirmValueChange = { it != SheetValue.Hidden },
+        )
+
+        val scaffoldState = rememberBottomSheetScaffoldState(
+            bottomSheetState = bottomSheetState,
+        )
+
         val scope = rememberCoroutineScope()
         val navigator = LocalNavigator.currentOrThrow
         val bottomSheetNavigator = LocalBottomSheetNavigator.current
-
-        val bottomSheetState = rememberStandardBottomSheetState(
-            initialValue = SheetValue.Expanded,
-            skipHiddenState = true,
-            confirmValueChange = { it != SheetValue.Hidden }
-        )
 
         val allDeepLinksListState = rememberLazyListState()
         val favoritesDeepLinksListState = rememberLazyListState()
@@ -111,26 +107,22 @@ object HomeScreen : Screen {
             },
         )
 
-        Scaffold(
+        BottomSheetScaffold(
+            scaffoldState = scaffoldState,
             topBar = {
                 HomeTopBar(
                     scrollBehavior = scrollBehavior,
                     onSettingsScreen = { navigator.push(settingsScreen) },
                 )
             },
-            bottomBar = {
-                Column {
-                    Divider(thickness = .4.dp)
-                    Spacer(modifier = Modifier.height(12.dp))
-
-                    HomeLaunchDeepLinkBottomSheetContent(
-                        value = uiState.inputText,
-                        onValueChange = screenModel::onDeepLinkTextChanged,
-                        launch = screenModel::launchDeepLink,
-                        errorMessage = uiState.errorMessage,
-                    )
-                }
-            }
+            sheetContent = {
+                HomeLaunchDeepLinkBottomSheetContent(
+                    value = uiState.inputText,
+                    onValueChange = screenModel::onDeepLinkTextChanged,
+                    launch = screenModel::launchDeepLink,
+                    errorMessage = uiState.errorMessage,
+                )
+            },
         ) { contentPadding ->
             Column(
                 modifier = Modifier
@@ -158,56 +150,6 @@ object HomeScreen : Screen {
                 )
             }
         }
-
-//        BottomSheetScaffold(
-//            topBar = {
-//                HomeTopBar(
-//                    scrollBehavior = scrollBehavior,
-//                    onSettingsScreen = { navigator.push(settingsScreen) },
-//                )
-//            },
-//            scaffoldState = rememberBottomSheetScaffoldState(
-//                bottomSheetState = bottomSheetState,
-//            ),
-//            sheetContent = {
-//                HomeLaunchDeepLinkBottomSheetContent(
-//                    value = uiState.inputText,
-//                    onValueChange = screenModel::onDeepLinkTextChanged,
-//                    launch = screenModel::launchDeepLink,
-//                    errorMessage = uiState.errorMessage,
-//                )
-//            },
-////            containerColor = colors.background,
-////            contentColor = colors.onBackground,
-////            sheetContainerColor = colors.surface,
-////            sheetContentColor = colors.onSurface
-//        ) { contentPadding ->
-//            Column(
-//                modifier = Modifier
-//                    .padding(contentPadding)
-//                    .fillMaxSize(),
-//            ) {
-//                HomeTabRow(pagerState = pagerState)
-//
-//                HomeHorizontalPager(
-//                    allDeepLinks = uiState.deepLinks,
-//                    favoriteDeepLinks = uiState.favorites,
-//                    folders = uiState.folders,
-//                    pagerState = pagerState,
-//                    scrollBehavior = scrollBehavior,
-//                    paddingBottom = 320.dp,
-//                    onDeepLinkClicked = { bottomSheetNavigator.navigateToDeepLinkDetails(it.id) },
-//                    onDeepLinkLaunch = screenModel::launchDeepLink,
-//                    onFolderClicked = {
-//                        val screen = ScreenRegistry.get(SharedScreen.FolderDetails(it.id))
-//                        navigator.push(screen)
-//                    },
-//                    onFolderAdd = { showAddFolderBottomSheet = true },
-//                    allDeepLinksListState = allDeepLinksListState,
-//                    favoritesDeepLinksListState = favoritesDeepLinksListState,
-//                )
-//            }
-//        }
     }
 }
 
