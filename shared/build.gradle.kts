@@ -26,6 +26,7 @@ kotlin {
             implementation(projects.core.designsystem)
             implementation(projects.core.navigation)
             implementation(projects.core.database)
+            implementation(projects.core.preferences)
 
             implementation(libs.koin.core)
             implementation(libs.kotlinx.coroutines.core)
