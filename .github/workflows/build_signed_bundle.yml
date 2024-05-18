@@ -44,14 +44,16 @@ jobs:
 
       - name: Decode Release Key
         run: |
-          echo "${{ secrets.KEYSTORE_DECRYPT_SECRET }}" > ./androidApp/release.asc &&
-          gpg --batch --yes --decrypt --passphrase "${{ secrets.KEYSTORE_DECRYPT_PASSWORD }}" ./androidApp/release.asc > ./androidApp/release.jks &&
-          rm ./androidApp/release.asc
+          echo "${{ secrets.KEYSTORE_DECRYPT_SECRET }}" > ./androidApp/${{ secrets.KEYSTORE_FILE_NAME }}.asc &&
+          echo "Decrypting file: ./androidApp/${{ secrets.KEYSTORE_FILE_NAME }}.asc" &&
+          echo "Output file will be: ./androidApp/${{ secrets.KEYSTORE_FILE_NAME }}" &&
+          gpg --batch --yes --decrypt --passphrase "${{ secrets.KEYSTORE_DECRYPT_PASSWORD }}" ./androidApp/${{ secrets.KEYSTORE_FILE_NAME }}.asc > ./androidApp/${{ secrets.KEYSTORE_FILE_NAME }}.jks &&
+          rm ./androidApp/${{ secrets.KEYSTORE_FILE_NAME }}.asc
         continue-on-error: false
 
       - name: Check Release Key is created
         run: |
-          if [ -f ./androidApp/release.jks ]; then
+          if [ -f ./androidApp/${{ secrets.KEYSTORE_FILE_NAME }}.jks ]; then
           echo "Release key exists."
           else
           echo "Release key does not exist." >&2
@@ -72,7 +74,7 @@ jobs:
         run: ./gradlew clean assembleRelease --stacktrace --no-build-cache
 
       - name: Remove Release Key
-        run: rm ./androidApp/release.jks
+        run: rm ./androidApp/${{ secrets.KEYSTORE_FILE_NAME }}
 
       - name: Upload AAB to GitHub Artifacts
         uses: actions/upload-artifact@v4
