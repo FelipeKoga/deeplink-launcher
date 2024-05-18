@@ -4,7 +4,7 @@ on:
   workflow_call:
 
 env:
-  KEYSTORE_FILE_NAME: ${{ secrets.KEYSTORE_FILE_NAME }}
+  KEYSTORE_FILE_NAME: ${{ vars.KEYSTORE_FILE_NAME }}
   KEYSTORE_ALIAS: ${{ secrets.KEYSTORE_ALIAS }}
   KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
   KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
@@ -44,14 +44,16 @@ jobs:
 
       - name: Decode Release Key
         run: |
-          echo "${{ secrets.KEYSTORE_DECRYPT_SECRET }}" > ./androidApp/${{ secrets.KEYSTORE_FILE_NAME }}.asc &&
-          gpg --batch --yes --decrypt --passphrase "${{ secrets.KEYSTORE_DECRYPT_PASSWORD }}" ./androidApp/${{ secrets.KEYSTORE_FILE_NAME }}.asc > ./androidApp/${{ secrets.KEYSTORE_FILE_NAME }} &&
-          rm ./androidApp/${{ secrets.KEYSTORE_FILE_NAME }}.asc
+          echo "${{ secrets.KEYSTORE_DECRYPT_SECRET }}" > ./androidApp/${{ vars.KEYSTORE_FILE_NAME }}.asc &&
+          echo "Decrypting file: ./androidApp/${{ vars.KEYSTORE_FILE_NAME }}.asc" &&
+          echo "Output file will be: ./androidApp/${{ vars.KEYSTORE_FILE_NAME }}" &&
+          gpg --batch --yes --decrypt --passphrase "${{ secrets.KEYSTORE_DECRYPT_PASSWORD }}" ./androidApp/${{ vars.KEYSTORE_FILE_NAME }}.asc > ./androidApp/${{ vars.KEYSTORE_FILE_NAME }} &&
+          rm ./androidApp/${{ vars.KEYSTORE_FILE_NAME }}.asc
         continue-on-error: false
 
       - name: Check Release Key is created
         run: |
-          if [ -f ./androidApp/${{ secrets.KEYSTORE_FILE_NAME }} ]; then
+          if [ -f ./androidApp/${{ vars.KEYSTORE_FILE_NAME }} ]; then
           echo "Release key exists."
           else
           echo "Release key does not exist." >&2
@@ -62,14 +64,29 @@ jobs:
       - name: Build Signed Bundle (AAB)
         run: ./gradlew clean bundleRelease --stacktrace --no-build-cache
 
+      - name: Upload AAB to GitHub Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: bundles
+          path: ./androidApp/build/outputs/bundle/*/*-release.aab
+
+      - name: Build APK
+        run: ./gradlew clean assembleRelease --stacktrace --no-build-cache
+
       - name: Remove Release Key
-        run: rm ./androidApp/${{ secrets.KEYSTORE_FILE_NAME }}
+        run: rm ./androidApp/${{ vars.KEYSTORE_FILE_NAME }}
 
       - name: Upload AAB to GitHub Artifacts
         uses: actions/upload-artifact@v4
         with:
           name: bundles
           path: ./androidApp/build/outputs/bundle/*/*-release.aab
+
+      - name: Upload APK to GitHub Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: apk
+          path: ./androidApp/build/outputs/apk/*/*-release.aab
 
       - name: Check Build Status = ${{ job.status }}
         run: echo "Build status report=${{ job.status }}."
