@@ -8,6 +8,8 @@ import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
@@ -16,14 +18,33 @@ import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.navigator.Navigator
 import cafe.adriel.voyager.navigator.bottomSheet.BottomSheetNavigator
 import cafe.adriel.voyager.transitions.SlideTransition
+import dev.koga.deeplinklauncher.model.Preferences
+import dev.koga.deeplinklauncher.model.SystemTheme
+import dev.koga.deeplinklauncher.preferences.PreferencesDataSource
 import dev.koga.deeplinklauncher.screen.HomeScreen
 import dev.koga.deeplinklauncher.theme.DLLTheme
+import dev.koga.deeplinklauncher.theme.Theme
 import kotlinx.coroutines.flow.map
+import org.koin.compose.koinInject
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun MainApp() {
-    DLLTheme {
+    val preferencesDataSource: PreferencesDataSource = koinInject()
+    val preferences by preferencesDataSource.preferences.collectAsState(
+        initial = Preferences(
+            systemTheme = SystemTheme.AUTO,
+            shouldHideOnboarding = false
+        )
+    )
+
+    DLLTheme(
+        theme = when (preferences.systemTheme) {
+            SystemTheme.DARK -> Theme.DARK
+            SystemTheme.LIGHT -> Theme.LIGHT
+            SystemTheme.AUTO -> Theme.AUTO
+        }
+    ) {
         BottomSheetNavigator(
             modifier = Modifier
                 .imePadding()

@@ -26,6 +26,7 @@ include(":core:designsystem")
 include(":core:sharedui")
 include(":core:navigation")
 include(":core:resources")
+include(":core:preferences")
 
 include(":feature:home:ui")
 include(":feature:home:domain")
