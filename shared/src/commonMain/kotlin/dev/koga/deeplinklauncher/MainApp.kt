@@ -19,7 +19,7 @@ import cafe.adriel.voyager.navigator.Navigator
 import cafe.adriel.voyager.navigator.bottomSheet.BottomSheetNavigator
 import cafe.adriel.voyager.transitions.SlideTransition
 import dev.koga.deeplinklauncher.model.Preferences
-import dev.koga.deeplinklauncher.model.SystemTheme
+import dev.koga.deeplinklauncher.model.AppTheme
 import dev.koga.deeplinklauncher.preferences.PreferencesDataSource
 import dev.koga.deeplinklauncher.screen.HomeScreen
 import dev.koga.deeplinklauncher.theme.DLLTheme
@@ -33,16 +33,16 @@ fun MainApp() {
     val preferencesDataSource: PreferencesDataSource = koinInject()
     val preferences by preferencesDataSource.preferences.collectAsState(
         initial = Preferences(
-            systemTheme = SystemTheme.AUTO,
+            appTheme = AppTheme.AUTO,
             shouldHideOnboarding = false
         )
     )
 
     DLLTheme(
-        theme = when (preferences.systemTheme) {
-            SystemTheme.DARK -> Theme.DARK
-            SystemTheme.LIGHT -> Theme.LIGHT
-            SystemTheme.AUTO -> Theme.AUTO
+        theme = when (preferences.appTheme) {
+            AppTheme.DARK -> Theme.DARK
+            AppTheme.LIGHT -> Theme.LIGHT
+            AppTheme.AUTO -> Theme.AUTO
         }
     ) {
         BottomSheetNavigator(

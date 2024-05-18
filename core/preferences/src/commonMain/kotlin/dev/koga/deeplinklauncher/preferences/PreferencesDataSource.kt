@@ -6,7 +6,7 @@ import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import dev.koga.deeplinklauncher.model.Preferences
-import dev.koga.deeplinklauncher.model.SystemTheme
+import dev.koga.deeplinklauncher.model.AppTheme
 import kotlinx.coroutines.flow.map
 
 
@@ -20,11 +20,11 @@ class PreferencesDataSource(
     val preferences = dataStore.data.map {
         Preferences(
             shouldHideOnboarding = it[shouldHideOnboardingKey] ?: false,
-            systemTheme = SystemTheme.get(it[themeKey])
+            appTheme = AppTheme.get(it[themeKey])
         )
     }
 
-    suspend fun updateTheme(theme: SystemTheme) {
+    suspend fun updateTheme(theme: AppTheme) {
         dataStore.edit {
             it[themeKey] = theme.name
         }
