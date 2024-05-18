@@ -62,6 +62,15 @@ jobs:
       - name: Build Signed Bundle (AAB)
         run: ./gradlew clean bundleRelease --stacktrace --no-build-cache
 
+      - name: Upload AAB to GitHub Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: bundles
+          path: ./androidApp/build/outputs/bundle/*/*-release.aab
+
+      - name: Build APK
+        run: ./gradlew clean assembleRelease --stacktrace --no-build-cache
+
       - name: Remove Release Key
         run: rm ./androidApp/${{ secrets.KEYSTORE_FILE_NAME }}
 
@@ -70,6 +79,12 @@ jobs:
         with:
           name: bundles
           path: ./androidApp/build/outputs/bundle/*/*-release.aab
+
+      - name: Upload APK to GitHub Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: apk
+          path: ./androidApp/build/outputs/apk/*/*-release.aab
 
       - name: Check Build Status = ${{ job.status }}
         run: echo "Build status report=${{ job.status }}."
