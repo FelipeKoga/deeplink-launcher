@@ -4,7 +4,7 @@ on:
   workflow_call:
 
 env:
-  KEYSTORE_FILE_NAME: ${{ secrets.KEYSTORE_FILE_NAME }}
+  KEYSTORE_FILE_NAME: ${{ vars.KEYSTORE_FILE_NAME }}
   KEYSTORE_ALIAS: ${{ secrets.KEYSTORE_ALIAS }}
   KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
   KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
