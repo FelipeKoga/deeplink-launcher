@@ -70,14 +70,13 @@ private val darkScheme = darkColorScheme(
 
 @Composable
 fun DLLTheme(
-    darkTheme: Boolean = isSystemInDarkTheme(),
-    content:
-    @Composable()
-    () -> Unit,
+    theme: Theme,
+    content: @Composable () -> Unit,
 ) {
-    val colorScheme = when {
-        darkTheme -> darkScheme
-        else -> lightScheme
+    val colorScheme = when (theme) {
+        Theme.LIGHT -> lightScheme
+        Theme.DARK -> darkScheme
+        Theme.AUTO -> if (isSystemInDarkTheme()) darkScheme else lightScheme
     }
 
     MaterialTheme(
