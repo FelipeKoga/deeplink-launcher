@@ -2,7 +2,7 @@ package dev.koga.deeplinklauncher.theme
 
 import androidx.compose.ui.graphics.Color
 
-val primaryLight = Color(0xFF5D5F5F)
+val primaryLight = Color(0xFF000000)
 val onPrimaryLight = Color(0xFFFFFFFF)
 val primaryContainerLight = Color(0xFFFFFFFF)
 val onPrimaryContainerLight = Color(0xFF575859)
@@ -22,7 +22,7 @@ val backgroundLight = Color(0xFFFCF8F8)
 val onBackgroundLight = Color(0xFF1C1B1B)
 val surfaceLight = Color(0xFFFCF8F8)
 val onSurfaceLight = Color(0xFF1C1B1B)
-val surfaceVariantLight = Color(0xFFE0E3E3)
+val surfaceVariantLight = Color(0xFFE8E9E8)
 val onSurfaceVariantLight = Color(0xFF444748)
 val outlineLight = Color(0xFF747878)
 val outlineVariantLight = Color(0xFFC4C7C8)

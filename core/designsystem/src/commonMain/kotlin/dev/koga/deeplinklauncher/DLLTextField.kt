@@ -12,14 +12,19 @@ import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldColors
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.key
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusDirection
+import androidx.compose.ui.focus.FocusManager
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.TextFieldValue
 
 val defaultTextFieldColors: TextFieldColors
     @Composable get() = TextFieldDefaults.colors(
@@ -36,22 +41,32 @@ fun DLLTextField(
     value: String,
     onValueChange: (String) -> Unit,
     label: String,
+    focusManager: FocusManager = LocalFocusManager.current,
+    keyboardActions: KeyboardActions = KeyboardActions(
+        onNext = { focusManager.moveFocus(FocusDirection.Down) }
+    ),
     imeAction: ImeAction = ImeAction.Next,
-    focusDirection: FocusDirection = FocusDirection.Down,
     colors: TextFieldColors = defaultTextFieldColors,
-    onDone: () -> Unit = {},
     trailingIcon: @Composable (() -> Unit)? = null,
     readOnly: Boolean = false,
     textStyle: TextStyle = LocalTextStyle.current,
+    leadingIcon: @Composable (() -> Unit)? = null,
 ) {
-    val focusManager = LocalFocusManager.current
+    val textFieldValue = remember(value) {
+        TextFieldValue(
+            text = value,
+            selection = TextRange(value.length)
+        )
+    }
 
     TextField(
-        value = value,
+        value = textFieldValue,
         modifier = modifier
             .fillMaxWidth()
             .clip(SearchBarDefaults.dockedShape),
-        onValueChange = onValueChange,
+        onValueChange = {
+            onValueChange(it.text)
+        },
         readOnly = readOnly,
         textStyle = textStyle,
         label = {
@@ -66,13 +81,15 @@ fun DLLTextField(
         keyboardOptions = KeyboardOptions.Default.copy(
             imeAction = imeAction,
         ),
+        leadingIcon = leadingIcon,
         trailingIcon = trailingIcon,
-        keyboardActions = KeyboardActions(
-            onNext = { focusManager.moveFocus(focusDirection) },
-            onDone = {
-                focusManager.clearFocus()
-                onDone()
-            },
-        ),
+        keyboardActions = keyboardActions,
+//        KeyboardActions(
+//            onNext = { focusManager.moveFocus(focusDirection) },
+//            onDone = {
+//                focusManager.clearFocus()
+//                onDone()
+//            },
+//        ),
     )
 }
