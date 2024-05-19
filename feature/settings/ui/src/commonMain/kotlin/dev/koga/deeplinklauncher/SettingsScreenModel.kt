@@ -4,9 +4,9 @@ import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.screenModelScope
 import dev.koga.deeplinklauncher.datasource.DeepLinkDataSource
 import dev.koga.deeplinklauncher.datasource.FolderDataSource
+import dev.koga.deeplinklauncher.datasource.PreferencesDataSource
 import dev.koga.deeplinklauncher.model.AppTheme
 import dev.koga.deeplinklauncher.platform.PlatformInfo
-import dev.koga.deeplinklauncher.preferences.PreferencesDataSource
 import dev.koga.deeplinklauncher.usecase.deeplink.LaunchDeepLink
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.map

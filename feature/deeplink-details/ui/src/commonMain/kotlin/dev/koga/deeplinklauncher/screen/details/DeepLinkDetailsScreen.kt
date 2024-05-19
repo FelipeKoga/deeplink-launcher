@@ -52,7 +52,6 @@ class DeepLinkDetailsScreen(
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
     override fun Content() {
-        val navigator = LocalNavigator.currentOrThrow.parent
         val bottomSheetNavigator = LocalBottomSheetNavigator.current
 
         val screenModel = getScreenModel<DeepLinkDetailsScreenModel>(
@@ -84,10 +83,7 @@ class DeepLinkDetailsScreen(
             },
         )
 
-        Column(
-            modifier = Modifier
-                .background(MaterialTheme.colorScheme.surface),
-        ) {
+        Column {
             BottomSheetDefaults.DragHandle(modifier = Modifier.align(Alignment.CenterHorizontally))
 
             AnimatedContent(
