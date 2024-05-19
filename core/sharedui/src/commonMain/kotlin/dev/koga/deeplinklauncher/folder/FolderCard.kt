@@ -26,7 +26,7 @@ import dev.koga.resources.MR
 fun FolderCard(
     modifier: Modifier,
     folder: Folder,
-    onClick: (Folder) -> Unit
+    onClick: (Folder) -> Unit,
 ) {
     ElevatedCard(
         onClick = { onClick(folder) },

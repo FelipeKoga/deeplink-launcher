@@ -119,7 +119,6 @@ class ExportScreen : Screen {
                     .fillMaxSize()
                     .padding(contentPadding),
             ) {
-
                 ExportContent(
                     modifier = Modifier.weight(1f),
                     preview = preview,
@@ -127,7 +126,7 @@ class ExportScreen : Screen {
                     nestedScrollConnection = scrollBehavior.nestedScrollConnection,
                     onChangeExportType = {
                         selectedExportType = it
-                    }
+                    },
                 )
 
                 ExportFooter(
@@ -148,7 +147,7 @@ class ExportScreen : Screen {
                                         } catch (e: DeniedAlwaysException) {
                                             val result = snackbarHostState.showSnackbar(
                                                 message = "Permission denied always. " +
-                                                        "Please enable it in settings",
+                                                    "Please enable it in settings",
                                                 duration = SnackbarDuration.Short,
                                                 actionLabel = "Settings",
                                             )
@@ -168,7 +167,7 @@ class ExportScreen : Screen {
                                 }
                             }
                         }
-                    }
+                    },
                 )
             }
         }
@@ -226,10 +225,10 @@ fun ExportContent(
             transitionSpec = {
                 if (targetState > initialState) {
                     slideInHorizontally { width -> width } + fadeIn() togetherWith
-                            slideOutHorizontally { width -> -width } + fadeOut()
+                        slideOutHorizontally { width -> -width } + fadeOut()
                 } else {
                     slideInHorizontally { width -> -width } + fadeIn() togetherWith
-                            slideOutHorizontally { width -> width } + fadeOut()
+                        slideOutHorizontally { width -> width } + fadeOut()
                 }.using(
                     SizeTransform(clip = false),
                 )
@@ -252,7 +251,7 @@ fun ExportContent(
 fun ExportFooter(
     modifier: Modifier = Modifier,
     isPermissionGranted: Boolean,
-    export: () -> Unit
+    export: () -> Unit,
 ) {
     Column(
         modifier = modifier

@@ -6,5 +6,4 @@ actual class GetDeepLinkMetadata {
     actual fun execute(deepLink: DeepLink): DeepLinkMetadata {
         TODO("Not yet implemented")
     }
-
 }
