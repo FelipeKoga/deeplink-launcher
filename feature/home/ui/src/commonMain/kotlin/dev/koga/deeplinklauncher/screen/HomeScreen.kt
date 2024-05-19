@@ -2,16 +2,16 @@ package dev.koga.deeplinklauncher.screen
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.pager.rememberPagerState
-import androidx.compose.material3.BottomSheetScaffold
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.SheetValue
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.material3.rememberBottomSheetScaffoldState
-import androidx.compose.material3.rememberStandardBottomSheetState
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -21,7 +21,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
-import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.registry.ScreenRegistry
@@ -38,6 +37,7 @@ import dev.koga.deeplinklauncher.screen.component.HomeHorizontalPager
 import dev.koga.deeplinklauncher.screen.component.HomeLaunchDeepLinkBottomSheetContent
 import dev.koga.deeplinklauncher.screen.component.HomeTabRow
 import dev.koga.deeplinklauncher.screen.component.HomeTopBar
+import dev.koga.deeplinklauncher.screen.component.OnboardingBottomSheet
 import dev.koga.deeplinklauncher.screen.state.HomeEvent
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
@@ -49,20 +49,15 @@ object HomeScreen : Screen {
 
     @Composable
     override fun Content() {
-        val settingsScreen = rememberScreen(SharedScreen.Settings)
-
-        val bottomSheetState = rememberStandardBottomSheetState(
-            initialValue = SheetValue.Expanded,
-            confirmValueChange = { it != SheetValue.Hidden },
-        )
-
-        val scaffoldState = rememberBottomSheetScaffoldState(
-            bottomSheetState = bottomSheetState,
-        )
-
-        val scope = rememberCoroutineScope()
         val navigator = LocalNavigator.currentOrThrow
         val bottomSheetNavigator = LocalBottomSheetNavigator.current
+        val screenModel = navigator.getNavigatorScreenModel<HomeScreenModel>()
+
+        val uiState by screenModel.uiState.collectAsState()
+
+        val settingsScreen = rememberScreen(SharedScreen.Settings)
+
+        val scope = rememberCoroutineScope()
 
         val allDeepLinksListState = rememberLazyListState()
         val favoritesDeepLinksListState = rememberLazyListState()
@@ -72,15 +67,11 @@ object HomeScreen : Screen {
                 HomeTabPage.entries.size
             },
         )
-
-        val screenModel = navigator.getNavigatorScreenModel<HomeScreenModel>()
-        val uiState by screenModel.uiState.collectAsState()
-
-        val scrollBehavior = TopAppBarDefaults
-            .exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
+        val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(
+            rememberTopAppBarState()
+        )
 
         var showAddFolderBottomSheet by remember { mutableStateOf(false) }
-
         if (showAddFolderBottomSheet) {
             AddFolderBottomSheet(
                 onDismiss = { showAddFolderBottomSheet = false },
@@ -91,9 +82,12 @@ object HomeScreen : Screen {
             )
         }
 
-        LaunchedEffect(Unit) {
-            snapshotFlow { bottomSheetNavigator.isVisible }
-                .collect { isVisible -> if (isVisible) bottomSheetState.partialExpand() }
+        var showOnboardingBottomSheet by remember { mutableStateOf(false) }
+        if (showOnboardingBottomSheet) {
+            OnboardingBottomSheet {
+                showOnboardingBottomSheet = false
+                screenModel.onboardingShown()
+            }
         }
 
         HomeEventsHandler(
@@ -105,18 +99,21 @@ object HomeScreen : Screen {
                     favoritesDeepLinksListState.animateScrollToItem(index = 0)
                 }
             },
+            onShowOnboarding = {
+                showOnboardingBottomSheet = true
+            }
         )
 
-        BottomSheetScaffold(
-            scaffoldState = scaffoldState,
+        Scaffold(
             topBar = {
                 HomeTopBar(
                     scrollBehavior = scrollBehavior,
                     onSettingsScreen = { navigator.push(settingsScreen) },
                 )
             },
-            sheetContent = {
+            bottomBar = {
                 HomeLaunchDeepLinkBottomSheetContent(
+                    modifier = Modifier.windowInsetsPadding(WindowInsets.navigationBars),
                     value = uiState.inputText,
                     onValueChange = screenModel::onDeepLinkTextChanged,
                     launch = screenModel::launchDeepLink,
@@ -157,11 +154,13 @@ object HomeScreen : Screen {
 fun HomeEventsHandler(
     events: Flow<HomeEvent>,
     onDeepLinkLaunched: () -> Unit,
+    onShowOnboarding: () -> Unit,
 ) {
     LaunchedEffect(Unit) {
         events.collect { event ->
             when (event) {
                 is HomeEvent.DeepLinksLaunched -> onDeepLinkLaunched()
+                is HomeEvent.ShowOnboarding -> onShowOnboarding()
             }
         }
     }

@@ -14,6 +14,7 @@ import dev.koga.deeplinklauncher.di.importDomainModule
 import dev.koga.deeplinklauncher.di.importUiModule
 import dev.koga.deeplinklauncher.di.settingsDomainModule
 import dev.koga.deeplinklauncher.di.settingsUiModule
+import dev.koga.deeplinklauncher.preferences.di.preferencesModule
 import dev.koga.deeplinklauncher.screen.ExportScreen
 import dev.koga.deeplinklauncher.screen.ImportScreen
 import dev.koga.deeplinklauncher.screen.details.DeepLinkDetailsScreen
@@ -55,6 +56,7 @@ fun initKoin(appModule: Module = module {}) {
             appModule,
             domainModule,
             databaseModule,
+            preferencesModule,
         )
     }
 }

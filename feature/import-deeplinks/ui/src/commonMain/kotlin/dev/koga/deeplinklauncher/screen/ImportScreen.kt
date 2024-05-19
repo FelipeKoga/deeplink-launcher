@@ -51,19 +51,19 @@ import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.launch
 import org.koin.compose.koinInject
 
-class ImportScreen : Screen {
+private enum class ImportType(val label: String) {
+    JSON("JSON (.json)"),
+    PLAIN_TEXT("Plain text (.txt)"),
+    ;
 
-    private enum class ImportType(val label: String) {
-        JSON("JSON (.json)"),
-        PLAIN_TEXT("Plain text (.txt)"),
-        ;
-
-        companion object {
-            fun getByLabel(label: String): ImportType {
-                return entries.first { it.label == label }
-            }
+    companion object {
+        fun getByLabel(label: String): ImportType {
+            return entries.first { it.label == label }
         }
     }
+}
+
+class ImportScreen : Screen {
 
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
@@ -75,7 +75,6 @@ class ImportScreen : Screen {
 
         val scope = rememberCoroutineScope()
         val snackbarHostState = remember { SnackbarHostState() }
-        var selectedType by remember { mutableStateOf(ImportType.JSON) }
 
         browseFileAndGetPath.Listen(
             onResult = { realPath, fileType ->
@@ -100,7 +99,7 @@ class ImportScreen : Screen {
                         is ImportDeepLinksOutput.Error -> {
                             snackbarHostState.showSnackbar(
                                 "Something went wrong. " +
-                                    "Check the content structure and try again.",
+                                        "Check the content structure and try again.",
                             )
                         }
                     }
@@ -118,105 +117,120 @@ class ImportScreen : Screen {
             snackbarHost = {
                 SnackbarHost(snackbarHostState)
             },
-            bottomBar = {
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .background(MaterialTheme.colorScheme.surface),
-                ) {
-                    Divider()
-
-                    Button(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(24.dp),
-                        onClick = {
-                            browseFileAndGetPath.launch()
-                        },
-                    ) {
-                        Text(text = "Browse file")
-                    }
-                }
-            },
             containerColor = MaterialTheme.colorScheme.surface,
         ) { contentPadding ->
-            Column(
-                modifier = Modifier
-                    .padding(contentPadding)
-                    .fillMaxSize()
-                    .padding(horizontal = 24.dp)
-                    .verticalScroll(rememberScrollState()),
-            ) {
-                Text(
-                    "How to Import Data",
-                    style = MaterialTheme.typography.titleMedium.copy(
-                        fontWeight = FontWeight.Bold,
-                    ),
+            Column(modifier = Modifier.padding(contentPadding).fillMaxSize()) {
+
+                ImportContent(
+                    modifier = Modifier.weight(1f)
                 )
 
-                Spacer(modifier = Modifier.height(16.dp))
-
-                val headerText = buildAnnotatedString {
-                    append("The are two types of files that can be imported: ")
-                    withStyle(
-                        style = SpanStyle(
-                            fontWeight = FontWeight.Bold,
-                        ),
-                    ) {
-                        append("plain text (.txt)")
-                    }
-
-                    append(" and ")
-
-                    withStyle(
-                        style = SpanStyle(
-                            fontWeight = FontWeight.Bold,
-                        ),
-                    ) {
-                        append("JSON (.json)")
-                    }
-                }
-
-                Text(
-                    text = headerText,
-                    style = MaterialTheme.typography.titleSmall.copy(
-                        fontWeight = FontWeight.Normal,
-                    ),
-                )
-
-                Spacer(modifier = Modifier.height(16.dp))
-
-                DLLSingleChoiceSegmentedButtonRow(
-                    modifier = Modifier
-                        .align(Alignment.CenterHorizontally),
-                    options = ImportType.entries.map { it.label }.toPersistentList(),
-                    selectedOption = selectedType.label,
-                    onOptionSelected = { selectedType = ImportType.getByLabel(it) },
-                )
-
-                Spacer(modifier = Modifier.height(12.dp))
-
-                AnimatedContent(
-                    targetState = selectedType,
-                    transitionSpec = {
-                        if (targetState > initialState) {
-                            slideInHorizontally { width -> width } + fadeIn() togetherWith
-                                slideOutHorizontally { width -> -width } + fadeOut()
-                        } else {
-                            slideInHorizontally { width -> -width } + fadeIn() togetherWith
-                                slideOutHorizontally { width -> width } + fadeOut()
-                        }.using(
-                            SizeTransform(clip = false),
-                        )
-                    },
-                    label = "",
-                ) { selectedType ->
-                    when (selectedType) {
-                        ImportType.JSON -> JSONTutorial()
-                        ImportType.PLAIN_TEXT -> PlainTextTutorial()
-                    }
+                ImportFooter {
+                    browseFileAndGetPath.launch()
                 }
             }
+
+        }
+    }
+}
+
+@Composable
+fun ImportContent(modifier: Modifier = Modifier) {
+    var selectedType by remember { mutableStateOf(ImportType.JSON) }
+
+    Column(
+        modifier = modifier
+            .padding(horizontal = 24.dp)
+            .verticalScroll(rememberScrollState()),
+    ) {
+        Text(
+            "How to Import Data",
+            style = MaterialTheme.typography.titleMedium.copy(
+                fontWeight = FontWeight.Bold,
+            ),
+        )
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        val headerText = buildAnnotatedString {
+            append("The are two types of files that can be imported: ")
+            withStyle(
+                style = SpanStyle(
+                    fontWeight = FontWeight.Bold,
+                ),
+            ) {
+                append("plain text (.txt)")
+            }
+
+            append(" and ")
+
+            withStyle(
+                style = SpanStyle(
+                    fontWeight = FontWeight.Bold,
+                ),
+            ) {
+                append("JSON (.json)")
+            }
+        }
+
+        Text(
+            text = headerText,
+            style = MaterialTheme.typography.titleSmall.copy(
+                fontWeight = FontWeight.Normal,
+            ),
+        )
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        DLLSingleChoiceSegmentedButtonRow(
+            modifier = Modifier
+                .align(Alignment.CenterHorizontally),
+            options = ImportType.entries.map { it.label }.toPersistentList(),
+            selectedOption = selectedType.label,
+            onOptionSelected = { selectedType = ImportType.getByLabel(it) },
+        )
+
+        Spacer(modifier = Modifier.height(12.dp))
+
+        AnimatedContent(
+            targetState = selectedType,
+            transitionSpec = {
+                if (targetState > initialState) {
+                    slideInHorizontally { width -> width } + fadeIn() togetherWith
+                            slideOutHorizontally { width -> -width } + fadeOut()
+                } else {
+                    slideInHorizontally { width -> -width } + fadeIn() togetherWith
+                            slideOutHorizontally { width -> width } + fadeOut()
+                }.using(
+                    SizeTransform(clip = false),
+                )
+            },
+            label = "",
+        ) { selectedType ->
+            when (selectedType) {
+                ImportType.JSON -> JSONTutorial()
+                ImportType.PLAIN_TEXT -> PlainTextTutorial()
+            }
+        }
+    }
+}
+
+@Composable
+fun ImportFooter(modifier: Modifier = Modifier, onBrowse: () -> Unit) {
+    Column(
+        modifier = modifier
+            .fillMaxWidth()
+            .background(MaterialTheme.colorScheme.surface),
+    ) {
+        Divider()
+
+        Button(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(24.dp),
+            onClick = onBrowse,
+        ) {
+            Text(text = "Browse file")
         }
     }
 }
@@ -228,7 +242,7 @@ fun JSONTutorial() {
     ) {
         Text(
             text = "The most basic JSON format is an object that only " +
-                "contains a link property.",
+                    "contains a link property.",
             style = MaterialTheme.typography.titleSmall.copy(
                 fontWeight = FontWeight.Normal,
             ),
@@ -286,7 +300,7 @@ fun PlainTextTutorial() {
     Column {
         Text(
             text = "The plain text format is a simple list of deeplinks, " +
-                "one per line.",
+                    "one per line.",
             style = MaterialTheme.typography.titleSmall.copy(
                 fontWeight = FontWeight.Normal,
             ),

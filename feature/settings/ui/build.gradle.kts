@@ -15,6 +15,8 @@ kotlin {
             implementation(projects.core.designsystem)
             implementation(projects.core.navigation)
             implementation(projects.core.sharedui)
+            implementation(projects.core.preferences)
+
             implementation(projects.feature.settings.domain)
 
             implementation(libs.kotlinx.coroutines.core)

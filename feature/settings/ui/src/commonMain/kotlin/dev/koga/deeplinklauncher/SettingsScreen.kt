@@ -16,6 +16,7 @@ import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -33,6 +34,7 @@ import cafe.adriel.voyager.koin.getScreenModel
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import dev.icerock.moko.resources.compose.painterResource
+import dev.koga.deeplinklauncher.components.AppThemeBottomSheet
 import dev.koga.deeplinklauncher.components.DeleteDataBottomSheet
 import dev.koga.deeplinklauncher.components.OpenSourceLicensesScreen
 import dev.koga.resources.MR
@@ -43,13 +45,16 @@ class SettingsScreen : Screen {
     override fun Content() {
         val navigator = LocalNavigator.currentOrThrow
         val screenModel = getScreenModel<SettingsScreenModel>()
-        val scope = rememberCoroutineScope()
 
+        val appTheme by screenModel.appTheme.collectAsState()
+
+        val scope = rememberCoroutineScope()
         val importScreen = rememberScreen(SharedScreen.ImportDeepLinks)
         val exportScreen = rememberScreen(SharedScreen.ExportDeepLinks)
         val snackbarHostState = remember { SnackbarHostState() }
 
         var showDeleteDataBottomSheet by rememberSaveable { mutableStateOf(false) }
+        var showAppThemeBottomSheet by rememberSaveable { mutableStateOf(false) }
 
         if (showDeleteDataBottomSheet) {
             DeleteDataBottomSheet(
@@ -78,7 +83,17 @@ class SettingsScreen : Screen {
                         snackbarHostState.showSnackbar("Folders deleted")
                     }
                 },
+            )
+        }
 
+        if (showAppThemeBottomSheet) {
+            AppThemeBottomSheet(
+                appTheme = appTheme,
+                onDismissRequest = { showAppThemeBottomSheet = false },
+                onChange = {
+                    screenModel.changeTheme(it)
+                    showAppThemeBottomSheet = false
+                },
             )
         }
 
@@ -92,6 +107,7 @@ class SettingsScreen : Screen {
             onNavigateToStore = screenModel::navigateToStore,
             onNavigateToOpenSourceLicenses = { navigator.push(OpenSourceLicensesScreen()) },
             onNavigateToGithub = screenModel::navigateToGithub,
+            onShowAppTheme = { showAppThemeBottomSheet = true },
         )
     }
 }
@@ -108,6 +124,7 @@ fun SettingsScreenUI(
     onNavigateToOpenSourceLicenses: () -> Unit,
     onNavigateToGithub: () -> Unit,
     onShowDeleteDataBottomSheet: () -> Unit,
+    onShowAppTheme: () -> Unit,
 ) {
     val clipboardManager = LocalClipboardManager.current
     val scope = rememberCoroutineScope()
@@ -134,6 +151,15 @@ fun SettingsScreenUI(
                         fontWeight = FontWeight.Bold,
                         color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f),
                     ),
+                )
+            }
+
+            item {
+                SettingsListItem(
+                    title = "Theme",
+                    description = "Customize the appearance of the app",
+                    onClick = onShowAppTheme,
+                    trailingContent = {},
                 )
             }
 
