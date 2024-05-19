@@ -7,10 +7,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.ModalBottomSheet
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -18,7 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-
+import dev.koga.deeplinklauncher.DLLModalBottomSheet
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -26,21 +23,20 @@ fun OnboardingBottomSheet(
     modifier: Modifier = Modifier,
     onDismiss: () -> Unit,
 ) {
-
-    ModalBottomSheet(
+    DLLModalBottomSheet(
         modifier = modifier,
-        onDismissRequest = onDismiss
+        onDismiss = onDismiss,
     ) {
         Column(
             modifier = Modifier.padding(24.dp).fillMaxWidth(),
-            horizontalAlignment = Alignment.CenterHorizontally
+            horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Text(
                 text = "Welcome!",
                 style = MaterialTheme.typography.titleLarge.copy(
                     fontWeight = FontWeight.Bold,
-                    textAlign = TextAlign.Center
-                )
+                    textAlign = TextAlign.Center,
+                ),
             )
 
             Spacer(modifier = Modifier.height(12.dp))
@@ -50,17 +46,17 @@ fun OnboardingBottomSheet(
                 style = MaterialTheme.typography.titleMedium.copy(
                     textAlign = TextAlign.Center,
 
-                    ),
+                ),
             )
 
             Spacer(modifier = Modifier.height(34.dp))
 
             Text(
                 text = "Please note that data is stored locally on your device. If you wish to keep a backup" +
-                        " of your data, you can export it from the settings screen.",
+                    " of your data, you can export it from the settings screen.",
                 style = MaterialTheme.typography.bodyMedium.copy(
                     textAlign = TextAlign.Center,
-                    fontWeight = FontWeight.SemiBold
+                    fontWeight = FontWeight.SemiBold,
                 ),
             )
 

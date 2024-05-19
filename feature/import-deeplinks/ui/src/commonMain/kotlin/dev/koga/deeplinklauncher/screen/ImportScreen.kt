@@ -99,7 +99,7 @@ class ImportScreen : Screen {
                         is ImportDeepLinksOutput.Error -> {
                             snackbarHostState.showSnackbar(
                                 "Something went wrong. " +
-                                        "Check the content structure and try again.",
+                                    "Check the content structure and try again.",
                             )
                         }
                     }
@@ -120,16 +120,14 @@ class ImportScreen : Screen {
             containerColor = MaterialTheme.colorScheme.surface,
         ) { contentPadding ->
             Column(modifier = Modifier.padding(contentPadding).fillMaxSize()) {
-
                 ImportContent(
-                    modifier = Modifier.weight(1f)
+                    modifier = Modifier.weight(1f),
                 )
 
                 ImportFooter {
                     browseFileAndGetPath.launch()
                 }
             }
-
         }
     }
 }
@@ -197,10 +195,10 @@ fun ImportContent(modifier: Modifier = Modifier) {
             transitionSpec = {
                 if (targetState > initialState) {
                     slideInHorizontally { width -> width } + fadeIn() togetherWith
-                            slideOutHorizontally { width -> -width } + fadeOut()
+                        slideOutHorizontally { width -> -width } + fadeOut()
                 } else {
                     slideInHorizontally { width -> -width } + fadeIn() togetherWith
-                            slideOutHorizontally { width -> width } + fadeOut()
+                        slideOutHorizontally { width -> width } + fadeOut()
                 }.using(
                     SizeTransform(clip = false),
                 )
@@ -242,7 +240,7 @@ fun JSONTutorial() {
     ) {
         Text(
             text = "The most basic JSON format is an object that only " +
-                    "contains a link property.",
+                "contains a link property.",
             style = MaterialTheme.typography.titleSmall.copy(
                 fontWeight = FontWeight.Normal,
             ),
@@ -300,7 +298,7 @@ fun PlainTextTutorial() {
     Column {
         Text(
             text = "The plain text format is a simple list of deeplinks, " +
-                    "one per line.",
+                "one per line.",
             style = MaterialTheme.typography.titleSmall.copy(
                 fontWeight = FontWeight.Normal,
             ),

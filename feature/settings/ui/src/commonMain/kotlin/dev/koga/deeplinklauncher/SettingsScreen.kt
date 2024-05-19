@@ -1,7 +1,6 @@
 package dev.koga.deeplinklauncher
 
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -141,7 +140,6 @@ fun SettingsScreenUI(
     ) { contentPadding ->
         LazyColumn(
             modifier = Modifier.fillMaxSize().padding(contentPadding),
-            verticalArrangement = Arrangement.spacedBy(8.dp),
         ) {
             item {
                 Text(
@@ -159,7 +157,12 @@ fun SettingsScreenUI(
                     title = "Theme",
                     description = "Customize the appearance of the app",
                     onClick = onShowAppTheme,
-                    trailingContent = {},
+                    trailingContent = {
+                        Icon(
+                            painter = painterResource(MR.images.ic_chevron_right_24dp),
+                            contentDescription = "navigate",
+                        )
+                    },
                 )
             }
 
@@ -296,7 +299,7 @@ fun SettingsListItem(
         headlineContent = {
             Text(
                 text = title,
-                style = MaterialTheme.typography.titleSmall.copy(
+                style = MaterialTheme.typography.bodyMedium.copy(
                     fontWeight = FontWeight.Bold,
                 ),
             )
@@ -304,7 +307,7 @@ fun SettingsListItem(
         supportingContent = {
             Text(
                 text = description,
-                style = MaterialTheme.typography.bodyMedium.copy(
+                style = MaterialTheme.typography.bodySmall.copy(
                     fontWeight = FontWeight.Normal,
                 ),
             )

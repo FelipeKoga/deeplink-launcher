@@ -23,10 +23,14 @@ import dev.koga.resources.MR
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun FolderCard(folder: Folder, onClick: (Folder) -> Unit) {
+fun FolderCard(
+    modifier: Modifier,
+    folder: Folder,
+    onClick: (Folder) -> Unit,
+) {
     ElevatedCard(
         onClick = { onClick(folder) },
-        modifier = Modifier.size(184.dp),
+        modifier = modifier.size(184.dp),
         shape = RoundedCornerShape(24.dp),
     ) {
         Column(

@@ -10,6 +10,7 @@ import dev.koga.deeplinklauncher.model.Folder
 import dev.koga.deeplinklauncher.provider.UUIDProvider
 import dev.koga.deeplinklauncher.screen.state.HomeEvent
 import dev.koga.deeplinklauncher.screen.state.HomeUiState
+import dev.koga.deeplinklauncher.usecase.GetAutoSuggestionLinks
 import dev.koga.deeplinklauncher.usecase.GetDeepLinksAndFolderStream
 import dev.koga.deeplinklauncher.usecase.deeplink.LaunchDeepLink
 import dev.koga.deeplinklauncher.usecase.deeplink.LaunchDeepLinkResult
@@ -20,6 +21,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
@@ -27,6 +29,7 @@ import kotlinx.coroutines.launch
 
 class HomeScreenModel(
     getDeepLinksAndFolderStream: GetDeepLinksAndFolderStream,
+    private val getAutoSuggestionLinks: GetAutoSuggestionLinks,
     private val deepLinkDataSource: DeepLinkDataSource,
     private val folderDataSource: FolderDataSource,
     private val launchDeepLink: LaunchDeepLink,
@@ -45,14 +48,20 @@ class HomeScreenModel(
     )
     private val errorMessage = MutableStateFlow<String?>(null)
 
+    private val suggestions = inputText.mapLatest {
+        getAutoSuggestionLinks.execute(it)
+    }
+
     val uiState = combine(
         inputText,
         dataStream,
+        suggestions,
         errorMessage,
-    ) { deepLinkText, dataStream, errorMessage ->
+    ) { deepLinkText, dataStream, suggestions, errorMessage ->
         HomeUiState(
             inputText = deepLinkText,
             deepLinks = dataStream.deepLinks.toPersistentList(),
+            suggestions = suggestions.toPersistentList(),
             favorites = dataStream.favorites.toPersistentList(),
             folders = dataStream.folders.toPersistentList(),
             errorMessage = errorMessage,

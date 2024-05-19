@@ -51,7 +51,7 @@ class ExportScreenModel(
 
                 is ExportDeepLinksOutput.Success -> messageDispatcher.send(
                     "DeepLinks exported successfully. " +
-                            "Check your downloads folder for a file named ${response.fileName}.",
+                        "Check your downloads folder for a file named ${response.fileName}.",
                 )
             }
         }

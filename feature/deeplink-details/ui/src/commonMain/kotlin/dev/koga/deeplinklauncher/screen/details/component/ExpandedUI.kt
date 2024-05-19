@@ -17,6 +17,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material.icons.rounded.Clear
 import androidx.compose.material.icons.rounded.Delete
+import androidx.compose.material3.AssistChip
 import androidx.compose.material3.AssistChipDefaults
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ElevatedAssistChip
@@ -149,10 +150,15 @@ fun DeepLinkDetailsExpandedUI(
                             )
                         },
                         label = { Text(text = "Add Folder") },
+                        colors = AssistChipDefaults.elevatedAssistChipColors(
+                            containerColor = MaterialTheme.colorScheme.surfaceVariant
+                        )
                     )
 
                     else -> ElevatedAssistChip(
-                        colors = AssistChipDefaults.elevatedAssistChipColors(),
+                        colors = AssistChipDefaults.elevatedAssistChipColors(
+                            containerColor = MaterialTheme.colorScheme.surfaceVariant
+                        ),
                         modifier = Modifier.fillMaxWidth(),
                         onClick = { showSelectFolderBottomSheet = true },
                         leadingIcon = {
