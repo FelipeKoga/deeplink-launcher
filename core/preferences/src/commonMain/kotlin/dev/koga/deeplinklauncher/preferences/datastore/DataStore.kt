@@ -10,8 +10,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.SupervisorJob
 import okio.Path.Companion.toPath
-import org.koin.core.module.Module
-import org.koin.dsl.module
 
 internal fun createDataStore(
     producePath: () -> String,
@@ -33,7 +31,7 @@ internal fun createDataStoreWithDefaults(
         migrations = migrations,
         produceFile = {
             path().toPath()
-        }
+        },
     )
 
 internal const val dataStoreFileName = "user.preferences_pb"

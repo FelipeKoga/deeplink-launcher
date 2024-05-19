@@ -4,6 +4,6 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class Preferences(
-    val appTheme: AppTheme,
-    val shouldHideOnboarding: Boolean,
+    val appTheme: AppTheme = AppTheme.AUTO,
+    val shouldHideOnboarding: Boolean = false,
 )

@@ -7,9 +7,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Divider
-import androidx.compose.material3.ElevatedSuggestionChip
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -21,6 +19,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import dev.icerock.moko.resources.compose.painterResource
+import dev.koga.deeplinklauncher.DLLSmallChip
 import dev.koga.deeplinklauncher.model.DeepLink
 import dev.koga.resources.MR
 
@@ -42,6 +41,15 @@ fun DeepLinkCard(
             Column(
                 modifier = Modifier.padding(horizontal = 14.dp, vertical = 12.dp),
             ) {
+                if (deepLink.folder != null && showFolder) {
+                    DLLSmallChip(
+                        label = deepLink.folder!!.name,
+                        onClick = onFolderClicked,
+                    )
+
+                    Spacer(modifier = Modifier.height(4.dp))
+                }
+
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
@@ -76,21 +84,6 @@ fun DeepLinkCard(
                             tint = MaterialTheme.colorScheme.onSurface,
                         )
                     }
-                }
-
-                if (deepLink.folder != null && showFolder) {
-                    ElevatedSuggestionChip(
-                        onClick = onFolderClicked,
-                        shape = CircleShape,
-                        label = {
-                            Text(
-                                text = deepLink.folder!!.name,
-                                style = MaterialTheme.typography.labelSmall.copy(
-                                    fontWeight = FontWeight.Bold,
-                                ),
-                            )
-                        },
-                    )
                 }
             }
 
