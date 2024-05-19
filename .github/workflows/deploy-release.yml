@@ -81,11 +81,11 @@ jobs:
 
       - name: Get release file aab path
         id: releaseAab
-        run: echo "aabfile=$(find app/build/outputs/bundle/release/*.aab)" >> $GITHUB_OUTPUT
+        run: echo "aabfile=$(find androidApp/build/outputs/bundle/release/*.aab)" >> $GITHUB_OUTPUT
 
       - name: Get release file apk path
         id: releaseApk
-        run: echo "apkfile=$(find app/build/outputs/apk/release/*.apk)" >> $GITHUB_OUTPUT
+        run: echo "apkfile=$(find androidApp/build/outputs/apk/release/*.apk)" >> $GITHUB_OUTPUT
 
       - name: Zip Files
         uses: papeloto/action-zip@v1
@@ -93,11 +93,11 @@ jobs:
           files: ${{ steps.releaseAab.outputs.aabfile }} ${{ steps.releaseApk.outputs.apkfile }}
           dest: ${{ steps.releaseApk.outputs.apkfile }}.zip
 
-      - name: Upload ZIP to GitHub Artifacts
-        uses: actions/upload-artifact@v4
+      - name: Upload Release Build to Artifacts
+        uses: actions/upload-artifact@v3
         with:
-          name: files
-          path: ${{ steps.releaseApk.outputs.apkfile }}.zip
+          name: release-artifacts
+          path: ${{ steps.releaseApk.outputs.apkfile }}
 
       - name: Create GitHub Release
         id: create_release
