@@ -2,11 +2,8 @@ package dev.koga.deeplinklauncher.screen
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -30,11 +27,11 @@ import cafe.adriel.voyager.koin.getNavigatorScreenModel
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.bottomSheet.LocalBottomSheetNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
-import dev.koga.deeplinklauncher.AddFolderBottomSheet
 import dev.koga.deeplinklauncher.SharedScreen
+import dev.koga.deeplinklauncher.folder.AddFolderBottomSheet
 import dev.koga.deeplinklauncher.navigateToDeepLinkDetails
+import dev.koga.deeplinklauncher.screen.component.DeepLinkLauncherBottomBar
 import dev.koga.deeplinklauncher.screen.component.HomeHorizontalPager
-import dev.koga.deeplinklauncher.screen.component.HomeLaunchDeepLinkBottomSheetContent
 import dev.koga.deeplinklauncher.screen.component.HomeTabRow
 import dev.koga.deeplinklauncher.screen.component.HomeTopBar
 import dev.koga.deeplinklauncher.screen.component.OnboardingBottomSheet
@@ -68,7 +65,7 @@ object HomeScreen : Screen {
             },
         )
         val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(
-            rememberTopAppBarState()
+            rememberTopAppBarState(),
         )
 
         var showAddFolderBottomSheet by remember { mutableStateOf(false) }
@@ -101,7 +98,7 @@ object HomeScreen : Screen {
             },
             onShowOnboarding = {
                 showOnboardingBottomSheet = true
-            }
+            },
         )
 
         Scaffold(
@@ -112,12 +109,14 @@ object HomeScreen : Screen {
                 )
             },
             bottomBar = {
-                HomeLaunchDeepLinkBottomSheetContent(
-                    modifier = Modifier.windowInsetsPadding(WindowInsets.navigationBars),
+                DeepLinkLauncherBottomBar(
+                    modifier = Modifier,
                     value = uiState.inputText,
                     onValueChange = screenModel::onDeepLinkTextChanged,
+                    suggestions = uiState.suggestions,
                     launch = screenModel::launchDeepLink,
                     errorMessage = uiState.errorMessage,
+                    onSuggestionClicked = { screenModel.onDeepLinkTextChanged(it) },
                 )
             },
         ) { contentPadding ->

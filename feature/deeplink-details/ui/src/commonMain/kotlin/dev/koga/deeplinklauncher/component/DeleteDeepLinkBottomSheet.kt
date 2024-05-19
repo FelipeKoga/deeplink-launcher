@@ -13,7 +13,6 @@ import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberModalBottomSheetState
@@ -21,6 +20,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import dev.koga.deeplinklauncher.DLLModalBottomSheet
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -28,8 +28,8 @@ fun DeleteDeepLinkConfirmationBottomSheet(
     onDismissRequest: () -> Unit,
     onDelete: () -> Unit,
 ) {
-    ModalBottomSheet(
-        onDismissRequest = onDismissRequest,
+    DLLModalBottomSheet(
+        onDismiss = onDismissRequest,
         sheetState = rememberModalBottomSheetState(
             skipPartiallyExpanded = true,
         ),
