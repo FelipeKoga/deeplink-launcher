@@ -22,11 +22,11 @@ kotlin {
             implementation(projects.feature.importDeeplinks.ui)
             implementation(projects.feature.deeplinkDetails.ui)
             implementation(projects.feature.folderDetails.ui)
-            implementation(projects.core.domain)
             implementation(projects.core.designsystem)
             implementation(projects.core.navigation)
             implementation(projects.core.database)
-            implementation(projects.core.preferences)
+            api(projects.core.domain)
+            api(projects.core.preferences)
 
             implementation(libs.koin.core)
             implementation(libs.kotlinx.coroutines.core)

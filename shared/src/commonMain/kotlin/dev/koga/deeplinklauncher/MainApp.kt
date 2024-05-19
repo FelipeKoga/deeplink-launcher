@@ -18,7 +18,6 @@ import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.navigator.Navigator
 import cafe.adriel.voyager.navigator.bottomSheet.BottomSheetNavigator
 import cafe.adriel.voyager.transitions.SlideTransition
-import dev.koga.deeplinklauncher.model.Preferences
 import dev.koga.deeplinklauncher.model.AppTheme
 import dev.koga.deeplinklauncher.preferences.PreferencesDataSource
 import dev.koga.deeplinklauncher.screen.HomeScreen
@@ -31,11 +30,9 @@ import org.koin.compose.koinInject
 @Composable
 fun MainApp() {
     val preferencesDataSource: PreferencesDataSource = koinInject()
-    val preferences by preferencesDataSource.preferences.collectAsState(
-        initial = Preferences(
-            appTheme = AppTheme.AUTO,
-            shouldHideOnboarding = false
-        )
+
+    val preferences by preferencesDataSource.preferencesStream.collectAsState(
+        initial = preferencesDataSource.preferences,
     )
 
     DLLTheme(
@@ -43,13 +40,14 @@ fun MainApp() {
             AppTheme.DARK -> Theme.DARK
             AppTheme.LIGHT -> Theme.LIGHT
             AppTheme.AUTO -> Theme.AUTO
-        }
+        },
     ) {
         BottomSheetNavigator(
             modifier = Modifier
-                .imePadding()
                 .fillMaxSize()
-                .background(MaterialTheme.colorScheme.background),
+                .background(MaterialTheme.colorScheme.background)
+//                .windowInsetsPadding(WindowInsets.safeDrawing)
+                .imePadding(),
             sheetBackgroundColor = MaterialTheme.colorScheme.surface,
             sheetElevation = 12.dp,
             sheetShape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp),

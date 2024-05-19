@@ -37,7 +37,6 @@ import dev.icerock.moko.resources.compose.painterResource
 import dev.koga.deeplinklauncher.components.AppThemeBottomSheet
 import dev.koga.deeplinklauncher.components.DeleteDataBottomSheet
 import dev.koga.deeplinklauncher.components.OpenSourceLicensesScreen
-import dev.koga.deeplinklauncher.model.AppTheme
 import dev.koga.resources.MR
 import kotlinx.coroutines.launch
 
@@ -108,7 +107,7 @@ class SettingsScreen : Screen {
             onNavigateToStore = screenModel::navigateToStore,
             onNavigateToOpenSourceLicenses = { navigator.push(OpenSourceLicensesScreen()) },
             onNavigateToGithub = screenModel::navigateToGithub,
-            onShowAppTheme = { showAppThemeBottomSheet = true }
+            onShowAppTheme = { showAppThemeBottomSheet = true },
         )
     }
 }
