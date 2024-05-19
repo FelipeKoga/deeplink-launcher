@@ -8,7 +8,6 @@ import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -38,6 +37,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -111,24 +111,32 @@ class ExportScreen : Screen {
                     onNavigationActionClicked = navigator::pop,
                 )
             },
-            bottomBar = {
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .background(MaterialTheme.colorScheme.surface),
-                ) {
-                    Divider()
+            snackbarHost = { SnackbarHost(snackbarHostState) },
+            containerColor = MaterialTheme.colorScheme.surface,
+        ) { contentPadding ->
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(contentPadding),
+            ) {
 
-                    Button(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(24.dp),
-                        onClick = {
+                ExportContent(
+                    modifier = Modifier.weight(1f),
+                    preview = preview,
+                    selectedExportType = selectedExportType,
+                    nestedScrollConnection = scrollBehavior.nestedScrollConnection,
+                    onChangeExportType = {
+                        selectedExportType = it
+                    }
+                )
+
+                ExportFooter(
+                    isPermissionGranted = isPermissionGranted,
+                    export = {
+                        scope.launch {
                             when (isPermissionGranted) {
                                 true -> {
-                                    screenModel.export(
-                                        exportType = selectedExportType,
-                                    )
+                                    screenModel.export(selectedExportType)
                                 }
 
                                 false -> {
@@ -140,7 +148,7 @@ class ExportScreen : Screen {
                                         } catch (e: DeniedAlwaysException) {
                                             val result = snackbarHostState.showSnackbar(
                                                 message = "Permission denied always. " +
-                                                    "Please enable it in settings",
+                                                        "Please enable it in settings",
                                                 duration = SnackbarDuration.Short,
                                                 actionLabel = "Settings",
                                             )
@@ -159,89 +167,112 @@ class ExportScreen : Screen {
                                     }
                                 }
                             }
-                        },
-                    ) {
-                        Text(
-                            text = when (isPermissionGranted) {
-                                true -> "Export"
-                                false -> "Grant permission"
-                            },
-                        )
-                    }
-                }
-            },
-            snackbarHost = { SnackbarHost(snackbarHostState) },
-            containerColor = MaterialTheme.colorScheme.surface,
-        ) { contentPadding ->
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(contentPadding),
-            ) {
-                Column(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .nestedScroll(scrollBehavior.nestedScrollConnection)
-                        .padding(horizontal = 24.dp)
-                        .padding(top = 8.dp)
-                        .verticalScroll(rememberScrollState()),
-                ) {
-                    Text(
-                        text = "Select the file type to export",
-                        style = MaterialTheme.typography.titleMedium.copy(
-                            fontWeight = FontWeight.Bold,
-                        ),
-                    )
-
-                    Spacer(modifier = Modifier.height(16.dp))
-
-                    DLLSingleChoiceSegmentedButtonRow(
-                        modifier = Modifier.align(Alignment.CenterHorizontally),
-                        options = ExportFileType.entries.map { it.label }.toPersistentList(),
-                        selectedOption = selectedExportType.label,
-                        onOptionSelected = {
-                            selectedExportType = ExportFileType.getByLabel(it)
-                        },
-                    )
-
-                    Spacer(modifier = Modifier.height(16.dp))
-
-                    Text(
-                        text = "Preview",
-                        style = MaterialTheme.typography.titleMedium.copy(
-                            fontWeight = FontWeight.Bold,
-                        ),
-                    )
-
-                    Spacer(modifier = Modifier.height(8.dp))
-
-                    AnimatedContent(
-                        targetState = selectedExportType,
-                        label = "",
-                        transitionSpec = {
-                            if (targetState > initialState) {
-                                slideInHorizontally { width -> width } + fadeIn() togetherWith
-                                    slideOutHorizontally { width -> -width } + fadeOut()
-                            } else {
-                                slideInHorizontally { width -> -width } + fadeIn() togetherWith
-                                    slideOutHorizontally { width -> width } + fadeOut()
-                            }.using(
-                                SizeTransform(clip = false),
-                            )
-                        },
-                    ) { index ->
-                        when (index) {
-                            ExportFileType.JSON -> BoxPreview(
-                                text = preview.jsonFormat.ifEmpty { "No DeepLinks" },
-                            )
-
-                            ExportFileType.PLAIN_TEXT -> BoxPreview(
-                                text = preview.plainTextFormat.ifEmpty { "No DeepLinks" },
-                            )
                         }
                     }
-                }
+                )
             }
+        }
+    }
+}
+
+@Composable
+fun ExportContent(
+    modifier: Modifier = Modifier,
+    nestedScrollConnection: NestedScrollConnection,
+    selectedExportType: ExportFileType,
+    preview: ExportData,
+    onChangeExportType: (ExportFileType) -> Unit,
+) {
+    Column(
+        modifier = modifier
+            .fillMaxSize()
+            .nestedScroll(nestedScrollConnection)
+            .padding(horizontal = 24.dp)
+            .padding(top = 8.dp)
+            .verticalScroll(rememberScrollState()),
+    ) {
+        Text(
+            text = "Select the file type to export",
+            style = MaterialTheme.typography.titleMedium.copy(
+                fontWeight = FontWeight.Bold,
+            ),
+        )
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        DLLSingleChoiceSegmentedButtonRow(
+            modifier = Modifier.align(Alignment.CenterHorizontally),
+            options = ExportFileType.entries.map { it.label }.toPersistentList(),
+            selectedOption = selectedExportType.label,
+            onOptionSelected = {
+                onChangeExportType(ExportFileType.getByLabel(it))
+            },
+        )
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        Text(
+            text = "Preview",
+            style = MaterialTheme.typography.titleMedium.copy(
+                fontWeight = FontWeight.Bold,
+            ),
+        )
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        AnimatedContent(
+            targetState = selectedExportType,
+            label = "",
+            transitionSpec = {
+                if (targetState > initialState) {
+                    slideInHorizontally { width -> width } + fadeIn() togetherWith
+                            slideOutHorizontally { width -> -width } + fadeOut()
+                } else {
+                    slideInHorizontally { width -> -width } + fadeIn() togetherWith
+                            slideOutHorizontally { width -> width } + fadeOut()
+                }.using(
+                    SizeTransform(clip = false),
+                )
+            },
+        ) { index ->
+            when (index) {
+                ExportFileType.JSON -> BoxPreview(
+                    text = preview.jsonFormat.ifEmpty { "No DeepLinks" },
+                )
+
+                ExportFileType.PLAIN_TEXT -> BoxPreview(
+                    text = preview.plainTextFormat.ifEmpty { "No DeepLinks" },
+                )
+            }
+        }
+    }
+}
+
+@Composable
+fun ExportFooter(
+    modifier: Modifier = Modifier,
+    isPermissionGranted: Boolean,
+    export: () -> Unit
+) {
+    Column(
+        modifier = modifier
+            .fillMaxWidth()
+            .background(MaterialTheme.colorScheme.surface),
+    ) {
+        Divider()
+
+        Button(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(24.dp),
+            onClick = export,
+        ) {
+            Text(
+                text = when (isPermissionGranted) {
+                    true -> "Export"
+                    false -> "Grant permission"
+                },
+            )
         }
     }
 }

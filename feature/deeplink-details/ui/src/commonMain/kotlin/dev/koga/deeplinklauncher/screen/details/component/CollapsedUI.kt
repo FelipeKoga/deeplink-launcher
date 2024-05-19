@@ -6,9 +6,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.ElevatedSuggestionChip
 import androidx.compose.material3.FilledTonalIconButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -19,6 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import dev.icerock.moko.resources.compose.painterResource
+import dev.koga.deeplinklauncher.DLLSmallChip
 import dev.koga.deeplinklauncher.screen.details.state.DeepLinkDetailsUiState
 import dev.koga.resources.MR
 
@@ -41,17 +40,9 @@ fun DeepLinkDetailsCollapsedUI(
             verticalAlignment = Alignment.CenterVertically,
         ) {
             if (showFolder && uiState.deepLink.folder != null) {
-                ElevatedSuggestionChip(
+                DLLSmallChip(
+                    label = uiState.deepLink.folder!!.name,
                     onClick = onFolderClicked,
-                    shape = CircleShape,
-                    label = {
-                        Text(
-                            text = uiState.deepLink.folder!!.name,
-                            style = MaterialTheme.typography.labelSmall.copy(
-                                fontWeight = FontWeight.Bold,
-                            ),
-                        )
-                    },
                 )
             }
 
@@ -91,14 +82,6 @@ fun DeepLinkDetailsCollapsedUI(
         }
 
         Spacer(modifier = Modifier.padding(top = 12.dp))
-
-        Text(
-            text = "DeepLink",
-            style = MaterialTheme.typography.labelSmall.copy(
-                color = MaterialTheme.colorScheme.onBackground,
-                fontWeight = FontWeight.Normal,
-            ),
-        )
 
         Text(
             text = uiState.deepLink.link,
