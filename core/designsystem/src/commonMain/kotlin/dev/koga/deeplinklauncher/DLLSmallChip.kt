@@ -18,7 +18,7 @@ fun DLLSmallChip(modifier: Modifier = Modifier, label: String, onClick: () -> Un
     Box(
         modifier = modifier
             .clip(CircleShape)
-            .background(MaterialTheme.colorScheme.primary.copy(alpha = .9f))
+            .background(MaterialTheme.colorScheme.surfaceVariant)
             .clickable { onClick() }
             .padding(horizontal = 8.dp, vertical = 4.dp),
     ) {
@@ -26,7 +26,7 @@ fun DLLSmallChip(modifier: Modifier = Modifier, label: String, onClick: () -> Un
             text = label,
             style = MaterialTheme.typography.labelMedium.copy(
                 fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.onPrimary,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
             ),
         )
     }

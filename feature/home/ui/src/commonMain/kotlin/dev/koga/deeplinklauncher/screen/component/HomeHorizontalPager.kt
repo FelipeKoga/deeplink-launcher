@@ -1,5 +1,8 @@
 package dev.koga.deeplinklauncher.screen.component
 
+import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
@@ -27,8 +30,11 @@ import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
@@ -103,6 +109,7 @@ fun DeepLinksLazyColumn(
     onFolderClicked: (Folder) -> Unit,
     deepLinksListState: LazyListState,
 ) {
+
     LazyColumn(
         state = deepLinksListState,
         modifier = Modifier
@@ -127,7 +134,7 @@ fun DeepLinksLazyColumn(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
 fun FoldersVerticalStaggeredGrid(
     folders: ImmutableList<Folder>,
@@ -187,6 +194,7 @@ fun FoldersVerticalStaggeredGrid(
             FolderCard(
                 folder = folders[index],
                 onClick = { onClick(it) },
+                modifier = Modifier.animateItemPlacement()
             )
         }
     }
