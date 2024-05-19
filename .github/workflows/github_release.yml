@@ -12,28 +12,28 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Echo path to download bundles
-        run: echo "Download bundles path is ${DOWNLOADS_PATH}"
+      - name: Echo path to download files
+        run: echo "Download files path is ${DOWNLOADS_PATH}"
 
-      - name: Download bundles from GitHub Artifacts
+      - name: Download files from GitHub Artifacts
         uses: actions/download-artifact@v4
         with:
-          name: bundles
+          name: files
           path: ${{ env.DOWNLOADS_PATH }}
 
       - name: Display structure of downloaded files
         run: cd ${DOWNLOADS_PATH} && ls -R
 
-      - name: Check bundles are downloaded
+      - name: Check files are downloaded
         run: |
           shopt -s nullglob
-          aab_files=(${DOWNLOADS_PATH}/*/*.aab)
-          if [ ${#aab_files[@]} -eq 0 ]; then
+          files=(${DOWNLOADS_PATH}/*/*.aab)
+          if [ ${#files[@]} -eq 0 ]; then
             echo "No .AAB files found in ${DOWNLOADS_PATH}"
             exit 1
           else
-            echo "Found ${#aab_files[@]} .aab file(s) in ${DOWNLOADS_PATH}:"
-            printf '%s\n' "${aab_files[@]}"
+            echo "Found ${#files[@]} .aab file(s) in ${DOWNLOADS_PATH}:"
+            printf '%s\n' "${files[@]}"
           fi
         continue-on-error: false
 
@@ -48,7 +48,7 @@ jobs:
           draft: false
           prerelease: false
 
-      - name: Upload bundles to GitHub Release
+      - name: Upload files to GitHub Release
         id: upload-release-assets
         uses: dwenegar/upload-release-assets@v1
         env:

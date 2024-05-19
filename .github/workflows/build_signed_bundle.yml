@@ -62,25 +62,30 @@ jobs:
         continue-on-error: false
 
       - name: Build Signed Bundle (AAB)
-        run: ./gradlew clean bundleRelease --stacktrace --no-build-cache
-
-      - name: Upload AAB to GitHub Artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: bundles
-          path: ./androidApp/build/outputs/bundle/*/*-release.aab
+        run: ./gradlew bundleRelease --stacktrace
 
       - name: Build APK
-        run: ./gradlew clean assembleRelease --stacktrace --no-build-cache
+        run: ./gradlew assembleRelease --stacktrace
 
-      - name: Upload APK to GitHub Artifacts
+      - name: Get release file aab path
+        id: releaseAab
+        run: echo "aabfile=$(find app/build/outputs/bundle/release/*.aab)" >> $GITHUB_OUTPUT
+
+      - name: Get release file apk path
+        id: releaseApk
+        run: echo "apkfile=$(find app/build/outputs/apk/release/*.apk)" >> $GITHUB_OUTPUT
+
+      - name: Zip Files
+        uses: papeloto/action-zip@v1
+        with:
+          files: ${{ steps.releaseAab.outputs.aabfile }} ${{ steps.releaseApk.outputs.apkfile }}
+          dest: ${{ steps.releaseApk.outputs.apkfile }}.zip
+
+      - name: Upload ZIP to GitHub Artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: apk
-          path: ./androidApp/build/outputs/apk/*/*-release.apk
-
-      - name: Remove Release Key
-        run: rm ./androidApp/${{ vars.KEYSTORE_FILE_NAME }}
+          name: files
+          path: ${{ steps.releaseApk.outputs.apkfile }}.zip
 
       - name: Check Build Status = ${{ job.status }}
         run: echo "Build status report=${{ job.status }}."
