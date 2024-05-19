@@ -12,7 +12,6 @@ import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldColors
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.key
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -43,7 +42,7 @@ fun DLLTextField(
     label: String,
     focusManager: FocusManager = LocalFocusManager.current,
     keyboardActions: KeyboardActions = KeyboardActions(
-        onNext = { focusManager.moveFocus(FocusDirection.Down) }
+        onNext = { focusManager.moveFocus(FocusDirection.Down) },
     ),
     imeAction: ImeAction = ImeAction.Next,
     colors: TextFieldColors = defaultTextFieldColors,
@@ -55,7 +54,7 @@ fun DLLTextField(
     val textFieldValue = remember(value) {
         TextFieldValue(
             text = value,
-            selection = TextRange(value.length)
+            selection = TextRange(value.length),
         )
     }
 

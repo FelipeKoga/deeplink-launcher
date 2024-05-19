@@ -5,7 +5,6 @@ import dev.koga.deeplinklauncher.model.DeepLink
 expect class GetDeepLinkMetadata {
 
     fun execute(deepLink: DeepLink): DeepLinkMetadata
-
 }
 
 data class DeepLinkMetadata(

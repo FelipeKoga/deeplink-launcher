@@ -12,5 +12,4 @@ val homeDomainModule = module {
     includes(platformHomeDomainModule)
 }
 
-
 expect val platformHomeDomainModule: Module
