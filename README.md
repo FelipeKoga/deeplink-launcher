@@ -34,6 +34,7 @@ Currently, DeepLink Launcher is available only on **Android**. However, since I 
 - **[Voyager](https://github.com/adrielcafe/voyager)**
 - **[Koin](https://insert-koin.io/)**
 - **[SQLDelight](https://cashapp.github.io/sqldelight/)**
+- **[DataStore](https://developer.android.com/jetpack/androidx/releases/datastore)**
 - **[Material3](https://m3.material.io/)**
 - **[Kotlinx Immutable](https://github.com/Kotlin/kotlinx.collections.immutable)**
 - **[Kotlinx DateTime](https://github.com/Kotlin/kotlinx-datetime)**
@@ -41,13 +42,3 @@ Currently, DeepLink Launcher is available only on **Android**. However, since I 
 - **[Detekt](https://github.com/detekt/detekt)**
 - **[Ktlint](https://github.com/pinterest/ktlint)**
 - **Moko [Resources](https://github.com/icerockdev/moko-resources) & [Permissions](https://github.com/icerockdev/moko-permissions)**
-  
-## Tech Roadmap
-
-- [x] **Compose Multiplatform project**
-- [x] **Modularization by feature**
-- [x] **CI/CD with GitHub Actions**
-- [ ] **Unit and Integration Tests**
-- [ ] **Integration with [Maestro](https://maestro.mobile.dev/)**
-- [ ] **In-App Updates**
-- [ ] **App Shortcuts**
