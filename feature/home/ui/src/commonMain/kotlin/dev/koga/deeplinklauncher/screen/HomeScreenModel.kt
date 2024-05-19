@@ -4,6 +4,7 @@ import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.screenModelScope
 import dev.koga.deeplinklauncher.datasource.DeepLinkDataSource
 import dev.koga.deeplinklauncher.datasource.FolderDataSource
+import dev.koga.deeplinklauncher.datasource.PreferencesDataSource
 import dev.koga.deeplinklauncher.model.DeepLink
 import dev.koga.deeplinklauncher.model.Folder
 import dev.koga.deeplinklauncher.provider.UUIDProvider
@@ -18,6 +19,7 @@ import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
@@ -28,6 +30,7 @@ class HomeScreenModel(
     private val deepLinkDataSource: DeepLinkDataSource,
     private val folderDataSource: FolderDataSource,
     private val launchDeepLink: LaunchDeepLink,
+    private val preferencesDataSource: PreferencesDataSource,
 ) : ScreenModel {
 
     private val inputText = MutableStateFlow("")
@@ -62,6 +65,16 @@ class HomeScreenModel(
 
     private val eventDispatcher = Channel<HomeEvent>(Channel.UNLIMITED)
     val events = eventDispatcher.receiveAsFlow()
+
+    init {
+        screenModelScope.launch {
+            preferencesDataSource.preferencesStream.firstOrNull()?.let {
+                if (it.shouldShowOnboarding) {
+                    eventDispatcher.send(HomeEvent.ShowOnboarding)
+                }
+            }
+        }
+    }
 
     private fun insertDeepLink(link: String) {
         screenModelScope.launch {
@@ -126,5 +139,11 @@ class HomeScreenModel(
                 deepLinkCount = 0,
             ),
         )
+    }
+
+    fun onboardingShown() {
+        screenModelScope.launch {
+            preferencesDataSource.setShouldHideOnboarding(true)
+        }
     }
 }

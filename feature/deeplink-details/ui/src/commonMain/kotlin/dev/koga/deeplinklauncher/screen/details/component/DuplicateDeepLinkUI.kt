@@ -71,7 +71,7 @@ fun DuplicateDeepLinkUI(
         Column {
             Column(modifier = Modifier.padding(horizontal = 24.dp, vertical = 8.dp)) {
                 DLLTextField(
-                    label = "Enter your new deeplink",
+                    label = "Enter new deeplink",
                     value = newLink,
                     onValueChange = { newLink = it },
                     modifier = Modifier.clip(RoundedCornerShape(12.dp)),

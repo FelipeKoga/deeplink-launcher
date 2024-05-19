@@ -194,13 +194,13 @@ fun FolderDetailsScreenContent(
                 text = if (form.deepLinks.isNotEmpty()) {
                     "Deeplinks"
                 } else {
-                    "No deeplinks vinculated to this folder"
+                    "No Deeplinks vinculated to this folder"
                 },
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(start = 12.dp),
-                style = MaterialTheme.typography.titleMedium.copy(
-                    fontWeight = FontWeight.Normal,
+                style = MaterialTheme.typography.labelSmall.copy(
+                    fontWeight = FontWeight.Bold,
                 ),
             )
         }

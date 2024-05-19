@@ -184,16 +184,6 @@ fun DeepLinkDetailsExpandedUI(
             Divider(modifier = Modifier.padding(vertical = 24.dp))
 
             Text(
-                text = "DeepLink",
-                style = MaterialTheme.typography.labelMedium.copy(
-                    color = MaterialTheme.colorScheme.onBackground,
-                    fontWeight = FontWeight.Normal,
-                ),
-            )
-
-            Spacer(modifier = Modifier.height(4.dp))
-
-            Text(
                 text = deepLink.link,
                 style = MaterialTheme.typography.titleMedium.copy(
                     fontWeight = FontWeight.SemiBold,

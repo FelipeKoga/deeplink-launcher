@@ -75,12 +75,12 @@ class ExportDeepLinks(
             fileType = type,
         )
 
-        return ExportDeepLinksOutput.Success
+        return ExportDeepLinksOutput.Success(fileName = fileName)
     }
 }
 
 sealed interface ExportDeepLinksOutput {
-    data object Success : ExportDeepLinksOutput
+    data class Success(val fileName: String) : ExportDeepLinksOutput
     data object Empty : ExportDeepLinksOutput
     data class Error(val throwable: Throwable) : ExportDeepLinksOutput
 }
