@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
@@ -64,6 +65,9 @@ fun AddFolderBottomSheetContent(
             onValueChange = setDescription,
             label = "Description",
             imeAction = ImeAction.Done,
+            keyboardActions = KeyboardActions(
+                onDone = { onAdd(name, description) }
+            )
         )
 
         Spacer(modifier = Modifier.height(24.dp))
