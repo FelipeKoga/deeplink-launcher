@@ -138,7 +138,7 @@ fun DeepLinkDetailsExpandedUI(
             ) { folder ->
 
                 when (folder) {
-                    null -> AssistChip(
+                    null -> ElevatedAssistChip(
                         modifier = Modifier
                             .fillMaxWidth(),
                         onClick = { showSelectFolderBottomSheet = true },
@@ -150,11 +150,15 @@ fun DeepLinkDetailsExpandedUI(
                             )
                         },
                         label = { Text(text = "Add Folder") },
-//                        colors = AssistChipDefaults.elevatedAssistChipColors()
+                        colors = AssistChipDefaults.elevatedAssistChipColors(
+                            containerColor = MaterialTheme.colorScheme.surfaceVariant
+                        )
                     )
 
                     else -> ElevatedAssistChip(
-                        colors = AssistChipDefaults.elevatedAssistChipColors(),
+                        colors = AssistChipDefaults.elevatedAssistChipColors(
+                            containerColor = MaterialTheme.colorScheme.surfaceVariant
+                        ),
                         modifier = Modifier.fillMaxWidth(),
                         onClick = { showSelectFolderBottomSheet = true },
                         leadingIcon = {
