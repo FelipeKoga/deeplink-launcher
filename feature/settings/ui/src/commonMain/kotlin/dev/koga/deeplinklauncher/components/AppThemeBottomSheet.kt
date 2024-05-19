@@ -18,6 +18,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import dev.koga.deeplinklauncher.DLLModalBottomSheet
 import dev.koga.deeplinklauncher.model.AppTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -27,7 +28,7 @@ fun AppThemeBottomSheet(
     onDismissRequest: () -> Unit,
     onChange: (AppTheme) -> Unit,
 ) {
-    ModalBottomSheet(onDismissRequest = onDismissRequest) {
+    DLLModalBottomSheet(onDismiss = onDismissRequest) {
         Column(
             modifier = Modifier.fillMaxWidth(),
             horizontalAlignment = Alignment.CenterHorizontally,

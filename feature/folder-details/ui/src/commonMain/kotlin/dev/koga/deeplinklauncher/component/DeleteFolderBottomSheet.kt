@@ -22,6 +22,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import dev.koga.deeplinklauncher.DLLModalBottomSheet
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -29,8 +30,8 @@ fun DeleteFolderBottomSheet(
     onDismissRequest: () -> Unit,
     onDelete: () -> Unit,
 ) {
-    ModalBottomSheet(
-        onDismissRequest = onDismissRequest,
+    DLLModalBottomSheet(
+        onDismiss = onDismissRequest,
         sheetState = rememberModalBottomSheetState(
             skipPartiallyExpanded = true,
         ),
@@ -48,7 +49,7 @@ fun DeleteFolderBottomSheet(
 
             Text(
                 text = "Are you sure you want to delete this folder? " +
-                    "\nNote: The deeplinks vinculated to this folder will not be deleted",
+                        "\nNote: The deeplinks vinculated to this folder will not be deleted",
                 style = MaterialTheme.typography.bodyMedium,
                 modifier = Modifier.padding(24.dp),
             )
