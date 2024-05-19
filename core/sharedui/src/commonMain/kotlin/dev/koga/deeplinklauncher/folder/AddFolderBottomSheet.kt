@@ -10,7 +10,6 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
@@ -70,8 +69,8 @@ fun AddFolderBottomSheetContent(
             label = "Description",
             imeAction = ImeAction.Done,
             keyboardActions = KeyboardActions(
-                onDone = { onAdd(name, description) }
-            )
+                onDone = { onAdd(name, description) },
+            ),
         )
 
         Spacer(modifier = Modifier.height(24.dp))

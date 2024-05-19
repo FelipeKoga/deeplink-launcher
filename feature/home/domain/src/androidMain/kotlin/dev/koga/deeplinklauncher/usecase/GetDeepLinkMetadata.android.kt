@@ -11,8 +11,7 @@ actual class GetDeepLinkMetadata {
             deepLink = deepLink,
             scheme = uri.scheme,
             query = uri.query,
-            host = uri.host
+            host = uri.host,
         )
     }
-
 }

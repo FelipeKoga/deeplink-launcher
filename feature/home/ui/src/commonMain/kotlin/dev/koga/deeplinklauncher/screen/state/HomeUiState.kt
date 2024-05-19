@@ -3,7 +3,6 @@ package dev.koga.deeplinklauncher.screen.state
 import dev.koga.deeplinklauncher.model.DeepLink
 import dev.koga.deeplinklauncher.model.Folder
 import kotlinx.collections.immutable.ImmutableList
-import kotlinx.collections.immutable.PersistentList
 import kotlinx.collections.immutable.persistentListOf
 
 data class HomeUiState(

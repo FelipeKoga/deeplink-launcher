@@ -18,7 +18,6 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilledTonalIconButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -93,14 +92,14 @@ fun SelectFolderContent(
                     modifier = Modifier.fillMaxWidth(),
                     shape = RoundedCornerShape(24.dp),
                     colors = CardDefaults.elevatedCardColors(
-                        containerColor = MaterialTheme.colorScheme.surfaceVariant
-                    )
+                        containerColor = MaterialTheme.colorScheme.surfaceVariant,
+                    ),
                 ) {
                     Column(modifier = Modifier.padding(24.dp)) {
                         Text(
                             text = it.name,
                             style = MaterialTheme.typography.titleSmall.copy(
-                                fontWeight = FontWeight.Bold
+                                fontWeight = FontWeight.Bold,
                             ),
                         )
                         Spacer(modifier = Modifier.padding(4.dp))

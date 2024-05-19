@@ -2,7 +2,6 @@ package dev.koga.deeplinklauncher.usecase
 
 import dev.koga.deeplinklauncher.datasource.DeepLinkDataSource
 
-
 class GetAutoSuggestionLinks(
     private val deepLinkDataSource: DeepLinkDataSource,
     private val getDeepLinkMetadata: GetDeepLinkMetadata,
@@ -12,7 +11,7 @@ class GetAutoSuggestionLinks(
             getDeepLinkMetadata.execute(it)
         }
 
-        if (link.length <= 4) {
+        if (link.length <= 3) {
             return deepLinksMetadata
                 .mapNotNull { it.scheme }
                 .distinct()
@@ -25,6 +24,6 @@ class GetAutoSuggestionLinks(
     }
 
     companion object {
-        private const val MAX_RESULTS = 4
+        private const val MAX_RESULTS = 6
     }
 }

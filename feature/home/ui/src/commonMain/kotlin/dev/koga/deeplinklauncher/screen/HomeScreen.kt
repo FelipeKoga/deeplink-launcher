@@ -27,11 +27,11 @@ import cafe.adriel.voyager.koin.getNavigatorScreenModel
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.bottomSheet.LocalBottomSheetNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
-import dev.koga.deeplinklauncher.folder.AddFolderBottomSheet
 import dev.koga.deeplinklauncher.SharedScreen
+import dev.koga.deeplinklauncher.folder.AddFolderBottomSheet
 import dev.koga.deeplinklauncher.navigateToDeepLinkDetails
-import dev.koga.deeplinklauncher.screen.component.HomeHorizontalPager
 import dev.koga.deeplinklauncher.screen.component.DeepLinkLauncherBottomBar
+import dev.koga.deeplinklauncher.screen.component.HomeHorizontalPager
 import dev.koga.deeplinklauncher.screen.component.HomeTabRow
 import dev.koga.deeplinklauncher.screen.component.HomeTopBar
 import dev.koga.deeplinklauncher.screen.component.OnboardingBottomSheet
@@ -65,7 +65,7 @@ object HomeScreen : Screen {
             },
         )
         val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(
-            rememberTopAppBarState()
+            rememberTopAppBarState(),
         )
 
         var showAddFolderBottomSheet by remember { mutableStateOf(false) }
@@ -98,7 +98,7 @@ object HomeScreen : Screen {
             },
             onShowOnboarding = {
                 showOnboardingBottomSheet = true
-            }
+            },
         )
 
         Scaffold(
@@ -116,7 +116,7 @@ object HomeScreen : Screen {
                     suggestions = uiState.suggestions,
                     launch = screenModel::launchDeepLink,
                     errorMessage = uiState.errorMessage,
-                    onSuggestionClicked = { screenModel.onDeepLinkTextChanged(it) }
+                    onSuggestionClicked = { screenModel.onDeepLinkTextChanged(it) },
                 )
             },
         ) { contentPadding ->
