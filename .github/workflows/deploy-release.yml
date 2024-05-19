@@ -1,18 +1,30 @@
-name: Build Signed Bundle
+name: Deploy Release
 
 on:
-  workflow_call:
-
-env:
-  KEYSTORE_FILE_NAME: ${{ vars.KEYSTORE_FILE_NAME }}
-  KEYSTORE_ALIAS: ${{ secrets.KEYSTORE_ALIAS }}
-  KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
-  KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+  workflow_dispatch:
+    inputs:
+      tagname:
+        description: 'Version name'
+        required: true
+        default: 'v1.0.0'
+        type: string
 
 jobs:
-  build-and-sign-bundle:
+  deploy-release:
     runs-on: ubuntu-latest
     steps:
+
+      - name: Create tag
+        uses: actions/github-script@v7
+        with:
+          script: |
+            github.rest.git.createRef({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              ref: 'refs/tags/${{ github.event.inputs.tagname }}',
+              sha: context.sha
+            })
+
       - uses: actions/checkout@v4
 
       - name: Cache Gradle dependencies
@@ -87,5 +99,22 @@ jobs:
           name: files
           path: ${{ steps.releaseApk.outputs.apkfile }}.zip
 
-      - name: Check Build Status = ${{ job.status }}
-        run: echo "Build status report=${{ job.status }}."
+      - name: Create GitHub Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.event.inputs.tagname }}
+          release_name: ${{ github.event.inputs.tagname }}
+          draft: false
+          prerelease: false
+
+      - name: Upload files to GitHub Release
+        id: upload-release-assets
+        uses: dwenegar/upload-release-assets@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          release_id: ${{ steps.create_release.outputs.id }}
+          assets_path: ${{ steps.releaseApk.outputs.apkfile }}.zip
