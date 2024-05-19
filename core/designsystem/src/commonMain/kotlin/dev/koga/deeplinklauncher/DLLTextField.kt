@@ -54,7 +54,7 @@ fun DLLTextField(
     val textFieldValue = remember(value) {
         TextFieldValue(
             text = value,
-            selection = TextRange(value.length),
+            selection = if (value.isEmpty()) TextRange.Zero else TextRange(value.length),
         )
     }
 
