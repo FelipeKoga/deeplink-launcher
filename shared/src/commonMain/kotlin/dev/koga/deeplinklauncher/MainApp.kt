@@ -18,8 +18,8 @@ import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.navigator.Navigator
 import cafe.adriel.voyager.navigator.bottomSheet.BottomSheetNavigator
 import cafe.adriel.voyager.transitions.SlideTransition
+import dev.koga.deeplinklauncher.datasource.PreferencesDataSource
 import dev.koga.deeplinklauncher.model.AppTheme
-import dev.koga.deeplinklauncher.preferences.PreferencesDataSource
 import dev.koga.deeplinklauncher.screen.HomeScreen
 import dev.koga.deeplinklauncher.theme.DLLTheme
 import dev.koga.deeplinklauncher.theme.Theme

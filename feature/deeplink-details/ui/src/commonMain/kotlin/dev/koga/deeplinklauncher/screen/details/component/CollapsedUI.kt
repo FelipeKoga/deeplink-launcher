@@ -84,14 +84,6 @@ fun DeepLinkDetailsCollapsedUI(
         Spacer(modifier = Modifier.padding(top = 12.dp))
 
         Text(
-            text = "DeepLink",
-            style = MaterialTheme.typography.labelSmall.copy(
-                color = MaterialTheme.colorScheme.onBackground,
-                fontWeight = FontWeight.Normal,
-            ),
-        )
-
-        Text(
             text = uiState.deepLink.link,
             style = MaterialTheme.typography.titleMedium.copy(
                 fontWeight = FontWeight.Bold,
