@@ -56,7 +56,7 @@ fun initKoin(appModule: Module = module {}) {
             appModule,
             domainModule,
             databaseModule,
-            preferencesModule
+            preferencesModule,
         )
     }
 }

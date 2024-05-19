@@ -3,7 +3,8 @@ package dev.koga.deeplinklauncher.model
 enum class AppTheme {
     LIGHT,
     DARK,
-    AUTO;
+    AUTO,
+    ;
 
     companion object {
         fun get(name: String?): AppTheme {

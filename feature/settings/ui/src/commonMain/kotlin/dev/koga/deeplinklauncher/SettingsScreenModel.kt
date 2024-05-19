@@ -22,10 +22,10 @@ class SettingsScreenModel(
 ) : ScreenModel {
 
     val appVersion = platformInfo.version
-    val appTheme = preferencesDataSource.preferences.map { it.appTheme }.stateIn(
+    val appTheme = preferencesDataSource.preferencesStream.map { it.appTheme }.stateIn(
         scope = screenModelScope,
         started = SharingStarted.WhileSubscribed(),
-        initialValue = AppTheme.AUTO
+        initialValue = AppTheme.AUTO,
     )
 
     fun changeTheme(theme: AppTheme) {

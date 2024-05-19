@@ -10,5 +10,4 @@ val preferencesModule = module {
     includes(preferencesPlatformModule)
 }
 
-
 expect val preferencesPlatformModule: Module
