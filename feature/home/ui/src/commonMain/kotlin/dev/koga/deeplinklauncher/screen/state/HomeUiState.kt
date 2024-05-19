@@ -10,5 +10,6 @@ data class HomeUiState(
     val deepLinks: ImmutableList<DeepLink> = persistentListOf(),
     val favorites: ImmutableList<DeepLink> = persistentListOf(),
     val folders: ImmutableList<Folder> = persistentListOf(),
+    val suggestions: ImmutableList<String> = persistentListOf(),
     val errorMessage: String? = null,
 )

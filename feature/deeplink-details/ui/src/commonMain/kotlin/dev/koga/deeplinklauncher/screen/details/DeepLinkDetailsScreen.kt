@@ -2,7 +2,6 @@ package dev.koga.deeplinklauncher.screen.details
 
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.navigationBarsPadding
@@ -10,7 +9,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.BottomSheetDefaults
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -25,9 +23,7 @@ import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.registry.ScreenRegistry
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.koin.getScreenModel
-import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.bottomSheet.LocalBottomSheetNavigator
-import cafe.adriel.voyager.navigator.currentOrThrow
 import dev.koga.deeplinklauncher.SharedScreen
 import dev.koga.deeplinklauncher.component.DeleteDeepLinkConfirmationBottomSheet
 import dev.koga.deeplinklauncher.model.DeepLink
@@ -97,14 +93,12 @@ class DeepLinkDetailsScreen(
                         uiState = uiState,
                         onExpand = { detailsMode = DetailsMode.Expanded },
                         onFolderClicked = {
-                            bottomSheetNavigator.hide()
-
                             val screen = ScreenRegistry.get(
                                 SharedScreen.FolderDetails(
                                     uiState.deepLink.folder!!.id,
                                 ),
                             )
-                            bottomSheetNavigator.show(screen)
+                            bottomSheetNavigator.push(screen)
                         },
                     )
 

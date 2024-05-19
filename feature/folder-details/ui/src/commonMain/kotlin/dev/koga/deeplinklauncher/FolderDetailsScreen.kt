@@ -200,7 +200,7 @@ fun FolderDetailsScreenContent(
                     .fillMaxWidth()
                     .padding(start = 12.dp),
                 style = MaterialTheme.typography.labelSmall.copy(
-                    fontWeight = FontWeight.Bold,
+                    fontWeight = FontWeight.Normal,
                 ),
             )
         }

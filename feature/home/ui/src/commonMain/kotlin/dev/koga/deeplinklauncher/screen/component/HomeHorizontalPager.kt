@@ -127,7 +127,7 @@ fun DeepLinksLazyColumn(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
 fun FoldersVerticalStaggeredGrid(
     folders: ImmutableList<Folder>,
@@ -183,10 +183,11 @@ fun FoldersVerticalStaggeredGrid(
             }
         }
 
-        items(folders.size) { index ->
+        items(folders.size, key = { folders[it].id }) { index ->
             FolderCard(
                 folder = folders[index],
                 onClick = { onClick(it) },
+                modifier = Modifier.animateItemPlacement(),
             )
         }
     }
