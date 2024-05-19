@@ -31,7 +31,7 @@ firebase-bom = "32.7.1"
 firebase-crashlytics-plugin = "2.9.9"
 google-services = "4.4.0"
 
-aboutlibraries = "10.10.0"
+aboutlibraries = "11.1.4"
 
 [libraries]
 android-gradle-plugin = { module = "com.android.tools.build:gradle", version.ref = "androidGradlePlugin" }
