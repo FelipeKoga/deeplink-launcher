@@ -21,6 +21,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import dev.koga.deeplinklauncher.DLLModalBottomSheet
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -28,8 +29,8 @@ fun DeleteDeepLinkConfirmationBottomSheet(
     onDismissRequest: () -> Unit,
     onDelete: () -> Unit,
 ) {
-    ModalBottomSheet(
-        onDismissRequest = onDismissRequest,
+    DLLModalBottomSheet(
+        onDismiss = onDismissRequest,
         sheetState = rememberModalBottomSheetState(
             skipPartiallyExpanded = true,
         ),

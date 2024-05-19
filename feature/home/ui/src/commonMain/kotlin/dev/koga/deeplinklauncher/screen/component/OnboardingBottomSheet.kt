@@ -18,6 +18,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import dev.koga.deeplinklauncher.DLLModalBottomSheet
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -27,9 +28,9 @@ fun OnboardingBottomSheet(
     onDismiss: () -> Unit,
 ) {
 
-    ModalBottomSheet(
+    DLLModalBottomSheet(
         modifier = modifier,
-        onDismissRequest = onDismiss
+        onDismiss = onDismiss
     ) {
         Column(
             modifier = Modifier.padding(24.dp).fillMaxWidth(),

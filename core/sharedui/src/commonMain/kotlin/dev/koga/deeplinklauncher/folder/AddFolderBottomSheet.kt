@@ -1,4 +1,4 @@
-package dev.koga.deeplinklauncher
+package dev.koga.deeplinklauncher.folder
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -20,6 +20,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
+import dev.koga.deeplinklauncher.DLLModalBottomSheet
+import dev.koga.deeplinklauncher.DLLTextField
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -27,7 +29,9 @@ fun AddFolderBottomSheet(
     onDismiss: () -> Unit,
     onAdd: (name: String, description: String) -> Unit,
 ) {
-    ModalBottomSheet(onDismissRequest = onDismiss) {
+    DLLModalBottomSheet(
+        onDismiss = onDismiss,
+    ) {
         AddFolderBottomSheetContent(onAdd = onAdd)
     }
 }
