@@ -37,6 +37,7 @@ import dev.koga.deeplinklauncher.screen.component.HomeHorizontalPager
 import dev.koga.deeplinklauncher.screen.component.HomeLaunchDeepLinkBottomSheetContent
 import dev.koga.deeplinklauncher.screen.component.HomeTabRow
 import dev.koga.deeplinklauncher.screen.component.HomeTopBar
+import dev.koga.deeplinklauncher.screen.component.OnboardingBottomSheet
 import dev.koga.deeplinklauncher.screen.state.HomeEvent
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
@@ -66,12 +67,11 @@ object HomeScreen : Screen {
                 HomeTabPage.entries.size
             },
         )
-
-        val scrollBehavior = TopAppBarDefaults
-            .exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
+        val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(
+            rememberTopAppBarState()
+        )
 
         var showAddFolderBottomSheet by remember { mutableStateOf(false) }
-
         if (showAddFolderBottomSheet) {
             AddFolderBottomSheet(
                 onDismiss = { showAddFolderBottomSheet = false },
@@ -80,6 +80,14 @@ object HomeScreen : Screen {
                     screenModel.addFolder(name, description)
                 },
             )
+        }
+
+        var showOnboardingBottomSheet by remember { mutableStateOf(false) }
+        if (showOnboardingBottomSheet) {
+            OnboardingBottomSheet {
+                showOnboardingBottomSheet = false
+                screenModel.onboardingShown()
+            }
         }
 
         HomeEventsHandler(
@@ -91,6 +99,9 @@ object HomeScreen : Screen {
                     favoritesDeepLinksListState.animateScrollToItem(index = 0)
                 }
             },
+            onShowOnboarding = {
+                showOnboardingBottomSheet = true
+            }
         )
 
         Scaffold(
@@ -143,11 +154,13 @@ object HomeScreen : Screen {
 fun HomeEventsHandler(
     events: Flow<HomeEvent>,
     onDeepLinkLaunched: () -> Unit,
+    onShowOnboarding: () -> Unit,
 ) {
     LaunchedEffect(Unit) {
         events.collect { event ->
             when (event) {
                 is HomeEvent.DeepLinksLaunched -> onDeepLinkLaunched()
+                is HomeEvent.ShowOnboarding -> onShowOnboarding()
             }
         }
     }

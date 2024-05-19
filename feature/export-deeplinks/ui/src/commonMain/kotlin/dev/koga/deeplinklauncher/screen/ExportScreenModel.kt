@@ -49,8 +49,9 @@ class ExportScreenModel(
                     "An error occurred while exporting DeepLinks.",
                 )
 
-                ExportDeepLinksOutput.Success -> messageDispatcher.send(
-                    "DeepLinks exported successfully. Check your downloads folder.",
+                is ExportDeepLinksOutput.Success -> messageDispatcher.send(
+                    "DeepLinks exported successfully. " +
+                            "Check your downloads folder for a file named ${response.fileName}.",
                 )
             }
         }
