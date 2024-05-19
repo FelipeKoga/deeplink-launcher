@@ -10,7 +10,7 @@ kotlin {
     androidTarget {
         compilations.all {
             kotlinOptions {
-                jvmTarget = Configuration.jvmTarget
+                jvmTarget = Configuration.JVM_TARGET
             }
         }
     }
@@ -19,9 +19,9 @@ kotlin {
 val libs: VersionCatalog = extensions.getByType<VersionCatalogsExtension>().named("libs")
 
 android {
-    compileSdk = Configuration.compileSdk
+    compileSdk = Configuration.COMPILE_SDK
     defaultConfig {
-        minSdk = Configuration.minSdk
+        minSdk = Configuration.MIN_SDK
     }
 }
 

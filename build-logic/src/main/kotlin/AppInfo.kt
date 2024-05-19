@@ -1,25 +1,20 @@
 import kotlinx.datetime.Clock
-import kotlinx.datetime.Instant
-import kotlinx.datetime.TimeZone
-import kotlinx.datetime.toJavaLocalDateTime
-import kotlinx.datetime.toLocalDateTime
-import java.time.ZoneOffset
 
 object Configuration {
-    private const val majorVersion = 1
-    private const val minorVersion = 2
-    private const val patchVersion = 0
+    private const val MAJOR_VERSION = 1
+    private const val MINOR_VERSION = 3
+    private const val PATCH_VERSION = 0
 
-    const val versionName = "$majorVersion.$minorVersion.$patchVersion"
-    val versionCode = (majorVersion * 10000) +
-            (minorVersion * 100) +
-            patchVersion +
+    const val VERSION_NAME = "$MAJOR_VERSION.$MINOR_VERSION.$PATCH_VERSION"
+    val versionCode = (MAJOR_VERSION * 10000) +
+            (MINOR_VERSION * 100) +
+            PATCH_VERSION +
             getDateVersionBuild()
 
-    const val targetSdk = 34
-    const val compileSdk = 34
-    const val minSdk = 26
-    const val jvmTarget = "1.8"
+    const val TARGET_SDK = 34
+    const val COMPILE_SDK = 34
+    const val MIN_SDK = 26
+    const val JVM_TARGET = "1.8"
 
     private fun getDateVersionBuild(): Int {
         return Clock.System.now().epochSeconds.toInt()
