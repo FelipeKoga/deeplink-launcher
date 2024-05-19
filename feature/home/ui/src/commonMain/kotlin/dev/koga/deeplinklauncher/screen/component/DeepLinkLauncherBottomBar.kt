@@ -77,134 +77,121 @@ internal fun DeepLinkLauncherBottomBar(
     Column(
         modifier = modifier
             .fillMaxWidth()
-            .clip(RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp))
-            .background(MaterialTheme.colorScheme.surfaceVariant)
+            .background(
+
+                color = MaterialTheme.colorScheme.surfaceVariant,
+                shape = RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp)
+            )
             .navigationBarsPadding()
-            .padding(bottom = 12.dp),
+            .padding(12.dp),
     ) {
-        Divider(thickness = .3.dp)
-
-        Spacer(Modifier.height(12.dp))
-
-        Column(
-            modifier = Modifier
-                .padding(
-                    start = 12.dp,
-                    end = 12.dp,
-                )
-                .fillMaxWidth()
-                .clip(RoundedCornerShape(16.dp))
-                .background(MaterialTheme.colorScheme.surfaceVariant)
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically
         ) {
-
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                DLLTextField(
-                    modifier = Modifier.weight(1f).onFocusChanged {
-                        isFocused = it.isFocused
-                    },
-                    value = value,
-                    onValueChange = onValueChange,
-                    label = "Enter your deeplink here",
-                    imeAction = ImeAction.Search,
-                    keyboardActions = KeyboardActions(
-                        onSearch = { launch() }
-                    ),
-                    textStyle = MaterialTheme.typography.bodyMedium.copy(
-                        fontWeight = FontWeight.Bold
-                    ),
-                    colors = TextFieldDefaults.colors(
-                        unfocusedContainerColor = Color.Transparent,
-                        focusedContainerColor = Color.Transparent,
-                        focusedIndicatorColor = Color.Transparent,
-                        unfocusedIndicatorColor = Color.Transparent,
-                        disabledIndicatorColor = Color.Transparent,
-                        errorIndicatorColor = Color.Transparent,
-                    ),
-                    leadingIcon = {
-                        Icon(
-                            imageVector = Icons.Rounded.Search,
-                            contentDescription = "",
-                        )
-                    },
-                    trailingIcon = {
-                        AnimatedVisibility(
-                            visible = isFocused,
-                        ) {
-                            Icon(
-                                imageVector = Icons.Rounded.Clear,
-                                contentDescription = "",
-                                modifier = Modifier.clickable {
-                                    isFocused = false
-                                    focusManager.clearFocus()
-                                    onValueChange("")
-                                },
-                            )
-                        }
-                    }
-                )
-
-                AnimatedVisibility(
-                    visible = value.isNotBlank(),
-                    modifier = Modifier.padding(horizontal = 4.dp)
-                ) {
-                    FilledIconButton(
-                        onClick = launch, colors = IconButtonDefaults.filledIconButtonColors(
-                            containerColor = MaterialTheme.colorScheme.primary,
-                            contentColor = MaterialTheme.colorScheme.onPrimary
-                        )
+            DLLTextField(
+                modifier = Modifier.weight(1f).onFocusChanged {
+                    isFocused = it.isFocused
+                },
+                value = value,
+                onValueChange = onValueChange,
+                label = "Enter your deeplink here",
+                imeAction = ImeAction.Search,
+                keyboardActions = KeyboardActions(
+                    onSearch = { launch() }
+                ),
+                textStyle = MaterialTheme.typography.bodyMedium.copy(
+                    fontWeight = FontWeight.Bold
+                ),
+                colors = TextFieldDefaults.colors(
+                    unfocusedContainerColor = Color.Transparent,
+                    focusedContainerColor = Color.Transparent,
+                    focusedIndicatorColor = Color.Transparent,
+                    unfocusedIndicatorColor = Color.Transparent,
+                    disabledIndicatorColor = Color.Transparent,
+                    errorIndicatorColor = Color.Transparent,
+                ),
+                leadingIcon = {
+                    Icon(
+                        imageVector = Icons.Rounded.Search,
+                        contentDescription = "",
+                    )
+                },
+                trailingIcon = {
+                    AnimatedVisibility(
+                        visible = isFocused,
                     ) {
                         Icon(
-                            painter = painterResource(MR.images.ic_launch_24dp),
-                            contentDescription = "Launch",
+                            imageVector = Icons.Rounded.Clear,
+                            contentDescription = "",
+                            modifier = Modifier.clickable {
+                                isFocused = false
+                                focusManager.clearFocus()
+                                onValueChange("")
+                            },
                         )
                     }
                 }
-            }
+            )
 
             AnimatedVisibility(
-                visible = errorMessage != null,
+                visible = value.isNotBlank(),
+                modifier = Modifier.padding(horizontal = 4.dp)
             ) {
-                Text(
-                    text = errorMessage.orEmpty(),
-                    modifier = Modifier.padding(bottom = 4.dp),
-                    style = MaterialTheme.typography.labelMedium.copy(
-                        color = MaterialTheme.colorScheme.error,
-                        fontWeight = FontWeight.Bold,
-                    ),
-                )
+                FilledIconButton(
+                    onClick = launch, colors = IconButtonDefaults.filledIconButtonColors(
+                        containerColor = MaterialTheme.colorScheme.primary,
+                        contentColor = MaterialTheme.colorScheme.onPrimary
+                    )
+                ) {
+                    Icon(
+                        painter = painterResource(MR.images.ic_launch_24dp),
+                        contentDescription = "Launch",
+                    )
+                }
             }
+        }
 
-            AnimatedVisibility(
-                visible = showSuggestions,
-                enter = fadeIn(),
-                exit = fadeOut()
-            ) {
-                LazyColumn {
-                    item {
-                        Divider(color = MaterialTheme.colorScheme.onSurface, thickness = .2.dp)
-                    }
+        AnimatedVisibility(
+            visible = errorMessage != null,
+        ) {
+            Text(
+                text = errorMessage.orEmpty(),
+                modifier = Modifier.padding(bottom = 4.dp),
+                style = MaterialTheme.typography.labelMedium.copy(
+                    color = MaterialTheme.colorScheme.error,
+                    fontWeight = FontWeight.Bold,
+                ),
+            )
+        }
 
-                    items(suggestions) { suggestion ->
-                        ListItem(
-                            modifier = Modifier.animateItemPlacement().clickable {
-                                onSuggestionClicked(suggestion)
-                            },
-                            colors = ListItemDefaults.colors(
-                                containerColor = Color.Transparent
-                            ),
-                            headlineContent = {
-                                Text(
-                                    text = suggestion,
-                                    style = MaterialTheme.typography.bodyMedium.copy(
-                                        fontWeight = FontWeight.SemiBold,
-                                    ),
-                                )
-                            }
-                        )
-                    }
+        AnimatedVisibility(
+            visible = showSuggestions,
+            enter = fadeIn(),
+            exit = fadeOut()
+        ) {
+            LazyColumn {
+                item {
+                    Divider(color = MaterialTheme.colorScheme.onSurface, thickness = .2.dp)
+                }
+
+                items(suggestions) { suggestion ->
+                    ListItem(
+                        modifier = Modifier.animateItemPlacement().clickable {
+                            onSuggestionClicked(suggestion)
+                        },
+                        colors = ListItemDefaults.colors(
+                            containerColor = Color.Transparent
+                        ),
+                        headlineContent = {
+                            Text(
+                                text = suggestion,
+                                style = MaterialTheme.typography.bodyMedium.copy(
+                                    fontWeight = FontWeight.SemiBold,
+                                ),
+                            )
+                        }
+                    )
                 }
             }
         }

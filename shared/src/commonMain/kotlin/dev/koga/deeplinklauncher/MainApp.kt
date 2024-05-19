@@ -46,10 +46,8 @@ fun MainApp() {
             modifier = Modifier
                 .fillMaxSize()
                 .background(MaterialTheme.colorScheme.background)
-//                .windowInsetsPadding(WindowInsets.safeDrawing)
                 .imePadding(),
-            sheetBackgroundColor = MaterialTheme.colorScheme.surface,
-            sheetElevation = 12.dp,
+            sheetBackgroundColor = MaterialTheme.colorScheme.background,
             sheetShape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp),
         ) {
             it.closeKeyboardOnBottomSheetDismiss()
