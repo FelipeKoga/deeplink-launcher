@@ -12,4 +12,5 @@ interface PreferencesDataSource {
 
     suspend fun updateTheme(theme: AppTheme)
     suspend fun setShouldHideOnboarding(shouldHideOnboarding: Boolean)
+    suspend fun setShouldDisableDeepLinkSuggestions(shouldDisableDeepLinkSuggestions: Boolean)
 }

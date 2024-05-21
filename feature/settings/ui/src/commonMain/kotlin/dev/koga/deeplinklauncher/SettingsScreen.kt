@@ -36,64 +36,74 @@ import dev.icerock.moko.resources.compose.painterResource
 import dev.koga.deeplinklauncher.components.AppThemeBottomSheet
 import dev.koga.deeplinklauncher.components.DeleteDataBottomSheet
 import dev.koga.deeplinklauncher.components.OpenSourceLicensesScreen
+import dev.koga.deeplinklauncher.components.SuggestionsOptionBottomSheet
 import dev.koga.resources.MR
 import kotlinx.coroutines.launch
 
 class SettingsScreen : Screen {
+
+    enum class BottomSheetType {
+        DELETE_DATA,
+        APP_THEME,
+        SUGGESTIONS_OPTION,
+    }
+
     @Composable
     override fun Content() {
         val navigator = LocalNavigator.currentOrThrow
         val screenModel = getScreenModel<SettingsScreenModel>()
 
-        val appTheme by screenModel.appTheme.collectAsState()
+        val preferences by screenModel.preferences.collectAsState()
 
         val scope = rememberCoroutineScope()
         val importScreen = rememberScreen(SharedScreen.ImportDeepLinks)
         val exportScreen = rememberScreen(SharedScreen.ExportDeepLinks)
         val snackbarHostState = remember { SnackbarHostState() }
 
-        var showDeleteDataBottomSheet by rememberSaveable { mutableStateOf(false) }
-        var showAppThemeBottomSheet by rememberSaveable { mutableStateOf(false) }
+        var bottomSheetType by rememberSaveable { mutableStateOf<BottomSheetType?>(null) }
 
-        if (showDeleteDataBottomSheet) {
-            DeleteDataBottomSheet(
-                onDismissRequest = { showDeleteDataBottomSheet = false },
+        when (bottomSheetType) {
+            BottomSheetType.DELETE_DATA -> DeleteDataBottomSheet(
+                onDismissRequest = { bottomSheetType = null },
                 onDeleteAll = {
+                    bottomSheetType = null
                     screenModel.deleteAllData()
-                    showDeleteDataBottomSheet = false
-
                     scope.launch {
                         snackbarHostState.showSnackbar("All data deleted")
                     }
                 },
                 onDeleteDeepLinks = {
-                    showDeleteDataBottomSheet = false
+                    bottomSheetType = null
                     screenModel.deleteAllDeepLinks()
-
                     scope.launch {
                         snackbarHostState.showSnackbar("Deep links deleted")
                     }
                 },
                 onDeleteFolders = {
+                    bottomSheetType = null
                     screenModel.deleteAllFolders()
-                    showDeleteDataBottomSheet = false
-
                     scope.launch {
                         snackbarHostState.showSnackbar("Folders deleted")
                     }
                 },
             )
-        }
 
-        if (showAppThemeBottomSheet) {
-            AppThemeBottomSheet(
-                appTheme = appTheme,
-                onDismissRequest = { showAppThemeBottomSheet = false },
+            BottomSheetType.APP_THEME -> AppThemeBottomSheet(
+                appTheme = preferences.appTheme,
+                onDismissRequest = { bottomSheetType = null },
                 onChange = {
                     screenModel.changeTheme(it)
-                    showAppThemeBottomSheet = false
+                    bottomSheetType = null
                 },
             )
+
+            BottomSheetType.SUGGESTIONS_OPTION -> SuggestionsOptionBottomSheet(
+                enabled = !preferences.shouldDisableDeepLinkSuggestions,
+                onDismissRequest = { bottomSheetType = null },
+                onChange = { screenModel.changeSuggestionsPreference(it) },
+            )
+
+            null -> Unit
         }
 
         SettingsScreenUI(
@@ -102,11 +112,12 @@ class SettingsScreen : Screen {
             onBack = navigator::pop,
             onNavigateToExport = { navigator.push(exportScreen) },
             onNavigateToImport = { navigator.push(importScreen) },
-            onShowDeleteDataBottomSheet = { showDeleteDataBottomSheet = true },
+            onShowDeleteDataBottomSheet = { bottomSheetType = BottomSheetType.DELETE_DATA },
             onNavigateToStore = screenModel::navigateToStore,
             onNavigateToOpenSourceLicenses = { navigator.push(OpenSourceLicensesScreen()) },
             onNavigateToGithub = screenModel::navigateToGithub,
-            onShowAppTheme = { showAppThemeBottomSheet = true },
+            onShowAppTheme = { bottomSheetType = BottomSheetType.APP_THEME },
+            onShowSuggestionsOption = { bottomSheetType = BottomSheetType.SUGGESTIONS_OPTION },
         )
     }
 }
@@ -124,6 +135,7 @@ fun SettingsScreenUI(
     onNavigateToGithub: () -> Unit,
     onShowDeleteDataBottomSheet: () -> Unit,
     onShowAppTheme: () -> Unit,
+    onShowSuggestionsOption: () -> Unit,
 ) {
     val clipboardManager = LocalClipboardManager.current
     val scope = rememberCoroutineScope()
@@ -157,6 +169,20 @@ fun SettingsScreenUI(
                     title = "Theme",
                     description = "Customize the appearance of the app",
                     onClick = onShowAppTheme,
+                    trailingContent = {
+                        Icon(
+                            painter = painterResource(MR.images.ic_chevron_right_24dp),
+                            contentDescription = "navigate",
+                        )
+                    },
+                )
+            }
+
+            item {
+                SettingsListItem(
+                    title = "Suggestions",
+                    description = "Enable or disable deeplink suggestions when typing a deeplink",
+                    onClick = onShowSuggestionsOption,
                     trailingContent = {
                         Icon(
                             painter = painterResource(MR.images.ic_chevron_right_24dp),

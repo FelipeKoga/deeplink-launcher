@@ -12,17 +12,20 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.runBlocking
 import androidx.datastore.preferences.core.Preferences as DataStorePreferences
 
-private val themeKey = stringPreferencesKey("theme")
-private val shouldShowOnboarding = booleanPreferencesKey("should_show_onboarding")
-
 class PreferencesDataStore(
     private val dataStore: DataStore<DataStorePreferences>,
 ) : PreferencesDataSource {
+
+    private val themeKey = stringPreferencesKey("theme")
+    private val shouldShowOnboarding = booleanPreferencesKey("should_show_onboarding")
+    private val shouldDisableDeepLinkSuggestions =
+        booleanPreferencesKey("should_disable_deep_link_suggestions")
 
     override val preferencesStream = dataStore.data.map {
         Preferences(
             shouldShowOnboarding = it[shouldShowOnboarding] ?: true,
             appTheme = AppTheme.get(it[themeKey]),
+            shouldDisableDeepLinkSuggestions = it[shouldDisableDeepLinkSuggestions] ?: false,
         )
     }
 
@@ -37,6 +40,14 @@ class PreferencesDataStore(
     override suspend fun setShouldHideOnboarding(shouldHideOnboarding: Boolean) {
         dataStore.edit {
             it[shouldShowOnboarding] = !shouldHideOnboarding
+        }
+    }
+
+    override suspend fun setShouldDisableDeepLinkSuggestions(
+        shouldDisableDeepLinkSuggestions: Boolean,
+    ) {
+        dataStore.edit {
+            it[this.shouldDisableDeepLinkSuggestions] = shouldDisableDeepLinkSuggestions
         }
     }
 }
