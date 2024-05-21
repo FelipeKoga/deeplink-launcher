@@ -1,14 +1,13 @@
 package dev.koga.deeplinklauncher.usecase
 
 import android.net.Uri
-import dev.koga.deeplinklauncher.model.DeepLink
 
 actual class GetDeepLinkMetadata {
-    actual fun execute(deepLink: DeepLink): DeepLinkMetadata {
-        val uri = Uri.parse(deepLink.link)
+    actual fun execute(link: String): DeepLinkMetadata {
+        val uri = Uri.parse(link)
 
         return DeepLinkMetadata(
-            deepLink = deepLink,
+            link = link,
             scheme = uri.scheme,
             query = uri.query,
             host = uri.host,
