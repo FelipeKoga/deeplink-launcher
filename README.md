@@ -20,6 +20,8 @@ DeepLink Launcher streamlines the management of deeplinks for developers and QA.
 - [x] **Export/Import**: Share or backup deeplinks and folders in JSON or TXT formats.
 - [x] **Duplicate DeepLink**: Easily duplicate existing deeplinks, saving time when creating similar entries or variations.
 - [x] **Theme Support**: Customize your experience by switching between Light and Dark modes
+- [ ] **Search**: Quickly find deeplinks by searching for keywords.
+- [ ] **Google Drive**: Backup your deeplinks and folders with Google Drive.
 - [ ] **Internationalization**: Starting with Portuguese (Brazil)
 
 ## Multiplatform
