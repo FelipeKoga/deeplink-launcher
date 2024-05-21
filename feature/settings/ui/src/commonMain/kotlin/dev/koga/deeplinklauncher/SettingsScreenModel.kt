@@ -9,7 +9,6 @@ import dev.koga.deeplinklauncher.model.AppTheme
 import dev.koga.deeplinklauncher.platform.PlatformInfo
 import dev.koga.deeplinklauncher.usecase.deeplink.LaunchDeepLink
 import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
@@ -22,10 +21,10 @@ class SettingsScreenModel(
 ) : ScreenModel {
 
     val appVersion = platformInfo.version
-    val appTheme = preferencesDataSource.preferencesStream.map { it.appTheme }.stateIn(
+    val preferences = preferencesDataSource.preferencesStream.stateIn(
         scope = screenModelScope,
         started = SharingStarted.WhileSubscribed(),
-        initialValue = AppTheme.AUTO,
+        initialValue = preferencesDataSource.preferences,
     )
 
     fun changeTheme(theme: AppTheme) {
@@ -49,6 +48,12 @@ class SettingsScreenModel(
 
     fun navigateToStore() {
         launchDeepLink.launch(platformInfo.storePath)
+    }
+
+    fun changeSuggestionsPreference(enabled: Boolean) {
+        screenModelScope.launch {
+            preferencesDataSource.setShouldDisableDeepLinkSuggestions(!enabled)
+        }
     }
 
     fun navigateToGithub() {
