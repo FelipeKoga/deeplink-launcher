@@ -1,6 +1,5 @@
 package dev.koga.deeplinklauncher.components
 
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -36,7 +35,6 @@ fun DeleteDataBottomSheet(
     }
 }
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun DeleteDataBottomSheetContent(
     onDeleteAll: () -> Unit,
@@ -105,7 +103,5 @@ private fun DeleteDataBottomSheetContent(
         ) {
             Text(text = "Delete all")
         }
-
-        Spacer(modifier = Modifier.height(32.dp))
     }
 }
