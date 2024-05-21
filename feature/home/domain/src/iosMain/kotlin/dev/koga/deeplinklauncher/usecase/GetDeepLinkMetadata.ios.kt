@@ -1,9 +1,7 @@
 package dev.koga.deeplinklauncher.usecase
 
-import dev.koga.deeplinklauncher.model.DeepLink
-
 actual class GetDeepLinkMetadata {
-    actual fun execute(deepLink: DeepLink): DeepLinkMetadata {
+    actual fun execute(link: String): DeepLinkMetadata {
         TODO("Not yet implemented")
     }
 }

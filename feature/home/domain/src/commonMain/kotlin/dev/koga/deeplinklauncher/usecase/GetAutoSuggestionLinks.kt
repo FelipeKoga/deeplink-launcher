@@ -14,19 +14,40 @@ class GetAutoSuggestionLinks(
         }
 
         val deepLinksMetadata = deepLinkDataSource.getDeepLinks().map {
-            getDeepLinkMetadata.execute(it)
+            getDeepLinkMetadata.execute(it.link)
         }
 
-        if (link.length <= 3) {
-            return deepLinksMetadata
-                .mapNotNull { it.scheme }
-                .distinct()
+        val linkMetadata = getDeepLinkMetadata.execute(link)
+
+        val results = when {
+            linkMetadata.scheme.isNullOrBlank() ->
+                deepLinksMetadata.schemes(linkMetadata.link)
+
+            linkMetadata.host.isNullOrBlank() ->
+                deepLinksMetadata.hosts(linkMetadata.scheme)
+
+            linkMetadata.query.isNullOrBlank() ->
+                deepLinksMetadata.queries(linkMetadata.scheme, linkMetadata.host)
+
+            else -> emptyList()
         }
 
-        return deepLinksMetadata
-            .filter { it.deepLink.link.startsWith(link) && link != it.deepLink.link }
-            .map { it.deepLink.link }
-            .take(MAX_RESULTS)
+
+        return results.distinct().take(n = MAX_RESULTS)
+    }
+
+    private fun List<DeepLinkMetadata>.schemes(text: String): List<String> {
+        return filter { it.scheme != null && it.scheme.contains(text) }.map { "${it.scheme}:" }
+    }
+
+    private fun List<DeepLinkMetadata>.hosts(scheme: String): List<String> {
+        return filter { it.scheme == scheme && it.host != null }.map { it.link }
+    }
+
+    private fun List<DeepLinkMetadata>.queries(scheme: String, host: String): List<String> {
+        return filter {
+            it.scheme == scheme && it.host == host && !it.query.isNullOrBlank()
+        }.map { it.link }
     }
 
     companion object {
