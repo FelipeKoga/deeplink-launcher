@@ -84,7 +84,5 @@ fun AddFolderBottomSheetContent(
         ) {
             Text(text = "Save")
         }
-
-        Spacer(modifier = Modifier.height(12.dp))
     }
 }

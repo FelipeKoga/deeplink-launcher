@@ -21,7 +21,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.firstOrNull
-import kotlinx.coroutines.flow.mapLatest
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
@@ -48,8 +48,15 @@ class HomeScreenModel(
     )
     private val errorMessage = MutableStateFlow<String?>(null)
 
-    private val suggestions = inputText.mapLatest {
-        getAutoSuggestionLinks.execute(it)
+    private val suggestions = combine(
+        inputText,
+        preferencesDataSource.preferencesStream.map { it.shouldDisableDeepLinkSuggestions },
+    ) { inputText, shouldDisableDeepLinkSuggestions ->
+        if (shouldDisableDeepLinkSuggestions) {
+            emptyList()
+        } else {
+            getAutoSuggestionLinks.execute(inputText)
+        }
     }
 
     val uiState = combine(

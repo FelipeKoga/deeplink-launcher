@@ -189,7 +189,7 @@ fun FolderDetailsScreenContent(
             )
         }
 
-        stickyHeader {
+        item {
             Text(
                 text = if (form.deepLinks.isNotEmpty()) {
                     "Deeplinks"
