@@ -1,22 +1,26 @@
 package dev.koga.deeplinklauncher
 
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.SearchBarDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldColors
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.focus.FocusManager
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.TextRange
@@ -24,16 +28,18 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.ui.unit.dp
 
 val defaultTextFieldColors: TextFieldColors
     @Composable get() = TextFieldDefaults.colors(
+        unfocusedContainerColor = Color.Transparent,
+        focusedContainerColor = Color.Transparent,
         focusedIndicatorColor = Color.Transparent,
         unfocusedIndicatorColor = Color.Transparent,
         disabledIndicatorColor = Color.Transparent,
         errorIndicatorColor = Color.Transparent,
     )
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DLLTextField(
     modifier: Modifier = Modifier,
@@ -44,7 +50,9 @@ fun DLLTextField(
     keyboardActions: KeyboardActions = KeyboardActions(
         onNext = { focusManager.moveFocus(FocusDirection.Down) },
     ),
-    imeAction: ImeAction = ImeAction.Next,
+    keyboardOptions: KeyboardOptions = KeyboardOptions.Default.copy(
+        imeAction = ImeAction.Next,
+    ),
     colors: TextFieldColors = defaultTextFieldColors,
     trailingIcon: @Composable (() -> Unit)? = null,
     readOnly: Boolean = false,
@@ -58,11 +66,23 @@ fun DLLTextField(
         )
     }
 
+    var isFocused by remember { mutableStateOf(false) }
+
     TextField(
         value = textFieldValue,
         modifier = modifier
+            .onFocusChanged { isFocused = it.isFocused }
             .fillMaxWidth()
-            .clip(SearchBarDefaults.dockedShape),
+            .clip(RoundedCornerShape(24.dp))
+            .border(
+                width = 1.dp,
+                shape = RoundedCornerShape(24.dp),
+                color = if (isFocused) {
+                    MaterialTheme.colorScheme.primary.copy(alpha = .4f)
+                } else {
+                    MaterialTheme.colorScheme.surfaceVariant
+                },
+            ),
         onValueChange = {
             onValueChange(it.text)
         },
@@ -71,24 +91,16 @@ fun DLLTextField(
         label = {
             Text(
                 text = label,
-                style = MaterialTheme.typography.labelSmall.copy(
+                style = MaterialTheme.typography.labelMedium.copy(
                     fontWeight = FontWeight.SemiBold,
+                    color = MaterialTheme.colorScheme.secondary,
                 ),
             )
         },
         colors = colors,
-        keyboardOptions = KeyboardOptions.Default.copy(
-            imeAction = imeAction,
-        ),
+        keyboardOptions = keyboardOptions,
         leadingIcon = leadingIcon,
         trailingIcon = trailingIcon,
         keyboardActions = keyboardActions,
-//        KeyboardActions(
-//            onNext = { focusManager.moveFocus(focusDirection) },
-//            onDone = {
-//                focusManager.clearFocus()
-//                onDone()
-//            },
-//        ),
     )
 }

@@ -9,12 +9,12 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.rounded.ArrowBack
 import androidx.compose.material.icons.rounded.ArrowBack
 import androidx.compose.material3.Button
-import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Switch
@@ -30,7 +30,9 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
+import dev.koga.deeplinklauncher.DLLHorizontalDivider
 import dev.koga.deeplinklauncher.DLLTextField
+import dev.koga.deeplinklauncher.button.DLLIconButton
 import dev.koga.deeplinklauncher.model.DeepLink
 
 @Composable
@@ -49,13 +51,12 @@ fun DuplicateDeepLinkUI(
             horizontalArrangement = Arrangement.spacedBy(12.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            IconButton(
+            DLLIconButton(
                 onClick = onBack,
             ) {
                 Icon(
-                    imageVector = Icons.Rounded.ArrowBack,
+                    imageVector = Icons.AutoMirrored.Rounded.ArrowBack,
                     contentDescription = "back",
-                    tint = MaterialTheme.colorScheme.onSurface,
                 )
             }
 
@@ -75,7 +76,9 @@ fun DuplicateDeepLinkUI(
                     value = newLink,
                     onValueChange = { newLink = it },
                     modifier = Modifier.clip(RoundedCornerShape(12.dp)),
-                    imeAction = ImeAction.Done,
+                    keyboardOptions = KeyboardOptions.Default.copy(
+                        imeAction = ImeAction.Done,
+                    ),
                     textStyle = LocalTextStyle.current.copy(
                         fontWeight = FontWeight.SemiBold,
                     ),
@@ -128,7 +131,7 @@ fun DuplicateDeepLinkUI(
 
             Spacer(modifier = Modifier.height(12.dp))
 
-            Divider()
+            DLLHorizontalDivider()
 
             Button(
                 modifier = Modifier

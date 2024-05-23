@@ -12,9 +12,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Close
 import androidx.compose.material.icons.rounded.Done
 import androidx.compose.material.icons.rounded.Edit
-import androidx.compose.material3.FilledTonalIconButton
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
@@ -26,6 +24,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import dev.koga.deeplinklauncher.DLLTextField
+import dev.koga.deeplinklauncher.button.DLLFilledIconButton
+import dev.koga.deeplinklauncher.button.DLLIconButton
 import dev.koga.deeplinklauncher.theme.LocalDimensions
 
 @Composable
@@ -68,14 +68,15 @@ fun EditableText(
                             Row {
                                 Spacer(modifier = Modifier.width(dimensions.mediumLarge))
 
-                                FilledTonalIconButton(
+                                DLLFilledIconButton(
                                     onClick = {
                                         inEditMode = false
                                         onSave(inputValue)
                                     },
-                                    enabled = editButtonEnabled,
                                     modifier = Modifier.size(18.dp),
-                                    colors = IconButtonDefaults.filledTonalIconButtonColors(
+                                    enabled = editButtonEnabled,
+                                    colors = IconButtonDefaults.filledIconButtonColors(
+                                        contentColor = MaterialTheme.colorScheme.onPrimary,
                                         containerColor = MaterialTheme.colorScheme.primary,
                                     ),
                                 ) {
@@ -87,10 +88,8 @@ fun EditableText(
 
                                 Spacer(modifier = Modifier.width(dimensions.mediumLarge))
 
-                                IconButton(
-                                    onClick = {
-                                        inEditMode = false
-                                    },
+                                DLLIconButton(
+                                    onClick = { inEditMode = false },
                                     modifier = Modifier.size(18.dp),
                                 ) {
                                     Icon(
@@ -112,12 +111,9 @@ fun EditableText(
 
                     Spacer(modifier = Modifier.width(dimensions.mediumLarge))
 
-                    IconButton(
+                    DLLIconButton(
                         onClick = { inEditMode = true },
                         modifier = Modifier.size(18.dp),
-                        colors = IconButtonDefaults.iconButtonColors(
-                            contentColor = MaterialTheme.colorScheme.secondary,
-                        ),
                     ) {
                         Icon(
                             imageVector = Icons.Rounded.Edit,

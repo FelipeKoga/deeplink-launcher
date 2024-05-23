@@ -16,11 +16,13 @@ import dev.koga.deeplinklauncher.usecase.deeplink.LaunchDeepLink
 import dev.koga.deeplinklauncher.usecase.deeplink.LaunchDeepLinkResult
 import dev.koga.deeplinklauncher.util.ext.currentLocalDateTime
 import kotlinx.collections.immutable.toPersistentList
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.stateIn
@@ -36,8 +38,13 @@ class HomeScreenModel(
     private val preferencesDataSource: PreferencesDataSource,
 ) : ScreenModel {
 
-    private val inputText = MutableStateFlow("")
-    private val dataStream = getDeepLinksAndFolderStream().stateIn(
+    private val searchInput = MutableStateFlow("")
+    private val deepLinkInput = MutableStateFlow("")
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    private val dataStream = searchInput.flatMapLatest {
+        getDeepLinksAndFolderStream(it)
+    }.stateIn(
         scope = screenModelScope,
         started = SharingStarted.WhileSubscribed(),
         initialValue = GetDeepLinksAndFolderStream.Output(
@@ -46,10 +53,11 @@ class HomeScreenModel(
             folders = emptyList(),
         ),
     )
+
     private val errorMessage = MutableStateFlow<String?>(null)
 
     private val suggestions = combine(
-        inputText,
+        deepLinkInput,
         preferencesDataSource.preferencesStream.map { it.shouldDisableDeepLinkSuggestions },
     ) { inputText, shouldDisableDeepLinkSuggestions ->
         if (shouldDisableDeepLinkSuggestions) {
@@ -60,13 +68,15 @@ class HomeScreenModel(
     }
 
     val uiState = combine(
-        inputText,
+        searchInput,
+        deepLinkInput,
         dataStream,
         suggestions,
         errorMessage,
-    ) { deepLinkText, dataStream, suggestions, errorMessage ->
+    ) { searchInput, deepLinkInput, dataStream, suggestions, errorMessage ->
         HomeUiState(
-            inputText = deepLinkText,
+            deepLinkInput = deepLinkInput,
+            searchInput = searchInput,
             deepLinks = dataStream.deepLinks.toPersistentList(),
             suggestions = suggestions.toPersistentList(),
             favorites = dataStream.favorites.toPersistentList(),
@@ -109,7 +119,7 @@ class HomeScreenModel(
     }
 
     fun launchDeepLink() = screenModelScope.launch {
-        val link = inputText.value
+        val link = deepLinkInput.value
 
         val deepLink = deepLinkDataSource.getDeepLinkByLink(link)
 
@@ -143,7 +153,7 @@ class HomeScreenModel(
 
     fun onDeepLinkTextChanged(text: String) {
         errorMessage.update { null }
-        inputText.update { text }
+        deepLinkInput.update { text }
     }
 
     fun addFolder(name: String, description: String) {
@@ -161,5 +171,9 @@ class HomeScreenModel(
         screenModelScope.launch {
             preferencesDataSource.setShouldHideOnboarding(true)
         }
+    }
+
+    fun onSearch(value: String) {
+        searchInput.update { value }
     }
 }

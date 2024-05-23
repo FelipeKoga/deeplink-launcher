@@ -1,7 +1,6 @@
 package dev.koga.deeplinklauncher.screen.details.component
 
 import androidx.compose.animation.AnimatedContent
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -17,13 +16,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material.icons.rounded.Clear
 import androidx.compose.material.icons.rounded.Delete
-import androidx.compose.material3.AssistChipDefaults
-import androidx.compose.material3.Divider
-import androidx.compose.material3.ElevatedAssistChip
-import androidx.compose.material3.FilledTonalIconButton
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -36,7 +29,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import dev.icerock.moko.resources.compose.painterResource
+import dev.koga.deeplinklauncher.DLLAssistChip
+import dev.koga.deeplinklauncher.DLLHorizontalDivider
 import dev.koga.deeplinklauncher.DLLTextField
+import dev.koga.deeplinklauncher.button.DLLIconButton
+import dev.koga.deeplinklauncher.button.DLLOutlinedIconButton
 import dev.koga.deeplinklauncher.folder.SelectFolderBottomSheet
 import dev.koga.deeplinklauncher.model.Folder
 import dev.koga.deeplinklauncher.screen.details.state.DeepLinkDetailsUiState
@@ -89,11 +86,8 @@ fun DeepLinkDetailsExpandedUI(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
             ) {
-                IconButton(
+                DLLIconButton(
                     onClick = onDeleteDeepLink,
-                    colors = IconButtonDefaults.iconButtonColors(
-                        contentColor = MaterialTheme.colorScheme.error,
-                    ),
                 ) {
                     Icon(
                         imageVector = Icons.Rounded.Delete,
@@ -101,7 +95,7 @@ fun DeepLinkDetailsExpandedUI(
                     )
                 }
 
-                FilledTonalIconButton(
+                DLLOutlinedIconButton(
                     modifier = Modifier,
                     onClick = onCollapse,
                 ) {
@@ -135,11 +129,9 @@ fun DeepLinkDetailsExpandedUI(
                 label = "",
                 modifier = Modifier.fillMaxWidth(),
             ) { folder ->
-
-                when (folder) {
-                    null -> ElevatedAssistChip(
-                        modifier = Modifier
-                            .fillMaxWidth(),
+                when (folder == null) {
+                    true -> DLLAssistChip(
+                        modifier = Modifier.fillMaxWidth(),
                         onClick = { showSelectFolderBottomSheet = true },
                         leadingIcon = {
                             Icon(
@@ -148,45 +140,49 @@ fun DeepLinkDetailsExpandedUI(
                                 modifier = Modifier.size(18.dp),
                             )
                         },
-                        label = { Text(text = "Add Folder") },
-                        colors = AssistChipDefaults.elevatedAssistChipColors(
-                            containerColor = MaterialTheme.colorScheme.surfaceVariant,
-                        ),
+                        trailingIcon = {
+                        },
+                        label = {
+                            Text(
+                                text = "Add Folder",
+                                modifier = Modifier.padding(vertical = 12.dp),
+                                style = MaterialTheme.typography.bodyMedium,
+                            )
+                        },
                     )
 
-                    else -> ElevatedAssistChip(
-                        colors = AssistChipDefaults.elevatedAssistChipColors(
-                            containerColor = MaterialTheme.colorScheme.surfaceVariant,
-                        ),
+                    false -> DLLAssistChip(
                         modifier = Modifier.fillMaxWidth(),
-                        onClick = { showSelectFolderBottomSheet = true },
+                        onClick = onRemoveFolder,
                         leadingIcon = {
                             Icon(
                                 painter = painterResource(MR.images.ic_folder_24dp),
                                 contentDescription = null,
+                                tint = MaterialTheme.colorScheme.secondary,
                             )
                         },
                         trailingIcon = {
-                            Icon(
-                                imageVector = Icons.Rounded.Clear,
-                                contentDescription = "Remove folder",
-                                modifier = Modifier.clickable {
-                                    onRemoveFolder()
-                                },
-                            )
+                            DLLIconButton(onClick = onRemoveFolder) {
+                                Icon(
+                                    imageVector = Icons.Rounded.Clear,
+                                    contentDescription = "Remove folder",
+                                )
+                            }
                         },
                         label = {
                             Text(
                                 text = folder.name,
-                                modifier = Modifier.weight(1f),
-                                fontWeight = FontWeight.Bold,
+                                modifier = Modifier.padding(vertical = 12.dp).weight(1f),
+                                style = MaterialTheme.typography.bodyMedium.copy(
+                                    fontWeight = FontWeight.Bold,
+                                ),
                             )
                         },
                     )
                 }
             }
 
-            Divider(modifier = Modifier.padding(vertical = 24.dp))
+            DLLHorizontalDivider(modifier = Modifier.padding(vertical = 24.dp))
 
             Text(
                 text = deepLink.link,
