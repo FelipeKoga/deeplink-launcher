@@ -38,7 +38,7 @@ fun DeepLinkCard(
 ) {
     OutlinedCard(
         shape = RoundedCornerShape(12.dp),
-        border = BorderStroke(.3.dp, MaterialTheme.colorScheme.surfaceVariant),
+        border = BorderStroke(1.dp, MaterialTheme.colorScheme.surfaceVariant),
         modifier = modifier.fillMaxWidth(),
         colors = CardDefaults.outlinedCardColors(
             containerColor = MaterialTheme.colorScheme.background,

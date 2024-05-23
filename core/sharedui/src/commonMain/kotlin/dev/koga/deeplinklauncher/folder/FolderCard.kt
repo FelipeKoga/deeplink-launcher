@@ -1,5 +1,6 @@
 package dev.koga.deeplinklauncher.folder
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -7,9 +8,10 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.ElevatedCard
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -28,8 +30,13 @@ fun FolderCard(
     folder: Folder,
     onClick: (Folder) -> Unit,
 ) {
-    ElevatedCard(
+    OutlinedCard(
         onClick = { onClick(folder) },
+        border = BorderStroke(1.dp, MaterialTheme.colorScheme.surfaceVariant),
+        colors = CardDefaults.outlinedCardColors(
+            containerColor = MaterialTheme.colorScheme.background,
+            contentColor = MaterialTheme.colorScheme.onBackground,
+        ),
         modifier = modifier.size(184.dp),
         shape = RoundedCornerShape(24.dp),
     ) {
@@ -44,6 +51,7 @@ fun FolderCard(
                 text = folder.name,
                 style = MaterialTheme.typography.titleSmall.copy(
                     fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.primary,
                 ),
                 maxLines = 2,
                 overflow = TextOverflow.Ellipsis,
@@ -63,7 +71,7 @@ fun FolderCard(
                 },
                 style = MaterialTheme.typography.bodySmall.copy(
                     fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.onBackground.copy(alpha = .5f),
+                    color = MaterialTheme.colorScheme.secondary,
                 ),
             )
         }
