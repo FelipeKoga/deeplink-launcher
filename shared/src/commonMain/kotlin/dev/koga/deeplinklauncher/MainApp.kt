@@ -1,11 +1,8 @@
 package dev.koga.deeplinklauncher
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.imePadding
-import androidx.compose.foundation.layout.navigationBars
-import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material3.MaterialTheme
@@ -48,7 +45,6 @@ fun MainApp() {
             modifier = Modifier
                 .fillMaxSize()
                 .background(MaterialTheme.colorScheme.background)
-                .windowInsetsPadding(WindowInsets.navigationBars)
                 .imePadding(),
             sheetBackgroundColor = MaterialTheme.colorScheme.surface,
             sheetShape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp),

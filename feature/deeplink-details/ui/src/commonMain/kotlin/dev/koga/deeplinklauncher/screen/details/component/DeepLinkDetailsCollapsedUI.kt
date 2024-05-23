@@ -63,7 +63,7 @@ fun DeepLinkDetailsCollapsedUI(
             Text(
                 text = uiState.deepLink.name.orEmpty(),
                 style = MaterialTheme.typography.titleLarge.copy(
-                    color = MaterialTheme.colorScheme.onBackground,
+                    color = MaterialTheme.colorScheme.secondary,
                     fontWeight = FontWeight.SemiBold,
                 ),
             )

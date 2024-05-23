@@ -46,7 +46,7 @@ private fun ComponentActivity.enableEdgeToEdgeForTheme(theme: AppTheme) {
     val mode = resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
 
     val darkColor = Color.parseColor("#09090B")
-    val lightColor = Color.parseColor("#FCF8F8")
+    val lightColor = Color.parseColor("#FFFFFF")
     val style = when (theme) {
         AppTheme.LIGHT -> SystemBarStyle.light(lightColor, darkColor)
         AppTheme.DARK -> SystemBarStyle.dark(darkColor)

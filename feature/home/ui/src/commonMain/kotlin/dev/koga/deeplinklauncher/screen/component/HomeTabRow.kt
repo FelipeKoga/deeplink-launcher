@@ -42,9 +42,7 @@ internal fun HomeTabRow(
             )
         },
         divider = {
-            DLLHorizontalDivider(
-                thickness = .2.dp,
-            )
+            DLLHorizontalDivider()
         },
         containerColor = Color.Transparent,
         contentColor = MaterialTheme.colorScheme.onSurfaceVariant,
