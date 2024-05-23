@@ -47,7 +47,7 @@ private fun DeleteDataBottomSheetContent(
     ) {
         Text(
             text = "Delete data",
-            style = MaterialTheme.typography.titleMedium.copy(
+            style = MaterialTheme.typography.titleLarge.copy(
                 fontWeight = FontWeight.Bold,
             ),
         )

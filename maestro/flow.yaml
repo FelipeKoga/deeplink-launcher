@@ -1,0 +1,12 @@
+appId: dev.koga.deeplinklauncher.android
+---
+- clearState
+- launchApp
+- tapOn: "Got it!"
+- tapOn: "Enter your deeplink here"
+- inputText: "https://www.google.com"
+- tapOn: "Launch"
+- back
+- tapOn: "Clear"
+- scrollUntilVisible:
+    element: "https://www.google.com"

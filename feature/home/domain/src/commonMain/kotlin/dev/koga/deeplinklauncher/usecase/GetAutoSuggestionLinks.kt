@@ -13,31 +13,35 @@ class GetAutoSuggestionLinks(
             return emptyList()
         }
 
-        val deepLinksMetadata = deepLinkDataSource.getDeepLinks().map {
-            getDeepLinkMetadata.execute(it.link)
-        }
+        val deepLinks = deepLinkDataSource.getDeepLinks()
+
+        val deepLinksMetadata = deepLinks.map { getDeepLinkMetadata.execute(it.link) }
+        val occurrences = deepLinksMetadata.groupingBy { it.scheme }.eachCount()
+        val sortedMetadata = deepLinksMetadata.sortedByDescending { occurrences[it.scheme] }
 
         val linkMetadata = getDeepLinkMetadata.execute(link)
 
-        val results = when {
+        return when {
             linkMetadata.scheme.isNullOrBlank() ->
-                deepLinksMetadata.schemes(linkMetadata.link)
+                sortedMetadata.schemes(linkMetadata.link)
 
             linkMetadata.host.isNullOrBlank() ->
-                deepLinksMetadata.hosts(linkMetadata.scheme)
+                sortedMetadata.hosts(linkMetadata.scheme)
 
             linkMetadata.query.isNullOrBlank() ->
-                deepLinksMetadata.queries(linkMetadata.scheme, linkMetadata.host)
+                sortedMetadata.queries(linkMetadata.scheme, linkMetadata.host)
 
             else -> emptyList()
-        }
-
-
-        return results.distinct().take(n = MAX_RESULTS)
+        }.distinct().take(n = MAX_RESULTS)
     }
 
     private fun List<DeepLinkMetadata>.schemes(text: String): List<String> {
-        return filter { it.scheme != null && it.scheme.contains(text) }.map { "${it.scheme}:" }
+        return filter { it.scheme != null && it.scheme.contains(text) }.map {
+            when {
+                it.link.contains("://") -> "${it.scheme}://"
+                else -> "${it.scheme}:"
+            }
+        }
     }
 
     private fun List<DeepLinkMetadata>.hosts(scheme: String): List<String> {

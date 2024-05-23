@@ -25,7 +25,7 @@ fun DLLSmallChip(modifier: Modifier = Modifier, label: String, onClick: () -> Un
         Text(
             text = label,
             style = MaterialTheme.typography.labelMedium.copy(
-                fontWeight = FontWeight.Bold,
+                fontWeight = FontWeight.SemiBold,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             ),
         )

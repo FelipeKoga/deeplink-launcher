@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.ListItem
@@ -76,7 +75,7 @@ class SettingsScreen : Screen {
                     bottomSheetType = null
                     screenModel.deleteAllDeepLinks()
                     scope.launch {
-                        snackbarHostState.showSnackbar("Deep links deleted")
+                        snackbarHostState.showSnackbar("Deeplinks deleted")
                     }
                 },
                 onDeleteFolders = {
@@ -147,7 +146,6 @@ fun SettingsScreenUI(
                 onNavigationActionClicked = onBack,
             )
         },
-        containerColor = MaterialTheme.colorScheme.surface,
         snackbarHost = { SnackbarHost(snackbarHostState) },
     ) { contentPadding ->
         LazyColumn(
@@ -235,7 +233,7 @@ fun SettingsScreenUI(
             }
 
             item {
-                Divider(modifier = Modifier.padding(vertical = 12.dp))
+                DLLHorizontalDivider(modifier = Modifier.padding(vertical = 12.dp))
             }
 
             item {
