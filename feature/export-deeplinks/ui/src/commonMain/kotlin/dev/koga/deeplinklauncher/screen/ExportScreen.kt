@@ -7,7 +7,6 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.animation.togetherWith
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -17,7 +16,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
-import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -26,8 +24,6 @@ import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.SnackbarResult
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -37,8 +33,6 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
-import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
@@ -53,6 +47,7 @@ import dev.icerock.moko.permissions.compose.BindEffect
 import dev.icerock.moko.permissions.compose.PermissionsControllerFactory
 import dev.icerock.moko.permissions.compose.rememberPermissionsControllerFactory
 import dev.koga.deeplinklauncher.BoxPreview
+import dev.koga.deeplinklauncher.DLLHorizontalDivider
 import dev.koga.deeplinklauncher.DLLSingleChoiceSegmentedButtonRow
 import dev.koga.deeplinklauncher.DLLTopBar
 import dev.koga.deeplinklauncher.model.ExportFileType
@@ -82,9 +77,6 @@ class ExportScreen : Screen {
         var selectedExportType by remember { mutableStateOf(ExportFileType.JSON) }
         var isPermissionGranted by remember { mutableStateOf(false) }
 
-        val scrollBehavior =
-            TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
-
         LaunchedEffect(Unit) {
             screenModel.messages.collectLatest { message ->
                 snackbarHostState.showSnackbar(
@@ -106,13 +98,11 @@ class ExportScreen : Screen {
         Scaffold(
             topBar = {
                 DLLTopBar(
-                    scrollBehavior = scrollBehavior,
                     title = "Export DeepLinks",
                     onNavigationActionClicked = navigator::pop,
                 )
             },
             snackbarHost = { SnackbarHost(snackbarHostState) },
-            containerColor = MaterialTheme.colorScheme.surface,
         ) { contentPadding ->
             Column(
                 modifier = Modifier
@@ -123,7 +113,6 @@ class ExportScreen : Screen {
                     modifier = Modifier.weight(1f),
                     preview = preview,
                     selectedExportType = selectedExportType,
-                    nestedScrollConnection = scrollBehavior.nestedScrollConnection,
                     onChangeExportType = {
                         selectedExportType = it
                     },
@@ -177,7 +166,6 @@ class ExportScreen : Screen {
 @Composable
 fun ExportContent(
     modifier: Modifier = Modifier,
-    nestedScrollConnection: NestedScrollConnection,
     selectedExportType: ExportFileType,
     preview: ExportData,
     onChangeExportType: (ExportFileType) -> Unit,
@@ -185,7 +173,6 @@ fun ExportContent(
     Column(
         modifier = modifier
             .fillMaxSize()
-            .nestedScroll(nestedScrollConnection)
             .padding(horizontal = 24.dp)
             .padding(top = 8.dp)
             .verticalScroll(rememberScrollState()),
@@ -255,10 +242,9 @@ fun ExportFooter(
 ) {
     Column(
         modifier = modifier
-            .fillMaxWidth()
-            .background(MaterialTheme.colorScheme.surface),
+            .fillMaxWidth(),
     ) {
-        Divider()
+        DLLHorizontalDivider()
 
         Button(
             modifier = Modifier

@@ -31,7 +31,7 @@ fun SuggestionsOptionBottomSheet(
         ) {
             Text(
                 text = "Suggestions",
-                style = MaterialTheme.typography.titleMedium.copy(
+                style = MaterialTheme.typography.titleLarge.copy(
                     fontWeight = FontWeight.Bold,
                 ),
             )
@@ -40,7 +40,7 @@ fun SuggestionsOptionBottomSheet(
 
             Text(
                 text = "When you are typing a deeplink, suggestions will be shown below the input" +
-                        " based on the deeplinks you already launched.",
+                    " based on the deeplinks you already launched.",
                 style = MaterialTheme.typography.bodyMedium.copy(
                     fontWeight = FontWeight.Normal,
                 ),

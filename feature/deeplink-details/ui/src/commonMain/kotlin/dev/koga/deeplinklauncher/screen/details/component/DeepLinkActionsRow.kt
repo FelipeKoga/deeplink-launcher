@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -18,7 +19,6 @@ import androidx.compose.material.icons.rounded.FavoriteBorder
 import androidx.compose.material.icons.rounded.Share
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -41,6 +41,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Popup
 import androidx.compose.ui.window.PopupProperties
 import dev.icerock.moko.resources.compose.painterResource
+import dev.koga.deeplinklauncher.button.DLLIconButton
 import dev.koga.resources.MR
 import kotlinx.coroutines.delay
 
@@ -113,7 +114,7 @@ fun DeepLinkActionsRow(
                 .fillMaxWidth()
                 .padding(vertical = 24.dp, horizontal = 8.dp),
         ) {
-            IconButton(onClick = onDuplicate) {
+            DLLIconButton(onClick = onDuplicate) {
                 Icon(
                     painterResource(MR.images.ic_duplicate_24dp),
                     contentDescription = "Duplicate",
@@ -121,7 +122,7 @@ fun DeepLinkActionsRow(
                 )
             }
 
-            IconButton(onClick = onShare) {
+            DLLIconButton(onClick = onShare) {
                 Icon(
                     imageVector = Icons.Rounded.Share,
                     contentDescription = "Share",
@@ -129,7 +130,7 @@ fun DeepLinkActionsRow(
                 )
             }
 
-            IconButton(
+            DLLIconButton(
                 modifier = Modifier.onGloballyPositioned {
                     copyCoordinates = it
                 },
@@ -145,7 +146,7 @@ fun DeepLinkActionsRow(
                 )
             }
 
-            IconButton(onClick = onFavorite) {
+            DLLIconButton(onClick = onFavorite) {
                 Icon(
                     imageVector = if (isFavorite) {
                         Icons.Rounded.Favorite
@@ -162,10 +163,11 @@ fun DeepLinkActionsRow(
             }
 
             Spacer(modifier = Modifier.weight(1f))
+
             Button(onClick = onLaunch) {
                 Text(
                     text = "Launch",
-                    style = MaterialTheme.typography.labelLarge.copy(
+                    style = MaterialTheme.typography.bodyMedium.copy(
                         fontWeight = FontWeight.Bold,
                     ),
                 )
@@ -175,6 +177,7 @@ fun DeepLinkActionsRow(
                 Icon(
                     painter = painterResource(MR.images.ic_launch_24dp),
                     contentDescription = "Launch",
+                    modifier = Modifier.size(18.dp),
                 )
             }
         }
