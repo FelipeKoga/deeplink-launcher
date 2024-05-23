@@ -103,7 +103,6 @@ class ExportScreen : Screen {
                 )
             },
             snackbarHost = { SnackbarHost(snackbarHostState) },
-            containerColor = MaterialTheme.colorScheme.surface,
         ) { contentPadding ->
             Column(
                 modifier = Modifier
@@ -137,7 +136,7 @@ class ExportScreen : Screen {
                                         } catch (e: DeniedAlwaysException) {
                                             val result = snackbarHostState.showSnackbar(
                                                 message = "Permission denied always. " +
-                                                    "Please enable it in settings",
+                                                        "Please enable it in settings",
                                                 duration = SnackbarDuration.Short,
                                                 actionLabel = "Settings",
                                             )
@@ -213,10 +212,10 @@ fun ExportContent(
             transitionSpec = {
                 if (targetState > initialState) {
                     slideInHorizontally { width -> width } + fadeIn() togetherWith
-                        slideOutHorizontally { width -> -width } + fadeOut()
+                            slideOutHorizontally { width -> -width } + fadeOut()
                 } else {
                     slideInHorizontally { width -> -width } + fadeIn() togetherWith
-                        slideOutHorizontally { width -> width } + fadeOut()
+                            slideOutHorizontally { width -> width } + fadeOut()
                 }.using(
                     SizeTransform(clip = false),
                 )
