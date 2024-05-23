@@ -59,7 +59,7 @@ fun FolderCard(
                         folder.deepLinkCount,
                     )
                 } else {
-                    "No deep links"
+                    "No deeplinks"
                 },
                 style = MaterialTheme.typography.bodySmall.copy(
                     fontWeight = FontWeight.Bold,

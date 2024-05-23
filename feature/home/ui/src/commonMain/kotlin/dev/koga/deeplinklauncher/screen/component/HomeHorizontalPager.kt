@@ -43,6 +43,7 @@ import kotlinx.collections.immutable.ImmutableList
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
 @Composable
 internal fun HomeHorizontalPager(
+    modifier: Modifier = Modifier,
     allDeepLinks: ImmutableList<DeepLink>,
     favoriteDeepLinks: ImmutableList<DeepLink>,
     folders: ImmutableList<Folder>,
@@ -58,7 +59,7 @@ internal fun HomeHorizontalPager(
 ) {
     HorizontalPager(
         state = pagerState,
-        modifier = Modifier.fillMaxSize(),
+        modifier = modifier.fillMaxSize(),
     ) { page ->
         when (page) {
             HomeTabPage.HISTORY.ordinal -> DeepLinksLazyColumn(
@@ -109,8 +110,12 @@ fun DeepLinksLazyColumn(
             .fillMaxSize()
             .nestedScroll(scrollBehavior.nestedScrollConnection),
         contentPadding = PaddingValues(
+            top = 12.dp,
+            start = 12.dp,
+            end = 12.dp,
             bottom = paddingBottom,
         ),
+        verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
         items(
             key = { it.id },
