@@ -1,5 +1,6 @@
 package dev.koga.deeplinklauncher.android
 
+import android.content.res.Configuration
 import android.graphics.Color
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -42,10 +43,19 @@ class MainActivity : FragmentActivity(), KoinComponent {
 }
 
 private fun ComponentActivity.enableEdgeToEdgeForTheme(theme: AppTheme) {
+    val mode = resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
+
+    val darkColor = Color.parseColor("#09090B")
+    val lightColor = Color.parseColor("#FFFFFF")
     val style = when (theme) {
-        AppTheme.LIGHT -> SystemBarStyle.light(Color.TRANSPARENT, Color.TRANSPARENT)
-        AppTheme.DARK -> SystemBarStyle.dark(Color.TRANSPARENT)
-        AppTheme.AUTO -> SystemBarStyle.auto(Color.TRANSPARENT, Color.TRANSPARENT)
+        AppTheme.LIGHT -> SystemBarStyle.light(lightColor, darkColor)
+        AppTheme.DARK -> SystemBarStyle.dark(darkColor)
+        // workaround because i don't want translucent system bar
+        AppTheme.AUTO -> if (mode == Configuration.UI_MODE_NIGHT_YES) {
+            SystemBarStyle.dark(darkColor)
+        } else {
+            SystemBarStyle.light(lightColor, darkColor)
+        }
     }
 
     enableEdgeToEdge(statusBarStyle = style, navigationBarStyle = style)

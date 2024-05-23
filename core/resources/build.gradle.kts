@@ -20,10 +20,6 @@ kotlin {
         iosMain {
             dependsOn(commonMain.get())
         }
-
-        jvmMain {
-            dependsOn(commonMain.get())
-        }
     }
 }
 

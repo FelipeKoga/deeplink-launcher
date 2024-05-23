@@ -18,7 +18,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
-import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -42,6 +41,7 @@ import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import dev.koga.deeplinklauncher.BoxPreview
+import dev.koga.deeplinklauncher.DLLHorizontalDivider
 import dev.koga.deeplinklauncher.DLLSingleChoiceSegmentedButtonRow
 import dev.koga.deeplinklauncher.DLLTopBar
 import dev.koga.deeplinklauncher.ImportDeepLinks
@@ -117,7 +117,7 @@ class ImportScreen : Screen {
             snackbarHost = {
                 SnackbarHost(snackbarHostState)
             },
-            containerColor = MaterialTheme.colorScheme.surface,
+            containerColor = MaterialTheme.colorScheme.background,
         ) { contentPadding ->
             Column(modifier = Modifier.padding(contentPadding).fillMaxSize()) {
                 ImportContent(
@@ -217,10 +217,9 @@ fun ImportContent(modifier: Modifier = Modifier) {
 fun ImportFooter(modifier: Modifier = Modifier, onBrowse: () -> Unit) {
     Column(
         modifier = modifier
-            .fillMaxWidth()
-            .background(MaterialTheme.colorScheme.surface),
+            .fillMaxWidth(),
     ) {
-        Divider()
+        DLLHorizontalDivider()
 
         Button(
             modifier = Modifier

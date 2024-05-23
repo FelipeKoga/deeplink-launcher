@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.BottomSheetDefaults
-import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -24,6 +23,7 @@ import cafe.adriel.voyager.core.registry.ScreenRegistry
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.koin.getScreenModel
 import cafe.adriel.voyager.navigator.bottomSheet.LocalBottomSheetNavigator
+import dev.koga.deeplinklauncher.DLLHorizontalDivider
 import dev.koga.deeplinklauncher.SharedScreen
 import dev.koga.deeplinklauncher.component.DeleteDeepLinkConfirmationBottomSheet
 import dev.koga.deeplinklauncher.model.DeepLink
@@ -129,7 +129,9 @@ class DeepLinkDetailsScreen(
                 visible = detailsMode !is DetailsMode.Duplicate,
             ) {
                 Column {
-                    Divider(modifier = Modifier.padding(top = 24.dp))
+                    DLLHorizontalDivider(
+                        modifier = Modifier.padding(top = 24.dp),
+                    )
 
                     DeepLinkActionsRow(
                         link = uiState.deepLink.link,

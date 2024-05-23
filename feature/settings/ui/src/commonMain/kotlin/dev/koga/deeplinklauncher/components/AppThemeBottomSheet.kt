@@ -34,7 +34,7 @@ fun AppThemeBottomSheet(
         ) {
             Text(
                 text = "Theme",
-                style = MaterialTheme.typography.titleMedium.copy(
+                style = MaterialTheme.typography.titleLarge.copy(
                     fontWeight = FontWeight.Bold,
                 ),
             )

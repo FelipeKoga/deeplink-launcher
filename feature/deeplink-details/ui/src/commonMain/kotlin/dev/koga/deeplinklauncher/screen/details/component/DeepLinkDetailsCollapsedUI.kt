@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.FilledTonalIconButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -18,6 +17,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import dev.icerock.moko.resources.compose.painterResource
 import dev.koga.deeplinklauncher.DLLSmallChip
+import dev.koga.deeplinklauncher.button.DLLOutlinedIconButton
 import dev.koga.deeplinklauncher.screen.details.state.DeepLinkDetailsUiState
 import dev.koga.resources.MR
 
@@ -48,7 +48,7 @@ fun DeepLinkDetailsCollapsedUI(
 
             Spacer(modifier = Modifier.weight(1f))
 
-            FilledTonalIconButton(
+            DLLOutlinedIconButton(
                 modifier = Modifier,
                 onClick = onExpand,
             ) {
@@ -63,7 +63,7 @@ fun DeepLinkDetailsCollapsedUI(
             Text(
                 text = uiState.deepLink.name.orEmpty(),
                 style = MaterialTheme.typography.titleLarge.copy(
-                    color = MaterialTheme.colorScheme.onBackground,
+                    color = MaterialTheme.colorScheme.secondary,
                     fontWeight = FontWeight.SemiBold,
                 ),
             )
