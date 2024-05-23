@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.MaterialTheme
@@ -20,6 +19,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import dev.koga.deeplinklauncher.DLLHorizontalDivider
 import dev.koga.deeplinklauncher.DLLModalBottomSheet
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -36,14 +36,14 @@ fun DeleteDeepLinkConfirmationBottomSheet(
     ) {
         Column {
             Text(
-                text = "Delete Deep Link",
+                text = "Delete DeepLink",
                 style = MaterialTheme.typography.titleSmall.copy(
                     fontWeight = FontWeight.Bold,
                 ),
                 modifier = Modifier.padding(24.dp),
             )
 
-            Divider()
+            DLLHorizontalDivider()
 
             Text(
                 text = "Are you sure you want to delete this deeplink?",

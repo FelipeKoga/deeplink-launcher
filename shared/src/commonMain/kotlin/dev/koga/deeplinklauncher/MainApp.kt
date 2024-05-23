@@ -11,7 +11,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.snapshotFlow
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.unit.dp
@@ -47,7 +46,7 @@ fun MainApp() {
                 .fillMaxSize()
                 .background(MaterialTheme.colorScheme.background)
                 .imePadding(),
-            sheetBackgroundColor = MaterialTheme.colorScheme.background,
+            sheetBackgroundColor = MaterialTheme.colorScheme.surface,
             sheetShape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp),
         ) {
             it.closeKeyboardOnBottomSheetDismiss()
@@ -59,7 +58,6 @@ fun MainApp() {
     }
 }
 
-@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 private fun BottomSheetNavigator.closeKeyboardOnBottomSheetDismiss() {
     val keyboardController = LocalSoftwareKeyboardController.current
