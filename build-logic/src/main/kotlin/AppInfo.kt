@@ -3,7 +3,7 @@ import kotlinx.datetime.Clock
 object Configuration {
     private const val MAJOR_VERSION = 1
     private const val MINOR_VERSION = 4
-    private const val PATCH_VERSION = 0
+    private const val PATCH_VERSION = 1
 
     const val VERSION_NAME = "$MAJOR_VERSION.$MINOR_VERSION.$PATCH_VERSION"
     val versionCode = (MAJOR_VERSION * 10000) +
