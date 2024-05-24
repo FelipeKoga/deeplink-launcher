@@ -44,16 +44,11 @@ class ExportDeepLinks(
                 }
 
                 Json.encodeToString(
-                    serializer = ListSerializer(
-                        ImportExportDto.serializer(),
+                    serializer = ImportExportDto.serializer(),
+                    value = ImportExportDto(
+                        folders = foldersDto,
+                        deepLinks = deepLinksDto,
                     ),
-
-                    value = deepLinks.map {
-                        ImportExportDto(
-                            folders = foldersDto,
-                            deepLinks = deepLinksDto,
-                        )
-                    },
                 )
             }
 
