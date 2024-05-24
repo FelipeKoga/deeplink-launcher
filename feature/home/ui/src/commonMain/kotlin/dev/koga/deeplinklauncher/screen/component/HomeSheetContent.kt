@@ -98,10 +98,10 @@ internal fun HomeSheetContent(
                 keyboardOptions = KeyboardOptions.Default.copy(
                     keyboardType = KeyboardType.Uri,
                     autoCorrect = false,
-                    imeAction = ImeAction.Default,
+                    imeAction = ImeAction.Done,
                 ),
                 keyboardActions = KeyboardActions(
-                    onSearch = { launch() },
+                    onDone = { launch() },
                 ),
                 textStyle = MaterialTheme.typography.bodyMedium.copy(
                     fontWeight = FontWeight.Bold,
