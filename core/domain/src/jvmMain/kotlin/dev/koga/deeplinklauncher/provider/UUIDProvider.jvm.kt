@@ -1,7 +1,9 @@
 package dev.koga.deeplinklauncher.provider
 
+import java.util.UUID
+
 actual object UUIDProvider {
     actual fun get(): String {
-        TODO("Not yet implemented")
+        return UUID.randomUUID().toString()
     }
 }
