@@ -22,7 +22,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
-import androidx.compose.material3.SnackbarResult
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -39,19 +38,11 @@ import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.koin.getScreenModel
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
-import dev.icerock.moko.permissions.DeniedAlwaysException
-import dev.icerock.moko.permissions.DeniedException
-import dev.icerock.moko.permissions.Permission
-import dev.icerock.moko.permissions.PermissionsController
-import dev.icerock.moko.permissions.compose.BindEffect
-import dev.icerock.moko.permissions.compose.PermissionsControllerFactory
-import dev.icerock.moko.permissions.compose.rememberPermissionsControllerFactory
 import dev.koga.deeplinklauncher.BoxPreview
 import dev.koga.deeplinklauncher.DLLHorizontalDivider
 import dev.koga.deeplinklauncher.DLLSingleChoiceSegmentedButtonRow
 import dev.koga.deeplinklauncher.DLLTopBar
 import dev.koga.deeplinklauncher.model.ExportFileType
-import dev.koga.deeplinklauncher.util.shouldAskForPermission
 import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -62,10 +53,10 @@ class ExportScreen : Screen {
     @Composable
     override fun Content() {
         val navigator = LocalNavigator.currentOrThrow
-        val permissionFactory: PermissionsControllerFactory = rememberPermissionsControllerFactory()
-        val permissionController: PermissionsController = remember(permissionFactory) {
-            permissionFactory.createPermissionsController()
-        }
+//        val permissionFactory: PermissionsControllerFactory = rememberPermissionsControllerFactory()
+//        val permissionController: PermissionsController = remember(permissionFactory) {
+//            permissionFactory.createPermissionsController()
+//        }
 
         val scope = rememberCoroutineScope()
 
@@ -86,13 +77,13 @@ class ExportScreen : Screen {
             }
         }
 
-        BindEffect(permissionController)
+//        BindEffect(permissionController)
 
         LaunchedEffect(true) {
-            isPermissionGranted = !shouldAskForPermission(
-                permissionsController = permissionController,
-                permission = Permission.WRITE_STORAGE,
-            )
+//            isPermissionGranted = !shouldAskForPermission(
+//                permissionsController = permissionController,
+//                permission = Permission.WRITE_STORAGE,
+//            )
         }
 
         Scaffold(
@@ -128,31 +119,31 @@ class ExportScreen : Screen {
                                 }
 
                                 false -> {
-                                    scope.launch {
-                                        try {
-                                            permissionController.providePermission(Permission.WRITE_STORAGE)
-
-                                            isPermissionGranted = true
-                                        } catch (e: DeniedAlwaysException) {
-                                            val result = snackbarHostState.showSnackbar(
-                                                message = "Permission denied always. " +
-                                                    "Please enable it in settings",
-                                                duration = SnackbarDuration.Short,
-                                                actionLabel = "Settings",
-                                            )
-
-                                            when (result) {
-                                                SnackbarResult.Dismissed -> Unit
-                                                SnackbarResult.ActionPerformed ->
-                                                    permissionController.openAppSettings()
-                                            }
-                                        } catch (e: DeniedException) {
-                                            snackbarHostState.showSnackbar(
-                                                message = "Permission denied",
-                                                duration = SnackbarDuration.Short,
-                                            )
-                                        }
-                                    }
+//                                    scope.launch {
+//                                        try {
+//                                            permissionController.providePermission(Permission.WRITE_STORAGE)
+//
+//                                            isPermissionGranted = true
+//                                        } catch (e: DeniedAlwaysException) {
+//                                            val result = snackbarHostState.showSnackbar(
+//                                                message = "Permission denied always. " +
+//                                                        "Please enable it in settings",
+//                                                duration = SnackbarDuration.Short,
+//                                                actionLabel = "Settings",
+//                                            )
+//
+//                                            when (result) {
+//                                                SnackbarResult.Dismissed -> Unit
+//                                                SnackbarResult.ActionPerformed ->
+//                                                    permissionController.openAppSettings()
+//                                            }
+//                                        } catch (e: DeniedException) {
+//                                            snackbarHostState.showSnackbar(
+//                                                message = "Permission denied",
+//                                                duration = SnackbarDuration.Short,
+//                                            )
+//                                        }
+//                                    }
                                 }
                             }
                         }
@@ -183,6 +174,10 @@ fun ExportContent(
                 fontWeight = FontWeight.Bold,
             ),
         )
+
+//        Image(
+//            painter = painterResource(Res.drawable),
+//        )
 
         Spacer(modifier = Modifier.height(16.dp))
 

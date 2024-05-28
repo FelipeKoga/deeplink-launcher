@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Text
@@ -19,11 +18,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import dev.icerock.moko.resources.compose.stringResource
 import dev.koga.deeplinklauncher.model.Folder
-import dev.koga.resources.MR
+import dev.koga.resources.Res
+import dev.koga.resources.folder_deeplink_count
+import org.jetbrains.compose.resources.pluralStringResource
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FolderCard(
     modifier: Modifier,
@@ -61,8 +60,8 @@ fun FolderCard(
 
             Text(
                 text = if (folder.deepLinkCount > 0) {
-                    stringResource(
-                        resource = MR.plurals.folder_deeplink_count,
+                    pluralStringResource(
+                        resource = Res.plurals.folder_deeplink_count,
                         quantity = folder.deepLinkCount,
                         folder.deepLinkCount,
                     )

@@ -41,12 +41,13 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
-import dev.icerock.moko.resources.compose.painterResource
 import dev.koga.deeplinklauncher.DLLTextField
 import dev.koga.deeplinklauncher.button.DLLFilledIconButton
 import dev.koga.deeplinklauncher.button.DLLIconButton
-import dev.koga.resources.MR
+import dev.koga.resources.Res
+import dev.koga.resources.ic_launch_24dp
 import kotlinx.collections.immutable.ImmutableList
+import org.jetbrains.compose.resources.painterResource
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -134,7 +135,7 @@ internal fun HomeSheetContent(
                 ),
             ) {
                 Icon(
-                    painter = painterResource(MR.images.ic_launch_24dp),
+                    painter = painterResource(Res.drawable.ic_launch_24dp),
                     contentDescription = "Launch",
                 )
             }
