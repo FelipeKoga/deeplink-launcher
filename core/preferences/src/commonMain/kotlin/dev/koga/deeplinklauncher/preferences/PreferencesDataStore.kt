@@ -7,14 +7,19 @@ import androidx.datastore.preferences.core.stringPreferencesKey
 import dev.koga.deeplinklauncher.datasource.PreferencesDataSource
 import dev.koga.deeplinklauncher.model.AppTheme
 import dev.koga.deeplinklauncher.model.Preferences
+import dev.koga.deeplinklauncher.preferences.datastore.createDataStore
+import dev.koga.deeplinklauncher.preferences.datastore.dataStorePreferences
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.runBlocking
 import androidx.datastore.preferences.core.Preferences as DataStorePreferences
 
-class PreferencesDataStore(
-    private val dataStore: DataStore<DataStorePreferences>,
-) : PreferencesDataSource {
+class PreferencesDataStore : PreferencesDataSource {
+
+    private val dataStore = dataStorePreferences()
 
     private val themeKey = stringPreferencesKey("theme")
     private val shouldShowOnboarding = booleanPreferencesKey("should_show_onboarding")

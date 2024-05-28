@@ -16,11 +16,15 @@ kotlin {
             implementation(libs.kotlinx.coroutines.core)
             implementation(libs.kotlinx.serialization.json)
             implementation(libs.koin.core)
-            implementation(libs.sql.coroutines.extensions)
+            implementation(libs.sqldelight.coroutines.extensions)
         }
 
         androidMain.dependencies {
-            implementation(libs.sql.android.driver)
+            implementation(libs.sqldelight.android.driver)
+        }
+
+        jvmMain.dependencies {
+            implementation(libs.sqldelight.jvm)
         }
     }
 }

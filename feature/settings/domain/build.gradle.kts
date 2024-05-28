@@ -1,5 +1,4 @@
 import extension.binariesFrameworkConfig
-import org.jetbrains.compose.ExperimentalComposeLibrary
 
 plugins {
     id("dev.koga.deeplinklauncher.multiplatform")

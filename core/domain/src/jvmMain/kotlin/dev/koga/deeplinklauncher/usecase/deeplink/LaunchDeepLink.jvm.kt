@@ -4,7 +4,7 @@ import dev.koga.deeplinklauncher.model.DeepLink
 
 actual class LaunchDeepLink {
     actual fun launch(url: String): LaunchDeepLinkResult {
-        TODO("Not yet implemented")
+        return LaunchDeepLinkResult.Failure(Throwable(""))
     }
 
     actual fun launch(deepLink: DeepLink): LaunchDeepLinkResult {

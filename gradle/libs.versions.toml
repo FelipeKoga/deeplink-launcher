@@ -8,7 +8,7 @@ kotlin = "2.0.0"
 kotlinx-immutable = "0.3.7"
 
 compose-plugin = "1.6.10"
-compose-runtime = "1.0.0"
+compose-runtime = "1.6.7"
 
 androidx-activityCompose = "1.9.0"
 androidx-core = "1.13.1"
@@ -55,9 +55,9 @@ koin-compose = { module = "io.insert-koin:koin-compose", version.ref = "koin-com
 koin-core = { module = "io.insert-koin:koin-core", version.ref = "koin" }
 koin-android = { module = "io.insert-koin:koin-android", version.ref = "koin" }
 
-sql-coroutines-extensions = { module = "app.cash.sqldelight:coroutines-extensions", version.ref = "sqlDelight" }
-sql-native-driver = { module = "app.cash.sqldelight:native-driver", version.ref = "sqlDelight" }
-sql-android-driver = { module = "app.cash.sqldelight:android-driver", version.ref = "sqlDelight" }
+sqldelight-coroutines-extensions = { module = "app.cash.sqldelight:coroutines-extensions", version.ref = "sqlDelight" }
+sqldelight-android-driver = { module = "app.cash.sqldelight:android-driver", version.ref = "sqlDelight" }
+sqldelight-jvm = { module = "app.cash.sqldelight:sqlite-driver", version.ref = "sqlDelight" }
 
 ktlint = { module = "com.pinterest:ktlint", version.ref = "ktlint" }
 detekt = { module = "io.gitlab.arturbosch.detekt:detekt-gradle-plugin", version.ref = "detekt" }
