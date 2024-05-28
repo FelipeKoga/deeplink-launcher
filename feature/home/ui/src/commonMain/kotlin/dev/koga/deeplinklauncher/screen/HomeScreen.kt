@@ -8,7 +8,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.windowInsetsPadding
+import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.lazy.staggeredgrid.rememberLazyStaggeredGridState
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.BottomSheetScaffold
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -48,11 +50,8 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalFoundationApi::class)
-object HomeScreen : Screen {
-    private const val DELAY_TO_SCROLL_TO_THE_TOP = 350L
-
-    @OptIn(ExperimentalMaterial3Api::class)
+class HomeScreen : Screen {
+    @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
     @Composable
     override fun Content() {
         val navigator = LocalNavigator.currentOrThrow
@@ -65,8 +64,8 @@ object HomeScreen : Screen {
 
         val scope = rememberCoroutineScope()
 
-        val allDeepLinksListState = rememberLazyListState()
-        val favoritesDeepLinksListState = rememberLazyListState()
+        val allDeepLinksListState = rememberLazyStaggeredGridState()
+        val favoritesDeepLinksListState = rememberLazyStaggeredGridState()
         val pagerState = rememberPagerState(
             initialPage = HomeTabPage.HISTORY.ordinal,
             pageCount = {
@@ -97,8 +96,10 @@ object HomeScreen : Screen {
         }
 
         LaunchedEffect(uiState.searchInput) {
-            allDeepLinksListState.animateScrollToItem(index = 0)
-            favoritesDeepLinksListState.animateScrollToItem(index = 0)
+            if (uiState.deepLinks.isNotEmpty()) {
+                allDeepLinksListState.animateScrollToItem(index = 0)
+                favoritesDeepLinksListState.animateScrollToItem(index = 0)
+            }
         }
 
         HomeEventsHandler(
@@ -174,6 +175,10 @@ object HomeScreen : Screen {
                 }
             }
         }
+    }
+
+    companion object {
+        private const val DELAY_TO_SCROLL_TO_THE_TOP = 350L
     }
 }
 
