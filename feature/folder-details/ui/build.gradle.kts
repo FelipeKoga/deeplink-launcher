@@ -1,9 +1,11 @@
 import extension.binariesFrameworkConfig
+import org.jetbrains.compose.ComposePlugin
 import org.jetbrains.compose.ExperimentalComposeLibrary
 
 plugins {
     id("dev.koga.deeplinklauncher.multiplatform")
     alias(libs.plugins.jetbrainsCompose)
+    alias(libs.plugins.compose.compiler)
 }
 
 kotlin {
@@ -22,14 +24,13 @@ kotlin {
             implementation(libs.voyager.navigator)
             implementation(libs.voyager.koin)
             implementation(libs.voyager.bottomSheet)
-            implementation(libs.moko.resources.compose)
+
             implementation(libs.kotlinx.immutable)
 
             implementation(compose.runtime)
             implementation(compose.foundation)
             implementation(compose.material3)
             implementation(compose.ui)
-            @OptIn(ExperimentalComposeLibrary::class)
             implementation(compose.components.resources)
         }
     }

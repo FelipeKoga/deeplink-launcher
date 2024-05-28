@@ -8,6 +8,7 @@ plugins {
     id("com.mikepenz.aboutlibraries.plugin")
     alias(libs.plugins.google.services)
     alias(libs.plugins.crashlytics)
+    alias(libs.plugins.compose.compiler)
 }
 
 val keystoreProperties = Properties()
@@ -83,6 +84,8 @@ dependencies {
 
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.crashlytics)
+
+    implementation(libs.compose.runtime)
 }
 
 tasks.withType(KotlinCompile::class.java) {

@@ -15,11 +15,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import dev.icerock.moko.resources.compose.painterResource
 import dev.koga.deeplinklauncher.DLLSmallChip
 import dev.koga.deeplinklauncher.button.DLLOutlinedIconButton
 import dev.koga.deeplinklauncher.screen.details.state.DeepLinkDetailsUiState
-import dev.koga.resources.MR
+import dev.koga.resources.Res
+import dev.koga.resources.ic_unfold_more_24dp
+import org.jetbrains.compose.resources.painterResource
 
 @Composable
 fun DeepLinkDetailsCollapsedUI(
@@ -53,7 +54,7 @@ fun DeepLinkDetailsCollapsedUI(
                 onClick = onExpand,
             ) {
                 Icon(
-                    painterResource(MR.images.ic_unfold_more_24dp),
+                    painterResource(Res.drawable.ic_unfold_more_24dp),
                     contentDescription = "Edit deeplink",
                 )
             }

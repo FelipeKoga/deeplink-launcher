@@ -3,8 +3,8 @@ import org.jetbrains.compose.ExperimentalComposeLibrary
 
 plugins {
     id("dev.koga.deeplinklauncher.multiplatform")
-    id(libs.plugins.moko.multiplatform.resources.get().pluginId)
     alias(libs.plugins.jetbrainsCompose)
+    alias(libs.plugins.compose.compiler)
 }
 
 kotlin {
@@ -30,7 +30,6 @@ kotlin {
 
             implementation(libs.koin.core)
             implementation(libs.kotlinx.coroutines.core)
-            implementation(libs.moko.resources.core)
             implementation(libs.koin.compose)
             implementation(libs.voyager.bottomSheet)
             implementation(libs.voyager.navigator)
@@ -44,17 +43,10 @@ kotlin {
             @OptIn(ExperimentalComposeLibrary::class)
             implementation(compose.components.resources)
         }
-
-        androidMain {
-            dependsOn(commonMain.get())
-        }
-
-        iosMain {
-            dependsOn(commonMain.get())
-        }
     }
 }
 
 android {
     namespace = "dev.koga.shared"
 }
+

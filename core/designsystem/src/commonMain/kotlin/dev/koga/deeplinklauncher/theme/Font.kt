@@ -4,19 +4,23 @@ import androidx.compose.material3.Typography
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
-import dev.icerock.moko.resources.compose.asFont
-import dev.koga.resources.MR
+import dev.koga.resources.Montserrat_Black
+import dev.koga.resources.Montserrat_Bold
+import dev.koga.resources.Montserrat_Medium
+import dev.koga.resources.Montserrat_Regular
+import dev.koga.resources.Montserrat_Semibold
+import dev.koga.resources.Montserrat_Thin
+import dev.koga.resources.Res
+import org.jetbrains.compose.resources.Font
 
 val appFont
     @Composable get() = FontFamily(
-        listOfNotNull(
-            MR.fonts.Montserrat.light.asFont(weight = FontWeight.Light),
-            MR.fonts.Montserrat.regular.asFont(weight = FontWeight.Normal),
-            MR.fonts.Montserrat.medium.asFont(weight = FontWeight.Medium),
-            MR.fonts.Montserrat.semibold.asFont(weight = FontWeight.SemiBold),
-            MR.fonts.Montserrat.bold.asFont(weight = FontWeight.Bold),
-            MR.fonts.Montserrat.black.asFont(weight = FontWeight.Black),
-        ),
+        Font(Res.font.Montserrat_Thin, FontWeight.Thin),
+        Font(Res.font.Montserrat_Regular, FontWeight.Normal),
+        Font(Res.font.Montserrat_Medium, FontWeight.Medium),
+        Font(Res.font.Montserrat_Semibold, FontWeight.SemiBold),
+        Font(Res.font.Montserrat_Bold, FontWeight.Bold),
+        Font(Res.font.Montserrat_Black, FontWeight.Black),
     )
 
 // Set of Material typography styles to start with

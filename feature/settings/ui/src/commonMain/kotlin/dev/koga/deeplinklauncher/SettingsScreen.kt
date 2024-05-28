@@ -35,13 +35,16 @@ import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.koin.getScreenModel
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
-import dev.icerock.moko.resources.compose.painterResource
 import dev.koga.deeplinklauncher.components.AppThemeBottomSheet
 import dev.koga.deeplinklauncher.components.DeleteDataBottomSheet
 import dev.koga.deeplinklauncher.components.OpenSourceLicensesScreen
 import dev.koga.deeplinklauncher.components.SuggestionsOptionBottomSheet
-import dev.koga.resources.MR
+import dev.koga.resources.Res
+import dev.koga.resources.ic_chevron_right_24dp
+import dev.koga.resources.ic_content_copy_24dp
+import dev.koga.resources.ic_launch_24dp
 import kotlinx.coroutines.launch
+import org.jetbrains.compose.resources.painterResource
 
 class SettingsScreen : Screen {
 
@@ -175,7 +178,7 @@ fun SettingsScreenUI(
                     onClick = onShowAppTheme,
                     trailingContent = {
                         Icon(
-                            painter = painterResource(MR.images.ic_chevron_right_24dp),
+                            painter = painterResource(Res.drawable.ic_chevron_right_24dp),
                             contentDescription = "navigate",
                         )
                     },
@@ -189,7 +192,7 @@ fun SettingsScreenUI(
                     onClick = onShowSuggestionsOption,
                     trailingContent = {
                         Icon(
-                            painter = painterResource(MR.images.ic_chevron_right_24dp),
+                            painter = painterResource(Res.drawable.ic_chevron_right_24dp),
                             contentDescription = "navigate",
                         )
                     },
@@ -203,7 +206,7 @@ fun SettingsScreenUI(
                     onClick = onNavigateToExport,
                     trailingContent = {
                         Icon(
-                            painter = painterResource(MR.images.ic_chevron_right_24dp),
+                            painter = painterResource(Res.drawable.ic_chevron_right_24dp),
                             contentDescription = "navigate",
                         )
                     },
@@ -217,7 +220,7 @@ fun SettingsScreenUI(
                     onClick = onNavigateToImport,
                     trailingContent = {
                         Icon(
-                            painter = painterResource(MR.images.ic_chevron_right_24dp),
+                            painter = painterResource(Res.drawable.ic_chevron_right_24dp),
                             contentDescription = "navigate",
                         )
                     },
@@ -231,7 +234,7 @@ fun SettingsScreenUI(
                     onClick = onShowDeleteDataBottomSheet,
                     trailingContent = {
                         Icon(
-                            painter = painterResource(MR.images.ic_chevron_right_24dp),
+                            painter = painterResource(Res.drawable.ic_chevron_right_24dp),
                             contentDescription = "navigate",
                         )
                     },
@@ -260,7 +263,7 @@ fun SettingsScreenUI(
                     onClick = onNavigateToGithub,
                     trailingContent = {
                         Icon(
-                            painter = painterResource(MR.images.ic_launch_24dp),
+                            painter = painterResource(Res.drawable.ic_launch_24dp),
                             contentDescription = "launch",
                         )
                     },
@@ -274,7 +277,7 @@ fun SettingsScreenUI(
                     onClick = onNavigateToStore,
                     trailingContent = {
                         Icon(
-                            painter = painterResource(MR.images.ic_launch_24dp),
+                            painter = painterResource(Res.drawable.ic_launch_24dp),
                             contentDescription = "navigate",
                         )
                     },
@@ -288,7 +291,7 @@ fun SettingsScreenUI(
                     onClick = onNavigateToOpenSourceLicenses,
                     trailingContent = {
                         Icon(
-                            painter = painterResource(MR.images.ic_chevron_right_24dp),
+                            painter = painterResource(Res.drawable.ic_chevron_right_24dp),
                             contentDescription = "navigate",
                         )
                     },
@@ -307,7 +310,7 @@ fun SettingsScreenUI(
                     },
                     trailingContent = {
                         Icon(
-                            painter = painterResource(MR.images.ic_content_copy_24dp),
+                            painter = painterResource(Res.drawable.ic_content_copy_24dp),
                             contentDescription = "copy",
                         )
                     },

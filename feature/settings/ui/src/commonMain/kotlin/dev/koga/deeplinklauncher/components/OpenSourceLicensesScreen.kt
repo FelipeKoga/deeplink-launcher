@@ -5,23 +5,32 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import com.mikepenz.aboutlibraries.ui.compose.LibrariesContainer
 import com.mikepenz.aboutlibraries.ui.compose.LibraryDefaults
-import dev.icerock.moko.resources.compose.readTextAsState
 import dev.koga.deeplinklauncher.DLLTopBar
-import dev.koga.resources.MR
+import dev.koga.resources.Res
+import org.jetbrains.compose.resources.ExperimentalResourceApi
 
 class OpenSourceLicensesScreen : Screen {
-    @OptIn(ExperimentalMaterial3Api::class)
+    @OptIn(ExperimentalMaterial3Api::class, ExperimentalResourceApi::class)
     @Composable
     override fun Content() {
         val navigator = LocalNavigator.currentOrThrow
-        val licenses by MR.files.aboutlibraries.readTextAsState()
+
+        var bytes by remember { mutableStateOf(ByteArray(0)) }
+
+        LaunchedEffect(Unit) {
+            bytes = Res.readBytes("files/aboutlibraries.json")
+        }
 
         Scaffold(
             topBar = {
@@ -33,7 +42,7 @@ class OpenSourceLicensesScreen : Screen {
         ) { contentPadding ->
             LibrariesContainer(
                 modifier = Modifier.padding(contentPadding),
-                aboutLibsJson = licenses.orEmpty(),
+                aboutLibsJson = bytes.decodeToString(),
                 colors = LibraryDefaults.libraryColors(
                     backgroundColor = MaterialTheme.colorScheme.surface,
                     contentColor = MaterialTheme.colorScheme.onSurface,
