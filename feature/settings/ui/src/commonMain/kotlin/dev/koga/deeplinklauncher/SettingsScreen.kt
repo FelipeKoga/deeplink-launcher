@@ -132,7 +132,7 @@ class SettingsScreen : Screen {
 @Composable
 fun SettingsScreenUI(
     snackbarHostState: SnackbarHostState,
-    appVersion: String,
+    appVersion: String?,
     onBack: () -> Unit,
     onNavigateToExport: () -> Unit,
     onNavigateToImport: () -> Unit,
@@ -299,22 +299,23 @@ fun SettingsScreenUI(
             }
 
             item {
-                SettingsListItem(
-                    title = "Version",
-                    description = appVersion,
-                    onClick = {
-                        clipboardManager.setText(AnnotatedString(appVersion))
-                        scope.launch {
-                            snackbarHostState.showSnackbar("Version copied to clipboard")
-                        }
-                    },
-                    trailingContent = {
-                        Icon(
-                            painter = painterResource(Res.drawable.ic_content_copy_24dp),
-                            contentDescription = "copy",
-                        )
-                    },
-                )
+                if (appVersion != null)
+                    SettingsListItem(
+                        title = "Version",
+                        description = appVersion,
+                        onClick = {
+                            clipboardManager.setText(AnnotatedString(appVersion))
+                            scope.launch {
+                                snackbarHostState.showSnackbar("Version copied to clipboard")
+                            }
+                        },
+                        trailingContent = {
+                            Icon(
+                                painter = painterResource(Res.drawable.ic_content_copy_24dp),
+                                contentDescription = "copy",
+                            )
+                        },
+                    )
             }
         }
     }

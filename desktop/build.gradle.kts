@@ -8,6 +8,7 @@ plugins {
 }
 
 kotlin {
+    jvmToolchain(17)
     jvm()
 
     sourceSets {
@@ -31,10 +32,24 @@ compose.desktop {
     application {
         mainClass = "MainKt"
         nativeDistributions {
+            modules("java.sql")
+            modules("jdk.unsupported")
+
+            packageVersion = "1.0.0"
+            packageName = "DeepLink Launcher"
+            description = "Manage & Launch deeplinks easily"
+            appResourcesRootDir.set(project.layout.projectDirectory.dir("resources"))
+
+            linux {
+                iconFile.set(project.file("icon.png"))
+            }
+
             targetFormats(
-//                TargetFormat.Exe,
+                TargetFormat.Exe,
                 TargetFormat.Rpm,
-//                TargetFormat.Deb
+                TargetFormat.Deb,
+                TargetFormat.Msi,
+                TargetFormat.Pkg
             )
         }
     }
