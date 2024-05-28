@@ -47,7 +47,7 @@ class SettingsScreenModel(
     }
 
     fun navigateToStore() {
-        launchDeepLink.launch(platformInfo.storePath)
+        launchDeepLink.launch(platformInfo.storePath!!)
     }
 
     fun changeSuggestionsPreference(enabled: Boolean) {
