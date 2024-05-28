@@ -2,10 +2,12 @@ package dev.koga.deeplinklauncher.screen.component
 
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.ArrowBack
+import androidx.compose.material.icons.automirrored.rounded.ArrowBack
 import androidx.compose.material.icons.rounded.Clear
 import androidx.compose.material.icons.rounded.Search
 import androidx.compose.material3.DockedSearchBar
@@ -23,6 +25,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
@@ -55,49 +58,58 @@ internal fun HomeTopBar(
         }
     }
 
-    AnimatedContent(searchLayout) { target ->
-        when (target) {
-            true -> HomeSearchBar(
-                modifier = Modifier.padding(top = 8.dp, bottom = 4.dp, start = 12.dp, end = 12.dp)
-                    .statusBarsPadding()
-                    .focusRequester(focusRequester),
-                value = search,
-                onSearch = onSearch,
-                onClose = {
-                    searchLayout = false
-                    focusRequester.freeFocus()
-                    onSearch("")
-                },
-            )
-
-            false -> DLLTopBar(
-                modifier = modifier,
-                scrollBehavior = scrollBehavior,
-                title = "Deeplink Launcher",
-                actions = {
-                    DLLIconButton(
-                        onClick = {
-                            searchLayout = true
-                        },
-                    ) {
-                        Icon(
-                            imageVector = Icons.Rounded.Search,
-                            contentDescription = "settings",
+    Column(modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
+        AnimatedContent(searchLayout) { target ->
+            when (target) {
+                true -> HomeSearchBar(
+                    modifier = Modifier
+                        .fillMaxWidth(.5f)
+                        .padding(
+                            top = 8.dp,
+                            bottom = 4.dp,
+                            start = 12.dp,
+                            end = 12.dp
                         )
-                    }
+                        .statusBarsPadding()
+                        .focusRequester(focusRequester),
+                    value = search,
+                    onSearch = onSearch,
+                    onClose = {
+                        searchLayout = false
+                        focusRequester.freeFocus()
+                        onSearch("")
+                    },
+                )
 
-                    DLLIconButton(
-                        onClick = onSettingsScreen,
-                    ) {
-                        Icon(
-                            painter = painterResource(
-                                dev.koga.resources.Res.drawable.ic_settings_24dp,
-                            ),
-                            contentDescription = "settings",
-                        )
-                    }
-                },
-            )
+                false -> DLLTopBar(
+                    modifier = modifier,
+                    scrollBehavior = scrollBehavior,
+                    title = "Deeplink Launcher",
+                    actions = {
+                        DLLIconButton(
+                            onClick = {
+                                searchLayout = true
+                            },
+                        ) {
+                            Icon(
+                                imageVector = Icons.Rounded.Search,
+                                contentDescription = "settings",
+                            )
+                        }
+
+                        DLLIconButton(
+                            onClick = onSettingsScreen,
+                        ) {
+                            Icon(
+                                painter = painterResource(
+                                    dev.koga.resources.Res.drawable.ic_settings_24dp,
+                                ),
+                                contentDescription = "settings",
+                            )
+                        }
+                    },
+                )
+            }
         }
     }
 }
@@ -139,7 +151,7 @@ private fun HomeSearchBar(
                 onClick = onClose,
             ) {
                 Icon(
-                    imageVector = Icons.Rounded.ArrowBack,
+                    imageVector = Icons.AutoMirrored.Rounded.ArrowBack,
                     contentDescription = "Back",
                 )
             }

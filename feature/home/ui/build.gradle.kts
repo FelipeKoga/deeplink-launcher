@@ -18,7 +18,6 @@ kotlin {
             implementation(projects.core.navigation)
             implementation(projects.core.sharedui)
             implementation(projects.core.resources)
-
             implementation(projects.feature.home.domain)
 
             implementation(libs.kotlinx.coroutines.core)
@@ -27,8 +26,8 @@ kotlin {
             implementation(libs.voyager.navigator)
             implementation(libs.voyager.koin)
             implementation(libs.voyager.bottomSheet)
-            
             implementation(libs.kotlinx.immutable)
+            implementation(libs.material3.windowSizeClass)
 
             implementation(compose.runtime)
             implementation(compose.foundation)
