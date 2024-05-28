@@ -13,9 +13,6 @@ kotlin {
             implementation(projects.core.domain)
             implementation(libs.koin.core)
             implementation(libs.androidx.datastore.preferences.core)
-
-//            implementation(libs.kotlinx.coroutines.core)
-//            implementation(libs.kotlinx.serialization.json)
         }
     }
 }
