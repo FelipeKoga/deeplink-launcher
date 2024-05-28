@@ -4,6 +4,7 @@ import org.jetbrains.compose.ExperimentalComposeLibrary
 plugins {
     id("dev.koga.deeplinklauncher.multiplatform")
     alias(libs.plugins.jetbrainsCompose)
+    alias(libs.plugins.compose.compiler)
 }
 
 kotlin {
@@ -22,7 +23,7 @@ kotlin {
             implementation(libs.voyager.navigator)
             implementation(libs.voyager.koin)
             implementation(libs.voyager.bottomSheet)
-            implementation(libs.moko.resources.compose)
+            
             implementation(libs.kotlinx.immutable)
             implementation(libs.aboutlibraries.compose)
 

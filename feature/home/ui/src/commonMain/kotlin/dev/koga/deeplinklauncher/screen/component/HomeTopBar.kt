@@ -28,11 +28,11 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import dev.icerock.moko.resources.compose.painterResource
 import dev.koga.deeplinklauncher.DLLTopBar
 import dev.koga.deeplinklauncher.button.DLLIconButton
-import dev.koga.resources.MR
+import dev.koga.resources.ic_settings_24dp
 import kotlinx.coroutines.delay
+import org.jetbrains.compose.resources.painterResource
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -90,7 +90,9 @@ internal fun HomeTopBar(
                         onClick = onSettingsScreen,
                     ) {
                         Icon(
-                            painter = painterResource(MR.images.ic_settings_24dp),
+                            painter = painterResource(
+                                dev.koga.resources.Res.drawable.ic_settings_24dp,
+                            ),
                             contentDescription = "settings",
                         )
                     }

@@ -6,7 +6,6 @@ import dev.koga.deeplinklauncher.dto.dateFormat
 import dev.koga.deeplinklauncher.model.FileType
 import dev.koga.deeplinklauncher.util.ext.currentLocalDateTime
 import dev.koga.deeplinklauncher.util.ext.format
-import kotlinx.serialization.builtins.ListSerializer
 import kotlinx.serialization.json.Json
 
 class ExportDeepLinks(

@@ -4,6 +4,7 @@ import org.jetbrains.compose.ExperimentalComposeLibrary
 plugins {
     id("dev.koga.deeplinklauncher.multiplatform")
     alias(libs.plugins.jetbrainsCompose)
+    alias(libs.plugins.compose.compiler)
 }
 
 kotlin {
@@ -12,19 +13,13 @@ kotlin {
     sourceSets {
         commonMain.dependencies {
             api(projects.core.resources)
-            api(libs.moko.resources.compose)
             implementation(libs.kotlinx.immutable)
 
             implementation(compose.runtime)
             implementation(compose.foundation)
             implementation(compose.material3)
             implementation(compose.ui)
-            @OptIn(ExperimentalComposeLibrary::class)
             implementation(compose.components.resources)
-        }
-
-        androidMain {
-            dependsOn(commonMain.get())
         }
     }
 }

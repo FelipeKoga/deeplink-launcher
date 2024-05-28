@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedCard
@@ -20,13 +19,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import dev.icerock.moko.resources.compose.painterResource
 import dev.koga.deeplinklauncher.DLLSmallChip
 import dev.koga.deeplinklauncher.button.DLLIconButton
 import dev.koga.deeplinklauncher.model.DeepLink
-import dev.koga.resources.MR
+import dev.koga.resources.Res
+import dev.koga.resources.ic_launch_24dp
+import org.jetbrains.compose.resources.painterResource
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DeepLinkCard(
     modifier: Modifier = Modifier,
@@ -88,7 +87,7 @@ fun DeepLinkCard(
                     onClick = onLaunch,
                 ) {
                     Icon(
-                        painter = painterResource(MR.images.ic_launch_24dp),
+                        painter = painterResource(Res.drawable.ic_launch_24dp),
                         contentDescription = null,
                     )
                 }

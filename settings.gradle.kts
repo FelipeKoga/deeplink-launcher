@@ -19,6 +19,7 @@ dependencyResolutionManagement {
 }
 
 include(":androidApp")
+include(":desktop")
 include(":shared")
 include(":core:database")
 include(":core:domain")
