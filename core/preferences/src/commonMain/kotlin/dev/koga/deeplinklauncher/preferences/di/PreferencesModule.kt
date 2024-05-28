@@ -9,8 +9,5 @@ import org.koin.dsl.module
 
 val preferencesModule = module {
     singleOf(::PreferencesDataStore) bind PreferencesDataSource::class
-
-    includes(preferencesPlatformModule)
 }
 
-expect val preferencesPlatformModule: Module

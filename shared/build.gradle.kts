@@ -8,6 +8,8 @@ plugins {
 }
 
 kotlin {
+    task("testClasses")
+
     binariesFrameworkConfig("shared")
 
     sourceSets {
@@ -40,7 +42,6 @@ kotlin {
             implementation(compose.material3)
             implementation(compose.material)
             implementation(compose.ui)
-            @OptIn(ExperimentalComposeLibrary::class)
             implementation(compose.components.resources)
         }
     }

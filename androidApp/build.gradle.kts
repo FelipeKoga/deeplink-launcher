@@ -28,15 +28,6 @@ android {
         versionCode = Configuration.versionCode
     }
 
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
-    }
-
-    kotlinOptions {
-        jvmTarget = Configuration.JVM_TARGET
-    }
-
     buildFeatures {
         compose = true
     }
@@ -72,6 +63,10 @@ android {
             signingConfig = signingConfigs.getByName("release")
         }
     }
+}
+
+kotlin {
+    jvmToolchain(17)
 }
 
 dependencies {
