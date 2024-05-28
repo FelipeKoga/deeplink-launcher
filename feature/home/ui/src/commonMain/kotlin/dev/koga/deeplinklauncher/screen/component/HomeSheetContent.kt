@@ -25,6 +25,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
@@ -34,6 +35,8 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
@@ -60,6 +63,7 @@ internal fun HomeSheetContent(
     launch: () -> Unit,
     onSuggestionClicked: (String) -> Unit,
 ) {
+    val focusRequester = remember { FocusRequester() }
     val focusManager = LocalFocusManager.current
     var isFocused by rememberSaveable { mutableStateOf(false) }
 
@@ -82,8 +86,11 @@ internal fun HomeSheetContent(
             DLLTextField(
                 modifier = Modifier
                     .weight(1f)
+                    .focusRequester(focusRequester)
                     .onFocusChanged {
-                        isFocused = it.isFocused
+                        if (!isFocused) {
+                            isFocused = it.isFocused
+                        }
                     },
                 value = value,
                 onValueChange = onValueChange,
@@ -159,7 +166,6 @@ internal fun HomeSheetContent(
         ) {
             LazyColumn(
                 modifier = Modifier.animateContentSize(),
-                contentPadding = PaddingValues(horizontal = 12.dp),
             ) {
                 items(
                     items = suggestions,
@@ -168,7 +174,10 @@ internal fun HomeSheetContent(
                     SuggestionListItem(
                         modifier = Modifier
                             .animateItemPlacement()
-                            .clickable { onSuggestionClicked(suggestion) },
+                            .clickable {
+                                focusRequester.requestFocus()
+                                onSuggestionClicked(suggestion)
+                            },
                         suggestion = suggestion,
                     )
                 }
