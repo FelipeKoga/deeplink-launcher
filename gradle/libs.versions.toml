@@ -10,7 +10,7 @@ kotlinx-immutable = "0.3.7"
 compose-plugin = "1.6.10"
 compose-runtime = "1.6.7"
 
-androidx-activityCompose = "1.9.0"
+androidx-activity = "1.9.0"
 androidx-core = "1.13.1"
 
 material3WindowSizeClass = "0.5.0"
@@ -38,7 +38,9 @@ android-gradle-plugin = { module = "com.android.tools.build:gradle", version.ref
 androidx-datastore-preferences-core = { module = "androidx.datastore:datastore-preferences-core", version.ref = "datastorePreferencesCore" }
 kotlin-gradle-plugin = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin" }
 
-androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "androidx-activityCompose" }
+androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "androidx-activity" }
+androidx-activity = { module = "androidx.activity:activity", version = "androidx-activity" }
+
 androidx-core = { module = "androidx.core:core-ktx", version.ref = "androidx-core" }
 
 kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinxCoroutinesCore" }

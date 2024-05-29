@@ -5,10 +5,9 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import java.io.File
 
-actual fun dataStorePreferences(
-    context: Any?
-): DataStore<Preferences> = createDataStore(
-    path = {
-        File((context as Context).filesDir, "datastore/$dataStoreFileName").path
-    },
-)
+internal fun dataStore(context: Context): DataStore<Preferences> =
+    createDataStore(
+        producePath = {
+            File(context.filesDir, "datastore/$dataStoreFileName").path
+        },
+    )

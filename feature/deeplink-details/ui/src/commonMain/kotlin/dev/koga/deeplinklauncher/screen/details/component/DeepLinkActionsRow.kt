@@ -41,6 +41,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Popup
 import androidx.compose.ui.window.PopupProperties
 import dev.koga.deeplinklauncher.button.DLLIconButton
+import dev.koga.deeplinklauncher.platform.canShareContent
 import dev.koga.resources.Res
 import dev.koga.resources.ic_content_copy_24dp
 import dev.koga.resources.ic_duplicate_24dp
@@ -125,12 +126,14 @@ fun DeepLinkActionsRow(
                 )
             }
 
-            DLLIconButton(onClick = onShare) {
-                Icon(
-                    imageVector = Icons.Rounded.Share,
-                    contentDescription = "Share",
-                    tint = MaterialTheme.colorScheme.onSurface,
-                )
+            if (canShareContent) {
+                DLLIconButton(onClick = onShare) {
+                    Icon(
+                        imageVector = Icons.Rounded.Share,
+                        contentDescription = "Share",
+                        tint = MaterialTheme.colorScheme.onSurface,
+                    )
+                }
             }
 
             DLLIconButton(

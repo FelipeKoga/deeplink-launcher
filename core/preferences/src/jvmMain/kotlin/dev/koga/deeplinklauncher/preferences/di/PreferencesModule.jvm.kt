@@ -4,5 +4,5 @@ import dev.koga.deeplinklauncher.preferences.datastore.dataStore
 import org.koin.dsl.module
 
 actual val preferencesPlatformModule = module {
-    single { dataStore(get()) }
+    single { dataStore() }
 }

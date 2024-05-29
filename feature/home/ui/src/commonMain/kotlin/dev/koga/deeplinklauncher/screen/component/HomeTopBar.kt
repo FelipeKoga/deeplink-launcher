@@ -58,12 +58,14 @@ internal fun HomeTopBar(
         }
     }
 
-    Column(modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
+    Column(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
         AnimatedContent(searchLayout) { target ->
             when (target) {
                 true -> HomeSearchBar(
                     modifier = Modifier
-                        .fillMaxWidth(.5f)
                         .padding(
                             top = 8.dp,
                             bottom = 4.dp,
