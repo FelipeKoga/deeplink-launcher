@@ -135,7 +135,11 @@ fun DeepLinksLazyColumn(
 }
 
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
+@OptIn(
+    ExperimentalMaterial3Api::class,
+    ExperimentalFoundationApi::class,
+    ExperimentalMaterial3WindowSizeClassApi::class
+)
 @Composable
 fun FoldersVerticalStaggeredGrid(
     folders: ImmutableList<Folder>,
@@ -144,10 +148,26 @@ fun FoldersVerticalStaggeredGrid(
     onAdd: () -> Unit,
     onClick: (Folder) -> Unit,
 ) {
-    HomeVerticalGridList(
+    val windowSizeClass = calculateWindowSizeClass()
+    val numberOfColumns = when (windowSizeClass.widthSizeClass) {
+        WindowWidthSizeClass.Expanded -> 3
+        else -> 2
+    }
+
+    LazyVerticalStaggeredGrid(
+        columns = StaggeredGridCells.Fixed(numberOfColumns),
         state = rememberLazyStaggeredGridState(),
-        scrollBehavior = scrollBehavior,
-        paddingBottom = paddingBottom,
+        modifier = Modifier
+            .fillMaxSize()
+            .nestedScroll(scrollBehavior.nestedScrollConnection),
+        contentPadding = PaddingValues(
+            top = 12.dp,
+            start = 12.dp,
+            end = 12.dp,
+            bottom = paddingBottom,
+        ),
+        horizontalArrangement = Arrangement.spacedBy(24.dp),
+        verticalItemSpacing = 24.dp
     ) {
         item {
             OutlinedCard(

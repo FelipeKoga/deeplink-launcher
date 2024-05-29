@@ -1,25 +1,20 @@
 package dev.koga.deeplinklauncher.preferences
 
 import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import dev.koga.deeplinklauncher.datasource.PreferencesDataSource
 import dev.koga.deeplinklauncher.model.AppTheme
-import dev.koga.deeplinklauncher.model.Preferences
-import dev.koga.deeplinklauncher.preferences.datastore.createDataStore
-import dev.koga.deeplinklauncher.preferences.datastore.dataStorePreferences
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.runBlocking
-import androidx.datastore.preferences.core.Preferences as DataStorePreferences
+import dev.koga.deeplinklauncher.model.Preferences as DomainPreferences
 
-class PreferencesDataStore : PreferencesDataSource {
-
-    private val dataStore = dataStorePreferences()
+class PreferencesDataStore(
+    private val dataStore: DataStore<Preferences>,
+) : PreferencesDataSource {
 
     private val themeKey = stringPreferencesKey("theme")
     private val shouldShowOnboarding = booleanPreferencesKey("should_show_onboarding")
@@ -27,14 +22,15 @@ class PreferencesDataStore : PreferencesDataSource {
         booleanPreferencesKey("should_disable_deep_link_suggestions")
 
     override val preferencesStream = dataStore.data.map {
-        Preferences(
+        DomainPreferences(
             shouldShowOnboarding = it[shouldShowOnboarding] ?: true,
             appTheme = AppTheme.get(it[themeKey]),
             shouldDisableDeepLinkSuggestions = it[shouldDisableDeepLinkSuggestions] ?: false,
         )
     }
 
-    override val preferences = runBlocking { preferencesStream.firstOrNull() ?: Preferences() }
+    override val preferences =
+        runBlocking { preferencesStream.firstOrNull() ?: DomainPreferences() }
 
     override suspend fun updateTheme(theme: AppTheme) {
         dataStore.edit {

@@ -7,5 +7,6 @@ enum class FileType(val mimeType: String, val extension: String) {
 
     companion object {
         val mimeTypes = entries.map { it.mimeType }
+        val extensions = entries.map { it.extension }
     }
 }
