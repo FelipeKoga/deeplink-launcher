@@ -30,10 +30,12 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.rememberWindowState
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.koin.getScreenModel
 import cafe.adriel.voyager.navigator.LocalNavigator
@@ -43,9 +45,11 @@ import dev.koga.deeplinklauncher.DLLHorizontalDivider
 import dev.koga.deeplinklauncher.DLLSingleChoiceSegmentedButtonRow
 import dev.koga.deeplinklauncher.DLLTopBar
 import dev.koga.deeplinklauncher.model.ExportFileType
+import dev.koga.deeplinklauncher.permission.StoragePermission
 import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import org.koin.compose.koinInject
 
 class ExportScreen : Screen {
 
@@ -53,20 +57,14 @@ class ExportScreen : Screen {
     @Composable
     override fun Content() {
         val navigator = LocalNavigator.currentOrThrow
-//        val permissionFactory: PermissionsControllerFactory = rememberPermissionsControllerFactory()
-//        val permissionController: PermissionsController = remember(permissionFactory) {
-//            permissionFactory.createPermissionsController()
-//        }
+        val screenModel = getScreenModel<ExportScreenModel>()
+        val storagePermission = koinInject<StoragePermission>()
 
         val scope = rememberCoroutineScope()
-
         val snackbarHostState = remember { SnackbarHostState() }
-
-        val screenModel = getScreenModel<ExportScreenModel>()
-        val preview = screenModel.preview
-
         var selectedExportType by remember { mutableStateOf(ExportFileType.JSON) }
-        var isPermissionGranted by remember { mutableStateOf(false) }
+        var showPermissionRequest by remember { mutableStateOf(false) }
+        val preview = screenModel.preview
 
         LaunchedEffect(Unit) {
             screenModel.messages.collectLatest { message ->
@@ -75,15 +73,6 @@ class ExportScreen : Screen {
                     duration = SnackbarDuration.Short,
                 )
             }
-        }
-
-//        BindEffect(permissionController)
-
-        LaunchedEffect(true) {
-//            isPermissionGranted = !shouldAskForPermission(
-//                permissionsController = permissionController,
-//                permission = Permission.WRITE_STORAGE,
-//            )
         }
 
         Scaffold(
@@ -110,40 +99,16 @@ class ExportScreen : Screen {
                 )
 
                 ExportFooter(
-                    isPermissionGranted = isPermissionGranted,
+                    isPermissionGranted = storagePermission.isGranted(),
                     export = {
                         scope.launch {
-                            when (isPermissionGranted) {
+                            when (storagePermission.isGranted()) {
                                 true -> {
                                     screenModel.export(selectedExportType)
                                 }
 
                                 false -> {
-//                                    scope.launch {
-//                                        try {
-//                                            permissionController.providePermission(Permission.WRITE_STORAGE)
-//
-//                                            isPermissionGranted = true
-//                                        } catch (e: DeniedAlwaysException) {
-//                                            val result = snackbarHostState.showSnackbar(
-//                                                message = "Permission denied always. " +
-//                                                        "Please enable it in settings",
-//                                                duration = SnackbarDuration.Short,
-//                                                actionLabel = "Settings",
-//                                            )
-//
-//                                            when (result) {
-//                                                SnackbarResult.Dismissed -> Unit
-//                                                SnackbarResult.ActionPerformed ->
-//                                                    permissionController.openAppSettings()
-//                                            }
-//                                        } catch (e: DeniedException) {
-//                                            snackbarHostState.showSnackbar(
-//                                                message = "Permission denied",
-//                                                duration = SnackbarDuration.Short,
-//                                            )
-//                                        }
-//                                    }
+                                    showPermissionRequest = true
                                 }
                             }
                         }
@@ -175,10 +140,6 @@ fun ExportContent(
             ),
         )
 
-//        Image(
-//            painter = painterResource(Res.drawable),
-//        )
-
         Spacer(modifier = Modifier.height(16.dp))
 
         DLLSingleChoiceSegmentedButtonRow(
@@ -207,10 +168,10 @@ fun ExportContent(
             transitionSpec = {
                 if (targetState > initialState) {
                     slideInHorizontally { width -> width } + fadeIn() togetherWith
-                        slideOutHorizontally { width -> -width } + fadeOut()
+                            slideOutHorizontally { width -> -width } + fadeOut()
                 } else {
                     slideInHorizontally { width -> -width } + fadeIn() togetherWith
-                        slideOutHorizontally { width -> width } + fadeOut()
+                            slideOutHorizontally { width -> width } + fadeOut()
                 }.using(
                     SizeTransform(clip = false),
                 )
@@ -236,15 +197,13 @@ fun ExportFooter(
     export: () -> Unit,
 ) {
     Column(
-        modifier = modifier
-            .fillMaxWidth(),
+        modifier = modifier.fillMaxWidth(),
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
         DLLHorizontalDivider()
 
         Button(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(24.dp),
+            modifier = Modifier.fillMaxWidth().padding(24.dp),
             onClick = export,
         ) {
             Text(

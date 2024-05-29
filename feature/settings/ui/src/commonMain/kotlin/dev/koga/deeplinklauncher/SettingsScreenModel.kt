@@ -17,10 +17,8 @@ class SettingsScreenModel(
     private val folderDataSource: FolderDataSource,
     private val preferencesDataSource: PreferencesDataSource,
     private val launchDeepLink: LaunchDeepLink,
-    private val platformInfo: PlatformInfo,
 ) : ScreenModel {
 
-    val appVersion = platformInfo.version
     val preferences = preferencesDataSource.preferencesStream.stateIn(
         scope = screenModelScope,
         started = SharingStarted.WhileSubscribed(),
@@ -47,7 +45,7 @@ class SettingsScreenModel(
     }
 
     fun navigateToStore() {
-        launchDeepLink.launch(platformInfo.storePath!!)
+        launchDeepLink.launch(ANDROID_PLAY_STORE_PATH)
     }
 
     fun changeSuggestionsPreference(enabled: Boolean) {
@@ -58,5 +56,10 @@ class SettingsScreenModel(
 
     fun navigateToGithub() {
         launchDeepLink.launch("https://github.com/FelipeKoga/deeplink-launcher")
+    }
+
+    companion object {
+        private const val ANDROID_PLAY_STORE_PATH =
+            "https://play.google.com/store/apps/details?id=dev.koga.deeplinklauncher.android"
     }
 }
