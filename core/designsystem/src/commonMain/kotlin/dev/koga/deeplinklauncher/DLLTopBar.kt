@@ -2,7 +2,7 @@ package dev.koga.deeplinklauncher
 
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.ArrowBack
+import androidx.compose.material.icons.automirrored.rounded.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -46,7 +46,7 @@ fun DLLTopBar(
             if (onNavigationActionClicked != null) {
                 DLLIconButton(onClick = onNavigationActionClicked) {
                     navigationIcon ?: Icon(
-                        imageVector = Icons.Rounded.ArrowBack,
+                        imageVector = Icons.AutoMirrored.Rounded.ArrowBack,
                         contentDescription = "back",
                     )
                 }
