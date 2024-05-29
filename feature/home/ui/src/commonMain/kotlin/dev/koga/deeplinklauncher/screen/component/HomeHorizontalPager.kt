@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.foundation.lazy.staggeredgrid.LazyStaggeredGridScope
 import androidx.compose.foundation.lazy.staggeredgrid.LazyStaggeredGridState
 import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
@@ -134,11 +133,10 @@ fun DeepLinksLazyColumn(
     }
 }
 
-
 @OptIn(
     ExperimentalMaterial3Api::class,
     ExperimentalFoundationApi::class,
-    ExperimentalMaterial3WindowSizeClassApi::class
+    ExperimentalMaterial3WindowSizeClassApi::class,
 )
 @Composable
 fun FoldersVerticalStaggeredGrid(
@@ -167,7 +165,7 @@ fun FoldersVerticalStaggeredGrid(
             bottom = paddingBottom,
         ),
         horizontalArrangement = Arrangement.spacedBy(24.dp),
-        verticalItemSpacing = 24.dp
+        verticalItemSpacing = 24.dp,
     ) {
         item {
             OutlinedCard(
@@ -242,7 +240,7 @@ fun HomeVerticalGridList(
             bottom = paddingBottom,
         ),
         horizontalArrangement = Arrangement.spacedBy(24.dp),
-        verticalItemSpacing = 24.dp
+        verticalItemSpacing = 24.dp,
     ) {
         content()
     }

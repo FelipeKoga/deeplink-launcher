@@ -60,7 +60,7 @@ internal fun HomeTopBar(
 
     Column(
         modifier = Modifier.fillMaxWidth(),
-        horizontalAlignment = Alignment.CenterHorizontally
+        horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         AnimatedContent(searchLayout) { target ->
             when (target) {
@@ -70,7 +70,7 @@ internal fun HomeTopBar(
                             top = 8.dp,
                             bottom = 4.dp,
                             start = 12.dp,
-                            end = 12.dp
+                            end = 12.dp,
                         )
                         .statusBarsPadding()
                         .focusRequester(focusRequester),

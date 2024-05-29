@@ -10,7 +10,7 @@ actual class GetDeepLinkMetadata {
             link = link,
             scheme = scheme.ifEmpty { null },
             query = query.ifEmpty { null },
-            host = host.ifEmpty { null }
+            host = host.ifEmpty { null },
         )
     }
 }

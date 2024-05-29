@@ -1,5 +1,4 @@
-import extension.binariesFrameworkConfig
-import org.jetbrains.compose.ExperimentalComposeLibrary
+
 
 plugins {
     id("dev.koga.deeplinklauncher.multiplatform")
@@ -9,8 +8,6 @@ plugins {
 
 kotlin {
     task("testClasses")
-
-    binariesFrameworkConfig("shared")
 
     sourceSets {
         commonMain.dependencies {

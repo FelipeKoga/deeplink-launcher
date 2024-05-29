@@ -1,5 +1,3 @@
-import extension.binariesFrameworkConfig
-
 plugins {
     id("dev.koga.deeplinklauncher.multiplatform")
     alias(libs.plugins.jetbrainsCompose)
@@ -7,12 +5,10 @@ plugins {
 }
 
 kotlin {
-    binariesFrameworkConfig("resources")
-
     sourceSets {
         commonMain.dependencies {
             implementation(compose.components.resources)
-            implementation("androidx.compose.runtime:runtime:1.6.7")
+            implementation(libs.compose.runtime)
         }
     }
 }

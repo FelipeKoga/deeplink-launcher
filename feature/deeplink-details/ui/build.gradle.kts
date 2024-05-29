@@ -1,4 +1,3 @@
-import extension.binariesFrameworkConfig
 import org.jetbrains.compose.ExperimentalComposeLibrary
 
 plugins {
@@ -8,8 +7,6 @@ plugins {
 }
 
 kotlin {
-    binariesFrameworkConfig("deeplinkDetails.ui")
-
     sourceSets {
         commonMain.dependencies {
             implementation(projects.core.domain)
@@ -23,7 +20,7 @@ kotlin {
             implementation(libs.voyager.navigator)
             implementation(libs.voyager.koin)
             implementation(libs.voyager.bottomSheet)
-            
+
             implementation(libs.kotlinx.immutable)
             implementation(libs.aboutlibraries.compose)
 
