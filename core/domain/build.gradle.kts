@@ -1,13 +1,9 @@
-import extension.binariesFrameworkConfig
-
 plugins {
     id("dev.koga.deeplinklauncher.multiplatform")
     kotlin("plugin.serialization") version "1.9.20"
 }
 
 kotlin {
-    binariesFrameworkConfig("domain")
-
     sourceSets {
         commonMain.dependencies {
             api(libs.kotlinx.datetime)
@@ -18,7 +14,7 @@ kotlin {
         }
 
         androidMain.dependencies {
-            implementation("androidx.core:core-ktx:1.12.0")
+            implementation(libs.androidx.core)
         }
     }
 }

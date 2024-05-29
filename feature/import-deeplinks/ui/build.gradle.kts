@@ -1,6 +1,3 @@
-import extension.binariesFrameworkConfig
-import org.jetbrains.compose.ExperimentalComposeLibrary
-
 plugins {
     id("dev.koga.deeplinklauncher.multiplatform")
     alias(libs.plugins.jetbrainsCompose)
@@ -8,8 +5,6 @@ plugins {
 }
 
 kotlin {
-    binariesFrameworkConfig("importdeeplinks.ui")
-
     sourceSets {
         commonMain.dependencies {
             implementation(projects.core.domain)
@@ -24,7 +19,7 @@ kotlin {
             implementation(libs.voyager.screenmodel)
             implementation(libs.voyager.navigator)
             implementation(libs.voyager.koin)
-            implementation("com.darkrockstudios:mpfilepicker:3.1.0")
+            implementation(libs.mpfilepicker)
 
             implementation(compose.runtime)
             implementation(compose.foundation)

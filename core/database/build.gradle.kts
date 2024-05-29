@@ -1,5 +1,3 @@
-import extension.binariesFrameworkConfig
-
 plugins {
     id("dev.koga.deeplinklauncher.multiplatform")
     kotlin("plugin.serialization") version "1.9.20"
@@ -7,8 +5,6 @@ plugins {
 }
 
 kotlin {
-    binariesFrameworkConfig("database")
-
     sourceSets {
         commonMain.dependencies {
             implementation(projects.core.domain)
