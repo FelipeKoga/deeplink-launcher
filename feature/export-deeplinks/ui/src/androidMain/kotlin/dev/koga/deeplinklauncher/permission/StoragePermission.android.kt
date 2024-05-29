@@ -6,7 +6,7 @@ import android.content.pm.PackageManager
 import androidx.core.content.ContextCompat
 
 actual class StoragePermission(
-    private val context: Context
+    private val context: Context,
 ) {
 
     actual fun request() {
@@ -17,7 +17,7 @@ actual class StoragePermission(
 
         return ContextCompat.checkSelfPermission(
             context,
-            permission
+            permission,
         ) == PackageManager.PERMISSION_GRANTED
     }
 }

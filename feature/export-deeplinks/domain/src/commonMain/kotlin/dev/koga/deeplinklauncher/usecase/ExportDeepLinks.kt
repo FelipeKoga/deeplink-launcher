@@ -72,7 +72,6 @@ class ExportDeepLinks(
             )
         }
 
-
         return ExportDeepLinksOutput.Success(fileName = fileName)
     }
 }

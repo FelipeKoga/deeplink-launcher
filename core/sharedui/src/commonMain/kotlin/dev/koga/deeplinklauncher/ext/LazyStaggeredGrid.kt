@@ -10,7 +10,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.Dp
 
 fun LazyStaggeredGridScope.fullLineItem(
-    content: @Composable LazyStaggeredGridItemScope.() -> Unit
+    content: @Composable LazyStaggeredGridItemScope.() -> Unit,
 ) {
     item(span = StaggeredGridItemSpan.FullLine) {
         content()

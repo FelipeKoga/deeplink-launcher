@@ -1,12 +1,8 @@
-import extension.binariesFrameworkConfig
-
 plugins {
     id("dev.koga.deeplinklauncher.multiplatform")
 }
 
 kotlin {
-    binariesFrameworkConfig("preferences")
-
     sourceSets {
         commonMain.dependencies {
             implementation(projects.core.domain)

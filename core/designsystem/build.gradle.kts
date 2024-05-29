@@ -1,6 +1,3 @@
-import extension.binariesFrameworkConfig
-import org.jetbrains.compose.ExperimentalComposeLibrary
-
 plugins {
     id("dev.koga.deeplinklauncher.multiplatform")
     alias(libs.plugins.jetbrainsCompose)
@@ -8,8 +5,6 @@ plugins {
 }
 
 kotlin {
-    binariesFrameworkConfig("designsystem")
-
     sourceSets {
         commonMain.dependencies {
             api(projects.core.resources)

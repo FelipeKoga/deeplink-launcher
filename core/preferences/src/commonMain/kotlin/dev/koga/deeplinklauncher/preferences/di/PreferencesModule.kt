@@ -14,4 +14,3 @@ val preferencesModule = module {
 }
 
 expect val preferencesPlatformModule: Module
-

@@ -12,8 +12,9 @@ actual class LaunchDeepLink(
     actual fun launch(url: String): LaunchDeepLinkResult {
         val adbResult = launchWithAdb(url)
 
-        if (adbResult is LaunchDeepLinkResult.Success)
+        if (adbResult is LaunchDeepLinkResult.Success) {
             return adbResult
+        }
 
         val browserResult = launchDesktopBrowser(url)
 
@@ -35,7 +36,6 @@ actual class LaunchDeepLink(
         } catch (e: Exception) {
             LaunchDeepLinkResult.Failure(e)
         }
-
     }
 
     private fun launchDesktopBrowser(link: String): LaunchDeepLinkResult {

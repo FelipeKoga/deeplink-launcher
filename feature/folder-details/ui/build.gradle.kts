@@ -1,7 +1,3 @@
-import extension.binariesFrameworkConfig
-import org.jetbrains.compose.ComposePlugin
-import org.jetbrains.compose.ExperimentalComposeLibrary
-
 plugins {
     id("dev.koga.deeplinklauncher.multiplatform")
     alias(libs.plugins.jetbrainsCompose)
@@ -9,8 +5,6 @@ plugins {
 }
 
 kotlin {
-    binariesFrameworkConfig("folderDetails.ui")
-
     sourceSets {
         commonMain.dependencies {
             implementation(projects.core.domain)
