@@ -20,7 +20,6 @@ kotlin {
             implementation(libs.voyager.screenmodel)
             implementation(libs.voyager.navigator)
             implementation(libs.voyager.koin)
-
             implementation(libs.kotlinx.immutable)
             implementation(libs.aboutlibraries.compose)
 

@@ -17,6 +17,8 @@ import cafe.adriel.voyager.navigator.currentOrThrow
 import com.mikepenz.aboutlibraries.ui.compose.LibrariesContainer
 import com.mikepenz.aboutlibraries.ui.compose.LibraryDefaults
 import dev.koga.deeplinklauncher.DLLTopBar
+import dev.koga.deeplinklauncher.platform.Platform
+import dev.koga.deeplinklauncher.platform.platform
 import dev.koga.resources.Res
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 
@@ -29,7 +31,12 @@ class OpenSourceLicensesScreen : Screen {
         var bytes by remember { mutableStateOf(ByteArray(0)) }
 
         LaunchedEffect(Unit) {
-            bytes = Res.readBytes("files/aboutlibraries.json")
+            val filePath = when (platform) {
+                Platform.ANDROID -> "files/aboutlibraries.android.json"
+                Platform.JVM -> "files/aboutlibraries.desktop.json"
+            }
+
+            bytes = Res.readBytes(filePath)
         }
 
         Scaffold(
@@ -50,7 +57,6 @@ class OpenSourceLicensesScreen : Screen {
                     badgeBackgroundColor = MaterialTheme.colorScheme.primary,
                     dialogConfirmButtonColor = MaterialTheme.colorScheme.primary,
                 ),
-
             )
         }
     }
