@@ -1,24 +1,14 @@
-import extension.binariesFrameworkConfig
-
 plugins {
     id("dev.koga.deeplinklauncher.multiplatform")
-    id(libs.plugins.moko.multiplatform.resources.get().pluginId)
+    alias(libs.plugins.jetbrainsCompose)
+    alias(libs.plugins.compose.compiler)
 }
 
 kotlin {
-    binariesFrameworkConfig("resources")
-
     sourceSets {
         commonMain.dependencies {
-            implementation(libs.moko.resources.core)
-        }
-
-        androidMain {
-            dependsOn(commonMain.get())
-        }
-
-        iosMain {
-            dependsOn(commonMain.get())
+            implementation(compose.components.resources)
+            implementation(libs.compose.runtime)
         }
     }
 }
@@ -27,6 +17,8 @@ android {
     namespace = "dev.koga.resources"
 }
 
-multiplatformResources {
-    multiplatformResourcesPackage = "dev.koga.resources"
+compose.resources {
+    publicResClass = true
+    packageOfResClass = "dev.koga.resources"
+    generateResClass = always
 }

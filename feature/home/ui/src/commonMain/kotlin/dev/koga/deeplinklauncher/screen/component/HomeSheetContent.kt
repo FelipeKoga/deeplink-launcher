@@ -7,7 +7,6 @@ import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -34,6 +33,8 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
@@ -41,12 +42,13 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
-import dev.icerock.moko.resources.compose.painterResource
 import dev.koga.deeplinklauncher.DLLTextField
 import dev.koga.deeplinklauncher.button.DLLFilledIconButton
 import dev.koga.deeplinklauncher.button.DLLIconButton
-import dev.koga.resources.MR
+import dev.koga.resources.Res
+import dev.koga.resources.ic_launch_24dp
 import kotlinx.collections.immutable.ImmutableList
+import org.jetbrains.compose.resources.painterResource
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -59,6 +61,7 @@ internal fun HomeSheetContent(
     launch: () -> Unit,
     onSuggestionClicked: (String) -> Unit,
 ) {
+    val focusRequester = remember { FocusRequester() }
     val focusManager = LocalFocusManager.current
     var isFocused by rememberSaveable { mutableStateOf(false) }
 
@@ -81,8 +84,11 @@ internal fun HomeSheetContent(
             DLLTextField(
                 modifier = Modifier
                     .weight(1f)
+                    .focusRequester(focusRequester)
                     .onFocusChanged {
-                        isFocused = it.isFocused
+                        if (!isFocused) {
+                            isFocused = it.isFocused
+                        }
                     },
                 value = value,
                 onValueChange = onValueChange,
@@ -134,7 +140,7 @@ internal fun HomeSheetContent(
                 ),
             ) {
                 Icon(
-                    painter = painterResource(MR.images.ic_launch_24dp),
+                    painter = painterResource(Res.drawable.ic_launch_24dp),
                     contentDescription = "Launch",
                 )
             }
@@ -158,7 +164,6 @@ internal fun HomeSheetContent(
         ) {
             LazyColumn(
                 modifier = Modifier.animateContentSize(),
-                contentPadding = PaddingValues(horizontal = 12.dp),
             ) {
                 items(
                     items = suggestions,
@@ -167,7 +172,10 @@ internal fun HomeSheetContent(
                     SuggestionListItem(
                         modifier = Modifier
                             .animateItemPlacement()
-                            .clickable { onSuggestionClicked(suggestion) },
+                            .clickable {
+                                focusRequester.requestFocus()
+                                onSuggestionClicked(suggestion)
+                            },
                         suggestion = suggestion,
                     )
                 }

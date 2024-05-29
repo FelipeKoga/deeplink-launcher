@@ -11,7 +11,7 @@ import java.io.File
 actual class ShareFile(
     private val context: Context,
 ) {
-    actual operator fun invoke(filePath: FilePath, fileType: FileType) {
+    actual operator fun invoke(filePath: String, fileType: FileType) {
         val uri = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             Uri.parse(filePath) // Parse the content URI string
         } else {

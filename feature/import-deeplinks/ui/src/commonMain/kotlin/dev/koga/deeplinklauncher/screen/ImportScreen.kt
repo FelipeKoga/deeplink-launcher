@@ -7,7 +7,6 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.animation.togetherWith
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -40,13 +39,15 @@ import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
+import com.darkrockstudios.libraries.mpfilepicker.FilePicker
 import dev.koga.deeplinklauncher.BoxPreview
 import dev.koga.deeplinklauncher.DLLHorizontalDivider
 import dev.koga.deeplinklauncher.DLLSingleChoiceSegmentedButtonRow
 import dev.koga.deeplinklauncher.DLLTopBar
 import dev.koga.deeplinklauncher.ImportDeepLinks
 import dev.koga.deeplinklauncher.ImportDeepLinksOutput
-import dev.koga.deeplinklauncher.file.BrowseFileAndGetPath
+import dev.koga.deeplinklauncher.file.GetFileRealPath
+import dev.koga.deeplinklauncher.model.FileType
 import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.launch
 import org.koin.compose.koinInject
@@ -71,41 +72,50 @@ class ImportScreen : Screen {
         val navigator = LocalNavigator.currentOrThrow
 
         val importDeepLinks = koinInject<ImportDeepLinks>()
-        val browseFileAndGetPath = koinInject<BrowseFileAndGetPath>()
+        val getFileRealPath = koinInject<GetFileRealPath>()
 
         val scope = rememberCoroutineScope()
         val snackbarHostState = remember { SnackbarHostState() }
+        var showFilePicker by remember { mutableStateOf(false) }
 
-        browseFileAndGetPath.Listen(
-            onResult = { realPath, fileType ->
-                if (fileType == null) {
-                    scope.launch {
+        FilePicker(
+            show = showFilePicker,
+            fileExtensions = FileType.extensions,
+        ) { platformFile ->
+            showFilePicker = false
+
+            scope.launch {
+                val path = getFileRealPath.get(platformFile?.path!!)
+
+                val fileType = when (path.substringAfterLast(".")) {
+                    FileType.TXT.extension -> FileType.TXT
+                    FileType.JSON.extension -> FileType.JSON
+                    else -> {
                         snackbarHostState.showSnackbar("Unsupported file type")
-                    }
-                    return@Listen
-                }
 
-                scope.launch {
-                    val response = importDeepLinks.invoke(
-                        filePath = realPath,
-                        fileType = fileType,
-                    )
-
-                    when (response) {
-                        is ImportDeepLinksOutput.Success -> {
-                            snackbarHostState.showSnackbar("DeepLinks imported successfully")
-                        }
-
-                        is ImportDeepLinksOutput.Error -> {
-                            snackbarHostState.showSnackbar(
-                                "Something went wrong. " +
-                                    "Check the content structure and try again.",
-                            )
-                        }
+                        return@launch
                     }
                 }
-            },
-        )
+
+                val response = importDeepLinks.invoke(
+                    filePath = path,
+                    fileType = fileType,
+                )
+
+                when (response) {
+                    is ImportDeepLinksOutput.Success -> {
+                        snackbarHostState.showSnackbar("DeepLinks imported successfully")
+                    }
+
+                    is ImportDeepLinksOutput.Error -> {
+                        snackbarHostState.showSnackbar(
+                            "Something went wrong. " +
+                                "Check the content structure and try again.",
+                        )
+                    }
+                }
+            }
+        }
 
         Scaffold(
             topBar = {
@@ -125,7 +135,7 @@ class ImportScreen : Screen {
                 )
 
                 ImportFooter {
-                    browseFileAndGetPath.launch()
+                    showFilePicker = true
                 }
             }
         }
@@ -218,13 +228,12 @@ fun ImportFooter(modifier: Modifier = Modifier, onBrowse: () -> Unit) {
     Column(
         modifier = modifier
             .fillMaxWidth(),
+        horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         DLLHorizontalDivider()
 
         Button(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(24.dp),
+            modifier = Modifier.fillMaxWidth().padding(24.dp),
             onClick = onBrowse,
         ) {
             Text(text = "Browse file")

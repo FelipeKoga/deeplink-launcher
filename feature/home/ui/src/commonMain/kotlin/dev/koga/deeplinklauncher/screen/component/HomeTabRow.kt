@@ -37,7 +37,6 @@ internal fun HomeTabRow(
                     .tabIndicatorOffset(it[pagerState.currentPage])
                     .width(1.dp)
                     .height(4.dp)
-//                    .padding(horizontal = 28.dp)
                     .background(color = MaterialTheme.colorScheme.primary, shape = CircleShape),
             )
         },

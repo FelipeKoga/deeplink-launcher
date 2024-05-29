@@ -1,14 +1,13 @@
-import extension.binariesFrameworkConfig
-import org.jetbrains.compose.ExperimentalComposeLibrary
+
 
 plugins {
     id("dev.koga.deeplinklauncher.multiplatform")
-    id(libs.plugins.moko.multiplatform.resources.get().pluginId)
     alias(libs.plugins.jetbrainsCompose)
+    alias(libs.plugins.compose.compiler)
 }
 
 kotlin {
-    binariesFrameworkConfig("shared")
+    task("testClasses")
 
     sourceSets {
         commonMain.dependencies {
@@ -30,7 +29,6 @@ kotlin {
 
             implementation(libs.koin.core)
             implementation(libs.kotlinx.coroutines.core)
-            implementation(libs.moko.resources.core)
             implementation(libs.koin.compose)
             implementation(libs.voyager.bottomSheet)
             implementation(libs.voyager.navigator)
@@ -41,16 +39,7 @@ kotlin {
             implementation(compose.material3)
             implementation(compose.material)
             implementation(compose.ui)
-            @OptIn(ExperimentalComposeLibrary::class)
             implementation(compose.components.resources)
-        }
-
-        androidMain {
-            dependsOn(commonMain.get())
-        }
-
-        iosMain {
-            dependsOn(commonMain.get())
         }
     }
 }
@@ -58,3 +47,4 @@ kotlin {
 android {
     namespace = "dev.koga.shared"
 }
+

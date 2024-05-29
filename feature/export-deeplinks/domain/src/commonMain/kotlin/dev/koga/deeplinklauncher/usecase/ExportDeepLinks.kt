@@ -4,9 +4,9 @@ import dev.koga.deeplinklauncher.datasource.DeepLinkDataSource
 import dev.koga.deeplinklauncher.dto.ImportExportDto
 import dev.koga.deeplinklauncher.dto.dateFormat
 import dev.koga.deeplinklauncher.model.FileType
+import dev.koga.deeplinklauncher.platform.canShareContent
 import dev.koga.deeplinklauncher.util.ext.currentLocalDateTime
 import dev.koga.deeplinklauncher.util.ext.format
-import kotlinx.serialization.builtins.ListSerializer
 import kotlinx.serialization.json.Json
 
 class ExportDeepLinks(
@@ -65,10 +65,12 @@ class ExportDeepLinks(
             type = type,
         ) ?: return ExportDeepLinksOutput.Error(Exception("Failed to save file"))
 
-        shareFile(
-            filePath = filePath,
-            fileType = type,
-        )
+        if (canShareContent) {
+            shareFile(
+                filePath = filePath,
+                fileType = type,
+            )
+        }
 
         return ExportDeepLinksOutput.Success(fileName = fileName)
     }
