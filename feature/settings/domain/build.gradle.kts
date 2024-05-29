@@ -1,13 +1,8 @@
-import extension.binariesFrameworkConfig
-import org.jetbrains.compose.ExperimentalComposeLibrary
-
 plugins {
     id("dev.koga.deeplinklauncher.multiplatform")
 }
 
 kotlin {
-    binariesFrameworkConfig("settings.domain")
-
     sourceSets {
         commonMain.dependencies {
             implementation(projects.core.domain)

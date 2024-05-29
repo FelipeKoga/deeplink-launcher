@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.material3.BottomSheetDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
@@ -79,72 +80,74 @@ class DeepLinkDetailsScreen(
             },
         )
 
-        Column {
-            BottomSheetDefaults.DragHandle(modifier = Modifier.align(Alignment.CenterHorizontally))
+        SelectionContainer {
+            Column {
+                BottomSheetDefaults.DragHandle(modifier = Modifier.align(Alignment.CenterHorizontally))
 
-            AnimatedContent(
-                targetState = detailsMode,
-                label = "details_ui_anim",
-            ) { target ->
-                when (target) {
-                    DetailsMode.Collapsed -> DeepLinkDetailsCollapsedUI(
-                        modifier = Modifier,
-                        showFolder = showFolder,
-                        uiState = uiState,
-                        onExpand = { detailsMode = DetailsMode.Expanded },
-                        onFolderClicked = {
-                            val screen = ScreenRegistry.get(
-                                SharedScreen.FolderDetails(
-                                    uiState.deepLink.folder!!.id,
-                                ),
-                            )
-                            bottomSheetNavigator.push(screen)
-                        },
-                    )
+                AnimatedContent(
+                    targetState = detailsMode,
+                    label = "details_ui_anim",
+                ) { target ->
+                    when (target) {
+                        DetailsMode.Collapsed -> DeepLinkDetailsCollapsedUI(
+                            modifier = Modifier,
+                            showFolder = showFolder,
+                            uiState = uiState,
+                            onExpand = { detailsMode = DetailsMode.Expanded },
+                            onFolderClicked = {
+                                val screen = ScreenRegistry.get(
+                                    SharedScreen.FolderDetails(
+                                        uiState.deepLink.folder!!.id,
+                                    ),
+                                )
+                                bottomSheetNavigator.push(screen)
+                            },
+                        )
 
-                    DetailsMode.Expanded -> DeepLinkDetailsExpandedUI(
-                        modifier = Modifier,
-                        uiState = uiState,
-                        onNameChanged = screenModel::updateDeepLinkName,
-                        onDescriptionChanged = screenModel::updateDeepLinkDescription,
-                        onDeleteDeepLink = { showDeleteBottomSheet = true },
-                        onAddFolder = screenModel::insertFolder,
-                        onSelectFolder = screenModel::selectFolder,
-                        onRemoveFolder = screenModel::removeFolderFromDeepLink,
-                        onCollapse = { detailsMode = DetailsMode.Collapsed },
-                    )
+                        DetailsMode.Expanded -> DeepLinkDetailsExpandedUI(
+                            modifier = Modifier,
+                            uiState = uiState,
+                            onNameChanged = screenModel::updateDeepLinkName,
+                            onDescriptionChanged = screenModel::updateDeepLinkDescription,
+                            onDeleteDeepLink = { showDeleteBottomSheet = true },
+                            onAddFolder = screenModel::insertFolder,
+                            onSelectFolder = screenModel::selectFolder,
+                            onRemoveFolder = screenModel::removeFolderFromDeepLink,
+                            onCollapse = { detailsMode = DetailsMode.Collapsed },
+                        )
 
-                    is DetailsMode.Duplicate -> DuplicateDeepLinkUI(
-                        deepLink = uiState.deepLink,
-                        onBack = {
-                            detailsMode = (detailsMode as DetailsMode.Duplicate).lastMode
-                        },
-                        errorMessage = uiState.duplicateErrorMessage,
-                        onDuplicate = screenModel::duplicate,
-                    )
+                        is DetailsMode.Duplicate -> DuplicateDeepLinkUI(
+                            deepLink = uiState.deepLink,
+                            onBack = {
+                                detailsMode = (detailsMode as DetailsMode.Duplicate).lastMode
+                            },
+                            errorMessage = uiState.duplicateErrorMessage,
+                            onDuplicate = screenModel::duplicate,
+                        )
+                    }
                 }
-            }
 
-            AnimatedVisibility(
-                visible = detailsMode !is DetailsMode.Duplicate,
-            ) {
-                Column {
-                    DLLHorizontalDivider(
-                        modifier = Modifier.padding(top = 24.dp),
-                    )
+                AnimatedVisibility(
+                    visible = detailsMode !is DetailsMode.Duplicate,
+                ) {
+                    Column {
+                        DLLHorizontalDivider(
+                            modifier = Modifier.padding(top = 24.dp),
+                        )
 
-                    DeepLinkActionsRow(
-                        link = uiState.deepLink.link,
-                        isFavorite = uiState.deepLink.isFavorite,
-                        onShare = screenModel::share,
-                        onFavorite = screenModel::favorite,
-                        onLaunch = screenModel::launch,
-                        onDuplicate = { detailsMode = DetailsMode.Duplicate(detailsMode) },
-                    )
+                        DeepLinkActionsRow(
+                            link = uiState.deepLink.link,
+                            isFavorite = uiState.deepLink.isFavorite,
+                            onShare = screenModel::share,
+                            onFavorite = screenModel::favorite,
+                            onLaunch = screenModel::launch,
+                            onDuplicate = { detailsMode = DetailsMode.Duplicate(detailsMode) },
+                        )
+                    }
                 }
-            }
 
-            Spacer(modifier = Modifier.navigationBarsPadding())
+                Spacer(modifier = Modifier.navigationBarsPadding())
+            }
         }
     }
 

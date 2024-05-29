@@ -10,11 +10,11 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyListState
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.staggeredgrid.LazyStaggeredGridScope
+import androidx.compose.foundation.lazy.staggeredgrid.LazyStaggeredGridState
 import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
+import androidx.compose.foundation.lazy.staggeredgrid.rememberLazyStaggeredGridState
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -26,6 +26,9 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarScrollBehavior
+import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
+import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
+import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -48,8 +51,8 @@ internal fun HomeHorizontalPager(
     favoriteDeepLinks: ImmutableList<DeepLink>,
     folders: ImmutableList<Folder>,
     pagerState: PagerState,
-    allDeepLinksListState: LazyListState,
-    favoritesDeepLinksListState: LazyListState,
+    allDeepLinksListState: LazyStaggeredGridState,
+    favoritesDeepLinksListState: LazyStaggeredGridState,
     scrollBehavior: TopAppBarScrollBehavior,
     paddingBottom: Dp,
     onDeepLinkClicked: (DeepLink) -> Unit,
@@ -93,7 +96,10 @@ internal fun HomeHorizontalPager(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
+@OptIn(
+    ExperimentalMaterial3Api::class,
+    ExperimentalFoundationApi::class,
+)
 @Composable
 fun DeepLinksLazyColumn(
     deepLinks: List<DeepLink>,
@@ -102,27 +108,22 @@ fun DeepLinksLazyColumn(
     onClick: (DeepLink) -> Unit,
     onLaunch: (DeepLink) -> Unit,
     onFolderClicked: (Folder) -> Unit,
-    deepLinksListState: LazyListState,
+    deepLinksListState: LazyStaggeredGridState,
 ) {
-    LazyColumn(
+    HomeVerticalGridList(
         state = deepLinksListState,
-        modifier = Modifier
-            .fillMaxSize()
-            .nestedScroll(scrollBehavior.nestedScrollConnection),
-        contentPadding = PaddingValues(
-            top = 12.dp,
-            start = 12.dp,
-            end = 12.dp,
-            bottom = paddingBottom,
-        ),
-        verticalArrangement = Arrangement.spacedBy(12.dp),
+        scrollBehavior = scrollBehavior,
+        paddingBottom = paddingBottom,
     ) {
         items(
-            key = { it.id },
-            items = deepLinks,
-        ) { deepLink ->
+            count = deepLinks.size,
+            key = { deepLinks[it].id },
+        ) { index ->
+            val deepLink = deepLinks[index]
+
             DeepLinkCard(
-                modifier = Modifier.animateItemPlacement(),
+                modifier = Modifier
+                    .animateItemPlacement(),
                 deepLink = deepLink,
                 onClick = { onClick(deepLink) },
                 onLaunch = { onLaunch(deepLink) },
@@ -132,7 +133,11 @@ fun DeepLinksLazyColumn(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
+@OptIn(
+    ExperimentalMaterial3Api::class,
+    ExperimentalFoundationApi::class,
+    ExperimentalMaterial3WindowSizeClassApi::class,
+)
 @Composable
 fun FoldersVerticalStaggeredGrid(
     folders: ImmutableList<Folder>,
@@ -141,19 +146,26 @@ fun FoldersVerticalStaggeredGrid(
     onAdd: () -> Unit,
     onClick: (Folder) -> Unit,
 ) {
+    val windowSizeClass = calculateWindowSizeClass()
+    val numberOfColumns = when (windowSizeClass.widthSizeClass) {
+        WindowWidthSizeClass.Expanded -> 3
+        else -> 2
+    }
+
     LazyVerticalStaggeredGrid(
+        columns = StaggeredGridCells.Fixed(numberOfColumns),
+        state = rememberLazyStaggeredGridState(),
         modifier = Modifier
             .fillMaxSize()
             .nestedScroll(scrollBehavior.nestedScrollConnection),
         contentPadding = PaddingValues(
+            top = 12.dp,
             start = 12.dp,
             end = 12.dp,
-            top = 24.dp,
             bottom = paddingBottom,
         ),
         horizontalArrangement = Arrangement.spacedBy(24.dp),
         verticalItemSpacing = 24.dp,
-        columns = StaggeredGridCells.Fixed(2),
     ) {
         item {
             OutlinedCard(
@@ -195,5 +207,41 @@ fun FoldersVerticalStaggeredGrid(
                 modifier = Modifier.animateItemPlacement(),
             )
         }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3WindowSizeClassApi::class)
+@Composable
+fun HomeVerticalGridList(
+    modifier: Modifier = Modifier,
+    state: LazyStaggeredGridState,
+    scrollBehavior: TopAppBarScrollBehavior,
+    paddingBottom: Dp,
+    content: LazyStaggeredGridScope.() -> Unit,
+) {
+    val windowSizeClass = calculateWindowSizeClass()
+
+    val numberOfColumns = when (windowSizeClass.widthSizeClass) {
+        WindowWidthSizeClass.Medium -> 2
+        WindowWidthSizeClass.Expanded -> 3
+        else -> 1
+    }
+
+    LazyVerticalStaggeredGrid(
+        columns = StaggeredGridCells.Fixed(numberOfColumns),
+        state = state,
+        modifier = modifier
+            .fillMaxSize()
+            .nestedScroll(scrollBehavior.nestedScrollConnection),
+        contentPadding = PaddingValues(
+            top = 12.dp,
+            start = 12.dp,
+            end = 12.dp,
+            bottom = paddingBottom,
+        ),
+        horizontalArrangement = Arrangement.spacedBy(24.dp),
+        verticalItemSpacing = 24.dp,
+    ) {
+        content()
     }
 }

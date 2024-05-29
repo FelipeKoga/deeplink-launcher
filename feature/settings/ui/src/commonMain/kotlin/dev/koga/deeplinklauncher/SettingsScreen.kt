@@ -26,8 +26,6 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalClipboardManager
-import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.registry.rememberScreen
@@ -35,13 +33,17 @@ import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.koin.getScreenModel
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
-import dev.icerock.moko.resources.compose.painterResource
 import dev.koga.deeplinklauncher.components.AppThemeBottomSheet
 import dev.koga.deeplinklauncher.components.DeleteDataBottomSheet
 import dev.koga.deeplinklauncher.components.OpenSourceLicensesScreen
 import dev.koga.deeplinklauncher.components.SuggestionsOptionBottomSheet
-import dev.koga.resources.MR
+import dev.koga.deeplinklauncher.platform.Platform
+import dev.koga.deeplinklauncher.platform.platform
+import dev.koga.resources.Res
+import dev.koga.resources.ic_chevron_right_24dp
+import dev.koga.resources.ic_launch_24dp
 import kotlinx.coroutines.launch
+import org.jetbrains.compose.resources.painterResource
 
 class SettingsScreen : Screen {
 
@@ -111,7 +113,6 @@ class SettingsScreen : Screen {
 
         SettingsScreenUI(
             snackbarHostState = snackbarHostState,
-            appVersion = screenModel.appVersion,
             onBack = navigator::pop,
             onNavigateToExport = { navigator.push(exportScreen) },
             onNavigateToImport = { navigator.push(importScreen) },
@@ -129,7 +130,6 @@ class SettingsScreen : Screen {
 @Composable
 fun SettingsScreenUI(
     snackbarHostState: SnackbarHostState,
-    appVersion: String,
     onBack: () -> Unit,
     onNavigateToExport: () -> Unit,
     onNavigateToImport: () -> Unit,
@@ -140,9 +140,6 @@ fun SettingsScreenUI(
     onShowAppTheme: () -> Unit,
     onShowSuggestionsOption: () -> Unit,
 ) {
-    val clipboardManager = LocalClipboardManager.current
-    val scope = rememberCoroutineScope()
-
     Scaffold(
         topBar = {
             DLLTopBar(
@@ -175,7 +172,7 @@ fun SettingsScreenUI(
                     onClick = onShowAppTheme,
                     trailingContent = {
                         Icon(
-                            painter = painterResource(MR.images.ic_chevron_right_24dp),
+                            painter = painterResource(Res.drawable.ic_chevron_right_24dp),
                             contentDescription = "navigate",
                         )
                     },
@@ -189,7 +186,7 @@ fun SettingsScreenUI(
                     onClick = onShowSuggestionsOption,
                     trailingContent = {
                         Icon(
-                            painter = painterResource(MR.images.ic_chevron_right_24dp),
+                            painter = painterResource(Res.drawable.ic_chevron_right_24dp),
                             contentDescription = "navigate",
                         )
                     },
@@ -203,7 +200,7 @@ fun SettingsScreenUI(
                     onClick = onNavigateToExport,
                     trailingContent = {
                         Icon(
-                            painter = painterResource(MR.images.ic_chevron_right_24dp),
+                            painter = painterResource(Res.drawable.ic_chevron_right_24dp),
                             contentDescription = "navigate",
                         )
                     },
@@ -217,7 +214,7 @@ fun SettingsScreenUI(
                     onClick = onNavigateToImport,
                     trailingContent = {
                         Icon(
-                            painter = painterResource(MR.images.ic_chevron_right_24dp),
+                            painter = painterResource(Res.drawable.ic_chevron_right_24dp),
                             contentDescription = "navigate",
                         )
                     },
@@ -231,7 +228,7 @@ fun SettingsScreenUI(
                     onClick = onShowDeleteDataBottomSheet,
                     trailingContent = {
                         Icon(
-                            painter = painterResource(MR.images.ic_chevron_right_24dp),
+                            painter = painterResource(Res.drawable.ic_chevron_right_24dp),
                             contentDescription = "navigate",
                         )
                     },
@@ -260,7 +257,7 @@ fun SettingsScreenUI(
                     onClick = onNavigateToGithub,
                     trailingContent = {
                         Icon(
-                            painter = painterResource(MR.images.ic_launch_24dp),
+                            painter = painterResource(Res.drawable.ic_launch_24dp),
                             contentDescription = "launch",
                         )
                     },
@@ -268,17 +265,31 @@ fun SettingsScreenUI(
             }
 
             item {
-                SettingsListItem(
-                    title = "Review on the Play Store",
-                    description = "If you like the app, please leave a review. It helps a lot!",
-                    onClick = onNavigateToStore,
-                    trailingContent = {
-                        Icon(
-                            painter = painterResource(MR.images.ic_launch_24dp),
-                            contentDescription = "navigate",
-                        )
-                    },
-                )
+                when (platform) {
+                    Platform.ANDROID -> SettingsListItem(
+                        title = "Review on the Play Store",
+                        description = "Enjoying the app? Please leave a review. Your feedback helps a lot!",
+                        onClick = onNavigateToStore,
+                        trailingContent = {
+                            Icon(
+                                painter = painterResource(Res.drawable.ic_launch_24dp),
+                                contentDescription = "navigate",
+                            )
+                        },
+                    )
+
+                    Platform.JVM -> SettingsListItem(
+                        title = "Download our Android app!",
+                        description = "Need the app on your phone? Get it now from the Play Store!",
+                        onClick = onNavigateToStore,
+                        trailingContent = {
+                            Icon(
+                                painter = painterResource(Res.drawable.ic_launch_24dp),
+                                contentDescription = "Open Play Store",
+                            )
+                        },
+                    )
+                }
             }
 
             item {
@@ -288,27 +299,8 @@ fun SettingsScreenUI(
                     onClick = onNavigateToOpenSourceLicenses,
                     trailingContent = {
                         Icon(
-                            painter = painterResource(MR.images.ic_chevron_right_24dp),
+                            painter = painterResource(Res.drawable.ic_chevron_right_24dp),
                             contentDescription = "navigate",
-                        )
-                    },
-                )
-            }
-
-            item {
-                SettingsListItem(
-                    title = "Version",
-                    description = appVersion,
-                    onClick = {
-                        clipboardManager.setText(AnnotatedString(appVersion))
-                        scope.launch {
-                            snackbarHostState.showSnackbar("Version copied to clipboard")
-                        }
-                    },
-                    trailingContent = {
-                        Icon(
-                            painter = painterResource(MR.images.ic_content_copy_24dp),
-                            contentDescription = "copy",
                         )
                     },
                 )

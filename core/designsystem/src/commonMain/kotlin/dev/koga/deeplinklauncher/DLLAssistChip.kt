@@ -23,6 +23,7 @@ fun DLLAssistChip(
             labelColor = MaterialTheme.colorScheme.primary,
         ),
         border = AssistChipDefaults.assistChipBorder(
+            true,
             borderColor = MaterialTheme.colorScheme.surfaceVariant,
         ),
         modifier = modifier,

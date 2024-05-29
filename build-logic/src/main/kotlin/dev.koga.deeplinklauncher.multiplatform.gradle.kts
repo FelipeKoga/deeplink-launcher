@@ -6,17 +6,16 @@ plugins {
 
 kotlin {
     applyDefaultHierarchyTemplate()
+    jvmToolchain(17)
+    jvm()
+    androidTarget()
 
-    androidTarget {
-        compilations.all {
-            kotlinOptions {
-                jvmTarget = Configuration.JVM_TARGET
-            }
+    sourceSets {
+        commonMain.dependencies {
+            implementation("org.jetbrains.kotlinx:kotlinx-coroutines-swing:1.8.0")
         }
     }
 }
-
-val libs: VersionCatalog = extensions.getByType<VersionCatalogsExtension>().named("libs")
 
 android {
     compileSdk = Configuration.COMPILE_SDK
