@@ -1,16 +1,56 @@
-![DeepLink Launcher Logo](androidApp/src/main/res/mipmap-xxxhdpi/ic_launcher_round.webp)
+<p align="center">
+  <img src="androidApp/src/main/res/mipmap-xxxhdpi/ic_launcher_round.webp" alt="DeepLink Launcher Logo" />
+</p>
 
-# DeepLink Launcher
+<h1 align="center">DeepLink Launcher</h1>
 
-DeepLink Launcher streamlines the management of deeplinks for developers and QA. Featuring a user-friendly interface built on Compose Multiplatform and Material3, it simplifies executing, organizing, tracking, and sharing deeplinks.
+<p align="center">
+  DeepLink Launcher streamlines the management of deeplinks for developers and QA. Featuring a user-friendly interface built on Compose Multiplatform and Material3, it simplifies executing, organizing, tracking, and sharing deeplinks.
+</p>
 
-![Stars](https://img.shields.io/github/stars/FelipeKoga/deeplink-launcher)
-[![Run Unit Tests](https://github.com/FelipeKoga/deeplink-launcher/actions/workflows/run-tests.yml/badge.svg)](https://github.com/FelipeKoga/deeplink-launcher/actions/workflows/run-tests.yml)
-[![Deploy Release](https://github.com/FelipeKoga/deeplink-launcher/actions/workflows/deploy-release.yml/badge.svg)](https://github.com/FelipeKoga/deeplink-launcher/actions/workflows/deploy-release.yml)
+<p align="center">
+  <a href="https://github.com/FelipeKoga/deeplink-launcher/stargazers">
+    <img src="https://img.shields.io/github/stars/FelipeKoga/deeplink-launcher" alt="Stars" />
+  </a>
+  <a href="https://github.com/FelipeKoga/deeplink-launcher/actions/workflows/run-tests.yml">
+    <img src="https://github.com/FelipeKoga/deeplink-launcher/actions/workflows/run-tests.yml/badge.svg" alt="Run Unit Tests" />
+  </a>
+  <a href="https://github.com/FelipeKoga/deeplink-launcher/actions/workflows/deploy-release.yml">
+    <img src="https://github.com/FelipeKoga/deeplink-launcher/actions/workflows/deploy-release.yml/badge.svg" alt="Deploy Release" />
+  </a>
+</p>
 
-## Screenshots
-<img src="screenshots/deeplink_launcher_1.png" alt="Screenshot">
-<img src="screenshots/deeplink_launcher_2.png" alt="Screenshot">
+## Platforms
+
+<div style="width:100%">
+  <table style="width:100%">
+  <tr>
+    <th>Platform</th>
+    <th>Status</th>
+    <th>Install</th>
+  </th>
+  <tr>
+    <td>Android</td>
+    <td>✅</td>
+    <td><a href='https://play.google.com/store/apps/details?id=dev.koga.deeplinklauncher.android'><img alt='Get it on Google Play' src='https://play.google.com/intl/en_us/badges/images/generic/en_badge_web_generic.png' width=200/></a></td>
+  </tr>
+  <tr>
+    <td>Desktop</td>
+    <td>✅</td>
+    <td>Coming soon </td>
+  </tr>
+  <tr>
+    <td>iOS</td>
+    <td>Planned</td>
+    <td></td>
+  </tr>
+  <tr>
+    <td>MacOS</td>
+    <td>Planned</td>
+    <td></td>
+  </tr>
+</table>
+</div>
 
 ## Features
 - [x] **Execute Deeplinks**: Quickly and easily execute deeplinks.
@@ -23,10 +63,6 @@ DeepLink Launcher streamlines the management of deeplinks for developers and QA.
 - [x] **Search**: Quickly find deeplinks by searching for keywords.
 - [ ] **Google Drive**: Backup your deeplinks and folders with Google Drive.
 - [ ] **Internationalization**: Starting with Portuguese (Brazil)
-
-## Multiplatform
-
-Currently, DeepLink Launcher is available only on **Android**. However, since I developed the app entirely with **Compose Multiplatform**, I plan to soon launch the **iOS** app and develop for **Desktop**! Stay tuned!
 
 ## Built With
 
@@ -42,4 +78,12 @@ Currently, DeepLink Launcher is available only on **Android**. However, since I 
 - **[AboutLibraries](https://github.com/mikepenz/AboutLibraries)**
 - **[Detekt](https://github.com/detekt/detekt)**
 - **[Ktlint](https://github.com/pinterest/ktlint)**
-- **Moko [Resources](https://github.com/icerockdev/moko-resources) & [Permissions](https://github.com/icerockdev/moko-permissions)**
+
+## Screenshots
+
+### Android
+<img src="screenshots/deeplink_launcher_1.png" alt="Screenshot">
+<img src="screenshots/deeplink_launcher_2.png" alt="Screenshot">
+
+### Desktop
+TODO
