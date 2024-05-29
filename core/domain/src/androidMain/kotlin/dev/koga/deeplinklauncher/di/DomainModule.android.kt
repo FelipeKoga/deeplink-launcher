@@ -1,6 +1,5 @@
 package dev.koga.deeplinklauncher.di
 
-import dev.koga.deeplinklauncher.provider.DeepLinkClipboardProvider
 import dev.koga.deeplinklauncher.provider.UUIDProvider
 import dev.koga.deeplinklauncher.usecase.GetFileContent
 import dev.koga.deeplinklauncher.usecase.SaveFile
@@ -15,7 +14,6 @@ import org.koin.dsl.module
 internal actual val platformDomainModule: Module = module {
     singleOf(::LaunchDeepLink)
     singleOf(::ShareDeepLink)
-    singleOf(::DeepLinkClipboardProvider)
     singleOf(::SaveFile)
     singleOf(::ShareFile)
     singleOf(::ValidateDeepLink)

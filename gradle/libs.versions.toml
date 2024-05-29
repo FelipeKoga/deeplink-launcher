@@ -2,43 +2,46 @@
 datastorePreferencesCore = "1.1.1"
 kotlinxSerializationJson = "1.6.2"
 
-androidGradlePlugin = "8.2.1"
+androidGradlePlugin = "8.2.2"
 jetbrains-kotlinxDatetime = "0.5.0"
-kotlin = "1.9.20"
+kotlin = "2.0.0"
 kotlinx-immutable = "0.3.7"
 
-compose-plugin = "1.5.11"
+compose-plugin = "1.6.10"
+compose-runtime = "1.6.7"
 
-androidx-activityCompose = "1.8.2"
-androidx-core = "1.12.0"
+androidx-activity = "1.9.0"
+androidx-core = "1.13.1"
 
+material3WindowSizeClass = "0.5.0"
+mpfilepicker = "3.1.0"
 voyager = "1.0.0"
 
 koin = "3.5.3"
 koin-compose = "1.1.2"
 
 sqlDelight = "2.0.0"
-kotlinxCoroutinesCore = "1.7.3"
-org-jetbrains-kotlin-jvm = "1.9.20"
-
-moko_resources = "0.23.0"
+kotlinxCoroutinesCore = "1.8.0"
+org-jetbrains-kotlin-jvm = "1.9.23"
 
 ktlint = "0.50.0"
 detekt = "1.22.0"
 composerules = "0.0.26"
 
-firebase-bom = "32.7.1"
-firebase-crashlytics-plugin = "2.9.9"
-google-services = "4.4.0"
+firebase-bom = "33.0.0"
+firebase-crashlytics-plugin = "3.0.1"
+google-services = "4.4.1"
 
-aboutlibraries = "11.1.4"
+aboutlibraries = "11.2.0"
 
 [libraries]
 android-gradle-plugin = { module = "com.android.tools.build:gradle", version.ref = "androidGradlePlugin" }
 androidx-datastore-preferences-core = { module = "androidx.datastore:datastore-preferences-core", version.ref = "datastorePreferencesCore" }
 kotlin-gradle-plugin = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin" }
 
-androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "androidx-activityCompose" }
+androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "androidx-activity" }
+androidx-activity = { module = "androidx.activity:activity", version = "androidx-activity" }
+
 androidx-core = { module = "androidx.core:core-ktx", version.ref = "androidx-core" }
 
 kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinxCoroutinesCore" }
@@ -46,6 +49,8 @@ kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinxSerializationJson" }
 kotlinx-immutable = { module = "org.jetbrains.kotlinx:kotlinx-collections-immutable", version.ref = "kotlinx-immutable" }
 
+material3-windowSizeClass = { module = "dev.chrisbanes.material3:material3-window-size-class-multiplatform", version.ref = "material3WindowSizeClass" }
+mpfilepicker = { module = "com.darkrockstudios:mpfilepicker", version.ref = "mpfilepicker" }
 voyager-navigator = { module = "cafe.adriel.voyager:voyager-navigator", version.ref = "voyager" }
 voyager-screenmodel = { module = "cafe.adriel.voyager:voyager-screenmodel", version.ref = "voyager" }
 voyager-transitions = { module = "cafe.adriel.voyager:voyager-transitions", version.ref = "voyager" }
@@ -56,13 +61,9 @@ koin-compose = { module = "io.insert-koin:koin-compose", version.ref = "koin-com
 koin-core = { module = "io.insert-koin:koin-core", version.ref = "koin" }
 koin-android = { module = "io.insert-koin:koin-android", version.ref = "koin" }
 
-sql-coroutines-extensions = { module = "app.cash.sqldelight:coroutines-extensions", version.ref = "sqlDelight" }
-sql-native-driver = { module = "app.cash.sqldelight:native-driver", version.ref = "sqlDelight" }
-sql-android-driver = { module = "app.cash.sqldelight:android-driver", version.ref = "sqlDelight" }
-
-moko-resources-generator = { module = "dev.icerock.moko:resources-generator", version.ref = "moko_resources" }
-moko-resources-core = { module = "dev.icerock.moko:resources", version.ref = "moko_resources" }
-moko-resources-compose = { module = "dev.icerock.moko:resources-compose", version.ref = "moko_resources" }
+sqldelight-coroutines-extensions = { module = "app.cash.sqldelight:coroutines-extensions", version.ref = "sqlDelight" }
+sqldelight-android-driver = { module = "app.cash.sqldelight:android-driver", version.ref = "sqlDelight" }
+sqldelight-jvm = { module = "app.cash.sqldelight:sqlite-driver", version.ref = "sqlDelight" }
 
 ktlint = { module = "com.pinterest:ktlint", version.ref = "ktlint" }
 detekt = { module = "io.gitlab.arturbosch.detekt:detekt-gradle-plugin", version.ref = "detekt" }
@@ -72,6 +73,7 @@ firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "fir
 firebase-crashlytics = { module = "com.google.firebase:firebase-crashlytics" }
 
 aboutlibraries_compose = { module = "com.mikepenz:aboutlibraries-compose", version.ref = "aboutlibraries" }
+compose-runtime = { module = "androidx.compose.runtime:runtime", version.ref = "compose-runtime" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "androidGradlePlugin" }
@@ -81,8 +83,9 @@ kotlinMultiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref =
 kotlinCocoapods = { id = "org.jetbrains.kotlin.native.cocoapods", version.ref = "kotlin" }
 sqlDelight = { id = "app.cash.sqldelight", version.ref = "sqlDelight" }
 org-jetbrains-kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "org-jetbrains-kotlin-jvm" }
+
 jetbrainsCompose = { id = "org.jetbrains.compose", version.ref = "compose-plugin" }
-moko-multiplatform-resources = { id = "dev.icerock.mobile.multiplatform-resources" }
+compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 
 google-services = { id = "com.google.gms.google-services", version.ref = "google-services" }
 crashlytics = { id = "com.google.firebase.crashlytics", version.ref = "firebase-crashlytics-plugin" }

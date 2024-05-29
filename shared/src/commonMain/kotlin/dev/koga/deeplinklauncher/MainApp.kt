@@ -51,7 +51,7 @@ fun MainApp() {
         ) {
             it.closeKeyboardOnBottomSheetDismiss()
 
-            Navigator(HomeScreen) { navigator ->
+            Navigator(HomeScreen()) { navigator ->
                 SlideTransition(navigator)
             }
         }

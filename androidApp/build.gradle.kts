@@ -8,6 +8,7 @@ plugins {
     id("com.mikepenz.aboutlibraries.plugin")
     alias(libs.plugins.google.services)
     alias(libs.plugins.crashlytics)
+    alias(libs.plugins.compose.compiler)
 }
 
 val keystoreProperties = Properties()
@@ -25,15 +26,6 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         versionName = Configuration.VERSION_NAME
         versionCode = Configuration.versionCode
-    }
-
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
-    }
-
-    kotlinOptions {
-        jvmTarget = Configuration.JVM_TARGET
     }
 
     buildFeatures {
@@ -73,6 +65,10 @@ android {
     }
 }
 
+kotlin {
+    jvmToolchain(17)
+}
+
 dependencies {
     implementation(projects.shared)
     implementation(projects.core.preferences)
@@ -83,6 +79,8 @@ dependencies {
 
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.crashlytics)
+
+    implementation(libs.compose.runtime)
 }
 
 tasks.withType(KotlinCompile::class.java) {

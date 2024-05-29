@@ -1,14 +1,19 @@
 package dev.koga.deeplinklauncher
 
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
+import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
+import androidx.compose.foundation.lazy.staggeredgrid.rememberLazyStaggeredGridState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Delete
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -16,6 +21,9 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
+import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
+import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -35,6 +43,8 @@ import cafe.adriel.voyager.navigator.currentOrThrow
 import dev.koga.deeplinklauncher.button.DLLIconButton
 import dev.koga.deeplinklauncher.component.DeleteFolderBottomSheet
 import dev.koga.deeplinklauncher.deeplink.DeepLinkCard
+import dev.koga.deeplinklauncher.ext.fullLineItem
+import dev.koga.deeplinklauncher.ext.spacer
 import dev.koga.deeplinklauncher.folder.EditableText
 import dev.koga.deeplinklauncher.model.DeepLink
 import dev.koga.deeplinklauncher.theme.LocalDimensions
@@ -102,6 +112,7 @@ class FolderDetailsScreen(private val folderId: String) : Screen {
     }
 }
 
+@OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3WindowSizeClassApi::class)
 @Composable
 fun FolderDetailsScreenContent(
     modifier: Modifier = Modifier,
@@ -113,14 +124,25 @@ fun FolderDetailsScreenContent(
 ) {
     val dimensions = LocalDimensions.current
 
-    LazyColumn(
-        modifier = modifier,
-    ) {
-        item {
-            Spacer(modifier = Modifier.height(dimensions.extraLarge))
-        }
+    val windowSizeClass = calculateWindowSizeClass()
 
-        item {
+    val numberOfColumns = when (windowSizeClass.widthSizeClass) {
+        WindowWidthSizeClass.Medium -> 2
+        WindowWidthSizeClass.Expanded -> 3
+        else -> 1
+    }
+
+    LazyVerticalStaggeredGrid(
+        columns = StaggeredGridCells.Fixed(numberOfColumns),
+        state = rememberLazyStaggeredGridState(),
+        modifier = modifier.fillMaxSize(),
+        contentPadding = PaddingValues(horizontal = 24.dp),
+        horizontalArrangement = Arrangement.spacedBy(12.dp),
+        verticalItemSpacing = 24.dp,
+    ) {
+        spacer(height = 24.dp)
+
+        fullLineItem {
             Column(modifier = Modifier.padding(horizontal = 12.dp)) {
                 Text(
                     text = "Name",
@@ -173,14 +195,14 @@ fun FolderDetailsScreenContent(
             }
         }
 
-        item {
+        fullLineItem {
             DLLHorizontalDivider(
                 modifier = Modifier.padding(vertical = dimensions.extraLarge),
                 thickness = .4.dp,
             )
         }
 
-        item {
+        fullLineItem {
             Text(
                 text = if (form.deepLinks.isNotEmpty()) {
                     "Deeplinks"
@@ -196,20 +218,25 @@ fun FolderDetailsScreenContent(
             )
         }
 
-        item { Spacer(modifier = Modifier.height(12.dp)) }
+        spacer(height = 12.dp)
 
-        items(form.deepLinks) {
+        items(
+            count = form.deepLinks.size,
+            key = { form.deepLinks[it].id },
+        ) { index ->
+            val deepLink = form.deepLinks[index]
+
             DeepLinkCard(
-                modifier = Modifier.padding(start = 12.dp, end = 12.dp, bottom = 12.dp),
-                deepLink = it,
-                onClick = { onDeepLinkClick(it) },
-                onLaunch = { onDeepLinkLaunch(it) },
+                modifier = Modifier
+                    .padding(start = 12.dp, end = 12.dp, bottom = 12.dp)
+                    .animateItemPlacement(),
+                deepLink = deepLink,
+                onClick = { onDeepLinkClick(deepLink) },
+                onLaunch = { onDeepLinkLaunch(deepLink) },
                 showFolder = false,
             )
         }
 
-        item {
-            Spacer(modifier = Modifier.height(dimensions.extraLarge))
-        }
+        spacer(height = 24.dp)
     }
 }

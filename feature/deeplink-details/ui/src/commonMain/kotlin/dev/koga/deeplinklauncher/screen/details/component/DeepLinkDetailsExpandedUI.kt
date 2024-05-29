@@ -28,7 +28,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import dev.icerock.moko.resources.compose.painterResource
 import dev.koga.deeplinklauncher.DLLAssistChip
 import dev.koga.deeplinklauncher.DLLHorizontalDivider
 import dev.koga.deeplinklauncher.DLLTextField
@@ -37,7 +36,10 @@ import dev.koga.deeplinklauncher.button.DLLOutlinedIconButton
 import dev.koga.deeplinklauncher.folder.SelectFolderBottomSheet
 import dev.koga.deeplinklauncher.model.Folder
 import dev.koga.deeplinklauncher.screen.details.state.DeepLinkDetailsUiState
-import dev.koga.resources.MR
+import dev.koga.resources.Res
+import dev.koga.resources.ic_folder_24dp
+import dev.koga.resources.ic_unfold_less_24dp
+import org.jetbrains.compose.resources.painterResource
 
 @Composable
 fun DeepLinkDetailsExpandedUI(
@@ -100,7 +102,7 @@ fun DeepLinkDetailsExpandedUI(
                     onClick = onCollapse,
                 ) {
                     Icon(
-                        painterResource(MR.images.ic_unfold_less_24dp),
+                        painterResource(Res.drawable.ic_unfold_less_24dp),
                         contentDescription = "Unfold less",
                     )
                 }
@@ -156,7 +158,7 @@ fun DeepLinkDetailsExpandedUI(
                         onClick = onRemoveFolder,
                         leadingIcon = {
                             Icon(
-                                painter = painterResource(MR.images.ic_folder_24dp),
+                                painterResource(Res.drawable.ic_folder_24dp),
                                 contentDescription = null,
                                 tint = MaterialTheme.colorScheme.secondary,
                             )

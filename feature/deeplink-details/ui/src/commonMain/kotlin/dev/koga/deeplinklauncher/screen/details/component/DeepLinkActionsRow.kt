@@ -40,10 +40,14 @@ import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Popup
 import androidx.compose.ui.window.PopupProperties
-import dev.icerock.moko.resources.compose.painterResource
 import dev.koga.deeplinklauncher.button.DLLIconButton
-import dev.koga.resources.MR
+import dev.koga.deeplinklauncher.platform.canShareContent
+import dev.koga.resources.Res
+import dev.koga.resources.ic_content_copy_24dp
+import dev.koga.resources.ic_duplicate_24dp
+import dev.koga.resources.ic_launch_24dp
 import kotlinx.coroutines.delay
+import org.jetbrains.compose.resources.painterResource
 
 @Composable
 fun DeepLinkActionsRow(
@@ -116,18 +120,20 @@ fun DeepLinkActionsRow(
         ) {
             DLLIconButton(onClick = onDuplicate) {
                 Icon(
-                    painterResource(MR.images.ic_duplicate_24dp),
+                    painterResource(Res.drawable.ic_duplicate_24dp),
                     contentDescription = "Duplicate",
                     tint = MaterialTheme.colorScheme.onSurface,
                 )
             }
 
-            DLLIconButton(onClick = onShare) {
-                Icon(
-                    imageVector = Icons.Rounded.Share,
-                    contentDescription = "Share",
-                    tint = MaterialTheme.colorScheme.onSurface,
-                )
+            if (canShareContent) {
+                DLLIconButton(onClick = onShare) {
+                    Icon(
+                        imageVector = Icons.Rounded.Share,
+                        contentDescription = "Share",
+                        tint = MaterialTheme.colorScheme.onSurface,
+                    )
+                }
             }
 
             DLLIconButton(
@@ -140,7 +146,7 @@ fun DeepLinkActionsRow(
                 },
             ) {
                 Icon(
-                    painter = painterResource(MR.images.ic_content_copy_24dp),
+                    painter = painterResource(Res.drawable.ic_content_copy_24dp),
                     contentDescription = "Copy Link",
                     tint = MaterialTheme.colorScheme.onSurface,
                 )
@@ -175,7 +181,7 @@ fun DeepLinkActionsRow(
                 Spacer(modifier = Modifier.width(8.dp))
 
                 Icon(
-                    painter = painterResource(MR.images.ic_launch_24dp),
+                    painter = painterResource(Res.drawable.ic_launch_24dp),
                     contentDescription = "Launch",
                     modifier = Modifier.size(18.dp),
                 )
