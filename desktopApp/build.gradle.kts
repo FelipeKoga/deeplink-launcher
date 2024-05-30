@@ -32,6 +32,11 @@ kotlin {
 compose.desktop {
     application {
         mainClass = "MainKt"
+
+        buildTypes.release.proguard {
+            isEnabled.set(false)
+        }
+
         nativeDistributions {
             modules("java.sql")
             modules("jdk.unsupported")
