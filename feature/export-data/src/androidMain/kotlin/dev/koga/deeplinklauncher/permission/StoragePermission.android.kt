@@ -10,9 +10,18 @@ actual class StoragePermission(
 ) {
 
     actual fun request() {
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.R) {
+            return
+        }
+
+        // TODO
     }
 
     actual fun isGranted(): Boolean {
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.R) {
+            return true
+        }
+
         val permission = Manifest.permission.WRITE_EXTERNAL_STORAGE
 
         return ContextCompat.checkSelfPermission(
