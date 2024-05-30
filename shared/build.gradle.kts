@@ -10,12 +10,9 @@ kotlin {
     sourceSets {
         commonMain.dependencies {
             implementation(projects.feature.home)
-            implementation(projects.feature.home)
             implementation(projects.feature.settings)
-            implementation(projects.feature.settings)
-            implementation(projects.feature.exportDeeplinks)
-            implementation(projects.feature.importDeeplinks)
-            implementation(projects.feature.importDeeplinks)
+            implementation(projects.feature.export)
+            implementation(projects.feature.import)
             implementation(projects.feature.deeplinkDetails)
             implementation(projects.feature.folderDetails)
             implementation(projects.core.designsystem)
