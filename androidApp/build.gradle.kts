@@ -19,13 +19,13 @@ if (rootDir.resolve("keystore.properties").exists()) {
 android {
     namespace = "dev.koga.deeplinklauncher.android"
 
-    defaultConfig.targetSdk = Configuration.TARGET_SDK
+    defaultConfig.targetSdk = AndroidAppConfiguration.TARGET_SDK
     defaultConfig {
-        compileSdk = Configuration.COMPILE_SDK
-        minSdk = Configuration.MIN_SDK
+        compileSdk = AndroidAppConfiguration.COMPILE_SDK
+        minSdk = AndroidAppConfiguration.MIN_SDK
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-        versionName = Configuration.VERSION_NAME
-        versionCode = Configuration.versionCode
+        versionName = AndroidAppConfiguration.VERSION_NAME
+        versionCode = AndroidAppConfiguration.versionCode
     }
 
     buildFeatures {

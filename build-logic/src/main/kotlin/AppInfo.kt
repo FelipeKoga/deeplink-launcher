@@ -1,6 +1,6 @@
 import kotlinx.datetime.Clock
 
-object Configuration {
+object AndroidAppConfiguration {
     private const val MAJOR_VERSION = 1
     private const val MINOR_VERSION = 6
     private const val PATCH_VERSION = 0
@@ -18,4 +18,8 @@ object Configuration {
     private fun getDateVersionBuild(): Int {
         return Clock.System.now().epochSeconds.toInt()
     }
+}
+
+object DesktopAppConfiguration {
+    const val VERSION_NAME = "1.0.0"
 }

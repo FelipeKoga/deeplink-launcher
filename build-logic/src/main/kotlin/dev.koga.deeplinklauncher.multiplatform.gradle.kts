@@ -18,9 +18,9 @@ kotlin {
 }
 
 android {
-    compileSdk = Configuration.COMPILE_SDK
+    compileSdk = AndroidAppConfiguration.COMPILE_SDK
     defaultConfig {
-        minSdk = Configuration.MIN_SDK
+        minSdk = AndroidAppConfiguration.MIN_SDK
     }
 }
 
