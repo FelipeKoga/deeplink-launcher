@@ -20,6 +20,12 @@
   </a>
 </p>
 
+<p align="center">
+<a href='https://play.google.com/store/apps/details?id=dev.koga.deeplinklauncher.android'><img alt='Get it on Google Play' src='https://play.google.com/intl/en_us/badges/images/generic/en_badge_web_generic.png' width=200/></a>
+  
+</p>
+
+
 ## Platforms
 
 <div style="width:100%">
@@ -27,27 +33,22 @@
   <tr>
     <th>Platform</th>
     <th>Status</th>
-    <th>Install</th>
   </th>
   <tr>
     <td>Android</td>
     <td>✅</td>
-    <td><a href='https://play.google.com/store/apps/details?id=dev.koga.deeplinklauncher.android'><img alt='Get it on Google Play' src='https://play.google.com/intl/en_us/badges/images/generic/en_badge_web_generic.png' width=200/></a></td>
   </tr>
   <tr>
     <td>Desktop</td>
     <td>✅</td>
-    <td>Coming soon </td>
   </tr>
   <tr>
     <td>iOS</td>
     <td>Planned</td>
-    <td></td>
   </tr>
   <tr>
     <td>MacOS</td>
     <td>Planned</td>
-    <td></td>
   </tr>
 </table>
 </div>
