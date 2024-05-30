@@ -11,8 +11,8 @@ kotlin {
         commonMain.dependencies {
             implementation(projects.feature.home)
             implementation(projects.feature.settings)
-            implementation(projects.feature.export)
-            implementation(projects.feature.import)
+            implementation(projects.feature.exportData)
+            implementation(projects.feature.importData)
             implementation(projects.feature.deeplinkDetails)
             implementation(projects.feature.folderDetails)
             implementation(projects.core.designsystem)
