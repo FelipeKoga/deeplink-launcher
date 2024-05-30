@@ -4,7 +4,7 @@ import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.screenModelScope
 import dev.koga.deeplinklauncher.datasource.FolderDataSource
 import dev.koga.deeplinklauncher.model.DeepLink
-import dev.koga.deeplinklauncher.usecase.deeplink.LaunchDeepLink
+import dev.koga.deeplinklauncher.usecase.LaunchDeepLink
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toPersistentList

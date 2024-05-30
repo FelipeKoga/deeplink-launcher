@@ -6,7 +6,7 @@ import dev.koga.deeplinklauncher.datasource.DeepLinkDataSource
 import dev.koga.deeplinklauncher.datasource.FolderDataSource
 import dev.koga.deeplinklauncher.datasource.PreferencesDataSource
 import dev.koga.deeplinklauncher.model.AppTheme
-import dev.koga.deeplinklauncher.usecase.deeplink.LaunchDeepLink
+import dev.koga.deeplinklauncher.usecase.LaunchDeepLink
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
