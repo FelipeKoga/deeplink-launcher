@@ -59,7 +59,8 @@ class ExportDeepLinks(
             }
         }
 
-        val fileName = "deeplinks-$currentLocalDateTime.${type.extension}"
+        val sanitizedTimestamp = currentLocalDateTime.toString().replace(':', '_')
+        val fileName = "deeplinks-$sanitizedTimestamp.${type.extension}"
 
         val filePath = saveFile(
             fileName = fileName,

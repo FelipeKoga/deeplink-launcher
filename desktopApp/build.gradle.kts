@@ -47,7 +47,14 @@ compose.desktop {
             appResourcesRootDir.set(project.layout.projectDirectory.dir("resources"))
 
             linux {
-                iconFile.set(project.file("icon.png"))
+                iconFile.set(project.file("assets/icon.png"))
+            }
+
+            windows {
+                iconFile.set(project.file("assets/icon.ico"))
+                dirChooser = false
+                perUserInstall = true
+                shortcut = true
             }
 
             targetFormats(
