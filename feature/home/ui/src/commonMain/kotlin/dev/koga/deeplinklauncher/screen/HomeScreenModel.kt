@@ -12,8 +12,8 @@ import dev.koga.deeplinklauncher.screen.state.HomeEvent
 import dev.koga.deeplinklauncher.screen.state.HomeUiState
 import dev.koga.deeplinklauncher.usecase.GetAutoSuggestionLinks
 import dev.koga.deeplinklauncher.usecase.GetDeepLinksAndFolderStream
-import dev.koga.deeplinklauncher.usecase.deeplink.LaunchDeepLink
-import dev.koga.deeplinklauncher.usecase.deeplink.LaunchDeepLinkResult
+import dev.koga.deeplinklauncher.usecase.LaunchDeepLink
+import dev.koga.deeplinklauncher.usecase.LaunchDeepLinkResult
 import dev.koga.deeplinklauncher.util.ext.currentLocalDateTime
 import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.ExperimentalCoroutinesApi
