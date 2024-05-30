@@ -84,8 +84,12 @@ class ImportScreen : Screen {
         ) { platformFile ->
             showFilePicker = false
 
+            if (platformFile == null) {
+                return@FilePicker
+            }
+
             scope.launch {
-                val path = getFileRealPath.get(platformFile?.path!!)
+                val path = getFileRealPath.get(platformFile.path)
 
                 val fileType = when (path.substringAfterLast(".")) {
                     FileType.TXT.extension -> FileType.TXT
