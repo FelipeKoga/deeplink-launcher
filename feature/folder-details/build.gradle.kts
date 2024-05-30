@@ -18,9 +18,8 @@ kotlin {
             implementation(libs.voyager.navigator)
             implementation(libs.voyager.koin)
             implementation(libs.voyager.bottomSheet)
-
             implementation(libs.kotlinx.immutable)
-            implementation(libs.aboutlibraries.compose)
+            implementation(libs.material3.windowSizeClass)
 
             implementation(compose.runtime)
             implementation(compose.foundation)
@@ -32,5 +31,5 @@ kotlin {
 }
 
 android {
-    namespace = "dev.koga.deeplinkDetails"
+    namespace = "dev.koga.folderDetails"
 }

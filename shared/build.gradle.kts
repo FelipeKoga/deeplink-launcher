@@ -1,5 +1,3 @@
-
-
 plugins {
     id("dev.koga.deeplinklauncher.multiplatform")
     alias(libs.plugins.jetbrainsCompose)
@@ -11,16 +9,15 @@ kotlin {
 
     sourceSets {
         commonMain.dependencies {
-            implementation(projects.feature.home.ui)
-            implementation(projects.feature.home.domain)
-            implementation(projects.feature.settings.domain)
-            implementation(projects.feature.settings.ui)
-            implementation(projects.feature.exportDeeplinks.domain)
-            implementation(projects.feature.exportDeeplinks.ui)
-            implementation(projects.feature.importDeeplinks.domain)
-            implementation(projects.feature.importDeeplinks.ui)
+            implementation(projects.feature.home)
+            implementation(projects.feature.home)
+            implementation(projects.feature.settings)
+            implementation(projects.feature.settings)
+            implementation(projects.feature.exportDeeplinks)
+            implementation(projects.feature.importDeeplinks)
+            implementation(projects.feature.importDeeplinks)
             implementation(projects.feature.deeplinkDetails)
-            implementation(projects.feature.folderDetails.ui)
+            implementation(projects.feature.folderDetails)
             implementation(projects.core.designsystem)
             implementation(projects.core.navigation)
             implementation(projects.core.database)
