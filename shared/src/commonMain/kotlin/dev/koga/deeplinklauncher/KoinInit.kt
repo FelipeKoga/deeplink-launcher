@@ -5,14 +5,10 @@ import cafe.adriel.voyager.core.registry.screenModule
 import dev.koga.deeplinklauncher.di.databaseModule
 import dev.koga.deeplinklauncher.di.deepLinkDetailsUiModule
 import dev.koga.deeplinklauncher.di.domainModule
-import dev.koga.deeplinklauncher.di.exportDeepLinksDomainModule
 import dev.koga.deeplinklauncher.di.exportDeepLinksUiModule
 import dev.koga.deeplinklauncher.di.folderDetailsUiModule
-import dev.koga.deeplinklauncher.di.homeDomainModule
 import dev.koga.deeplinklauncher.di.homeUiModule
-import dev.koga.deeplinklauncher.di.importDomainModule
 import dev.koga.deeplinklauncher.di.importUiModule
-import dev.koga.deeplinklauncher.di.settingsDomainModule
 import dev.koga.deeplinklauncher.di.settingsUiModule
 import dev.koga.deeplinklauncher.preferences.di.preferencesModule
 import dev.koga.deeplinklauncher.screen.ExportScreen
@@ -41,15 +37,11 @@ fun initKoin(appModule: Module = module {}) {
     startKoin {
         modules(
             homeUiModule,
-            homeDomainModule,
             folderDetailsUiModule,
             deepLinkDetailsUiModule,
-            settingsDomainModule,
             settingsUiModule,
             importUiModule,
-            importDomainModule,
             exportDeepLinksUiModule,
-            exportDeepLinksDomainModule,
         )
 
         modules(

@@ -13,14 +13,12 @@ kotlin {
             implementation(projects.core.sharedui)
 
             implementation(libs.kotlinx.coroutines.core)
+            implementation(libs.kotlinx.immutable)
             implementation(libs.koin.compose)
             implementation(libs.voyager.screenmodel)
             implementation(libs.voyager.navigator)
             implementation(libs.voyager.koin)
-            implementation(libs.voyager.bottomSheet)
-
-            implementation(libs.kotlinx.immutable)
-            implementation(libs.aboutlibraries.compose)
+            implementation(libs.mpfilepicker)
 
             implementation(compose.runtime)
             implementation(compose.foundation)
@@ -28,9 +26,13 @@ kotlin {
             implementation(compose.ui)
             implementation(compose.components.resources)
         }
+
+        androidMain.dependencies {
+            implementation(libs.androidx.activity.compose)
+        }
     }
 }
 
 android {
-    namespace = "dev.koga.deeplinkDetails"
+    namespace = "dev.koga.importdeeplinks"
 }
