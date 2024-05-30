@@ -67,18 +67,58 @@
 - **Search**: Quickly find deeplinks by searching for keywords.
 
 ## Built With
-- MVVM
-- [Compose Multiplatform](https://github.com/JetBrains/compose-jb)
-- [Voyager](https://github.com/adrielcafe/voyager)
-- [Koin](https://insert-koin.io/)
-- [SQLDelight](https://cashapp.github.io/sqldelight/)
-- [DataStore](https://developer.android.com/jetpack/androidx/releases/datastore)
-- [Material3](https://m3.material.io/)
-- [Kotlinx Immutable](https://github.com/Kotlin/kotlinx.collections.immutable)
-- [Kotlinx DateTime](https://github.com/Kotlin/kotlinx-datetime)
-- [AboutLibraries](https://github.com/mikepenz/AboutLibraries)
-- [Detekt](https://github.com/detekt/detekt)
-- [Ktlint](https://github.com/pinterest/ktlint)
+<div>
+  <table>
+    <tr>
+      <th>Technology</th>
+      <th>Description</th>
+    </tr>
+    <tr>
+      <td><a href="https://github.com/JetBrains/compose-jb">Compose Multiplatform</a></td>
+      <td>Modern UI toolkit for building native UIs across all platforms.</td>
+    </tr>
+    <tr>
+      <td><a href="https://github.com/adrielcafe/voyager">Voyager</a></td>
+      <td>A multiplatform navigation library.</td>
+    </tr>
+    <tr>
+      <td><a href="https://insert-koin.io/">Koin</a></td>
+      <td>Dependency injection framework for Kotlin.</td>
+    </tr>
+    <tr>
+      <td><a href="https://cashapp.github.io/sqldelight/">SQLDelight</a></td>
+      <td>Multiplatform database library generating typesafe Kotlin APIs.</td>
+    </tr>
+    <tr>
+      <td><a href="https://developer.android.com/jetpack/androidx/releases/datastore">DataStore</a></td>
+      <td>Modern data storage solution for storing key-value pairs or protocol buffers with Kotlin coroutines.</td>
+    </tr>
+    <tr>
+      <td><a href="https://m3.material.io/">Material3</a></td>
+      <td>Design system that provides a consistent, intuitive set of user experiences across platforms.</td>
+    </tr>
+    <tr>
+      <td><a href="https://github.com/Kotlin/kotlinx.collections.immutable">Kotlinx Immutable</a></td>
+      <td>Immutable collections for Kotlin.</td>
+    </tr>
+    <tr>
+      <td><a href="https://github.com/Kotlin/kotlinx-datetime">Kotlinx DateTime</a></td>
+      <td>Library for working with date and time in Kotlin.</td>
+    </tr>
+    <tr>
+      <td><a href="https://github.com/mikepenz/AboutLibraries">AboutLibraries</a></td>
+      <td>Library for displaying open-source libraries in Android apps.</td>
+    </tr>
+    <tr>
+      <td><a href="https://github.com/detekt/detekt">Detekt</a></td>
+      <td>Kotlin static code analysis tool.</td>
+    </tr>
+    <tr>
+      <td><a href="https://github.com/pinterest/ktlint">Ktlint</a></td>
+      <td>Kotlin linter for code style.</td>
+    </tr>
+  </table>
+</div>
 
 ## Screenshots
 
