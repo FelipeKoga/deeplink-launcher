@@ -7,7 +7,7 @@ import java.io.File
 
 internal fun dataStore(context: Context): DataStore<Preferences> =
     createDataStore(
-        producePath = {
+        path = {
             File(context.filesDir, "datastore/$dataStoreFileName").path
         },
     )
