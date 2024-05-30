@@ -19,7 +19,7 @@ kotlin {
             implementation(projects.feature.exportDeeplinks.ui)
             implementation(projects.feature.importDeeplinks.domain)
             implementation(projects.feature.importDeeplinks.ui)
-            implementation(projects.feature.deeplinkDetails.ui)
+            implementation(projects.feature.deeplinkDetails)
             implementation(projects.feature.folderDetails.ui)
             implementation(projects.core.designsystem)
             implementation(projects.core.navigation)
