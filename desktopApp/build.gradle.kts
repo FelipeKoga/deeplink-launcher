@@ -36,7 +36,7 @@ compose.desktop {
             modules("java.sql")
             modules("jdk.unsupported")
 
-            packageVersion = "1.0.0"
+            packageVersion = DesktopAppConfiguration.VERSION_NAME
             packageName = "DeepLink Launcher"
             description = "Manage & Launch deeplinks easily"
             appResourcesRootDir.set(project.layout.projectDirectory.dir("resources"))
