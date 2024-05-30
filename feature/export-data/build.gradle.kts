@@ -5,40 +5,38 @@ plugins {
 }
 
 kotlin {
-    task("testClasses")
-
     sourceSets {
         commonMain.dependencies {
-            implementation(projects.feature.home)
-            implementation(projects.feature.settings)
-            implementation(projects.feature.exportData)
-            implementation(projects.feature.importData)
-            implementation(projects.feature.deeplinkDetails)
-            implementation(projects.feature.folderDetails)
+            implementation(projects.core.domain)
             implementation(projects.core.designsystem)
             implementation(projects.core.navigation)
-            implementation(projects.core.database)
-            api(projects.core.domain)
-            api(projects.core.preferences)
+            implementation(projects.core.sharedui)
+            implementation(projects.core.resources)
 
-            implementation(libs.koin.core)
             implementation(libs.kotlinx.coroutines.core)
             implementation(libs.koin.compose)
-            implementation(libs.voyager.bottomSheet)
+            implementation(libs.voyager.screenmodel)
             implementation(libs.voyager.navigator)
-            implementation(libs.voyager.transitions)
+            implementation(libs.voyager.koin)
+
+            implementation(libs.kotlinx.immutable)
+            implementation(libs.aboutlibraries.compose)
 
             implementation(compose.runtime)
             implementation(compose.foundation)
             implementation(compose.material3)
-            implementation(compose.material)
             implementation(compose.ui)
             implementation(compose.components.resources)
+        }
+
+        androidMain.dependencies {
+            implementation(libs.androidx.activity.compose)
+            implementation(libs.androidx.activity)
+            implementation(libs.androidx.core)
         }
     }
 }
 
 android {
-    namespace = "dev.koga.shared"
+    namespace = "dev.koga.exportData"
 }
-
