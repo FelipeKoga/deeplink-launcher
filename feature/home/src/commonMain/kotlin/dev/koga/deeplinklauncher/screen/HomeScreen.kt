@@ -8,7 +8,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.windowInsetsPadding
-import androidx.compose.foundation.lazy.staggeredgrid.rememberLazyStaggeredGridState
+import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.BottomSheetScaffold
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -62,13 +62,11 @@ class HomeScreen : Screen {
 
         val scope = rememberCoroutineScope()
 
-        val allDeepLinksListState = rememberLazyStaggeredGridState()
-        val favoritesDeepLinksListState = rememberLazyStaggeredGridState()
+        val historyListState = rememberLazyGridState()
+        val favoritesListState = rememberLazyGridState()
         val pagerState = rememberPagerState(
             initialPage = HomeTabPage.HISTORY.ordinal,
-            pageCount = {
-                HomeTabPage.entries.size
-            },
+            pageCount = { HomeTabPage.entries.size },
         )
         val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(
             rememberTopAppBarState(),
@@ -95,8 +93,8 @@ class HomeScreen : Screen {
 
         LaunchedEffect(uiState.searchInput) {
             if (uiState.deepLinks.isNotEmpty()) {
-                allDeepLinksListState.animateScrollToItem(index = 0)
-                favoritesDeepLinksListState.animateScrollToItem(index = 0)
+                historyListState.animateScrollToItem(index = 0)
+                favoritesListState.animateScrollToItem(index = 0)
             }
         }
 
@@ -105,8 +103,8 @@ class HomeScreen : Screen {
             onDeepLinkLaunched = {
                 scope.launch {
                     delay(DELAY_TO_SCROLL_TO_THE_TOP)
-                    allDeepLinksListState.animateScrollToItem(index = 0)
-                    favoritesDeepLinksListState.animateScrollToItem(index = 0)
+                    historyListState.animateScrollToItem(index = 0)
+                    favoritesListState.animateScrollToItem(index = 0)
                 }
             },
             onShowOnboarding = {
@@ -167,8 +165,8 @@ class HomeScreen : Screen {
                             navigator.push(screen)
                         },
                         onFolderAdd = { showAddFolderBottomSheet = true },
-                        allDeepLinksListState = allDeepLinksListState,
-                        favoritesDeepLinksListState = favoritesDeepLinksListState,
+                        historyListState = historyListState,
+                        favoritesListState = favoritesListState,
                     )
                 }
             }

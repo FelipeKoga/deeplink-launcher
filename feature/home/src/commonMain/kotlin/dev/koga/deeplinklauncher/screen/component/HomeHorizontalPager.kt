@@ -10,11 +10,12 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.lazy.staggeredgrid.LazyStaggeredGridScope
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyGridScope
+import androidx.compose.foundation.lazy.grid.LazyGridState
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.lazy.staggeredgrid.LazyStaggeredGridState
-import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
-import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
-import androidx.compose.foundation.lazy.staggeredgrid.rememberLazyStaggeredGridState
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -51,8 +52,8 @@ internal fun HomeHorizontalPager(
     favoriteDeepLinks: ImmutableList<DeepLink>,
     folders: ImmutableList<Folder>,
     pagerState: PagerState,
-    allDeepLinksListState: LazyStaggeredGridState,
-    favoritesDeepLinksListState: LazyStaggeredGridState,
+    historyListState: LazyGridState,
+    favoritesListState: LazyGridState,
     scrollBehavior: TopAppBarScrollBehavior,
     paddingBottom: Dp,
     onDeepLinkClicked: (DeepLink) -> Unit,
@@ -66,7 +67,7 @@ internal fun HomeHorizontalPager(
     ) { page ->
         when (page) {
             HomeTabPage.HISTORY.ordinal -> DeepLinksLazyColumn(
-                deepLinksListState = allDeepLinksListState,
+                listState = historyListState,
                 deepLinks = allDeepLinks,
                 scrollBehavior = scrollBehavior,
                 paddingBottom = paddingBottom,
@@ -76,7 +77,7 @@ internal fun HomeHorizontalPager(
             )
 
             HomeTabPage.FAVORITES.ordinal -> DeepLinksLazyColumn(
-                deepLinksListState = favoritesDeepLinksListState,
+                listState = favoritesListState,
                 deepLinks = favoriteDeepLinks,
                 scrollBehavior = scrollBehavior,
                 paddingBottom = paddingBottom,
@@ -102,16 +103,18 @@ internal fun HomeHorizontalPager(
 )
 @Composable
 fun DeepLinksLazyColumn(
+    listState: LazyGridState,
     deepLinks: List<DeepLink>,
     scrollBehavior: TopAppBarScrollBehavior,
     paddingBottom: Dp,
     onClick: (DeepLink) -> Unit,
     onLaunch: (DeepLink) -> Unit,
     onFolderClicked: (Folder) -> Unit,
-    deepLinksListState: LazyStaggeredGridState,
 ) {
+    
+
     HomeVerticalGridList(
-        state = deepLinksListState,
+        state = listState,
         scrollBehavior = scrollBehavior,
         paddingBottom = paddingBottom,
     ) {
@@ -152,9 +155,9 @@ fun FoldersVerticalStaggeredGrid(
         else -> 2
     }
 
-    LazyVerticalStaggeredGrid(
-        columns = StaggeredGridCells.Fixed(numberOfColumns),
-        state = rememberLazyStaggeredGridState(),
+    LazyVerticalGrid(
+        columns = GridCells.Fixed(numberOfColumns),
+        state = rememberLazyGridState(),
         modifier = Modifier
             .fillMaxSize()
             .nestedScroll(scrollBehavior.nestedScrollConnection),
@@ -165,7 +168,7 @@ fun FoldersVerticalStaggeredGrid(
             bottom = paddingBottom,
         ),
         horizontalArrangement = Arrangement.spacedBy(24.dp),
-        verticalItemSpacing = 24.dp,
+        verticalArrangement = Arrangement.spacedBy(24.dp),
     ) {
         item {
             OutlinedCard(
@@ -214,10 +217,10 @@ fun FoldersVerticalStaggeredGrid(
 @Composable
 fun HomeVerticalGridList(
     modifier: Modifier = Modifier,
-    state: LazyStaggeredGridState,
+    state: LazyGridState,
     scrollBehavior: TopAppBarScrollBehavior,
     paddingBottom: Dp,
-    content: LazyStaggeredGridScope.() -> Unit,
+    content: LazyGridScope.() -> Unit,
 ) {
     val windowSizeClass = calculateWindowSizeClass()
 
@@ -227,8 +230,8 @@ fun HomeVerticalGridList(
         else -> 1
     }
 
-    LazyVerticalStaggeredGrid(
-        columns = StaggeredGridCells.Fixed(numberOfColumns),
+    LazyVerticalGrid(
+        columns = GridCells.Fixed(numberOfColumns),
         state = state,
         modifier = modifier
             .fillMaxSize()
@@ -240,7 +243,7 @@ fun HomeVerticalGridList(
             bottom = paddingBottom,
         ),
         horizontalArrangement = Arrangement.spacedBy(24.dp),
-        verticalItemSpacing = 24.dp,
+        verticalArrangement = Arrangement.spacedBy(24.dp),
     ) {
         content()
     }
