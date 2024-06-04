@@ -47,10 +47,6 @@
       <td>iOS</td>
       <td>Planned</td>
     </tr>
-    <tr>
-      <td>MacOS</td>
-      <td>Planned</td>
-    </tr>
   </table>
 
   <i>Check out the <a href="https://github.com/FelipeKoga/deeplink-launcher/releases">releases page</a> for downloading the desktop executables and Android APK.</i>
