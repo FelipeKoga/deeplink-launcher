@@ -10,10 +10,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.rounded.ArrowBack
 import androidx.compose.material3.Button
-import androidx.compose.material3.Icon
 import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Switch
@@ -31,11 +28,10 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import dev.koga.deeplinklauncher.DLLHorizontalDivider
 import dev.koga.deeplinklauncher.DLLTextField
-import dev.koga.deeplinklauncher.button.DLLIconButton
 import dev.koga.deeplinklauncher.model.DeepLink
 
 @Composable
-fun DuplicateDeepLinkUI(
+fun DuplicateModeUI(
     deepLink: DeepLink,
     errorMessage: String? = null,
     onDuplicate: (newLink: String, copyAllFields: Boolean) -> Unit,

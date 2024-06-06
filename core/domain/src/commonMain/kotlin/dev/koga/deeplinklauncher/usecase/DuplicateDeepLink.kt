@@ -2,13 +2,13 @@ package dev.koga.deeplinklauncher.usecase
 
 import dev.koga.deeplinklauncher.datasource.DeepLinkDataSource
 import dev.koga.deeplinklauncher.model.DeepLink
+import dev.koga.deeplinklauncher.model.isLinkValid
 import dev.koga.deeplinklauncher.provider.UUIDProvider
 import dev.koga.deeplinklauncher.util.ext.currentLocalDateTime
 import kotlinx.coroutines.flow.first
 
 class DuplicateDeepLink(
     private val dataSource: DeepLinkDataSource,
-    private val validateDeepLink: ValidateDeepLink,
 ) {
 
     suspend operator fun invoke(
@@ -22,7 +22,7 @@ class DuplicateDeepLink(
             return Response.Error.SameLink
         }
 
-        if (!validateDeepLink(newLink)) {
+        if (!newLink.isLinkValid) {
             return Response.Error.InvalidLink
         }
 
