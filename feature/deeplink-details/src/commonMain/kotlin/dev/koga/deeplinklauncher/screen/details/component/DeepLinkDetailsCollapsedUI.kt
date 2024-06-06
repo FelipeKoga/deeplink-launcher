@@ -1,33 +1,25 @@
 package dev.koga.deeplinklauncher.screen.details.component
 
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import dev.koga.deeplinklauncher.DLLSmallChip
-import dev.koga.deeplinklauncher.button.DLLOutlinedIconButton
 import dev.koga.deeplinklauncher.screen.details.state.DeepLinkDetailsUiState
-import dev.koga.resources.Res
-import dev.koga.resources.ic_unfold_more_24dp
-import org.jetbrains.compose.resources.painterResource
 
 @Composable
 fun DeepLinkDetailsCollapsedUI(
     modifier: Modifier,
     showFolder: Boolean,
     uiState: DeepLinkDetailsUiState,
-    onExpand: () -> Unit,
     onFolderClicked: () -> Unit = {},
 ) {
     Column(
@@ -36,30 +28,6 @@ fun DeepLinkDetailsCollapsedUI(
             .padding(16.dp)
             .verticalScroll(rememberScrollState()),
     ) {
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            if (showFolder && uiState.deepLink.folder != null) {
-                DLLSmallChip(
-                    label = uiState.deepLink.folder!!.name,
-                    onClick = onFolderClicked,
-                )
-            }
-
-            Spacer(modifier = Modifier.weight(1f))
-
-            DLLOutlinedIconButton(
-                modifier = Modifier,
-                onClick = onExpand,
-            ) {
-                Icon(
-                    painterResource(Res.drawable.ic_unfold_more_24dp),
-                    contentDescription = "Edit deeplink",
-                )
-            }
-        }
-
         if (!uiState.deepLink.name.isNullOrBlank()) {
             Text(
                 text = uiState.deepLink.name.orEmpty(),
@@ -91,5 +59,14 @@ fun DeepLinkDetailsCollapsedUI(
                 color = MaterialTheme.colorScheme.onBackground,
             ),
         )
+
+        if (showFolder && uiState.deepLink.folder != null) {
+            Spacer(modifier = Modifier.padding(top = 24.dp))
+
+            DLLSmallChip(
+                label = uiState.deepLink.folder!!.name,
+                onClick = onFolderClicked,
+            )
+        }
     }
 }
