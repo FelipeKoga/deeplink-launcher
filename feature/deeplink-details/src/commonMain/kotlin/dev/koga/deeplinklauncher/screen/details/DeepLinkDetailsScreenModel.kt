@@ -76,19 +76,26 @@ class DeepLinkDetailsScreenModel(
     private val eventDispatcher = Channel<DeepLinkDetailsEvent>(Channel.UNLIMITED)
     val events = eventDispatcher.receiveAsFlow()
 
-    fun updateDeepLinkName(s: String) {
+
+    fun updateLink(link: String) {
+        coroutineDebouncer.debounce(screenModelScope, "link") {
+            deepLinkDataSource.upsertDeepLink(deepLink.value.copy(link = link))
+        }
+    }
+
+    fun updateName(name: String) {
         coroutineDebouncer.debounce(screenModelScope, "name") {
-            deepLinkDataSource.upsertDeepLink(deepLink.value.copy(name = s))
+            deepLinkDataSource.upsertDeepLink(deepLink.value.copy(name = name))
         }
     }
 
-    fun updateDeepLinkDescription(s: String) {
+    fun updateDescription(description: String) {
         coroutineDebouncer.debounce(screenModelScope, "description") {
-            deepLinkDataSource.upsertDeepLink(deepLink.value.copy(description = s))
+            deepLinkDataSource.upsertDeepLink(deepLink.value.copy(description = description))
         }
     }
 
-    fun favorite() {
+    fun toggleFavorite() {
         deepLinkDataSource.upsertDeepLink(
             deepLink.value.copy(isFavorite = !deepLink.value.isFavorite),
         )

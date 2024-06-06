@@ -50,8 +50,6 @@ fun DeepLinkDetailsExpandedUI(
     onAddFolder: (String, String) -> Unit,
     onSelectFolder: (Folder) -> Unit,
     onRemoveFolder: () -> Unit,
-    onDeleteDeepLink: () -> Unit,
-    onCollapse: () -> Unit,
 ) {
     val deepLink = uiState.deepLink
 
@@ -84,32 +82,6 @@ fun DeepLinkDetailsExpandedUI(
                 .padding(24.dp)
                 .verticalScroll(rememberScrollState()),
         ) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-            ) {
-                DLLIconButton(
-                    onClick = onDeleteDeepLink,
-                ) {
-                    Icon(
-                        imageVector = Icons.Rounded.Delete,
-                        contentDescription = "Delete deeplink",
-                    )
-                }
-
-                DLLOutlinedIconButton(
-                    modifier = Modifier,
-                    onClick = onCollapse,
-                ) {
-                    Icon(
-                        painterResource(Res.drawable.ic_unfold_less_24dp),
-                        contentDescription = "Unfold less",
-                    )
-                }
-            }
-
-            Spacer(modifier = Modifier.height(24.dp))
-
             DeepLinkDetailsTextField(
                 text = deepLink.name.orEmpty(),
                 onTextChange = onNameChanged,

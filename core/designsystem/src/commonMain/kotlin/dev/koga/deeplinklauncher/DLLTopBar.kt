@@ -15,6 +15,22 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import dev.koga.deeplinklauncher.button.DLLIconButton
+import dev.koga.resources.Res
+import org.jetbrains.compose.resources.painterResource
+
+
+@Composable
+fun DLLNavigationIcon(modifier: Modifier = Modifier, onClicked: () -> Unit) {
+    DLLIconButton(
+        modifier = modifier,
+        onClick = onClicked,
+    ) {
+        Icon(
+            imageVector = Icons.AutoMirrored.Rounded.ArrowBack,
+            contentDescription = "Back",
+        )
+    }
+}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -22,7 +38,6 @@ fun DLLTopBar(
     modifier: Modifier = Modifier,
     title: String = "",
     navigationIcon: @Composable (() -> Unit)? = null,
-    onNavigationActionClicked: (() -> Unit)? = null,
     actions: @Composable (RowScope.() -> Unit) = {},
     scrollBehavior: TopAppBarScrollBehavior? = null,
     colors: TopAppBarColors = TopAppBarDefaults.topAppBarColors(
@@ -43,14 +58,7 @@ fun DLLTopBar(
             )
         },
         navigationIcon = {
-            if (onNavigationActionClicked != null) {
-                DLLIconButton(onClick = onNavigationActionClicked) {
-                    navigationIcon ?: Icon(
-                        imageVector = Icons.AutoMirrored.Rounded.ArrowBack,
-                        contentDescription = "back",
-                    )
-                }
-            }
+            if (navigationIcon != null) navigationIcon()
         },
         actions = actions,
     )

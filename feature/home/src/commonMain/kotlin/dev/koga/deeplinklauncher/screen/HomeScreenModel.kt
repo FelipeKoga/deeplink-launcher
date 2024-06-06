@@ -102,22 +102,6 @@ class HomeScreenModel(
         }
     }
 
-    private fun insertDeepLink(link: String) {
-        screenModelScope.launch {
-            deepLinkDataSource.upsertDeepLink(
-                DeepLink(
-                    id = UUIDProvider.get(),
-                    link = link,
-                    name = null,
-                    description = null,
-                    folder = null,
-                    isFavorite = false,
-                    lastLaunchedAt = currentLocalDateTime,
-                ),
-            )
-        }
-    }
-
     fun launchDeepLink() = screenModelScope.launch {
         val link = deepLinkInput.value
 
@@ -148,6 +132,22 @@ class HomeScreenModel(
             launchDeepLink.launch(deepLink)
 
             eventDispatcher.send(HomeEvent.DeepLinksLaunched)
+        }
+    }
+
+    private fun insertDeepLink(link: String) {
+        screenModelScope.launch {
+            deepLinkDataSource.upsertDeepLink(
+                DeepLink(
+                    id = UUIDProvider.get(),
+                    link = link,
+                    name = null,
+                    description = null,
+                    folder = null,
+                    isFavorite = false,
+                    lastLaunchedAt = currentLocalDateTime,
+                ),
+            )
         }
     }
 

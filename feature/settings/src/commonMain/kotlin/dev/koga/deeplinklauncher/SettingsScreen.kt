@@ -33,6 +33,7 @@ import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.koin.getScreenModel
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
+import dev.koga.deeplinklauncher.button.DLLIconButton
 import dev.koga.deeplinklauncher.components.AppThemeBottomSheet
 import dev.koga.deeplinklauncher.components.DeleteDataBottomSheet
 import dev.koga.deeplinklauncher.components.OpenSourceLicensesScreen
@@ -144,7 +145,9 @@ fun SettingsScreenUI(
         topBar = {
             DLLTopBar(
                 title = "",
-                onNavigationActionClicked = onBack,
+                navigationIcon = {
+                    DLLNavigationIcon(onClicked = onBack)
+                },
             )
         },
         snackbarHost = { SnackbarHost(snackbarHostState) },
