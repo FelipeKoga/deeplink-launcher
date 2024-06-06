@@ -15,9 +15,6 @@ data class DeepLink(
     val lastLaunchedAt: LocalDateTime? = null,
     val folder: Folder? = null,
 ) {
-    val hasNameOrDescription: Boolean
-        get() = !name.isNullOrBlank() || !description.isNullOrBlank()
-
     companion object {
         val empty = DeepLink(
             id = "",
@@ -28,3 +25,6 @@ data class DeepLink(
         )
     }
 }
+
+
+expect val String.isLinkValid: Boolean

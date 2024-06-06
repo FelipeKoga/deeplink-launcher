@@ -1,9 +1,8 @@
 package dev.koga.deeplinklauncher.screen.details.component
 
 import androidx.compose.animation.AnimatedContent
-import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -15,7 +14,6 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material.icons.rounded.Clear
-import androidx.compose.material.icons.rounded.Delete
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -32,21 +30,20 @@ import dev.koga.deeplinklauncher.DLLAssistChip
 import dev.koga.deeplinklauncher.DLLHorizontalDivider
 import dev.koga.deeplinklauncher.DLLTextField
 import dev.koga.deeplinklauncher.button.DLLIconButton
-import dev.koga.deeplinklauncher.button.DLLOutlinedIconButton
 import dev.koga.deeplinklauncher.folder.SelectFolderBottomSheet
 import dev.koga.deeplinklauncher.model.Folder
 import dev.koga.deeplinklauncher.screen.details.state.DeepLinkDetailsUiState
 import dev.koga.resources.Res
 import dev.koga.resources.ic_folder_24dp
-import dev.koga.resources.ic_unfold_less_24dp
 import org.jetbrains.compose.resources.painterResource
 
 @Composable
-fun DeepLinkDetailsExpandedUI(
+fun EditModeUI(
     modifier: Modifier,
     uiState: DeepLinkDetailsUiState,
     onNameChanged: (String) -> Unit,
     onDescriptionChanged: (String) -> Unit,
+    onLinkChanged: (String) -> Unit,
     onAddFolder: (String, String) -> Unit,
     onSelectFolder: (Folder) -> Unit,
     onRemoveFolder: () -> Unit,
@@ -158,13 +155,26 @@ fun DeepLinkDetailsExpandedUI(
 
             DLLHorizontalDivider(modifier = Modifier.padding(vertical = 24.dp))
 
-            Text(
+
+            DeepLinkDetailsTextField(
                 text = deepLink.link,
-                style = MaterialTheme.typography.titleMedium.copy(
-                    fontWeight = FontWeight.SemiBold,
-                    color = MaterialTheme.colorScheme.onBackground,
-                ),
+                onTextChange = onLinkChanged,
+                label = "Link",
             )
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            AnimatedVisibility(
+                visible = uiState.deepLinkErrorMessage != null,
+            ) {
+                Text(
+                    text = uiState.deepLinkErrorMessage.orEmpty(),
+                    style = MaterialTheme.typography.labelMedium.copy(
+                        color = MaterialTheme.colorScheme.error,
+                        fontWeight = FontWeight.Bold,
+                    ),
+                )
+            }
 
             Spacer(modifier = Modifier.padding(vertical = 24.dp))
         }
@@ -172,7 +182,7 @@ fun DeepLinkDetailsExpandedUI(
 }
 
 @Composable
-fun DeepLinkDetailsTextField(
+private fun DeepLinkDetailsTextField(
     text: String,
     onTextChange: (String) -> Unit,
     label: String,

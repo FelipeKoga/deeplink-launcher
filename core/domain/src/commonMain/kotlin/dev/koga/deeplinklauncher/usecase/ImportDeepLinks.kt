@@ -5,6 +5,7 @@ import dev.koga.deeplinklauncher.datasource.FolderDataSource
 import dev.koga.deeplinklauncher.dto.ImportExportDto
 import dev.koga.deeplinklauncher.dto.toModel
 import dev.koga.deeplinklauncher.model.FileType
+import dev.koga.deeplinklauncher.model.isLinkValid
 import dev.koga.deeplinklauncher.platform.GetFileContent
 import dev.koga.deeplinklauncher.util.ext.toDeepLink
 import kotlinx.datetime.toLocalDateTime
@@ -13,7 +14,6 @@ import kotlinx.serialization.json.Json
 
 class ImportDeepLinks(
     private val getFileContent: GetFileContent,
-    private val validateDeepLink: ValidateDeepLink,
     private val deepLinkDataSource: DeepLinkDataSource,
     private val folderDataSource: FolderDataSource,
 ) {
@@ -34,7 +34,7 @@ class ImportDeepLinks(
                     val deepLinksFromDto = importExportDto.deepLinks
 
                     val invalidDeepLinks = deepLinksFromDto.filter {
-                        !validateDeepLink(it.link)
+                        !it.link.isLinkValid
                     }
 
                     if (invalidDeepLinks.isNotEmpty()) {
@@ -96,7 +96,7 @@ class ImportDeepLinks(
                     }
 
                     val invalidDeepLinks = newDeepLinksTexts.filter {
-                        !validateDeepLink(it)
+                        !it.isLinkValid
                     }
 
                     if (invalidDeepLinks.isNotEmpty()) {

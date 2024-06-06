@@ -41,9 +41,9 @@ import dev.koga.deeplinklauncher.component.DeleteDeepLinkConfirmationBottomSheet
 import dev.koga.deeplinklauncher.hideWithResult
 import dev.koga.deeplinklauncher.model.DeepLink
 import dev.koga.deeplinklauncher.screen.details.component.DeepLinkDetailsBottomBar
-import dev.koga.deeplinklauncher.screen.details.component.DeepLinkDetailsCollapsedUI
-import dev.koga.deeplinklauncher.screen.details.component.DeepLinkDetailsExpandedUI
-import dev.koga.deeplinklauncher.screen.details.component.DuplicateDeepLinkUI
+import dev.koga.deeplinklauncher.screen.details.component.CollapsedModeUI
+import dev.koga.deeplinklauncher.screen.details.component.EditModeUI
+import dev.koga.deeplinklauncher.screen.details.component.DuplicateModeUI
 import dev.koga.deeplinklauncher.screen.details.event.DeepLinkDetailsEvent
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collectLatest
@@ -102,7 +102,7 @@ class DeepLinkDetailsScreen(
                 ) { target ->
                     Column {
                         when (target) {
-                            DetailsMode.Collapsed -> DeepLinkDetailsCollapsedUI(
+                            DetailsMode.Collapsed -> CollapsedModeUI(
                                 modifier = Modifier,
                                 showFolder = showFolder,
                                 uiState = uiState,
@@ -117,17 +117,18 @@ class DeepLinkDetailsScreen(
                                 },
                             )
 
-                            DetailsMode.Expanded -> DeepLinkDetailsExpandedUI(
+                            DetailsMode.Expanded -> EditModeUI(
                                 modifier = Modifier,
                                 uiState = uiState,
                                 onNameChanged = screenModel::updateName,
                                 onDescriptionChanged = screenModel::updateDescription,
+                                onLinkChanged = screenModel::updateLink,
                                 onAddFolder = screenModel::insertFolder,
                                 onSelectFolder = screenModel::selectFolder,
                                 onRemoveFolder = screenModel::removeFolderFromDeepLink,
                             )
 
-                            is DetailsMode.Duplicate -> DuplicateDeepLinkUI(
+                            is DetailsMode.Duplicate -> DuplicateModeUI(
                                 deepLink = uiState.deepLink,
                                 errorMessage = uiState.duplicateErrorMessage,
                                 onDuplicate = screenModel::duplicate,

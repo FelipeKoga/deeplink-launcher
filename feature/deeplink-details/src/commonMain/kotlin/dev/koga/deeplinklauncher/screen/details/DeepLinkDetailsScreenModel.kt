@@ -6,6 +6,7 @@ import dev.koga.deeplinklauncher.datasource.DeepLinkDataSource
 import dev.koga.deeplinklauncher.datasource.FolderDataSource
 import dev.koga.deeplinklauncher.model.DeepLink
 import dev.koga.deeplinklauncher.model.Folder
+import dev.koga.deeplinklauncher.model.isLinkValid
 import dev.koga.deeplinklauncher.provider.UUIDProvider
 import dev.koga.deeplinklauncher.screen.details.event.DeepLinkDetailsEvent
 import dev.koga.deeplinklauncher.screen.details.state.DeepLinkDetailsUiState
@@ -53,16 +54,19 @@ class DeepLinkDetailsScreenModel(
     )
 
     private val duplicateErrorMessage = MutableStateFlow<String?>(null)
+    private val deepLinkErrorMessage = MutableStateFlow<String?>(null)
 
     val uiState = combine(
         folders,
         deepLink,
         duplicateErrorMessage,
-    ) { folders, deepLink, duplicateErrorMessage ->
+        deepLinkErrorMessage,
+    ) { folders, deepLink, duplicateErrorMessage, deepLinkErrorMessage ->
         DeepLinkDetailsUiState(
             folders = folders.toPersistentList(),
             deepLink = deepLink,
             duplicateErrorMessage = duplicateErrorMessage,
+            deepLinkErrorMessage = deepLinkErrorMessage,
         )
     }.stateIn(
         scope = screenModelScope,
@@ -78,8 +82,14 @@ class DeepLinkDetailsScreenModel(
 
 
     fun updateLink(link: String) {
+        deepLinkErrorMessage.update { null }
+
         coroutineDebouncer.debounce(screenModelScope, "link") {
             deepLinkDataSource.upsertDeepLink(deepLink.value.copy(link = link))
+
+            if (!link.isLinkValid) {
+                deepLinkErrorMessage.update { "Invalid deeplink" }
+            }
         }
     }
 
