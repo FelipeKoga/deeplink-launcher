@@ -2,24 +2,18 @@ package dev.koga.deeplinklauncher.screen.details
 
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Delete
-import androidx.compose.material.icons.rounded.Done
 import androidx.compose.material.icons.rounded.Edit
 import androidx.compose.material3.BottomSheetDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -34,7 +28,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import cafe.adriel.voyager.core.registry.ScreenRegistry
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.koin.getScreenModel
 import cafe.adriel.voyager.navigator.bottomSheet.LocalBottomSheetNavigator
@@ -47,20 +40,13 @@ import dev.koga.deeplinklauncher.button.DLLOutlinedIconButton
 import dev.koga.deeplinklauncher.component.DeleteDeepLinkConfirmationBottomSheet
 import dev.koga.deeplinklauncher.hideWithResult
 import dev.koga.deeplinklauncher.model.DeepLink
-import dev.koga.deeplinklauncher.screen.details.component.DeepLinkActionsRow
+import dev.koga.deeplinklauncher.screen.details.component.DeepLinkDetailsBottomBar
 import dev.koga.deeplinklauncher.screen.details.component.DeepLinkDetailsCollapsedUI
 import dev.koga.deeplinklauncher.screen.details.component.DeepLinkDetailsExpandedUI
 import dev.koga.deeplinklauncher.screen.details.component.DuplicateDeepLinkUI
 import dev.koga.deeplinklauncher.screen.details.event.DeepLinkDetailsEvent
-import dev.koga.resources.Res
-import dev.koga.resources.ic_unfold_more_24dp
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.launch
-import org.jetbrains.compose.resources.painterResource
 import org.koin.core.parameter.parametersOf
 
 class DeepLinkDetailsScreen(
@@ -159,7 +145,7 @@ class DeepLinkDetailsScreen(
                             modifier = Modifier.padding(top = 24.dp),
                         )
 
-                        DeepLinkActionsRow(
+                        DeepLinkDetailsBottomBar(
                             link = uiState.deepLink.link,
                             isFavorite = uiState.deepLink.isFavorite,
                             onShare = screenModel::share,
