@@ -16,6 +16,7 @@ import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import com.mikepenz.aboutlibraries.ui.compose.LibrariesContainer
 import com.mikepenz.aboutlibraries.ui.compose.LibraryDefaults
+import dev.koga.deeplinklauncher.DLLNavigationIcon
 import dev.koga.deeplinklauncher.DLLTopBar
 import dev.koga.deeplinklauncher.platform.Platform
 import dev.koga.deeplinklauncher.platform.platform
@@ -43,7 +44,7 @@ class OpenSourceLicensesScreen : Screen {
             topBar = {
                 DLLTopBar(
                     title = "Open Source Licenses",
-                    onNavigationActionClicked = navigator::pop,
+                    navigationIcon = { DLLNavigationIcon(onClicked = navigator::pop) },
                 )
             },
         ) { contentPadding ->

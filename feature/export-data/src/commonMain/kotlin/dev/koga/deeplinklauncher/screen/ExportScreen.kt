@@ -40,6 +40,7 @@ import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import dev.koga.deeplinklauncher.BoxPreview
 import dev.koga.deeplinklauncher.DLLHorizontalDivider
+import dev.koga.deeplinklauncher.DLLNavigationIcon
 import dev.koga.deeplinklauncher.DLLSingleChoiceSegmentedButtonRow
 import dev.koga.deeplinklauncher.DLLTopBar
 import dev.koga.deeplinklauncher.model.ExportFileType
@@ -77,7 +78,7 @@ class ExportScreen : Screen {
             topBar = {
                 DLLTopBar(
                     title = "Export DeepLinks",
-                    onNavigationActionClicked = navigator::pop,
+                    navigationIcon = { DLLNavigationIcon(onClicked = navigator::pop) },
                 )
             },
             snackbarHost = { SnackbarHost(snackbarHostState) },
@@ -166,10 +167,10 @@ fun ExportContent(
             transitionSpec = {
                 if (targetState > initialState) {
                     slideInHorizontally { width -> width } + fadeIn() togetherWith
-                        slideOutHorizontally { width -> -width } + fadeOut()
+                            slideOutHorizontally { width -> -width } + fadeOut()
                 } else {
                     slideInHorizontally { width -> -width } + fadeIn() togetherWith
-                        slideOutHorizontally { width -> width } + fadeOut()
+                            slideOutHorizontally { width -> width } + fadeOut()
                 }.using(
                     SizeTransform(clip = false),
                 )

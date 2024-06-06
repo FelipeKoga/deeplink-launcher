@@ -10,11 +10,11 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
 import androidx.compose.foundation.lazy.staggeredgrid.rememberLazyStaggeredGridState
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.rounded.ArrowBack
 import androidx.compose.material.icons.rounded.Delete
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -81,17 +81,19 @@ class FolderDetailsScreen(private val folderId: String) : Screen {
 
         Scaffold(
             topBar = {
-                DLLTopBar(onNavigationActionClicked = navigator::pop, actions = {
-                    DLLIconButton(
-                        onClick = { showDeleteDialog = true },
-                    ) {
-                        Icon(
-                            imageVector = Icons.Rounded.Delete,
-                            contentDescription = "Delete",
-                            modifier = Modifier.size(18.dp),
-                        )
-                    }
-                })
+                DLLTopBar(
+                    navigationIcon = { DLLNavigationIcon(onClicked = navigator::pop) },
+                    actions = {
+                        DLLIconButton(
+                            onClick = { showDeleteDialog = true },
+                        ) {
+                            Icon(
+                                imageVector = Icons.Rounded.Delete,
+                                contentDescription = "Delete",
+                                modifier = Modifier.size(18.dp),
+                            )
+                        }
+                    })
             },
         ) { contentPadding ->
 

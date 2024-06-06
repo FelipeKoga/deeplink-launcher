@@ -37,6 +37,7 @@ import cafe.adriel.voyager.navigator.bottomSheet.LocalBottomSheetNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import dev.koga.deeplinklauncher.SharedScreen
 import dev.koga.deeplinklauncher.folder.AddFolderBottomSheet
+import dev.koga.deeplinklauncher.getResult
 import dev.koga.deeplinklauncher.navigateToDeepLinkDetails
 import dev.koga.deeplinklauncher.screen.component.HomeHorizontalPager
 import dev.koga.deeplinklauncher.screen.component.HomeSheetContent
@@ -54,6 +55,9 @@ class HomeScreen : Screen {
     override fun Content() {
         val navigator = LocalNavigator.currentOrThrow
         val bottomSheetNavigator = LocalBottomSheetNavigator.current
+        val deepLinkDetailsResult by bottomSheetNavigator
+            .getResult<SharedScreen.DeepLinkDetails.Result>(SharedScreen.DeepLinkDetails.Result.KEY)
+
         val screenModel = navigator.getNavigatorScreenModel<HomeScreenModel>()
 
         val uiState by screenModel.uiState.collectAsState()
@@ -96,6 +100,26 @@ class HomeScreen : Screen {
                 historyListState.animateScrollToItem(index = 0)
                 favoritesListState.animateScrollToItem(index = 0)
             }
+        }
+
+        when (deepLinkDetailsResult) {
+            is SharedScreen.DeepLinkDetails.Result.NavigateToDuplicated -> {
+                val id =
+                    (deepLinkDetailsResult as SharedScreen.DeepLinkDetails.Result.NavigateToDuplicated).id
+                bottomSheetNavigator.navigateToDeepLinkDetails(
+                    id = id,
+                    showFolder = true,
+                )
+            }
+
+            is SharedScreen.DeepLinkDetails.Result.NavigateToFolderDetails -> {
+                val id =
+                    (deepLinkDetailsResult as SharedScreen.DeepLinkDetails.Result.NavigateToFolderDetails).id
+                val screen = ScreenRegistry.get(SharedScreen.FolderDetails(id))
+                navigator.push(screen)
+            }
+
+            null -> Unit
         }
 
         HomeEventsHandler(
