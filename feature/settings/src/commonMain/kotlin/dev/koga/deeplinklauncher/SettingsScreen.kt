@@ -56,7 +56,7 @@ class SettingsScreen : Screen {
 
     @Composable
     override fun Content() {
-        val navigator = LocalNavigator.currentOrThrow
+        val navigator = LocalRootNavigator.current
         val screenModel = getScreenModel<SettingsScreenModel>()
 
         val preferences by screenModel.preferences.collectAsState()

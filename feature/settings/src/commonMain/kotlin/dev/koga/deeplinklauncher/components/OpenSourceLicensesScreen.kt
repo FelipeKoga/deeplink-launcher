@@ -12,12 +12,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import cafe.adriel.voyager.core.screen.Screen
-import cafe.adriel.voyager.navigator.LocalNavigator
-import cafe.adriel.voyager.navigator.currentOrThrow
 import com.mikepenz.aboutlibraries.ui.compose.LibrariesContainer
 import com.mikepenz.aboutlibraries.ui.compose.LibraryDefaults
 import dev.koga.deeplinklauncher.DLLNavigationIcon
 import dev.koga.deeplinklauncher.DLLTopBar
+import dev.koga.deeplinklauncher.LocalRootNavigator
 import dev.koga.deeplinklauncher.platform.Platform
 import dev.koga.deeplinklauncher.platform.platform
 import dev.koga.resources.Res
@@ -27,7 +26,7 @@ class OpenSourceLicensesScreen : Screen {
     @OptIn(ExperimentalMaterial3Api::class, ExperimentalResourceApi::class)
     @Composable
     override fun Content() {
-        val navigator = LocalNavigator.currentOrThrow
+        val navigator = LocalRootNavigator.current
 
         var bytes by remember { mutableStateOf(ByteArray(0)) }
 

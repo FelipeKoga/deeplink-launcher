@@ -7,6 +7,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -41,18 +42,23 @@ fun MainApp() {
             AppTheme.AUTO -> Theme.AUTO
         },
     ) {
-        BottomSheetNavigator(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(MaterialTheme.colorScheme.background)
-                .imePadding(),
-            sheetBackgroundColor = MaterialTheme.colorScheme.surface,
-            sheetShape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp),
-        ) {
-            it.closeKeyboardOnBottomSheetDismiss()
 
-            Navigator(HomeScreen()) { navigator ->
-                SlideTransition(navigator)
+        Navigator(HomeScreen()) { navigator ->
+            CompositionLocalProvider(LocalRootNavigator provides navigator) {
+                BottomSheetNavigator(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(MaterialTheme.colorScheme.background)
+                        .imePadding(),
+                    sheetBackgroundColor = MaterialTheme.colorScheme.surface,
+                    sheetShape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp),
+                ) { bottomSheetNavigator ->
+                    bottomSheetNavigator.closeKeyboardOnBottomSheetDismiss()
+
+                    SlideTransition(navigator) {
+                        it.Content()
+                    }
+                }
             }
         }
     }

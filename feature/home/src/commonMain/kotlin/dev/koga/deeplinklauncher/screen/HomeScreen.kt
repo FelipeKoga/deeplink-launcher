@@ -29,15 +29,12 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.registry.ScreenRegistry
-import cafe.adriel.voyager.core.registry.rememberScreen
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.koin.getNavigatorScreenModel
-import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.bottomSheet.LocalBottomSheetNavigator
-import cafe.adriel.voyager.navigator.currentOrThrow
+import dev.koga.deeplinklauncher.LocalRootNavigator
 import dev.koga.deeplinklauncher.SharedScreen
 import dev.koga.deeplinklauncher.folder.AddFolderBottomSheet
-import dev.koga.deeplinklauncher.getResult
 import dev.koga.deeplinklauncher.navigateToDeepLinkDetails
 import dev.koga.deeplinklauncher.screen.component.HomeHorizontalPager
 import dev.koga.deeplinklauncher.screen.component.HomeSheetContent
@@ -53,18 +50,11 @@ class HomeScreen : Screen {
     @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
     @Composable
     override fun Content() {
-        val navigator = LocalNavigator.currentOrThrow
-        val bottomSheetNavigator = LocalBottomSheetNavigator.current
-        val deepLinkDetailsResult by bottomSheetNavigator
-            .getResult<SharedScreen.DeepLinkDetails.Result>(SharedScreen.DeepLinkDetails.Result.KEY)
-
-        val screenModel = navigator.getNavigatorScreenModel<HomeScreenModel>()
-
-        val uiState by screenModel.uiState.collectAsState()
-
-        val settingsScreen = rememberScreen(SharedScreen.Settings)
-
         val scope = rememberCoroutineScope()
+        val navigator = LocalRootNavigator.current
+        val bottomSheetNavigator = LocalBottomSheetNavigator.current
+        val screenModel = navigator.getNavigatorScreenModel<HomeScreenModel>()
+        val uiState by screenModel.uiState.collectAsState()
 
         val historyListState = rememberLazyGridState()
         val favoritesListState = rememberLazyGridState()
@@ -102,26 +92,6 @@ class HomeScreen : Screen {
             }
         }
 
-        when (deepLinkDetailsResult) {
-            is SharedScreen.DeepLinkDetails.Result.NavigateToDuplicated -> {
-                val id =
-                    (deepLinkDetailsResult as SharedScreen.DeepLinkDetails.Result.NavigateToDuplicated).id
-                bottomSheetNavigator.navigateToDeepLinkDetails(
-                    id = id,
-                    showFolder = true,
-                )
-            }
-
-            is SharedScreen.DeepLinkDetails.Result.NavigateToFolderDetails -> {
-                val id =
-                    (deepLinkDetailsResult as SharedScreen.DeepLinkDetails.Result.NavigateToFolderDetails).id
-                val screen = ScreenRegistry.get(SharedScreen.FolderDetails(id))
-                navigator.push(screen)
-            }
-
-            null -> Unit
-        }
-
         HomeEventsHandler(
             events = screenModel.events,
             onDeepLinkLaunched = {
@@ -150,7 +120,10 @@ class HomeScreen : Screen {
                     HomeTopBar(
                         search = uiState.searchInput,
                         scrollBehavior = scrollBehavior,
-                        onSettingsScreen = { navigator.push(settingsScreen) },
+                        onSettingsScreen = {
+                            val settingsScreen = ScreenRegistry.get(SharedScreen.Settings)
+                            navigator.push(settingsScreen)
+                        },
                         onSearch = screenModel::onSearch,
                     )
                 },
