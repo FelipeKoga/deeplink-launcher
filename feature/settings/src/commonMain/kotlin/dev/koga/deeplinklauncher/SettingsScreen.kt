@@ -31,9 +31,6 @@ import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.registry.rememberScreen
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.koin.getScreenModel
-import cafe.adriel.voyager.navigator.LocalNavigator
-import cafe.adriel.voyager.navigator.currentOrThrow
-import dev.koga.deeplinklauncher.button.DLLIconButton
 import dev.koga.deeplinklauncher.components.AppThemeBottomSheet
 import dev.koga.deeplinklauncher.components.DeleteDataBottomSheet
 import dev.koga.deeplinklauncher.components.OpenSourceLicensesScreen

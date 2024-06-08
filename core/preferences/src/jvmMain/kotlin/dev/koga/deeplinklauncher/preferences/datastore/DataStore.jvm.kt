@@ -8,5 +8,5 @@ internal fun dataStore(): DataStore<Preferences> =
     createDataStore(
         path = {
             File("datastore/$dataStoreFileName").path
-         },
+        },
     )

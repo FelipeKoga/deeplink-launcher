@@ -30,9 +30,7 @@ import cafe.adriel.voyager.core.registry.ScreenRegistry
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.core.screen.ScreenKey
 import cafe.adriel.voyager.koin.getScreenModel
-import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.bottomSheet.LocalBottomSheetNavigator
-import cafe.adriel.voyager.navigator.currentOrThrow
 import dev.koga.deeplinklauncher.DLLHorizontalDivider
 import dev.koga.deeplinklauncher.DLLNavigationIcon
 import dev.koga.deeplinklauncher.DLLTopBar
@@ -116,9 +114,9 @@ class DeepLinkDetailsScreen(
                                     navigator.push(
                                         ScreenRegistry.get(
                                             SharedScreen.FolderDetails(
-                                                uiState.deepLink.folder!!.id
-                                            )
-                                        )
+                                                uiState.deepLink.folder!!.id,
+                                            ),
+                                        ),
                                     )
                                 },
                             )
@@ -141,7 +139,6 @@ class DeepLinkDetailsScreen(
                             )
                         }
                     }
-
                 }
 
                 AnimatedVisibility(
@@ -169,7 +166,6 @@ class DeepLinkDetailsScreen(
     }
 }
 
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun DetailsTopBar(
@@ -186,7 +182,7 @@ private fun DetailsTopBar(
         modifier = modifier,
         title = if (mode is DetailsMode.Duplicate) "Duplicate DeepLink" else "",
         colors = TopAppBarDefaults.topAppBarColors(
-            containerColor = Color.Transparent
+            containerColor = Color.Transparent,
         ),
         navigationIcon = {
             if (showNavigationIcon) {
@@ -233,7 +229,7 @@ private fun DetailsTopBar(
 
                 is DetailsMode.Duplicate -> Unit
             }
-        }
+        },
     )
 }
 
@@ -252,7 +248,6 @@ private fun DetailsEvents(
         }
     }
 }
-
 
 private sealed interface DetailsMode {
     val backTo: DetailsMode?

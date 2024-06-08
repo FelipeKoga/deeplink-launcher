@@ -26,5 +26,4 @@ data class DeepLink(
     }
 }
 
-
 expect val String.isLinkValid: Boolean

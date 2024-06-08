@@ -15,7 +15,6 @@ import androidx.compose.foundation.lazy.grid.LazyGridScope
 import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
-import androidx.compose.foundation.lazy.staggeredgrid.LazyStaggeredGridState
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -111,8 +110,6 @@ fun DeepLinksLazyColumn(
     onLaunch: (DeepLink) -> Unit,
     onFolderClicked: (Folder) -> Unit,
 ) {
-    
-
     HomeVerticalGridList(
         state = listState,
         scrollBehavior = scrollBehavior,

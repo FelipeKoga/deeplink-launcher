@@ -2,7 +2,6 @@ package dev.koga.deeplinklauncher
 
 import androidx.compose.runtime.staticCompositionLocalOf
 import cafe.adriel.voyager.core.registry.ScreenRegistry
-import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.Navigator
 import cafe.adriel.voyager.navigator.bottomSheet.BottomSheetNavigator
 

@@ -15,9 +15,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import dev.koga.deeplinklauncher.button.DLLIconButton
-import dev.koga.resources.Res
-import org.jetbrains.compose.resources.painterResource
-
 
 @Composable
 fun DLLNavigationIcon(modifier: Modifier = Modifier, onClicked: () -> Unit) {
