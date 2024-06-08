@@ -14,7 +14,6 @@ import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
 import androidx.compose.foundation.lazy.staggeredgrid.rememberLazyStaggeredGridState
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.rounded.ArrowBack
 import androidx.compose.material.icons.rounded.Delete
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -30,6 +29,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
@@ -48,16 +48,17 @@ import dev.koga.deeplinklauncher.ext.spacer
 import dev.koga.deeplinklauncher.folder.EditableText
 import dev.koga.deeplinklauncher.model.DeepLink
 import dev.koga.deeplinklauncher.theme.LocalDimensions
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import org.koin.core.parameter.parametersOf
 
 class FolderDetailsScreen(private val folderId: String) : Screen {
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
     override fun Content() {
-        val navigator = LocalNavigator.currentOrThrow
+        val navigator = LocalRootNavigator.current
         val bottomSheetNavigator = LocalBottomSheetNavigator.current
-
         val screenModel = getScreenModel<FolderDetailsScreenModel>(
             parameters = { parametersOf(folderId) },
         )
@@ -138,9 +139,9 @@ fun FolderDetailsScreenContent(
         columns = StaggeredGridCells.Fixed(numberOfColumns),
         state = rememberLazyStaggeredGridState(),
         modifier = modifier.fillMaxSize(),
-        contentPadding = PaddingValues(horizontal = 24.dp),
+        contentPadding = PaddingValues(horizontal = 12.dp),
         horizontalArrangement = Arrangement.spacedBy(12.dp),
-        verticalItemSpacing = 24.dp,
+        verticalItemSpacing = 12.dp,
     ) {
         spacer(height = 24.dp)
 
@@ -219,8 +220,6 @@ fun FolderDetailsScreenContent(
                 ),
             )
         }
-
-        spacer(height = 12.dp)
 
         items(
             count = form.deepLinks.size,

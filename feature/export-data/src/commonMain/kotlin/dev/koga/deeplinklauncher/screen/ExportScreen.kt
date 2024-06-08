@@ -43,6 +43,7 @@ import dev.koga.deeplinklauncher.DLLHorizontalDivider
 import dev.koga.deeplinklauncher.DLLNavigationIcon
 import dev.koga.deeplinklauncher.DLLSingleChoiceSegmentedButtonRow
 import dev.koga.deeplinklauncher.DLLTopBar
+import dev.koga.deeplinklauncher.LocalRootNavigator
 import dev.koga.deeplinklauncher.model.ExportFileType
 import dev.koga.deeplinklauncher.permission.StoragePermission
 import kotlinx.collections.immutable.toPersistentList
@@ -55,7 +56,7 @@ class ExportScreen : Screen {
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
     override fun Content() {
-        val navigator = LocalNavigator.currentOrThrow
+        val navigator = LocalRootNavigator.current
         val screenModel = getScreenModel<ExportScreenModel>()
         val storagePermission = koinInject<StoragePermission>()
 

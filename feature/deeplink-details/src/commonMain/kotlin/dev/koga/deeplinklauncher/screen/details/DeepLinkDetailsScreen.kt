@@ -11,7 +11,6 @@ import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Delete
 import androidx.compose.material.icons.rounded.Edit
-import androidx.compose.material3.BottomSheetDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.TopAppBarDefaults
@@ -24,26 +23,29 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import cafe.adriel.voyager.core.registry.ScreenRegistry
 import cafe.adriel.voyager.core.screen.Screen
+import cafe.adriel.voyager.core.screen.ScreenKey
 import cafe.adriel.voyager.koin.getScreenModel
+import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.bottomSheet.LocalBottomSheetNavigator
+import cafe.adriel.voyager.navigator.currentOrThrow
 import dev.koga.deeplinklauncher.DLLHorizontalDivider
 import dev.koga.deeplinklauncher.DLLNavigationIcon
 import dev.koga.deeplinklauncher.DLLTopBar
+import dev.koga.deeplinklauncher.LocalRootNavigator
 import dev.koga.deeplinklauncher.SharedScreen
 import dev.koga.deeplinklauncher.button.DLLIconButton
 import dev.koga.deeplinklauncher.button.DLLOutlinedIconButton
 import dev.koga.deeplinklauncher.component.DeleteDeepLinkConfirmationBottomSheet
-import dev.koga.deeplinklauncher.hideWithResult
 import dev.koga.deeplinklauncher.model.DeepLink
-import dev.koga.deeplinklauncher.screen.details.component.DeepLinkDetailsBottomBar
 import dev.koga.deeplinklauncher.screen.details.component.CollapsedModeUI
-import dev.koga.deeplinklauncher.screen.details.component.EditModeUI
+import dev.koga.deeplinklauncher.screen.details.component.DeepLinkDetailsBottomBar
 import dev.koga.deeplinklauncher.screen.details.component.DuplicateModeUI
+import dev.koga.deeplinklauncher.screen.details.component.EditModeUI
 import dev.koga.deeplinklauncher.screen.details.event.DeepLinkDetailsEvent
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collectLatest
@@ -54,10 +56,13 @@ class DeepLinkDetailsScreen(
     private val showFolder: Boolean,
 ) : Screen {
 
-    @OptIn(ExperimentalMaterial3Api::class)
+    override val key: ScreenKey = "deeplink_details_$deepLinkId"
+
     @Composable
     override fun Content() {
+        val navigator = LocalRootNavigator.current
         val bottomSheetNavigator = LocalBottomSheetNavigator.current
+
         val screenModel = getScreenModel<DeepLinkDetailsScreenModel>(
             parameters = { parametersOf(deepLinkId) },
         )
@@ -79,17 +84,17 @@ class DeepLinkDetailsScreen(
             events = screenModel.events,
             onDeleted = bottomSheetNavigator::hide,
             onDuplicated = {
-                bottomSheetNavigator.hideWithResult(
-                    key = SharedScreen.DeepLinkDetails.Result.KEY,
-                    result = it.id,
+                bottomSheetNavigator.replace(
+                    item = DeepLinkDetailsScreen(
+                        deepLinkId = it.id,
+                        showFolder = showFolder,
+                    ),
                 )
             },
         )
 
         SelectionContainer {
             Column {
-                BottomSheetDefaults.DragHandle(modifier = Modifier.align(Alignment.CenterHorizontally))
-
                 DetailsTopBar(
                     mode = detailsMode,
                     onDelete = { showDeleteBottomSheet = true },
@@ -107,12 +112,13 @@ class DeepLinkDetailsScreen(
                                 showFolder = showFolder,
                                 uiState = uiState,
                                 onFolderClicked = {
-                                    bottomSheetNavigator.hideWithResult(
-                                        key = SharedScreen.DeepLinkDetails.Result.KEY,
-                                        result = SharedScreen
-                                            .DeepLinkDetails
-                                            .Result
-                                            .NavigateToFolderDetails(uiState.deepLink.folder!!.id),
+                                    bottomSheetNavigator.hide()
+                                    navigator.push(
+                                        ScreenRegistry.get(
+                                            SharedScreen.FolderDetails(
+                                                uiState.deepLink.folder!!.id
+                                            )
+                                        )
                                     )
                                 },
                             )

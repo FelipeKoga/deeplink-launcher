@@ -37,14 +37,13 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
-import cafe.adriel.voyager.navigator.LocalNavigator
-import cafe.adriel.voyager.navigator.currentOrThrow
 import com.darkrockstudios.libraries.mpfilepicker.FilePicker
 import dev.koga.deeplinklauncher.BoxPreview
 import dev.koga.deeplinklauncher.DLLHorizontalDivider
 import dev.koga.deeplinklauncher.DLLNavigationIcon
 import dev.koga.deeplinklauncher.DLLSingleChoiceSegmentedButtonRow
 import dev.koga.deeplinklauncher.DLLTopBar
+import dev.koga.deeplinklauncher.LocalRootNavigator
 import dev.koga.deeplinklauncher.file.GetFileRealPath
 import dev.koga.deeplinklauncher.model.FileType
 import dev.koga.deeplinklauncher.usecase.ImportDeepLinks
@@ -70,7 +69,7 @@ class ImportScreen : Screen {
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
     override fun Content() {
-        val navigator = LocalNavigator.currentOrThrow
+        val navigator = LocalRootNavigator.current
 
         val importDeepLinks = koinInject<ImportDeepLinks>()
         val getFileRealPath = koinInject<GetFileRealPath>()
