@@ -80,7 +80,6 @@ class DeepLinkDetailsScreenModel(
     private val eventDispatcher = Channel<DeepLinkDetailsEvent>(Channel.UNLIMITED)
     val events = eventDispatcher.receiveAsFlow()
 
-
     fun updateLink(link: String) {
         deepLinkErrorMessage.update { null }
 

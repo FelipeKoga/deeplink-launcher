@@ -42,7 +42,6 @@ fun MainApp() {
             AppTheme.AUTO -> Theme.AUTO
         },
     ) {
-
         Navigator(HomeScreen()) { navigator ->
             CompositionLocalProvider(LocalRootNavigator provides navigator) {
                 BottomSheetNavigator(
