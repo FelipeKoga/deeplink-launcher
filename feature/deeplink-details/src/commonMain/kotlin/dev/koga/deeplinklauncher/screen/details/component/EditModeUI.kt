@@ -155,7 +155,6 @@ fun EditModeUI(
 
             DLLHorizontalDivider(modifier = Modifier.padding(vertical = 24.dp))
 
-
             DeepLinkDetailsTextField(
                 text = deepLink.link,
                 onTextChange = onLinkChanged,
