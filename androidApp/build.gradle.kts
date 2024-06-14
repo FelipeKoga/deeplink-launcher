@@ -71,7 +71,6 @@ kotlin {
 
 dependencies {
     implementation(projects.shared)
-    implementation(projects.core.preferences)
 
     implementation(libs.androidx.activity.compose)
     implementation(libs.koin.compose)

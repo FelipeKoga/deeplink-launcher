@@ -14,7 +14,7 @@ kotlin {
 
     sourceSets {
         jvmMain.dependencies {
-            implementation(project(":shared"))
+            implementation(projects.shared)
 
             implementation(libs.koin.core)
             implementation(libs.koin.compose)
