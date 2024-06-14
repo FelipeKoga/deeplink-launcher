@@ -32,7 +32,7 @@
 ![Screenshot 1](docs/screenshots/android.png)
 
 #### Desktop
-![Screenshot 2](docs/screenshots/android.png)
+![Screenshot 2](docs/screenshots/desktop.png)
 
 ## Platforms
 
