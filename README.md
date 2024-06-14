@@ -120,6 +120,14 @@
       <td><a href="https://github.com/pinterest/ktlint">Ktlint</a></td>
       <td>Kotlin linter for code style.</td>
     </tr>
+    <tr>
+      <td><a href="https://github.com/Wavesonics/compose-multiplatform-file-picker">MPFilePicker</td>
+      <td>Compose multiplatform file picker</td>
+    </tr>
+    <tr>
+      <td><a href="https://github.com/chrisbanes/material3-windowsizeclass-multiplatform">Material 3 Window Size Class</td>
+      <td>Library for detecting device window size</td>
+    </tr>
   </table>
 </div>
 
