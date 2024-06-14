@@ -40,10 +40,10 @@ import dev.koga.deeplinklauncher.button.DLLIconButton
 import dev.koga.deeplinklauncher.button.DLLOutlinedIconButton
 import dev.koga.deeplinklauncher.component.DeleteDeepLinkConfirmationBottomSheet
 import dev.koga.deeplinklauncher.model.DeepLink
-import dev.koga.deeplinklauncher.screen.details.component.CollapsedModeUI
 import dev.koga.deeplinklauncher.screen.details.component.DeepLinkDetailsBottomBar
 import dev.koga.deeplinklauncher.screen.details.component.DuplicateModeUI
 import dev.koga.deeplinklauncher.screen.details.component.EditModeUI
+import dev.koga.deeplinklauncher.screen.details.component.LaunchModeUI
 import dev.koga.deeplinklauncher.screen.details.event.DeepLinkDetailsEvent
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collectLatest
@@ -65,7 +65,7 @@ class DeepLinkDetailsScreen(
             parameters = { parametersOf(deepLinkId) },
         )
         val uiState by screenModel.uiState.collectAsState()
-        var detailsMode by remember { mutableStateOf<DetailsMode>(DetailsMode.Collapsed) }
+        var detailsMode by remember { mutableStateOf<DetailsMode>(DetailsMode.Launch) }
         var showDeleteBottomSheet by rememberSaveable { mutableStateOf(false) }
 
         if (showDeleteBottomSheet) {
@@ -105,7 +105,7 @@ class DeepLinkDetailsScreen(
                 ) { target ->
                     Column {
                         when (target) {
-                            DetailsMode.Collapsed -> CollapsedModeUI(
+                            DetailsMode.Launch -> LaunchModeUI(
                                 modifier = Modifier,
                                 showFolder = showFolder,
                                 uiState = uiState,
@@ -121,7 +121,7 @@ class DeepLinkDetailsScreen(
                                 },
                             )
 
-                            DetailsMode.Expanded -> EditModeUI(
+                            DetailsMode.Edit -> EditModeUI(
                                 modifier = Modifier,
                                 uiState = uiState,
                                 onNameChanged = screenModel::updateName,
@@ -142,7 +142,7 @@ class DeepLinkDetailsScreen(
                 }
 
                 AnimatedVisibility(
-                    visible = detailsMode !is DetailsMode.Duplicate,
+                    visible = detailsMode is DetailsMode.Launch,
                 ) {
                     Column {
                         DLLHorizontalDivider(
@@ -193,7 +193,7 @@ private fun DetailsTopBar(
         },
         actions = {
             when (mode) {
-                DetailsMode.Collapsed -> {
+                DetailsMode.Launch -> {
                     DLLIconButton(
                         onClick = onDelete,
                     ) {
@@ -207,7 +207,7 @@ private fun DetailsTopBar(
 
                     DLLOutlinedIconButton(
                         modifier = Modifier,
-                        onClick = { changeDetailsTo(DetailsMode.Expanded) },
+                        onClick = { changeDetailsTo(DetailsMode.Edit) },
                     ) {
                         Icon(
                             imageVector = Icons.Rounded.Edit,
@@ -216,7 +216,7 @@ private fun DetailsTopBar(
                     }
                 }
 
-                DetailsMode.Expanded -> {
+                DetailsMode.Edit -> {
                     DLLIconButton(
                         onClick = onDelete,
                     ) {
@@ -252,11 +252,11 @@ private fun DetailsEvents(
 private sealed interface DetailsMode {
     val backTo: DetailsMode?
 
-    data object Expanded : DetailsMode {
-        override val backTo: DetailsMode = Collapsed
+    data object Edit : DetailsMode {
+        override val backTo: DetailsMode = Launch
     }
 
-    data object Collapsed : DetailsMode {
+    data object Launch : DetailsMode {
         override val backTo: DetailsMode? = null
     }
 
