@@ -4,7 +4,9 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -15,7 +17,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Favorite
 import androidx.compose.material.icons.rounded.FavoriteBorder
 import androidx.compose.material.icons.rounded.Share
-import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -111,77 +112,80 @@ fun DeepLinkDetailsBottomBar(
             }
         }
 
-        BottomAppBar(
-            containerColor = Color.Transparent,
-            actions = {
-                DLLIconButton(onClick = onDuplicate) {
+        Row(
+            horizontalArrangement = Arrangement.SpaceAround,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 24.dp, horizontal = 8.dp),
+        ) {
+            DLLIconButton(onClick = onDuplicate) {
+                Icon(
+                    painterResource(Res.drawable.ic_duplicate_24dp),
+                    contentDescription = "Duplicate",
+                    tint = MaterialTheme.colorScheme.onSurface,
+                )
+            }
+
+            if (canShareContent) {
+                DLLIconButton(onClick = onShare) {
                     Icon(
-                        painterResource(Res.drawable.ic_duplicate_24dp),
-                        contentDescription = "Duplicate",
+                        imageVector = Icons.Rounded.Share,
+                        contentDescription = "Share",
                         tint = MaterialTheme.colorScheme.onSurface,
                     )
                 }
+            }
 
-                if (canShareContent) {
-                    DLLIconButton(onClick = onShare) {
-                        Icon(
-                            imageVector = Icons.Rounded.Share,
-                            contentDescription = "Share",
-                            tint = MaterialTheme.colorScheme.onSurface,
-                        )
-                    }
-                }
+            DLLIconButton(
+                modifier = Modifier.onGloballyPositioned {
+                    copyCoordinates = it
+                },
+                onClick = {
+                    clipboardManager.setText(AnnotatedString(link))
+                    showCopyPopUp = true
+                },
+            ) {
+                Icon(
+                    painter = painterResource(Res.drawable.ic_content_copy_24dp),
+                    contentDescription = "Copy Link",
+                    tint = MaterialTheme.colorScheme.onSurface,
+                )
+            }
 
-                DLLIconButton(
-                    modifier = Modifier.onGloballyPositioned {
-                        copyCoordinates = it
+            DLLIconButton(onClick = onFavorite) {
+                Icon(
+                    imageVector = if (isFavorite) {
+                        Icons.Rounded.Favorite
+                    } else {
+                        Icons.Rounded.FavoriteBorder
                     },
-                    onClick = {
-                        clipboardManager.setText(AnnotatedString(link))
-                        showCopyPopUp = true
+                    contentDescription = "Favorite",
+                    tint = if (isFavorite) {
+                        Color(0xFFE57373)
+                    } else {
+                        MaterialTheme.colorScheme.onSurface
                     },
-                ) {
-                    Icon(
-                        painter = painterResource(Res.drawable.ic_content_copy_24dp),
-                        contentDescription = "Copy Link",
-                        tint = MaterialTheme.colorScheme.onSurface,
-                    )
-                }
+                )
+            }
 
-                DLLIconButton(onClick = onFavorite) {
-                    Icon(
-                        imageVector = if (isFavorite) {
-                            Icons.Rounded.Favorite
-                        } else {
-                            Icons.Rounded.FavoriteBorder
-                        },
-                        contentDescription = "Favorite",
-                        tint = if (isFavorite) {
-                            Color(0xFFE57373)
-                        } else {
-                            MaterialTheme.colorScheme.onSurface
-                        },
-                    )
-                }
-            },
-            floatingActionButton = {
-                Button(onClick = onLaunch) {
-                    Text(
-                        text = "Launch",
-                        style = MaterialTheme.typography.bodyMedium.copy(
-                            fontWeight = FontWeight.Bold,
-                        ),
-                    )
+            Spacer(modifier = Modifier.weight(1f))
 
-                    Spacer(modifier = Modifier.width(8.dp))
+            Button(onClick = onLaunch) {
+                Text(
+                    text = "Launch",
+                    style = MaterialTheme.typography.bodyMedium.copy(
+                        fontWeight = FontWeight.Bold,
+                    ),
+                )
 
-                    Icon(
-                        painter = painterResource(Res.drawable.ic_launch_24dp),
-                        contentDescription = "Launch",
-                        modifier = Modifier.size(18.dp),
-                    )
-                }
-            },
-        )
+                Spacer(modifier = Modifier.width(8.dp))
+
+                Icon(
+                    painter = painterResource(Res.drawable.ic_launch_24dp),
+                    contentDescription = "Launch",
+                    modifier = Modifier.size(18.dp),
+                )
+            }
+        }
     }
 }
