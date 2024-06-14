@@ -22,10 +22,12 @@
 
 <p align="center">
   <a href='https://play.google.com/store/apps/details?id=dev.koga.deeplinklauncher.android'><img alt='Get it on Google Play' src='https://img.shields.io/badge/Android-3DDC84?style=for-the-badge&logo=android&logoColor=white'/></a>
-  <a href='https://github.com/FelipeKoga/deeplink-launcher/releases'><img src='https://img.shields.io/badge/Fedora-294172?style=for-the-badge&logo=fedora&logoColor=white'/></a>
-  <a href='https://github.com/FelipeKoga/deeplink-launcher/releases'><img alt='Get it on Google Play' src='https://img.shields.io/badge/Windows-0078D6?style=for-the-badge&logo=windows&logoColor=white'/></a>
+  <a href='https://github.com/FelipeKoga/deeplink-launcher/releases'><img alt="Fedora" src='https://img.shields.io/badge/Fedora-294172?style=for-the-badge&logo=fedora&logoColor=white'/></a>
+  <a href='https://github.com/FelipeKoga/deeplink-launcher/releases'><img alt='Windows' src='https://img.shields.io/badge/Windows-0078D6?style=for-the-badge&logo=windows&logoColor=white'/></a>
 </p>
 
+![Screenshot 1](docs/screenshots/android.png)
+![Screenshot 2](docs/screenshots/desktop.png)
 
 ## Platforms
 
@@ -119,12 +121,3 @@
 ## Architecture diagram
 
 ![Architecture Diagram](docs/diagram/architecture_diagram.png)
-
-## Screenshots
-
-### Android
-![Screenshot 1](docs/screenshots/deeplink_launcher_1.png)
-![Screenshot 2](docs/screenshots/deeplink_launcher_2.png)
-
-### Desktop
-TODO
