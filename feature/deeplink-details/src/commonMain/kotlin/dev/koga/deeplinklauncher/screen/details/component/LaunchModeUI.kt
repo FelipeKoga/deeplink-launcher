@@ -16,7 +16,7 @@ import dev.koga.deeplinklauncher.DLLSmallChip
 import dev.koga.deeplinklauncher.screen.details.state.DeepLinkDetailsUiState
 
 @Composable
-fun CollapsedModeUI(
+fun LaunchModeUI(
     modifier: Modifier,
     showFolder: Boolean,
     uiState: DeepLinkDetailsUiState,
