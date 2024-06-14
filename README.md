@@ -116,11 +116,15 @@
   </table>
 </div>
 
+## Architecture diagram
+
+![Architecture Diagram](docs/diagram/architecture_diagram.png)
+
 ## Screenshots
 
 ### Android
-![Screenshot 1](screenshots/deeplink_launcher_1.png)
-![Screenshot 2](screenshots/deeplink_launcher_2.png)
+![Screenshot 1](docs/screenshots/deeplink_launcher_1.png)
+![Screenshot 2](docs/screenshots/deeplink_launcher_2.png)
 
 ### Desktop
 TODO
