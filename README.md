@@ -26,7 +26,10 @@
   <a href='https://github.com/FelipeKoga/deeplink-launcher/releases'><img alt='Windows' src='https://img.shields.io/badge/Windows-0078D6?style=for-the-badge&logo=windows&logoColor=white'/></a>
 </p>
 
+## Android
 ![Screenshot 1](docs/screenshots/android.png)
+
+## Desktop
 ![Screenshot 2](docs/screenshots/desktop.png)
 
 ## Platforms
