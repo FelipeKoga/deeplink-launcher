@@ -26,10 +26,10 @@ jobs:
 
   build-android:
     needs: create-tag
-    uses: /.github/workflows/build-android.yml
+    uses: .github/workflows/build-android.yml
     secrets: inherit
 
   build-windows:
     needs: create-tag
-    uses: /.github/workflows/build-windows.yml
+    uses: .github/workflows/build-windows.yml
     secrets: inherit
