@@ -152,17 +152,17 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Download desktop windows exe artifact
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v4
         with:
           name: desktop-windows-exe
 
       - name: Download desktop ubuntu deb artifact
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v4
         with:
           name: desktop-ubuntu-deb
 
       - name: Download android APK artifact
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v4
         with:
           name: android-apk
 
@@ -171,7 +171,7 @@ jobs:
 
       - name: Create Release
         id: create_release
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v4
         if: startsWith(github.ref, 'refs/tags/')
         with:
           tag_name: ${{ github.event.inputs.tagname }}
