@@ -155,19 +155,19 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: desktop-windows-exe
-          path: ./desktopApp/build/compose/binaries/main/exe
-#
+
       - name: Download desktop ubuntu deb artifact
         uses: actions/download-artifact@v2
         with:
           name: desktop-ubuntu-deb
-          path: ./desktopApp/build/compose/binaries/main/deb
-#
+
       - name: Download android APK artifact
         uses: actions/download-artifact@v2
         with:
           name: android-apk
-          path: ./androidApp/build/outputs/apk/release
+
+      - name: Test artifact download
+        run: ls -R
 
       - name: Create Release
         id: create_release
