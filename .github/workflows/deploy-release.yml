@@ -74,34 +74,17 @@ jobs:
         continue-on-error: false
 
       - name: Build APK
-        run: ./gradlew assembleRelease --stacktrace
+        run: ./gradlew assemble --stacktrace
 
-      - name: Get release file apk path
-        id: releaseApk
-        run: echo "apkfile=$(find androidApp/build/outputs/apk/release/*.apk)" >> $GITHUB_OUTPUT
+      - name: Build with Gradle
+        run: ./gradlew assemble
 
-      - name: Upload Release Build to Artifacts
-        uses: actions/upload-artifact@v3
+      - name: GitHub Release
+        uses: marvinpinto/action-automatic-releases@latest
         with:
-          name: release-artifacts
-          path: ${{ steps.releaseApk.outputs.apkfile }}
-
-      - name: Create GitHub Release
-        id: create_release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag_name: ${{ github.event.inputs.tagname }}
-          release_name: ${{ github.event.inputs.tagname }}
-          draft: false
+          repo_token: "${{ secrets.GITHUB_TOKEN }}"
+          automatic_release_tag: "${{ github.event.inputs.tagname }}"
           prerelease: false
-
-      - name: Upload files to GitHub Release
-        id: upload-release-assets
-        uses: dwenegar/upload-release-assets@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          release_id: ${{ steps.create_release.outputs.id }}
-          assets_path: ${{ steps.releaseApk.outputs.apkfile }}.zip
+          files: |
+            ./androidApp/build/outputs/apk/debug/*.apk
+            ./androidApp/build/outputs/apk/release/*.apk
