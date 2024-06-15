@@ -24,7 +24,7 @@ jobs:
               sha: context.sha
             })
 
-  build-android:
+  build-apk:
     needs: create-tag
     runs-on: ubuntu-latest
     steps:
@@ -88,16 +88,39 @@ jobs:
           exit 1
           fi
 
-      - name: GitHub Release
-        uses: marvinpinto/action-automatic-releases@latest
+      - name: Upload APK
+        if: always()
+        uses: actions/upload-artifact@v4
         with:
-          repo_token: "${{ secrets.GITHUB_TOKEN }}"
-          automatic_release_tag: "${{ github.event.inputs.tagname }}"
-          prerelease: false
-          files: |
+          name: android-apk
+          path: |
             ./androidApp/build/outputs/apk/release/*.apk
 
-  build-windows:
+  build-deb:
+    needs: create-tag
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'zulu'
+          cache: gradle
+
+      - name: Build DEB
+        run: ./gradlew :packageDeb
+
+      - name: Upload DEB
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: desktop-ubuntu-deb
+          path: |
+            ./desktopApp/compose/binaries/main/deb/*.deb
+
+  build-exe:
     needs: create-tag
     runs-on: windows-latest
     steps:
@@ -116,11 +139,43 @@ jobs:
       - name: Build EXE
         run: ./gradlew.bat packageExe
 
-      - name: GitHub Release
-        uses: marvinpinto/action-automatic-releases@latest
+      - name: Upload EXE
+        if: always()
+        uses: actions/upload-artifact@v4
         with:
-          repo_token: "${{ secrets.GITHUB_TOKEN }}"
-          automatic_release_tag: "${{ github.event.inputs.tagname }}"
-          prerelease: false
-          files: |
+          name: desktop-windows-exe
+          path: |
             ./desktopApp/compose/binaries/main/exe/*.exe
+            
+  create-release:
+    needs: [build-apk, build-deb, build-exe]
+    runs-on: ubuntu-latest
+    steps:
+#      - name: Download desktop windows exe artifact
+#        uses: actions/download-artifact@v2
+#        with:
+#          name: desktop-windows-exe
+#          path: ./desktopApp/compose/binaries/main/exe
+#
+#      - name: Download desktop ubuntu deb artifact
+#        uses: actions/download-artifact@v2
+#        with:
+#          name: desktop-ubuntu-deb
+#          path: ./desktopApp/compose/binaries/main/deb
+#
+#      - name: Download android APK artifact
+#        uses: actions/download-artifact@v2
+#        with:
+#          name: android-apk
+#          path: ./androidApp/build/outputs/apk/release
+
+      - name: Create Release
+        id: create_release
+        uses: softprops/action-gh-release@v2
+        if: startsWith(github.ref, 'refs/tags/')
+        with:
+          files: |
+            ${{ steps.build-exe.outputs.artifacts-path }}/*.exe
+            ${{ steps.build-deb.outputs.artifacts-path }}/*.deb
+            ${{ steps.build-apk.outputs.artifacts-path }}/*.apk
+          token: ${{ secrets.GITHUB_TOKEN }}
