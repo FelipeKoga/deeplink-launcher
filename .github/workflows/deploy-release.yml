@@ -150,34 +150,47 @@ jobs:
   create-release:
     needs: [build-apk, build-deb, build-exe]
     runs-on: ubuntu-latest
+    env:
+      DOWNLOADS_PATH: ./downloaded-artifacts
+
     steps:
       - name: Download desktop windows exe artifact
         uses: actions/download-artifact@v4
         with:
           name: desktop-windows-exe
+          path: ${{ env.DOWNLOADS_PATH }}
 
       - name: Download desktop ubuntu deb artifact
         uses: actions/download-artifact@v4
         with:
           name: desktop-ubuntu-deb
+          path: ${{ env.DOWNLOADS_PATH }}
 
       - name: Download android APK artifact
         uses: actions/download-artifact@v4
         with:
           name: android-apk
+          path: ${{ env.DOWNLOADS_PATH }}
 
       - name: Test artifact download
         run: ls -R
 
-      - name: Create Release
+      - name: Create GitHub Release
         id: create_release
-        uses: softprops/action-gh-release@v2
-        if: startsWith(github.ref, 'refs/tags/')
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           tag_name: ${{ github.event.inputs.tagname }}
-          release_name: Release ${{ github.event.inputs.tagname }}
-          files: |
-            ./desktopApp/build/compose/binaries/main/exe/*.exe
-            ./desktopApp/build/compose/binaries/main/deb/*.deb
-            ./androidApp/build/outputs/apk/release/*.apk
-          token: ${{ secrets.GITHUB_TOKEN }}
+          release_name: ${{ github.event.inputs.tagname }}
+          draft: false
+          prerelease: false
+
+      - name: Upload artifacts to GitHub Release
+        id: upload-release-assets
+        uses: dwenegar/upload-release-assets@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          release_id: ${{ steps.create_release.outputs.id }}
+          assets_path: ${{ env.DOWNLOADS_PATH }}/*/
