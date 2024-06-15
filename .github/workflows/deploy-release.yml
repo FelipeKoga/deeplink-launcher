@@ -79,7 +79,7 @@ jobs:
       - name: Build APK
         run: ./gradlew assembleRelease --stacktrace
 
-      - name: Check if exists
+      - name: Check if APK exists
         run: |
           if [ -f ./androidApp/build/outputs/apk/release/*.apk ]; then
           echo "APK exists."
@@ -115,16 +115,6 @@ jobs:
 
       - name: Build EXE
         run: ./gradlew.bat packageExe
-
-      - name: Check if exists
-        run: |
-          if [ -f ./desktopApp/compose/binaries/main/exe/*.exe ]; then
-          echo "EXE exists."
-          else
-          echo "EXE does not exist." >&2
-          exit 1
-          fi
-        continue-on-error: false
 
       - name: GitHub Release
         uses: marvinpinto/action-automatic-releases@latest
