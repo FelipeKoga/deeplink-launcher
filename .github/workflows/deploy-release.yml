@@ -110,7 +110,7 @@ jobs:
           cache: gradle
 
       - name: Build DEB
-        run: ./gradlew :packageDeb
+        run: ./gradlew :desktopApp:packageDeb
 
       - name: Upload DEB
         if: always()
@@ -137,7 +137,7 @@ jobs:
         run: ./gradlew.bat
 
       - name: Build EXE
-        run: ./gradlew.bat packageExe
+        run: ./gradlew.bat :desktopApp:packageExe
 
       - name: Upload EXE
         if: always()
