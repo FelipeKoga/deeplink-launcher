@@ -118,7 +118,7 @@ jobs:
         with:
           name: desktop-ubuntu-deb
           path: |
-            ./desktopApp/compose/binaries/main/deb/*.deb
+            ./desktopApp/build/compose/binaries/main/deb
 
   build-exe:
     needs: create-tag
@@ -145,37 +145,39 @@ jobs:
         with:
           name: desktop-windows-exe
           path: |
-            ./desktopApp/compose/binaries/main/exe/*.exe
-            
+            ./desktopApp/build/compose/binaries/main/exe/*.exe
+
   create-release:
     needs: [build-apk, build-deb, build-exe]
     runs-on: ubuntu-latest
     steps:
-#      - name: Download desktop windows exe artifact
-#        uses: actions/download-artifact@v2
-#        with:
-#          name: desktop-windows-exe
-#          path: ./desktopApp/compose/binaries/main/exe
+      - name: Download desktop windows exe artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: desktop-windows-exe
+          path: ./desktopApp/build/compose/binaries/main/exe
 #
-#      - name: Download desktop ubuntu deb artifact
-#        uses: actions/download-artifact@v2
-#        with:
-#          name: desktop-ubuntu-deb
-#          path: ./desktopApp/compose/binaries/main/deb
+      - name: Download desktop ubuntu deb artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: desktop-ubuntu-deb
+          path: ./desktopApp/build/compose/binaries/main/deb
 #
-#      - name: Download android APK artifact
-#        uses: actions/download-artifact@v2
-#        with:
-#          name: android-apk
-#          path: ./androidApp/build/outputs/apk/release
+      - name: Download android APK artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: android-apk
+          path: ./androidApp/build/outputs/apk/release
 
       - name: Create Release
         id: create_release
         uses: softprops/action-gh-release@v2
         if: startsWith(github.ref, 'refs/tags/')
         with:
+          tag_name: ${{ github.event.inputs.tagname }}
+          release_name: Release ${{ github.event.inputs.tagname }}
           files: |
-            ${{ steps.build-exe.outputs.artifacts-path }}/*.exe
-            ${{ steps.build-deb.outputs.artifacts-path }}/*.deb
-            ${{ steps.build-apk.outputs.artifacts-path }}/*.apk
+            ./desktopApp/build/compose/binaries/main/exe/*.exe
+            ./desktopApp/build/compose/binaries/main/deb/*.deb
+            ./androidApp/build/outputs/apk/release/*.apk
           token: ${{ secrets.GITHUB_TOKEN }}
