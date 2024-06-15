@@ -10,10 +10,9 @@ on:
         type: string
 
 jobs:
-  deploy-release:
+  create-tag:
     runs-on: ubuntu-latest
     steps:
-
       - name: Create tag
         uses: actions/github-script@v7
         with:
@@ -25,7 +24,11 @@ jobs:
               sha: context.sha
             })
 
-      - uses: actions/checkout@v4
+  build-apk:
+    needs: create-tag
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
 
       - name: Cache Gradle dependencies
         uses: actions/cache@v4
@@ -74,17 +77,120 @@ jobs:
         continue-on-error: false
 
       - name: Build APK
-        run: ./gradlew assemble --stacktrace
+        run: ./gradlew assembleRelease --stacktrace
 
-      - name: Build with Gradle
-        run: ./gradlew assemble
+      - name: Check if APK exists
+        run: |
+          if [ -f ./androidApp/build/outputs/apk/release/*.apk ]; then
+          echo "APK exists."
+          else
+          echo "APK does not exist." >&2
+          exit 1
+          fi
 
-      - name: GitHub Release
-        uses: marvinpinto/action-automatic-releases@latest
+      - name: Upload APK
+        if: always()
+        uses: actions/upload-artifact@v4
         with:
-          repo_token: "${{ secrets.GITHUB_TOKEN }}"
-          automatic_release_tag: "${{ github.event.inputs.tagname }}"
-          prerelease: false
-          files: |
-            ./androidApp/build/outputs/apk/debug/*.apk
+          name: android-apk
+          path: |
             ./androidApp/build/outputs/apk/release/*.apk
+
+  build-deb:
+    needs: create-tag
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'zulu'
+          cache: gradle
+
+      - name: Build DEB
+        run: ./gradlew :desktopApp:packageDeb
+
+      - name: Upload DEB
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: desktop-ubuntu-deb
+          path: |
+            ./desktopApp/build/compose/binaries/main/deb
+
+  build-exe:
+    needs: create-tag
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'zulu'
+          cache: gradle
+
+      - name: Grant execute permission for gradlew
+        run: ./gradlew.bat
+
+      - name: Build EXE
+        run: ./gradlew.bat :desktopApp:packageExe
+
+      - name: Upload EXE
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: desktop-windows-exe
+          path: |
+            ./desktopApp/build/compose/binaries/main/exe/*.exe
+
+  create-release:
+    needs: [build-apk, build-deb, build-exe]
+    runs-on: ubuntu-latest
+    env:
+      DOWNLOADS_PATH: ./downloaded-artifacts
+
+    steps:
+      - name: Download desktop windows exe artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: desktop-windows-exe
+          path: ${{ env.DOWNLOADS_PATH }}
+
+      - name: Download desktop ubuntu deb artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: desktop-ubuntu-deb
+          path: ${{ env.DOWNLOADS_PATH }}
+
+      - name: Download android APK artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: android-apk
+          path: ${{ env.DOWNLOADS_PATH }}
+
+      - name: Test artifact download
+        run: ls -R
+
+      - name: Create GitHub Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.event.inputs.tagname }}
+          release_name: ${{ github.event.inputs.tagname }}
+          draft: false
+          prerelease: false
+
+      - name: Upload artifacts to GitHub Release
+        id: upload-release-assets
+        uses: dwenegar/upload-release-assets@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          release_id: ${{ steps.create_release.outputs.id }}
+          assets_path: ${{ env.DOWNLOADS_PATH }}/*/
