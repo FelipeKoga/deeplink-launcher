@@ -3,14 +3,17 @@ package dev.koga.deeplinklauncher.model
 class Adb(private val path: String) {
 
     fun startActivity(
+        target: Target,
         action: String,
-        arg: String
+        arg: String,
     ): Process {
         val process = ProcessBuilder().command(
-            path, "shell",
+            path,
+            "-s", target.name,
+            "shell",
             "am", "start",
             "-a", action,
-            "-d", arg
+            "-d", arg,
         )
 
         return process.start().also {
