@@ -37,6 +37,22 @@ class TargetDataSource(
         }
     }
 
+    fun next() {
+        val index = targets.value.indexOf(current.value)
+
+        val next = targets.value.getOrNull(index + 1) ?: targets.value.first()
+
+        _current.value = next
+    }
+
+    fun prev() {
+        val index = targets.value.indexOf(current.value)
+
+        val prev = targets.value.getOrNull(index - 1) ?: targets.value.last()
+
+        _current.value = prev
+    }
+
     fun track() = flow {
 
         val devices = mutableListOf<Target.Device>()
