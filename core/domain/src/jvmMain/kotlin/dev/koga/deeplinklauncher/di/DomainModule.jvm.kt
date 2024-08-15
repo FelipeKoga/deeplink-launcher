@@ -24,6 +24,5 @@ internal actual val platformDomainModule: Module = module {
     singleOf(::DeviceParser)
 
     single { AdbProvider() }
-    single { StartActivity }
     single { UUIDProvider }
 }
