@@ -17,11 +17,7 @@ class LaunchTargetManager(
         targetDataSource.current,
         targetDataSource.track()
     ) { current, targets ->
-        LaunchTargetUiState(
-            targets = targets.toUiState(current),
-            selected = current.toUiState(selected = true)
-        )
-
+        targets.toUiState(current)
     }.stateIn(
         scope = coroutines,
         initialValue = LaunchTargetUiState(),
