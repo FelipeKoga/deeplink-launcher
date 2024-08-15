@@ -10,7 +10,7 @@ fun main() = application {
     initKoin()
 
     val windowState = rememberWindowState(
-        placement = WindowPlacement.Floating,
+        placement = WindowPlacement.Maximized,
     )
 
     Window(

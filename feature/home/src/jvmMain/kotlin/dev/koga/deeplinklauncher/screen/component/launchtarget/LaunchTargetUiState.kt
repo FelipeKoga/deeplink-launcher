@@ -34,7 +34,6 @@ data class LaunchTargetUiState(
     }
 }
 
-
 fun List<Target>.toUiState(
     selected: Target
 ) = map {
@@ -46,6 +45,10 @@ fun List<Target>.toUiState(
 fun Target.toUiState(
     selected: Boolean
 ) = when (this) {
-    Target.Browser -> LaunchTargetUiState.Target.Browser(selected)
-    is Target.Device -> LaunchTargetUiState.Target.Device(name, selected, type)
+    Target.Browser -> {
+        LaunchTargetUiState.Target.Browser(selected)
+    }
+    is Target.Device -> {
+        LaunchTargetUiState.Target.Device(name, selected, type)
+    }
 }
