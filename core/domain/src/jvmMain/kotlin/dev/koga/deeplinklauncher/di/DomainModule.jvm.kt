@@ -5,10 +5,7 @@ import dev.koga.deeplinklauncher.platform.PlatformInfo
 import dev.koga.deeplinklauncher.platform.SaveFile
 import dev.koga.deeplinklauncher.platform.ShareFile
 import dev.koga.deeplinklauncher.provider.UUIDProvider
-import dev.koga.deeplinklauncher.usecase.GetDeepLinkMetadata
-import dev.koga.deeplinklauncher.usecase.LaunchDeepLink
-import dev.koga.deeplinklauncher.usecase.ShareDeepLink
-import dev.koga.deeplinklauncher.usecase.StartActivity
+import dev.koga.deeplinklauncher.usecase.*
 import org.koin.core.module.Module
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
@@ -22,6 +19,7 @@ internal actual val platformDomainModule: Module = module {
     singleOf(::GetDeepLinkMetadata)
     singleOf(::PlatformInfo)
 
+    single { AdbProvider() }
     single { StartActivity }
     single { UUIDProvider }
 }
