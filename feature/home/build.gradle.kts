@@ -27,6 +27,11 @@ kotlin {
             implementation(compose.material3)
             implementation(compose.ui)
             implementation(compose.components.resources)
+            implementation(compose.materialIconsExtended)
+        }
+
+        jvmMain.dependencies {
+            implementation(compose.preview)
         }
     }
 }
