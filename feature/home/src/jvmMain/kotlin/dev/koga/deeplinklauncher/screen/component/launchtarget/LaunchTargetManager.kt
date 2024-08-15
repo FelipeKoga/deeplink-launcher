@@ -27,4 +27,12 @@ class LaunchTargetManager(
     fun select(name: String) {
         targetDataSource.select(name)
     }
+
+    fun next() {
+        targetDataSource.next()
+    }
+
+    fun prev() {
+        targetDataSource.prev()
+    }
 }
