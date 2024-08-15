@@ -20,14 +20,13 @@ data class LaunchTargetUiState(
         data class Browser(
             override val selected: Boolean
         ) : Target() {
-            override val name = "browser"
+            override val name = "default browser"
             override val icon = Icons.Rounded.Public
         }
 
         data class Device(
             override val name: String,
             override val selected: Boolean,
-            val type: String
         ) : Target() {
             override val icon = Icons.Rounded.Devices
         }
@@ -36,19 +35,26 @@ data class LaunchTargetUiState(
 
 fun List<Target>.toUiState(
     selected: Target
-) = map {
-    it.toUiState(
-        selected = selected == it
-    )
-}
+) = LaunchTargetUiState(
+    targets = map {
+        it.toUiState(
+            selected = selected == it
+        )
+    },
+    selected = selected.toUiState()
+)
 
 fun Target.toUiState(
-    selected: Boolean
+    selected: Boolean = true
 ) = when (this) {
     Target.Browser -> {
         LaunchTargetUiState.Target.Browser(selected)
     }
+
     is Target.Device -> {
-        LaunchTargetUiState.Target.Device(name, selected, type)
+        LaunchTargetUiState.Target.Device(
+            name = name,
+            selected = selected,
+        )
     }
 }
