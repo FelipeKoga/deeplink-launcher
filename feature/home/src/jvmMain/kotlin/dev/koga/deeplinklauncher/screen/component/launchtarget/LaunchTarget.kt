@@ -1,6 +1,5 @@
 package dev.koga.deeplinklauncher.screen.component.launchtarget
 
-import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.foundation.LocalIndication
 import androidx.compose.foundation.hoverable
 import androidx.compose.foundation.indication
@@ -17,6 +16,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import dev.koga.deeplinklauncher.theme.LocalDimensions
 import dev.koga.deeplinklauncher.theme.typography
 import org.koin.compose.koinInject
 
@@ -118,14 +118,5 @@ fun LaunchTarget() {
                 )
             }
         }
-    }
-}
-
-
-@Preview
-@Composable
-private fun LaunchTargetPreview() {
-    MaterialTheme {
-        LaunchTarget()
     }
 }
