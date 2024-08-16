@@ -6,13 +6,20 @@ class DeviceParser {
 
     operator fun invoke(input: String): Target.Device {
 
-        val parts = input.dropWhile {
+        val (serial, state) = input.dropWhile {
             it.isDigit()
         }.split(Regex("\\s+"))
 
-        return Target.Device(
-            name = parts[0],
-            type = parts[1]
-        )
+        return if (serial.startsWith(prefix = "emulator")) {
+            Target.Device.Emulator(
+                name = serial,
+                active = state == "device"
+            )
+        } else {
+            Target.Device.Physical(
+                name = serial,
+                active = state == "device"
+            )
+        }
     }
 }

@@ -70,7 +70,9 @@ class TargetDataSource(
 
                     val targets =
                         listOf(Target.Browser) +
-                                devices.filter(Target.Device::isActive)
+                                devices.filter { lines ->
+                                    lines.active
+                                }
 
                     emit(targets)
                 }
