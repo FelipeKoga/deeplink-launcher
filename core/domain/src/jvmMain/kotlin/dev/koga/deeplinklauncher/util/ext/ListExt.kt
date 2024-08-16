@@ -11,3 +11,18 @@ fun MutableList<Target.Device>.addOrUpdate(device: Target.Device) {
         set(index, device)
     }
 }
+
+
+fun <T> List<T>.next(current : T) : T {
+
+    val index = indexOf(current)
+
+    return getOrNull(index + 1) ?: first()
+}
+
+fun <T> List<T>.previous(current : T) : T {
+
+    val index = indexOf(current)
+
+    return getOrNull(index - 1) ?: last()
+}
