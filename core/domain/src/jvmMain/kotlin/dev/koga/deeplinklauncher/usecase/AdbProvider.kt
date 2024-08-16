@@ -1,33 +1,33 @@
 package dev.koga.deeplinklauncher.usecase
 
-import dev.koga.deeplinklauncher.model.Adb
+import dev.koga.deeplinklauncher.model.AdbProgram
 import dev.koga.deeplinklauncher.model.Os
 import dev.koga.deeplinklauncher.util.ext.installed
 
 object AdbProvider {
 
-    operator fun invoke(): Adb {
+    operator fun invoke(): AdbProgram {
         if ("adb".installed()) {
-            return Adb("adb")
+            return AdbProgram("adb")
         }
 
         System.getenv("ANDROID_HOME")?.let {
-            return Adb.from(it)
+            return AdbProgram.from(it)
         }
 
         val userHome = System.getProperty("user.home")
 
         return when (Os.get()) {
             Os.LINUX -> {
-                Adb.from("$userHome/Android/Sdk")
+                AdbProgram.from("$userHome/Android/Sdk")
             }
 
             Os.WINDOWS -> {
-                Adb.from("$userHome/AppData/Local/Android/Sdk")
+                AdbProgram.from("$userHome/AppData/Local/Android/Sdk")
             }
 
             Os.MAC -> {
-                Adb.from("$userHome/Library/Android/sdk")
+                AdbProgram.from("$userHome/Library/Android/sdk")
             }
         }
     }
