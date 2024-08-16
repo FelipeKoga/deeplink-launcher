@@ -1,6 +1,10 @@
 package dev.koga.deeplinklauncher.model
 
+import dev.koga.deeplinklauncher.util.ext.installed
+
 class Adb(private val path: String) {
+
+    val installed get() = path.installed()
 
     fun startActivity(
         target: Target,
