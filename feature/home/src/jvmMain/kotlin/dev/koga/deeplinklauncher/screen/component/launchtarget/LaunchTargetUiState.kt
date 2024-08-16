@@ -3,6 +3,7 @@ package dev.koga.deeplinklauncher.screen.component.launchtarget
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Devices
 import androidx.compose.material.icons.rounded.Public
+import androidx.compose.material.icons.rounded.Smartphone
 import androidx.compose.ui.graphics.vector.ImageVector
 import dev.koga.deeplinklauncher.model.Target
 
@@ -24,11 +25,21 @@ data class LaunchTargetUiState(
             override val icon = Icons.Rounded.Public
         }
 
-        data class Device(
-            override val name: String,
-            override val selected: Boolean,
-        ) : Target() {
-            override val icon = Icons.Rounded.Devices
+        sealed class Device: Target() {
+
+            data class Emulator(
+                override val name: String,
+                override val selected: Boolean
+            ) : Device() {
+                override val icon = Icons.Rounded.Devices
+            }
+
+            data class Physical(
+                override val name: String,
+                override val selected: Boolean
+            ) : Device() {
+                override val icon = Icons.Rounded.Smartphone
+            }
         }
     }
 }
@@ -51,10 +62,17 @@ fun Target.toUiState(
         LaunchTargetUiState.Target.Browser(selected)
     }
 
-    is Target.Device -> {
-        LaunchTargetUiState.Target.Device(
+    is Target.Device.Emulator -> {
+        LaunchTargetUiState.Target.Device.Emulator(
             name = name,
-            selected = selected,
+            selected = selected
+        )
+    }
+
+    is Target.Device.Physical -> {
+        LaunchTargetUiState.Target.Device.Physical(
+            name = name,
+            selected = selected
         )
     }
 }
