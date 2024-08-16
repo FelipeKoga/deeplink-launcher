@@ -4,6 +4,8 @@ import dev.koga.deeplinklauncher.model.Adb
 import dev.koga.deeplinklauncher.model.Target
 import dev.koga.deeplinklauncher.usecase.DeviceParser
 import dev.koga.deeplinklauncher.util.ext.addOrUpdate
+import dev.koga.deeplinklauncher.util.ext.next
+import dev.koga.deeplinklauncher.util.ext.previous
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
 
@@ -38,21 +40,11 @@ class TargetDataSource(
     }
 
     fun next() {
-        val index = targets.value.indexOf(current.value)
-
-        val next = targets.value.getOrNull(index = index + 1)
-            ?: targets.value.first()
-
-        _current.value = next
+        _current.value = targets.value.next(current.value)
     }
 
     fun prev() {
-        val index = targets.value.indexOf(current.value)
-
-        val prev = targets.value.getOrNull(index = index - 1)
-            ?: targets.value.last()
-
-        _current.value = prev
+        _current.value = targets.value.previous(current.value)
     }
 
     fun track() = flow {
