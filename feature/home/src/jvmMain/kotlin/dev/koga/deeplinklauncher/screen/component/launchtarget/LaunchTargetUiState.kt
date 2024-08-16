@@ -20,7 +20,7 @@ data class LaunchTargetUiState(
         data class Browser(
             override val selected: Boolean
         ) : Target() {
-            override val name = "default browser"
+            override val name = "Default Browser"
             override val icon = Icons.Rounded.Public
         }
 

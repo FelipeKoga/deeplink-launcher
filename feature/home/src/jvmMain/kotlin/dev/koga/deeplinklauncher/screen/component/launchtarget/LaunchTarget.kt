@@ -1,15 +1,18 @@
 package dev.koga.deeplinklauncher.screen.component.launchtarget
 
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material3.*
+import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.PointerEventType
 import androidx.compose.ui.input.pointer.onPointerEvent
 import androidx.compose.ui.text.font.FontWeight
@@ -37,6 +40,11 @@ fun LaunchTarget() {
         },
         modifier = Modifier
             .clip(RoundedCornerShape(4.dp))
+            .border(
+                width = 1.dp,
+                color = colorScheme.secondary,
+                shape = RoundedCornerShape(4.dp)
+            )
             .onPointerEvent(PointerEventType.Scroll) {
 
                 val delta = it.changes.first().scrollDelta.y.toInt()
@@ -55,16 +63,16 @@ fun LaunchTarget() {
             modifier = Modifier
                 .menuAnchor()
                 .padding(4.dp),
-            verticalAlignment = Alignment.CenterVertically
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
 
             Icon(
                 imageVector = uiState.selected.icon,
                 contentDescription = null,
+                tint = colorScheme.secondary,
                 modifier = Modifier.size(18.dp)
             )
-
-            Spacer(Modifier.width(8.dp))
 
             Text(
                 text = uiState.selected.name,
@@ -79,9 +87,8 @@ fun LaunchTarget() {
                 Icon(
                     imageVector = Icons.Default.ArrowDropDown,
                     contentDescription = null,
-                    modifier = Modifier
-                        .padding(start = 8.dp)
-                        .size(18.dp)
+                    tint = colorScheme.secondary,
+                    modifier = Modifier.size(18.dp)
                 )
             }
         }

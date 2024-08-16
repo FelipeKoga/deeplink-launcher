@@ -55,6 +55,8 @@ class TargetDataSource(
 
     fun track() = flow {
 
+        if (!adb.installed) return@flow
+
         val devices = mutableListOf<Target.Device>()
 
         adb.trackDevices()
