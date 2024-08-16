@@ -14,13 +14,11 @@ class DeviceParser {
             Target.Device.Emulator(
                 serial = serial,
                 active = state == "device",
-                name = ""
             )
         } else {
             Target.Device.Physical(
                 serial = serial,
                 active = state == "device",
-                name = ""
             )
         }
     }

@@ -1,16 +1,15 @@
 package dev.koga.deeplinklauncher.datasource
 
-import dev.koga.deeplinklauncher.model.Adb
+import dev.koga.deeplinklauncher.model.AdbProgram
 import dev.koga.deeplinklauncher.model.Target
 import dev.koga.deeplinklauncher.usecase.DeviceParser
 import dev.koga.deeplinklauncher.util.ext.addOrUpdate
 import dev.koga.deeplinklauncher.util.ext.next
 import dev.koga.deeplinklauncher.util.ext.previous
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
 
 class TargetDataSource(
-    private val adb: Adb,
+    private val adbProgram: AdbProgram,
     private val parser: DeviceParser
 ) {
 
@@ -49,11 +48,11 @@ class TargetDataSource(
 
     fun track() = flow {
 
-        if (!adb.installed) return@flow
+        if (!adbProgram.installed) return@flow
 
         val devices = mutableListOf<Target.Device>()
 
-        adb.trackDevices()
+        adbProgram.trackDevices()
             .inputStream
             .bufferedReader()
             .useLines {
@@ -73,14 +72,14 @@ class TargetDataSource(
             }
     }.onEach {
         update(it)
-    }.flowOn(Dispatchers.IO)
+    }
 
-    private fun Target.Device.withName(): Target.Device {
+    private suspend fun Target.Device.withName(): Target.Device {
 
         return when (this) {
             is Target.Device.Emulator -> {
                 copy(
-                    name = adb.getEmulatorName(
+                    name = adbProgram.getEmulatorName(
                         target = this
                     ).ifEmpty {
                         serial
@@ -90,10 +89,10 @@ class TargetDataSource(
 
             is Target.Device.Physical -> {
                 copy(
-                    name = adb.getDeviceName(
+                    name = adbProgram.getDeviceName(
                         target = this
                     ).ifEmpty {
-                        adb.getDeviceModel(
+                        adbProgram.getDeviceModel(
                             target = this
                         ).ifEmpty {
                             serial
