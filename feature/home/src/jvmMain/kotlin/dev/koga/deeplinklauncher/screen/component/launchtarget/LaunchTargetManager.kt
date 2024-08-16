@@ -1,6 +1,7 @@
 package dev.koga.deeplinklauncher.screen.component.launchtarget
 
 import dev.koga.deeplinklauncher.datasource.TargetDataSource
+import dev.koga.deeplinklauncher.model.Target
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.SharingStarted
@@ -24,8 +25,8 @@ class LaunchTargetManager(
         started = SharingStarted.WhileSubscribed()
     )
 
-    fun select(name: String) {
-        targetDataSource.select(name)
+    fun select(target: Target) {
+        targetDataSource.select(target)
     }
 
     fun next() {

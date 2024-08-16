@@ -20,19 +20,19 @@ class DeviceParserTest {
 
         val expected = listOf(
             Target.Device.Emulator(
-                name = "emulator-5554",
-                active = true
+                serial = "emulator-5554",
+                active = true,
             ),
             Target.Device.Emulator(
-                name = "emulator-5554",
+                serial = "emulator-5554",
                 active = false
             ),
             Target.Device.Physical(
-                name = "ZF523HKK7K",
+                serial = "ZF523HKK7K",
                 active = true
             ),
             Target.Device.Physical(
-                name = "ZF523HKK7K",
+                serial = "ZF523HKK7K",
                 active = false
             ),
         )
