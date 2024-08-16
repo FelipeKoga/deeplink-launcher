@@ -7,11 +7,10 @@ fun String.installed(): Boolean {
         when (Os.get()) {
             Os.LINUX -> "which"
             Os.WINDOWS -> "where"
+            Os.MAC -> "which"
         },
         this,
     ).start()
 
-    val exitCode = process.waitFor()
-
-    return exitCode == 0
+    return process.waitFor() == 0
 }
