@@ -12,13 +12,15 @@ class DeviceParser {
 
         return if (serial.startsWith(prefix = "emulator")) {
             Target.Device.Emulator(
-                name = serial,
-                active = state == "device"
+                serial = serial,
+                active = state == "device",
+                name = ""
             )
         } else {
             Target.Device.Physical(
-                name = serial,
-                active = state == "device"
+                serial = serial,
+                active = state == "device",
+                name = ""
             )
         }
     }

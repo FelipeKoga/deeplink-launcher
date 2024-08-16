@@ -124,7 +124,7 @@ fun LaunchTarget() {
                         )
                     },
                     onClick = {
-                        manager.select(target.name)
+                        manager.select(target.target)
                         expanded = false
                     },
                 )

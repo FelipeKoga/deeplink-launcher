@@ -2,24 +2,24 @@ package dev.koga.deeplinklauncher.model
 
 sealed class Target {
 
-    abstract val name: String
-
-    data object Browser : Target() {
-        override val name = "browser"
-    }
+    data object Browser : Target()
 
     sealed class Device : Target() {
 
         abstract val active: Boolean
+        abstract val name: String
+        abstract val serial: String
 
         data class Emulator(
-            override val name: String,
-            override val active: Boolean
+            override val serial: String,
+            override val active: Boolean,
+            override val name: String = serial
         ) : Device()
 
         data class Physical(
-            override val name: String,
-            override val active: Boolean
+            override val serial: String,
+            override val active: Boolean,
+            override val name: String = serial
         ) : Device()
     }
 }
