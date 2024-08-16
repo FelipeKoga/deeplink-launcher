@@ -8,10 +8,18 @@ sealed class Target {
         override val name = "browser"
     }
 
-    data class Device(
-        override val name: String,
-        val type: String
-    ) : Target() {
-        val isActive = type == "device"
+    sealed class Device : Target() {
+
+        abstract val active: Boolean
+
+        data class Emulator(
+            override val name: String,
+            override val active: Boolean
+        ) : Device()
+
+        data class Physical(
+            override val name: String,
+            override val active: Boolean
+        ) : Device()
     }
 }
