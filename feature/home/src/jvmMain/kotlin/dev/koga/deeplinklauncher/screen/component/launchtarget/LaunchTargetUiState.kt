@@ -8,40 +8,16 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import dev.koga.deeplinklauncher.model.Target
 
 data class LaunchTargetUiState(
-    val selected: Target = Target.Browser(selected = true),
-    val targets: List<Target> = listOf(selected)
+    val selected: Option = Target.Browser.toUiState(),
+    val targets: List<Option> = listOf(selected)
 ) {
 
-    sealed class Target {
-
-        abstract val name: String
-        abstract val icon: ImageVector
-        abstract val selected: Boolean
-
-        data class Browser(
-            override val selected: Boolean
-        ) : Target() {
-            override val name = "Default Browser"
-            override val icon = Icons.Rounded.Public
-        }
-
-        sealed class Device: Target() {
-
-            data class Emulator(
-                override val name: String,
-                override val selected: Boolean
-            ) : Device() {
-                override val icon = Icons.Rounded.Devices
-            }
-
-            data class Physical(
-                override val name: String,
-                override val selected: Boolean
-            ) : Device() {
-                override val icon = Icons.Rounded.Smartphone
-            }
-        }
-    }
+    data class Option(
+        val target: Target,
+        val selected: Boolean,
+        val name: String,
+        val icon: ImageVector,
+    )
 }
 
 fun List<Target>.toUiState(
@@ -59,20 +35,29 @@ fun Target.toUiState(
     selected: Boolean = true
 ) = when (this) {
     Target.Browser -> {
-        LaunchTargetUiState.Target.Browser(selected)
+        LaunchTargetUiState.Option(
+            target = this,
+            selected = selected,
+            name = "Default Browser",
+            icon = Icons.Rounded.Public
+        )
     }
 
     is Target.Device.Emulator -> {
-        LaunchTargetUiState.Target.Device.Emulator(
+        LaunchTargetUiState.Option(
+            target = this,
+            selected = selected,
             name = name,
-            selected = selected
+            icon = Icons.Rounded.Devices
         )
     }
 
     is Target.Device.Physical -> {
-        LaunchTargetUiState.Target.Device.Physical(
+        LaunchTargetUiState.Option(
+            target = this,
+            selected = selected,
             name = name,
-            selected = selected
+            icon = Icons.Rounded.Smartphone
         )
     }
 }

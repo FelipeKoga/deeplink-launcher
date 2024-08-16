@@ -24,15 +24,15 @@ class TargetDataSource(
 
         _current.update { target ->
             targets.find {
-                it.name == target.name
+                it == target
             } ?: Target.Browser
         }
     }
 
-    fun select(name: String) {
+    fun select(target: Target) {
         _current.update {
             targets.value.find {
-                it.name == name
+                it == target
             } ?: Target.Browser
         }
     }
@@ -40,7 +40,8 @@ class TargetDataSource(
     fun next() {
         val index = targets.value.indexOf(current.value)
 
-        val next = targets.value.getOrNull(index + 1) ?: targets.value.first()
+        val next = targets.value.getOrNull(index = index + 1)
+            ?: targets.value.first()
 
         _current.value = next
     }
@@ -48,7 +49,8 @@ class TargetDataSource(
     fun prev() {
         val index = targets.value.indexOf(current.value)
 
-        val prev = targets.value.getOrNull(index - 1) ?: targets.value.last()
+        val prev = targets.value.getOrNull(index = index - 1)
+            ?: targets.value.last()
 
         _current.value = prev
     }
@@ -65,7 +67,7 @@ class TargetDataSource(
             .useLines {
                 it.forEach { line ->
                     devices.addOrUpdate(
-                        parser(line),
+                        parser(line).withName()
                     )
 
                     val targets =
@@ -80,4 +82,33 @@ class TargetDataSource(
     }.onEach {
         update(it)
     }.flowOn(Dispatchers.IO)
+
+    private fun Target.Device.withName(): Target.Device {
+
+        return when (this) {
+            is Target.Device.Emulator -> {
+                copy(
+                    name = adb.getEmulatorName(
+                        target = this
+                    ).ifEmpty {
+                        serial
+                    },
+                )
+            }
+
+            is Target.Device.Physical -> {
+                copy(
+                    name = adb.getDeviceName(
+                        target = this
+                    ).ifEmpty {
+                        adb.getDeviceModel(
+                            target = this
+                        ).ifEmpty {
+                            serial
+                        }
+                    },
+                )
+            }
+        }
+    }
 }
