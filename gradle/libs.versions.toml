@@ -34,6 +34,8 @@ google-services = "4.4.1"
 
 aboutlibraries = "11.2.0"
 
+junit = "4.13.2"
+
 [libraries]
 android-gradle-plugin = { module = "com.android.tools.build:gradle", version.ref = "androidGradlePlugin" }
 androidx-datastore-preferences-core = { module = "androidx.datastore:datastore-preferences-core", version.ref = "datastorePreferencesCore" }
@@ -74,6 +76,8 @@ firebase-crashlytics = { module = "com.google.firebase:firebase-crashlytics" }
 
 aboutlibraries_compose = { module = "com.mikepenz:aboutlibraries-compose", version.ref = "aboutlibraries" }
 compose-runtime = { module = "androidx.compose.runtime:runtime", version.ref = "compose-runtime" }
+
+junit = { module = "junit:junit", version.ref = "junit" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "androidGradlePlugin" }
