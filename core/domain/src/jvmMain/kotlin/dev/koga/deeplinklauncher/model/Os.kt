@@ -2,7 +2,8 @@ package dev.koga.deeplinklauncher.model
 
 enum class Os {
     LINUX,
-    WINDOWS;
+    WINDOWS,
+    MAC;
 
     companion object {
         fun get(
@@ -14,6 +15,7 @@ enum class Os {
                 when {
                     it.contains("linux") -> LINUX
                     it.contains("windows") -> WINDOWS
+                    it.contains("mac") -> MAC
                     else -> throw IllegalStateException("Unsupported OS: $it")
                 }
             }

@@ -25,6 +25,10 @@ object AdbProvider {
             Os.WINDOWS -> {
                 Adb.from("$userHome/AppData/Local/Android/Sdk")
             }
+
+            Os.MAC -> {
+                Adb.from("$userHome/Library/Android/sdk")
+            }
         }
     }
 }
