@@ -1,7 +1,10 @@
 package dev.koga.deeplinklauncher.screen.component.launchtarget
 
 import androidx.compose.foundation.border
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
@@ -12,7 +15,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.PointerEventType
 import androidx.compose.ui.input.pointer.onPointerEvent
 import androidx.compose.ui.text.font.FontWeight
@@ -40,11 +42,6 @@ fun LaunchTarget() {
         },
         modifier = Modifier
             .clip(RoundedCornerShape(4.dp))
-            .border(
-                width = 1.dp,
-                color = colorScheme.secondary,
-                shape = RoundedCornerShape(4.dp)
-            )
             .onPointerEvent(PointerEventType.Scroll) {
 
                 val delta = it.changes.first().scrollDelta.y.toInt()
@@ -54,6 +51,11 @@ fun LaunchTarget() {
                     delta > 0 -> manager.next()
                 }
             }
+            .border(
+                width = 1.dp,
+                color = colorScheme.secondary,
+                shape = RoundedCornerShape(4.dp)
+            )
             .hoverIndication(
                 enabled = uiState.targets.size > 1,
             )
