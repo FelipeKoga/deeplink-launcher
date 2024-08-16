@@ -16,6 +16,10 @@ kotlin {
         androidMain.dependencies {
             implementation(libs.androidx.core)
         }
+
+        jvmTest.dependencies {
+            implementation(libs.junit)
+        }
     }
 }
 
