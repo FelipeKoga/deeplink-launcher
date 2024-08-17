@@ -3,7 +3,6 @@ package dev.koga.deeplinklauncher.usecase
 import dev.koga.deeplinklauncher.datasource.AdbDataSource
 import dev.koga.deeplinklauncher.datasource.DeepLinkDataSource
 import dev.koga.deeplinklauncher.datasource.TargetDataSource
-import dev.koga.deeplinklauncher.model.AdbProgram
 import dev.koga.deeplinklauncher.model.DeepLink
 import dev.koga.deeplinklauncher.model.Target
 import dev.koga.deeplinklauncher.util.ext.currentLocalDateTime
