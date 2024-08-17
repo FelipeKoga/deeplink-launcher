@@ -1,5 +1,6 @@
 package dev.koga.deeplinklauncher.usecase
 
+import dev.koga.deeplinklauncher.datasource.AdbDataSource
 import dev.koga.deeplinklauncher.datasource.DeepLinkDataSource
 import dev.koga.deeplinklauncher.datasource.TargetDataSource
 import dev.koga.deeplinklauncher.model.AdbProgram
@@ -13,7 +14,7 @@ import java.net.URI
 actual class LaunchDeepLink(
     private val deepLinkDataSource: DeepLinkDataSource,
     private val targetDataSource: TargetDataSource,
-    private val adbProgram: AdbProgram
+    private val adbProgram: AdbDataSource
 ) {
     actual fun launch(url: String): LaunchDeepLinkResult {
         return when(val target = targetDataSource.current.value) {
@@ -26,7 +27,7 @@ actual class LaunchDeepLink(
         return try {
             val process = runBlocking {
                 adbProgram.startActivity(
-                    target = target,
+                    serial = target.serial,
                     action = "android.intent.action.VIEW",
                     arg = link,
                 )

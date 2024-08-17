@@ -1,5 +1,6 @@
 package dev.koga.deeplinklauncher.di
 
+import dev.koga.deeplinklauncher.datasource.AdbDataSource
 import dev.koga.deeplinklauncher.datasource.TargetDataSource
 import dev.koga.deeplinklauncher.platform.GetFileContent
 import dev.koga.deeplinklauncher.platform.PlatformInfo
@@ -10,6 +11,7 @@ import dev.koga.deeplinklauncher.usecase.*
 import org.koin.core.module.Module
 import org.koin.core.module.dsl.factoryOf
 import org.koin.core.module.dsl.singleOf
+import org.koin.dsl.bind
 import org.koin.dsl.module
 
 internal actual val platformDomainModule: Module = module {
@@ -23,6 +25,6 @@ internal actual val platformDomainModule: Module = module {
     singleOf(::TargetDataSource)
     singleOf(::DeviceParser)
 
-    single { AdbProvider() }
+    single { AdbProvider() } bind AdbDataSource::class
     single { UUIDProvider }
 }
