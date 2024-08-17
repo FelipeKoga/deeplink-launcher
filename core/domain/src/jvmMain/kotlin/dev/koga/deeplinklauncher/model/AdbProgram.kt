@@ -39,12 +39,12 @@ class AdbProgram(private val path: String) {
         }
     }
 
-    suspend fun getProperty(target: Target.Device, key: String): String {
+    suspend fun getProperty(serial: String, key: String): String {
 
         val process = withContext(Dispatchers.IO) {
             ProcessBuilder().command(
                 path,
-                "-s", target.serial,
+                "-s", serial,
                 "shell",
                 "getprop", key
             ).start().also {
@@ -59,12 +59,12 @@ class AdbProgram(private val path: String) {
             .trim()
     }
 
-    suspend fun getDeviceName(target: Target.Device): String {
+    suspend fun getDeviceName(serial: String): String {
 
         val process = withContext(Dispatchers.IO) {
             ProcessBuilder().command(
                 path,
-                "-s", target.serial,
+                "-s", serial,
                 "shell",
                 "settings",
                 "get",
@@ -82,14 +82,20 @@ class AdbProgram(private val path: String) {
             .trim()
     }
 
-    suspend fun getDeviceModel(target: Target.Device): String {
+    suspend fun getDeviceModel(serial: String): String {
 
-        return getProperty(target, key = "ro.product.model")
+        return getProperty(
+            serial = serial,
+            key = "ro.product.model"
+        )
     }
 
-    suspend fun getEmulatorName(target: Target.Device): String {
+    suspend fun getEmulatorName(serial: String): String {
 
-        return getProperty(target, key = "ro.kernel.qemu.avd_name")
+        return getProperty(
+            serial = serial,
+            key = "ro.kernel.qemu.avd_name"
+        )
     }
 
     companion object {

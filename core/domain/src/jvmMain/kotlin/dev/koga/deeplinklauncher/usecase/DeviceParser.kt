@@ -1,13 +1,16 @@
 package dev.koga.deeplinklauncher.usecase
 
+import dev.koga.deeplinklauncher.model.AdbProgram
 import dev.koga.deeplinklauncher.model.Target
 import io.github.aakira.napier.log
 
-class DeviceParser {
+class DeviceParser(
+    private val adbProgram: AdbProgram
+) {
 
     private val pairRegex = Regex(pattern = "(\\S+)\\s*:\\s*\"?([^\"\\s]+)")
 
-    operator fun invoke(input: String): Target.Device {
+    suspend operator fun invoke(input: String): Target.Device {
 
         log { "device: $input" }
 
@@ -27,12 +30,22 @@ class DeviceParser {
         return when (type) {
             "SOCKET" -> Target.Device.Emulator(
                 serial = serial,
-                active = active
+                active = active,
+                name = adbProgram.getEmulatorName(
+                    serial = serial
+                ).ifEmpty {
+                    serial
+                }
             )
 
             else -> Target.Device.Physical(
                 serial = serial,
-                active = active
+                active = active,
+                name = adbProgram.getDeviceName(
+                    serial = serial
+                ).ifEmpty {
+                    serial
+                }
             )
         }
     }
