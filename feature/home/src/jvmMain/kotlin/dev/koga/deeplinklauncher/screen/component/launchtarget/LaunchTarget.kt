@@ -1,10 +1,7 @@
 package dev.koga.deeplinklauncher.screen.component.launchtarget
 
 import androidx.compose.foundation.border
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
@@ -66,7 +63,6 @@ fun LaunchTarget() {
                 .menuAnchor()
                 .padding(4.dp),
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
 
             Icon(
@@ -76,6 +72,8 @@ fun LaunchTarget() {
                 modifier = Modifier.size(18.dp)
             )
 
+            Spacer(Modifier.width(8.dp))
+
             Text(
                 text = uiState.selected.name,
                 style = typography.labelLarge.copy(
@@ -83,6 +81,8 @@ fun LaunchTarget() {
                     fontSize = 16.sp
                 )
             )
+
+            Spacer(Modifier.width(8.dp))
 
             if (uiState.targets.size > 1) {
 
