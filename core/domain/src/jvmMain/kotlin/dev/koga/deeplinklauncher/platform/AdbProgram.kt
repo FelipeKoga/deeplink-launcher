@@ -1,4 +1,4 @@
-package dev.koga.deeplinklauncher.model
+package dev.koga.deeplinklauncher.platform
 
 import dev.koga.deeplinklauncher.datasource.AdbDataSource
 import dev.koga.deeplinklauncher.util.ext.installed

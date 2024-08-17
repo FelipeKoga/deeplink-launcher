@@ -1,11 +1,11 @@
 package dev.koga.deeplinklauncher.util.ext
 
-import java.io.BufferedReader
+import java.io.Reader
 
 val String.protoTextRegex
     get() = Regex(pattern = "($this)\\s\\{[^}]+}")
 
-inline fun BufferedReader.useProtoText(
+inline fun Reader.useProtoText(
     name: String,
     block: (String) -> Unit
 ) {

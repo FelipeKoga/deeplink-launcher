@@ -61,13 +61,14 @@ class TargetDataSource(
                     parser(deviceProtoText)
                 )
 
-                val targets =
-                    listOf(Target.Browser) +
-                            devices.filter { lines ->
-                                lines.active
-                            }
-
-                emit(targets)
+                emit(
+                    listOf(
+                        Target.Browser,
+                        *devices.filter { device ->
+                            device.active
+                        }.toTypedArray()
+                    )
+                )
             }
     }.onEach {
         update(it)
