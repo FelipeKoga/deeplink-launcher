@@ -1,3 +1,5 @@
+import extension.setFrameworkBaseName
+
 plugins {
     id("dev.koga.deeplinklauncher.multiplatform")
     alias(libs.plugins.jetbrainsCompose)
@@ -5,9 +7,13 @@ plugins {
 }
 
 kotlin {
+    setFrameworkBaseName("resources")
+
     sourceSets {
         commonMain.dependencies {
             implementation(compose.components.resources)
+        }
+        androidMain.dependencies {
             implementation(libs.compose.runtime)
         }
     }

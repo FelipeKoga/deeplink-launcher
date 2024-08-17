@@ -1,3 +1,5 @@
+import extension.setFrameworkBaseName
+
 plugins {
     id("dev.koga.deeplinklauncher.multiplatform")
     alias(libs.plugins.jetbrainsCompose)
@@ -5,6 +7,8 @@ plugins {
 }
 
 kotlin {
+    setFrameworkBaseName(name = "shared", isStatic = true)
+
     task("testClasses")
 
     sourceSets {

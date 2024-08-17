@@ -1,3 +1,5 @@
+import extension.setFrameworkBaseName
+
 plugins {
     id("dev.koga.deeplinklauncher.multiplatform")
     kotlin("plugin.serialization") version "1.9.20"
@@ -5,6 +7,8 @@ plugins {
 }
 
 kotlin {
+    setFrameworkBaseName("database")
+
     sourceSets {
         commonMain.dependencies {
             implementation(projects.core.domain)
@@ -21,6 +25,10 @@ kotlin {
 
         jvmMain.dependencies {
             implementation(libs.sqldelight.jvm)
+        }
+
+        nativeMain.dependencies {
+            implementation("app.cash.sqldelight:native-driver:2.0.0")
         }
     }
 }

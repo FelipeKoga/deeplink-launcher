@@ -1,8 +1,12 @@
+import extension.setFrameworkBaseName
+
 plugins {
     id("dev.koga.deeplinklauncher.multiplatform")
 }
 
 kotlin {
+    setFrameworkBaseName("preferences")
+
     sourceSets {
         commonMain.dependencies {
             implementation(projects.core.domain)
