@@ -15,20 +15,6 @@ fun String.installed(): Boolean {
     return process.waitFor() == 0
 }
 
-inline fun String.dropWhile(
-    n: Int,
-    predicate: (Char) -> Boolean
-): String {
-
-    for ((count, index) in indices.withIndex()) {
-        if (count >= n || !predicate(this[index])) {
-            return substring(index)
-        }
-    }
-
-    return ""
-}
-
 fun String.get(regex: Regex): MatchResult {
 
     val match = regex.find(this) ?: error("No match found")
