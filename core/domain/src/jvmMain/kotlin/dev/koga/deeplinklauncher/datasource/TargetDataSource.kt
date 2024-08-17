@@ -57,6 +57,7 @@ class TargetDataSource(
             .bufferedReader()
             .useLines {
                 it.forEach { line ->
+
                     devices.addOrUpdate(
                         parser(line).withName()
                     )
