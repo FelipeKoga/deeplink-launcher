@@ -1,15 +1,16 @@
 package dev.koga.deeplinklauncher.model
 
+import dev.koga.deeplinklauncher.datasource.AdbDataSource
 import dev.koga.deeplinklauncher.util.ext.installed
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
-class AdbProgram(private val path: String) {
+class AdbProgram(private val path: String) : AdbDataSource {
 
-    val installed get() = path.installed()
+    override val installed get() = path.installed()
 
-    suspend fun startActivity(
-        target: Target.Device,
+    override suspend fun startActivity(
+        serial: String,
         action: String,
         arg: String,
     ): Process {
@@ -17,7 +18,7 @@ class AdbProgram(private val path: String) {
         return withContext(Dispatchers.IO) {
             ProcessBuilder().command(
                 path,
-                "-s", target.serial,
+                "-s", serial,
                 "shell",
                 "am", "start",
                 "-a", action,
@@ -28,7 +29,7 @@ class AdbProgram(private val path: String) {
         }
     }
 
-    suspend fun trackDevices(): Process {
+    override suspend fun trackDevices(): Process {
 
         return withContext(Dispatchers.IO) {
             ProcessBuilder().command(
@@ -39,7 +40,7 @@ class AdbProgram(private val path: String) {
         }
     }
 
-    suspend fun getProperty(serial: String, key: String): String {
+    override suspend fun getProperty(serial: String, key: String): String {
 
         val process = withContext(Dispatchers.IO) {
             ProcessBuilder().command(
@@ -59,7 +60,7 @@ class AdbProgram(private val path: String) {
             .trim()
     }
 
-    suspend fun getDeviceName(serial: String): String {
+    override suspend fun getDeviceName(serial: String): String {
 
         val process = withContext(Dispatchers.IO) {
             ProcessBuilder().command(
@@ -82,7 +83,7 @@ class AdbProgram(private val path: String) {
             .trim()
     }
 
-    suspend fun getDeviceModel(serial: String): String {
+    override suspend fun getDeviceModel(serial: String): String {
 
         return getProperty(
             serial = serial,
@@ -90,7 +91,7 @@ class AdbProgram(private val path: String) {
         )
     }
 
-    suspend fun getEmulatorName(serial: String): String {
+    override suspend fun getEmulatorName(serial: String): String {
 
         return getProperty(
             serial = serial,

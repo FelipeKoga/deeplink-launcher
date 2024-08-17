@@ -1,11 +1,12 @@
 package dev.koga.deeplinklauncher.usecase
 
+import dev.koga.deeplinklauncher.datasource.AdbDataSource
 import dev.koga.deeplinklauncher.model.AdbProgram
 import dev.koga.deeplinklauncher.model.Target
 import io.github.aakira.napier.log
 
 class DeviceParser(
-    private val adbProgram: AdbProgram
+    private val adbProgram: AdbDataSource
 ) {
 
     private val pairRegex = Regex(pattern = "(\\S+)\\s*:\\s*\"?([^\"\\s]+)")
