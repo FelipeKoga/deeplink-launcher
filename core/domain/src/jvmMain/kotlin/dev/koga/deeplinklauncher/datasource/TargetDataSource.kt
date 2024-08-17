@@ -57,10 +57,10 @@ class TargetDataSource(
         adbProgram.trackDevices()
             .inputStream
             .bufferedReader()
-            .useProtoText(name = "device") { protoText ->
+            .useProtoText(name = "device") { deviceProtoText ->
 
                 devices.addOrUpdate(
-                    parser(protoText).withName()
+                    parser(deviceProtoText)
                 )
 
                 val targets =
@@ -73,34 +73,5 @@ class TargetDataSource(
             }
     }.onEach {
         update(it)
-    }
-
-    private suspend fun Target.Device.withName(): Target.Device {
-
-        return when (this) {
-            is Target.Device.Emulator -> {
-                copy(
-                    name = adbProgram.getEmulatorName(
-                        target = this
-                    ).ifEmpty {
-                        serial
-                    },
-                )
-            }
-
-            is Target.Device.Physical -> {
-                copy(
-                    name = adbProgram.getDeviceName(
-                        target = this
-                    ).ifEmpty {
-                        adbProgram.getDeviceModel(
-                            target = this
-                        ).ifEmpty {
-                            serial
-                        }
-                    },
-                )
-            }
-        }
     }
 }
