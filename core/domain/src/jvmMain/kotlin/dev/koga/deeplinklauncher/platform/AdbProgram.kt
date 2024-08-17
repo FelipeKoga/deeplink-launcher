@@ -16,7 +16,7 @@ class AdbProgram(private val path: String) : AdbDataSource {
     ): Process {
 
         return withContext(Dispatchers.IO) {
-            ProcessBuilder().command(
+            ProcessBuilder(
                 path,
                 "-s", serial,
                 "shell",
@@ -32,7 +32,7 @@ class AdbProgram(private val path: String) : AdbDataSource {
     override suspend fun trackDevices(): Process {
 
         return withContext(Dispatchers.IO) {
-            ProcessBuilder().command(
+            ProcessBuilder(
                 path,
                 "track-devices",
                 "--proto-text"
@@ -43,7 +43,7 @@ class AdbProgram(private val path: String) : AdbDataSource {
     override suspend fun getProperty(serial: String, key: String): String {
 
         val process = withContext(Dispatchers.IO) {
-            ProcessBuilder().command(
+            ProcessBuilder(
                 path,
                 "-s", serial,
                 "shell",
@@ -63,7 +63,7 @@ class AdbProgram(private val path: String) : AdbDataSource {
     override suspend fun getDeviceName(serial: String): String {
 
         val process = withContext(Dispatchers.IO) {
-            ProcessBuilder().command(
+            ProcessBuilder(
                 path,
                 "-s", serial,
                 "shell",

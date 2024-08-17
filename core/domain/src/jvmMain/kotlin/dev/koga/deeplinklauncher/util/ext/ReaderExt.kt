@@ -1,16 +1,14 @@
 package dev.koga.deeplinklauncher.util.ext
 
+import dev.koga.deeplinklauncher.model.ProtoText
 import java.io.Reader
 
-val String.protoTextRegex
-    get() = Regex(pattern = "($this)\\s\\{[^}]+}")
-
 inline fun Reader.useProtoText(
-    name: String,
-    block: (String) -> Unit
+    target: String,
+    block: (ProtoText) -> Unit
 ) {
 
-    val protoTextRegex = name.protoTextRegex
+    val protoTextRegex = Regex(pattern = "($target)\\s*(\\{[^}]+})")
 
     val builder = StringBuilder()
 
@@ -20,7 +18,11 @@ inline fun Reader.useProtoText(
             builder.append(line)
 
             protoTextRegex.find(builder)?.let {
-                block(it.value)
+
+                val (name, text) = it.destructured
+
+                block(ProtoText.from(name, text))
+
                 builder.clear()
             }
         }

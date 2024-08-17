@@ -2,6 +2,7 @@ package dev.koga.deeplinklauncher.usecase
 
 import dev.koga.deeplinklauncher.datasource.FakeAdbProgram
 import dev.koga.deeplinklauncher.model.FakeDevice
+import dev.koga.deeplinklauncher.model.ProtoText
 import dev.koga.deeplinklauncher.model.Target
 import junit.framework.TestCase.assertEquals
 import kotlinx.coroutines.test.runTest
@@ -23,22 +24,6 @@ class DeviceParserTest {
     @Test
     fun `testing parser`() = runTest {
 
-        val activeAndUsb = """
-                device {
-                    serial: "ZF523HKK7K"
-                    state: DEVICE
-                    connection_type: USB
-                }
-            """.trimIndent()
-
-        val offlineAndSocket = """
-                device {
-                    serial: "emulator-5554"
-                    state: OFFLINE
-                    connection_type: SOCKET
-                }
-            """.trimIndent()
-
         adbProgram.devices["ZF523HKK7K"] = FakeDevice(
             name = "Pixel 3"
         )
@@ -50,8 +35,22 @@ class DeviceParserTest {
         )
 
         val target = listOf(
-            activeAndUsb,
-            offlineAndSocket
+            ProtoText(
+                name = "device",
+                fields = mapOf(
+                    "serial" to "ZF523HKK7K",
+                    "state" to "DEVICE",
+                    "connection_type" to "USB"
+                )
+            ),
+            ProtoText(
+                name = "device",
+                fields = mapOf(
+                    "serial" to "emulator-5554",
+                    "state" to "OFFLINE",
+                    "connection_type" to "SOCKET"
+                )
+            )
         )
 
         val expected = listOf(

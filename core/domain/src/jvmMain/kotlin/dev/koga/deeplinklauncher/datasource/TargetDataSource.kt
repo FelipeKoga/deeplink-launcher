@@ -55,7 +55,7 @@ class TargetDataSource(
         adbDataSource.trackDevices()
             .inputStream
             .bufferedReader()
-            .useProtoText(name = "device") { deviceProtoText ->
+            .useProtoText(target = "device") { deviceProtoText ->
 
                 devices.addOrUpdate(
                     parser(deviceProtoText)
