@@ -9,52 +9,38 @@ class DeviceParserTest {
     private val parser = DeviceParser()
 
     @Test
-    fun `testing state`() {
+    fun `testing parser`() {
+
+        val activeAndUsb = """
+                device {
+                    serial: "ZF523HKK7K"
+                    state: DEVICE
+                    connection_type: USB
+                }
+            """.trimIndent()
+
+        val offlineAndSocket = """
+                device {
+                    serial: "emulator-5554"
+                    state: OFFLINE
+                    connection_type: SOCKET
+                }
+            """.trimIndent()
 
         val target = listOf(
-            "emulator-5554 device",
-            "emulator-5554 offline",
-            "0001ZF523HKK7K device",
-            "0001ZF523HKK7K offline",
+            activeAndUsb,
+            offlineAndSocket
         )
 
         val expected = listOf(
-            Target.Device.Emulator(
-                serial = "emulator-5554",
+            Target.Device.Physical(
+                serial = "ZF523HKK7K",
                 active = true,
             ),
             Target.Device.Emulator(
                 serial = "emulator-5554",
-                active = false
-            ),
-            Target.Device.Physical(
-                serial = "ZF523HKK7K",
-                active = true
-            ),
-            Target.Device.Physical(
-                serial = "ZF523HKK7K",
-                active = false
-            ),
-        )
-
-        assertEquals(expected, target.map(parser::invoke))
-    }
-
-    @Test
-    fun `testing serial`() {
-
-        val target = listOf(
-            "0013emulator-5554 device",
-            "002aemulator-5554 device",
-            "0001ZF523HKK7K device",
-            "003cZF523HKK7K device",
-        )
-
-        val expected = listOf(
-            Target.Device.Emulator(serial = "emulator-5554"),
-            Target.Device.Emulator(serial = "emulator-5554"),
-            Target.Device.Physical(serial = "ZF523HKK7K"),
-            Target.Device.Physical(serial = "ZF523HKK7K"),
+                active = false,
+            )
         )
 
         assertEquals(expected, target.map(parser::invoke))

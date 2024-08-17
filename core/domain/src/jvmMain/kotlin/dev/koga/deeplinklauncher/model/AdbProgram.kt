@@ -32,7 +32,9 @@ class AdbProgram(private val path: String) {
 
         return withContext(Dispatchers.IO) {
             ProcessBuilder().command(
-                path, "track-devices"
+                path,
+                "track-devices",
+                "--proto-text"
             ).start()
         }
     }

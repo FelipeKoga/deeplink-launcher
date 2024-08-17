@@ -6,7 +6,9 @@ import dev.koga.deeplinklauncher.usecase.DeviceParser
 import dev.koga.deeplinklauncher.util.ext.addOrUpdate
 import dev.koga.deeplinklauncher.util.ext.next
 import dev.koga.deeplinklauncher.util.ext.previous
+import dev.koga.deeplinklauncher.util.ext.useProtoText
 import kotlinx.coroutines.flow.*
+
 
 class TargetDataSource(
     private val adbProgram: AdbProgram,
@@ -55,21 +57,19 @@ class TargetDataSource(
         adbProgram.trackDevices()
             .inputStream
             .bufferedReader()
-            .useLines {
-                it.forEach { line ->
+            .useProtoText(name = "device") { protoText ->
 
-                    devices.addOrUpdate(
-                        parser(line).withName()
-                    )
+                devices.addOrUpdate(
+                    parser(protoText).withName()
+                )
 
-                    val targets =
-                        listOf(Target.Browser) +
-                                devices.filter { lines ->
-                                    lines.active
-                                }
+                val targets =
+                    listOf(Target.Browser) +
+                            devices.filter { lines ->
+                                lines.active
+                            }
 
-                    emit(targets)
-                }
+                emit(targets)
             }
     }.onEach {
         update(it)
