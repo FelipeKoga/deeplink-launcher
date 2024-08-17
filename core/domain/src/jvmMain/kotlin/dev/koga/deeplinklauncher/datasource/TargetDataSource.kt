@@ -1,6 +1,5 @@
 package dev.koga.deeplinklauncher.datasource
 
-import dev.koga.deeplinklauncher.model.AdbProgram
 import dev.koga.deeplinklauncher.model.Target
 import dev.koga.deeplinklauncher.usecase.DeviceParser
 import dev.koga.deeplinklauncher.util.ext.addOrUpdate
@@ -9,9 +8,8 @@ import dev.koga.deeplinklauncher.util.ext.previous
 import dev.koga.deeplinklauncher.util.ext.useProtoText
 import kotlinx.coroutines.flow.*
 
-
 class TargetDataSource(
-    private val adbProgram: AdbProgram,
+    private val adbDataSource: AdbDataSource,
     private val parser: DeviceParser
 ) {
 
@@ -50,11 +48,11 @@ class TargetDataSource(
 
     fun track() = flow {
 
-        if (!adbProgram.installed) return@flow
+        if (!adbDataSource.installed) return@flow
 
         val devices = mutableListOf<Target.Device>()
 
-        adbProgram.trackDevices()
+        adbDataSource.trackDevices()
             .inputStream
             .bufferedReader()
             .useProtoText(name = "device") { deviceProtoText ->
