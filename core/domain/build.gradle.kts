@@ -1,9 +1,12 @@
+import extension.setFrameworkBaseName
+
 plugins {
     id("dev.koga.deeplinklauncher.multiplatform")
     kotlin("plugin.serialization") version "1.9.20"
 }
 
 kotlin {
+    setFrameworkBaseName("domain")
     sourceSets {
         commonMain.dependencies {
             api(libs.kotlinx.datetime)

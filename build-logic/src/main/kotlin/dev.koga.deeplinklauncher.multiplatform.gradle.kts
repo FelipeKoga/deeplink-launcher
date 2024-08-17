@@ -12,7 +12,7 @@ kotlin {
 
     sourceSets {
         commonMain.dependencies {
-            implementation("org.jetbrains.kotlinx:kotlinx-coroutines-swing:1.8.0")
+//            implementation("org.jetbrains.kotlinx:kotlinx-coroutines-swing:1.8.0")
         }
     }
 }
