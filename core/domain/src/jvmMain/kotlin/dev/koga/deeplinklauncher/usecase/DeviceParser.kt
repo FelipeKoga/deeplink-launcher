@@ -1,14 +1,19 @@
 package dev.koga.deeplinklauncher.usecase
 
 import dev.koga.deeplinklauncher.model.Target
+import dev.koga.deeplinklauncher.util.ext.dropWhile
+import dev.koga.deeplinklauncher.util.ext.get
 
 class DeviceParser {
 
+    private val pattern = Regex(pattern = "(.+)\\s+(.+)")
+
     operator fun invoke(input: String): Target.Device {
 
-        val (serial, state) = input.dropWhile {
-            it.isDigit()
-        }.split(Regex("\\s+"))
+        val (serial, state) = input
+            .dropWhile(n = 4, Char::isDigit)
+            .get(pattern)
+            .destructured
 
         return if (serial.startsWith(prefix = "emulator")) {
             Target.Device.Emulator(
