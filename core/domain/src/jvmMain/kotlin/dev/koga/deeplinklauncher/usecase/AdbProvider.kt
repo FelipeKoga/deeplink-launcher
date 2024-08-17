@@ -1,6 +1,6 @@
 package dev.koga.deeplinklauncher.usecase
 
-import dev.koga.deeplinklauncher.model.AdbProgram
+import dev.koga.deeplinklauncher.platform.AdbProgram
 import dev.koga.deeplinklauncher.model.Os
 import dev.koga.deeplinklauncher.util.ext.installed
 

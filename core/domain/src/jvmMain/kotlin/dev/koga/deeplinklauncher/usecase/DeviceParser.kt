@@ -1,7 +1,6 @@
 package dev.koga.deeplinklauncher.usecase
 
 import dev.koga.deeplinklauncher.datasource.AdbDataSource
-import dev.koga.deeplinklauncher.model.AdbProgram
 import dev.koga.deeplinklauncher.model.Target
 import io.github.aakira.napier.log
 
