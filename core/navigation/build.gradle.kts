@@ -1,4 +1,5 @@
-import extension.setFrameworkBaseName
+
+import extension.setupBinariesFramework
 
 plugins {
     id("dev.koga.deeplinklauncher.multiplatform")
@@ -7,13 +8,15 @@ plugins {
 }
 
 kotlin {
-    setFrameworkBaseName("navigation")
+    setupBinariesFramework("navigation")
 
     sourceSets {
         commonMain.dependencies {
+            implementation(compose.runtime)
+            implementation(compose.material)
+
             implementation(libs.voyager.navigator)
             implementation(libs.voyager.bottomSheet)
-            implementation(compose.runtime)
         }
     }
 }

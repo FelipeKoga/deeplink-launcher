@@ -73,6 +73,11 @@ class ExportScreen : Screen {
             }
         }
 
+        if (showPermissionRequest) {
+            storagePermission.request()
+            showPermissionRequest = false
+        }
+
         Scaffold(
             topBar = {
                 DLLTopBar(

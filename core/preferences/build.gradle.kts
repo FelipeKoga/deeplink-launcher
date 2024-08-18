@@ -1,11 +1,11 @@
-import extension.setFrameworkBaseName
+import extension.setupBinariesFramework
 
 plugins {
     id("dev.koga.deeplinklauncher.multiplatform")
 }
 
 kotlin {
-    setFrameworkBaseName("preferences")
+    setupBinariesFramework("preferences")
 
     sourceSets {
         commonMain.dependencies {
