@@ -1,10 +1,17 @@
 import SwiftUI
+import shared
 
 @main
 struct iOSApp: App {
-	var body: some Scene {
-		WindowGroup {
-			ContentView()
-		}
-	}
+    
+    init() {
+        KoinInitKt.doInitKoin()
+    }
+    
+    var body: some Scene {
+        WindowGroup {
+            ContentView().edgesIgnoringSafeArea(.all)
+        }
+    }
+    
 }

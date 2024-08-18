@@ -1,4 +1,4 @@
-import extension.setFrameworkBaseName
+import extension.setupBinariesFramework
 
 plugins {
     id("dev.koga.deeplinklauncher.multiplatform")
@@ -7,7 +7,7 @@ plugins {
 }
 
 kotlin {
-    setFrameworkBaseName("database")
+    setupBinariesFramework("database")
 
     sourceSets {
         commonMain.dependencies {
@@ -27,8 +27,9 @@ kotlin {
             implementation(libs.sqldelight.jvm)
         }
 
-        nativeMain.dependencies {
-            implementation("app.cash.sqldelight:native-driver:2.0.0")
+        iosMain.dependencies {
+            implementation(libs.native.driver)
+            implementation(libs.stately)
         }
     }
 }
@@ -43,4 +44,5 @@ sqldelight {
             packageName.set("dev.koga.deeplinklauncher.database")
         }
     }
+    linkSqlite = true
 }

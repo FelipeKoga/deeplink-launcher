@@ -28,7 +28,7 @@ import org.koin.compose.koinInject
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun MainApp() {
+fun App() {
     val preferencesDataSource: PreferencesDataSource = koinInject()
 
     val preferences by preferencesDataSource.preferencesStream.collectAsState(

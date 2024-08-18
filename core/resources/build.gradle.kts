@@ -1,4 +1,4 @@
-import extension.setFrameworkBaseName
+import extension.setupBinariesFramework
 
 plugins {
     id("dev.koga.deeplinklauncher.multiplatform")
@@ -7,14 +7,12 @@ plugins {
 }
 
 kotlin {
-    setFrameworkBaseName("resources")
+    setupBinariesFramework("resources")
 
     sourceSets {
         commonMain.dependencies {
+            implementation(compose.runtime)
             implementation(compose.components.resources)
-        }
-        androidMain.dependencies {
-            implementation(libs.compose.runtime)
         }
     }
 }
