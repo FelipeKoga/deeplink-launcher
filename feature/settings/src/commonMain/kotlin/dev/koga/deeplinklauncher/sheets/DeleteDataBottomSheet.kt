@@ -1,4 +1,4 @@
-package dev.koga.deeplinklauncher.components
+package dev.koga.deeplinklauncher.sheets
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer

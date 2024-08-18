@@ -1,4 +1,4 @@
-import extension.setFrameworkBaseName
+import extension.setupBinariesFramework
 
 plugins {
     id("dev.koga.deeplinklauncher.multiplatform")
@@ -7,7 +7,7 @@ plugins {
 }
 
 kotlin {
-    setFrameworkBaseName("deeplink_details")
+    setupBinariesFramework("deeplink_details")
 
     sourceSets {
         commonMain.dependencies {
