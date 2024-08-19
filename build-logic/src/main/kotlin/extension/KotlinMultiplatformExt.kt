@@ -15,7 +15,6 @@ fun KotlinMultiplatformExtension.setupBinariesFramework(
         it.binaries.framework {
             this.baseName = name
             this.isStatic = isStatic
-            linkerOpts.add("-lsqlite3")
         }
     }
 
