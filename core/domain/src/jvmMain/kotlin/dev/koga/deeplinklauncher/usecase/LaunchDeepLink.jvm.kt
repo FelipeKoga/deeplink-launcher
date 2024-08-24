@@ -8,7 +8,7 @@ import java.net.URI
 
 actual class LaunchDeepLink(
     private val dataSource: DeepLinkDataSource,
-    private val startActivity: StartActivity,
+    private val startActivity: ExecuteAdb,
 ) {
     actual fun launch(url: String): LaunchDeepLinkResult {
         val adbResult = launchWithAdb(url)
