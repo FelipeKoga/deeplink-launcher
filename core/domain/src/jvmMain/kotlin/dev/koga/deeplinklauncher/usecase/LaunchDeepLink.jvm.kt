@@ -8,6 +8,7 @@ import java.net.URI
 
 actual class LaunchDeepLink(
     private val dataSource: DeepLinkDataSource,
+    private val startActivity: StartActivity,
 ) {
     actual fun launch(url: String): LaunchDeepLinkResult {
         val adbResult = launchWithAdb(url)
@@ -23,9 +24,10 @@ actual class LaunchDeepLink(
 
     private fun launchWithAdb(link: String): LaunchDeepLinkResult {
         return try {
-            val command = "adb shell am start -a android.intent.action.VIEW -d \"$link\""
-            val process = Runtime.getRuntime().exec(command)
-            process.waitFor()
+            val process = startActivity(
+                action = "android.intent.action.VIEW",
+                arg = link,
+            )
 
             return if (process.exitValue() == 0) {
                 LaunchDeepLinkResult.Success(link)
