@@ -1,3 +1,6 @@
 <resources>
-    <style name="AppTheme" parent="android:Theme.Material.NoActionBar"/>
+    <style name="AppTheme" parent="android:Theme.Material.NoActionBar">
+        <item name="android:windowAllowReturnTransitionOverlap">true</item>
+        <item name="android:windowAllowEnterTransitionOverlap">true</item>
+    </style>
 </resources>
