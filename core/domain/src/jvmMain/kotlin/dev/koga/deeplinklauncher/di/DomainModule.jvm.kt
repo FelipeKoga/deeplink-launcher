@@ -8,6 +8,7 @@ import dev.koga.deeplinklauncher.provider.UUIDProvider
 import dev.koga.deeplinklauncher.usecase.GetDeepLinkMetadata
 import dev.koga.deeplinklauncher.usecase.LaunchDeepLink
 import dev.koga.deeplinklauncher.usecase.ShareDeepLink
+import dev.koga.deeplinklauncher.usecase.StartActivity
 import org.koin.core.module.Module
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
@@ -21,5 +22,6 @@ internal actual val platformDomainModule: Module = module {
     singleOf(::GetDeepLinkMetadata)
     singleOf(::PlatformInfo)
 
+    single { StartActivity }
     single { UUIDProvider }
 }
