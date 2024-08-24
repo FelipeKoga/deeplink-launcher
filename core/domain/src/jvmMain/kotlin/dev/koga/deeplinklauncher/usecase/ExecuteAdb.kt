@@ -3,7 +3,7 @@ package dev.koga.deeplinklauncher.usecase
 import dev.koga.deeplinklauncher.model.Os
 import dev.koga.deeplinklauncher.util.ext.installed
 
-object StartActivity {
+object ExecuteAdb {
 
     operator fun invoke(action: String, arg: String): Process {
         val process = ProcessBuilder().command(
@@ -36,6 +36,10 @@ object StartActivity {
 
             Os.WINDOWS -> {
                 "$userHome/AppData/Local/Android/Sdk/platform-tools/adb.exe"
+            }
+
+            Os.MAC -> {
+                "$userHome/Library/Android/sdk/platform-tools/adb"
             }
         }
     }
