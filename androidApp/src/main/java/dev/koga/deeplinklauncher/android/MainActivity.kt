@@ -11,7 +11,7 @@ import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import dev.koga.deeplinklauncher.MainApp
+import dev.koga.deeplinklauncher.App
 import dev.koga.deeplinklauncher.datasource.PreferencesDataSource
 import dev.koga.deeplinklauncher.model.AppTheme
 import kotlinx.coroutines.flow.collectLatest
@@ -37,7 +37,7 @@ class MainActivity : FragmentActivity(), KoinComponent {
         }
 
         setContent {
-            MainApp()
+            App()
         }
     }
 }

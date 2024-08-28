@@ -31,7 +31,11 @@ private val screenModule = screenModule {
     register<SharedScreen.FolderDetails> { provider -> FolderDetailsScreen(provider.id) }
 }
 
-fun initKoin(appModule: Module = module {}) {
+fun initKoin() {
+    initKoin(module {})
+}
+
+fun initKoin(appModule: Module) {
     ScreenRegistry { screenModule() }
 
     startKoin {
