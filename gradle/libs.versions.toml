@@ -1,20 +1,21 @@
 [versions]
 datastorePreferencesCore = "1.1.1"
-kotlinxSerializationJson = "1.6.2"
+kotlinxSerializationJson = "1.6.3"
 
 androidGradlePlugin = "8.2.2"
 jetbrains-kotlinxDatetime = "0.5.0"
 kotlin = "2.0.0"
 kotlinx-immutable = "0.3.7"
 
-compose-plugin = "1.6.10"
-compose-runtime = "1.6.7"
+compose-plugin = "1.6.11"
+compose-runtime = "1.6.8"
 
-androidx-activity = "1.9.0"
+androidx-activity = "1.9.1"
 androidx-core = "1.13.1"
 
 material3WindowSizeClass = "0.5.0"
 mpfilepicker = "3.1.0"
+nativeDriver = "2.0.0"
 voyager = "1.0.0"
 
 koin = "3.5.3"
@@ -28,11 +29,11 @@ ktlint = "0.50.0"
 detekt = "1.22.0"
 composerules = "0.0.26"
 
-firebase-bom = "33.0.0"
-firebase-crashlytics-plugin = "3.0.1"
-google-services = "4.4.1"
-
-aboutlibraries = "11.2.0"
+firebase-bom = "33.1.2"
+firebase-crashlytics-plugin = "3.0.2"
+google-services = "4.4.2"
+stately = "2.0.7"
+aboutlibraries = "11.2.2"
 
 [libraries]
 android-gradle-plugin = { module = "com.android.tools.build:gradle", version.ref = "androidGradlePlugin" }
@@ -45,12 +46,15 @@ androidx-activity = { module = "androidx.activity:activity", version = "androidx
 androidx-core = { module = "androidx.core:core-ktx", version.ref = "androidx-core" }
 
 kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinxCoroutinesCore" }
+kotlinx-coroutines-swing = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-swing", version.ref = "kotlinxCoroutinesCore" }
 kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "jetbrains-kotlinxDatetime" }
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinxSerializationJson" }
 kotlinx-immutable = { module = "org.jetbrains.kotlinx:kotlinx-collections-immutable", version.ref = "kotlinx-immutable" }
+stately = { module = "co.touchlab:stately-common", version.ref = "stately" }
 
 material3-windowSizeClass = { module = "dev.chrisbanes.material3:material3-window-size-class-multiplatform", version.ref = "material3WindowSizeClass" }
 mpfilepicker = { module = "com.darkrockstudios:mpfilepicker", version.ref = "mpfilepicker" }
+native-driver = { module = "app.cash.sqldelight:native-driver", version.ref = "nativeDriver" }
 voyager-navigator = { module = "cafe.adriel.voyager:voyager-navigator", version.ref = "voyager" }
 voyager-screenmodel = { module = "cafe.adriel.voyager:voyager-screenmodel", version.ref = "voyager" }
 voyager-transitions = { module = "cafe.adriel.voyager:voyager-transitions", version.ref = "voyager" }

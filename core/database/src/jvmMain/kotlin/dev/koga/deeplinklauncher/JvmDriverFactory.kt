@@ -13,7 +13,6 @@ class JvmDriverFactory : DriverFactory {
         val databasePath = File(userHome, "$databaseName.db")
         val driver: SqlDriver = JdbcSqliteDriver("jdbc:sqlite:${databasePath.absolutePath}")
 
-        // Check if the database file exists to decide whether to create the schema
         if (!databasePath.exists()) {
             DeepLinkLauncherDatabase.Schema.create(driver)
         }

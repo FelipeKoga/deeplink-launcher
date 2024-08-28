@@ -1,9 +1,12 @@
+import extension.setupBinariesFramework
+
 plugins {
     id("dev.koga.deeplinklauncher.multiplatform")
     kotlin("plugin.serialization") version "1.9.20"
 }
 
 kotlin {
+    setupBinariesFramework("domain")
     sourceSets {
         commonMain.dependencies {
             api(libs.kotlinx.datetime)
