@@ -31,10 +31,9 @@ import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.registry.rememberScreen
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.koin.getScreenModel
-import dev.koga.deeplinklauncher.components.AppThemeBottomSheet
-import dev.koga.deeplinklauncher.components.DeleteDataBottomSheet
-import dev.koga.deeplinklauncher.components.OpenSourceLicensesScreen
-import dev.koga.deeplinklauncher.components.SuggestionsOptionBottomSheet
+import dev.koga.deeplinklauncher.sheets.AppThemeBottomSheet
+import dev.koga.deeplinklauncher.sheets.DeleteDataBottomSheet
+import dev.koga.deeplinklauncher.sheets.SuggestionsOptionBottomSheet
 import dev.koga.deeplinklauncher.platform.Platform
 import dev.koga.deeplinklauncher.platform.platform
 import dev.koga.resources.Res
@@ -116,7 +115,7 @@ class SettingsScreen : Screen {
             onNavigateToImport = { navigator.push(importScreen) },
             onShowDeleteDataBottomSheet = { bottomSheetType = BottomSheetType.DELETE_DATA },
             onNavigateToStore = screenModel::navigateToStore,
-            onNavigateToOpenSourceLicenses = { navigator.push(OpenSourceLicensesScreen()) },
+            onNavigateToOpenSourceLicenses = { navigator.push(OpenSourceLicensesScreen) },
             onNavigateToGithub = screenModel::navigateToGithub,
             onShowAppTheme = { bottomSheetType = BottomSheetType.APP_THEME },
             onShowSuggestionsOption = { bottomSheetType = BottomSheetType.SUGGESTIONS_OPTION },
@@ -289,6 +288,8 @@ fun SettingsScreenUI(
                             )
                         },
                     )
+
+                    Platform.IOS -> Unit
                 }
             }
 

@@ -19,6 +19,8 @@ kotlin {
             implementation(libs.koin.core)
             implementation(libs.koin.compose)
 
+            implementation(libs.kotlinx.coroutines.swing)
+
             implementation(compose.desktop.currentOs)
             implementation(compose.runtime)
             implementation(compose.foundation)
