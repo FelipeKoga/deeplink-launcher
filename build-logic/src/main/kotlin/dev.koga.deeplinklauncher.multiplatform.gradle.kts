@@ -1,4 +1,7 @@
+@file:OptIn(ExperimentalKotlinGradlePluginApi::class)
+
 import extension.getLibrary
+import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 
 plugins {
     kotlin("multiplatform")
@@ -18,6 +21,10 @@ kotlin {
         iosMain.dependencies {
             implementation(libs.getLibrary("stately"))
         }
+    }
+
+    compilerOptions {
+        freeCompilerArgs.add("-Xexpect-actual-classes")
     }
 }
 
