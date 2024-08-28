@@ -1,8 +1,15 @@
+@file:OptIn(ExperimentalKotlinGradlePluginApi::class)
+
+import extension.getLibrary
+import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
+
 plugins {
     kotlin("multiplatform")
     id("com.android.library")
     id("dev.koga.deeplinklauncher.code-analysis")
 }
+
+val libs: VersionCatalog = extensions.getByType<VersionCatalogsExtension>().named("libs")
 
 kotlin {
     applyDefaultHierarchyTemplate()
@@ -11,9 +18,13 @@ kotlin {
     androidTarget()
 
     sourceSets {
-        commonMain.dependencies {
-            implementation("org.jetbrains.kotlinx:kotlinx-coroutines-swing:1.8.0")
+        iosMain.dependencies {
+            implementation(libs.getLibrary("stately"))
         }
+    }
+
+    compilerOptions {
+        freeCompilerArgs.add("-Xexpect-actual-classes")
     }
 }
 

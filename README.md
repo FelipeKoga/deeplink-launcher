@@ -47,12 +47,12 @@
       <td>✅</td>
     </tr>
     <tr>
-      <td>Desktop</td>
+      <td>iOS</td>
       <td>✅</td>
     </tr>
     <tr>
-      <td>iOS</td>
-      <td>Planned</td>
+      <td>Desktop</td>
+      <td>✅</td>
     </tr>
   </table>
 
