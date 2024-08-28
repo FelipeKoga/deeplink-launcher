@@ -3,7 +3,7 @@ import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.WindowPlacement
 import androidx.compose.ui.window.application
 import androidx.compose.ui.window.rememberWindowState
-import dev.koga.deeplinklauncher.MainApp
+import dev.koga.deeplinklauncher.App
 import dev.koga.deeplinklauncher.initKoin
 import io.github.aakira.napier.DebugAntilog
 import io.github.aakira.napier.Napier
@@ -22,6 +22,6 @@ fun main() = application {
         title = "DeepLink Launcher",
         icon = painterResource("ic_launcher_round.webp"),
     ) {
-        MainApp()
+        App()
     }
 }

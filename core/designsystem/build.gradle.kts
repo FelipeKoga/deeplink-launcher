@@ -1,3 +1,5 @@
+import extension.setupBinariesFramework
+
 plugins {
     id("dev.koga.deeplinklauncher.multiplatform")
     alias(libs.plugins.jetbrainsCompose)
@@ -5,6 +7,8 @@ plugins {
 }
 
 kotlin {
+    setupBinariesFramework("designsystem")
+
     sourceSets {
         commonMain.dependencies {
             api(projects.core.resources)

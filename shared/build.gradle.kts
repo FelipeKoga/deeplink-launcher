@@ -1,3 +1,7 @@
+import extension.setupBinariesFramework
+import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
+import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
+
 plugins {
     id("dev.koga.deeplinklauncher.multiplatform")
     alias(libs.plugins.jetbrainsCompose)
@@ -5,6 +9,8 @@ plugins {
 }
 
 kotlin {
+    setupBinariesFramework(name = "shared", isStatic = true)
+
     task("testClasses")
 
     sourceSets {
@@ -46,3 +52,9 @@ android {
     namespace = "dev.koga.shared"
 }
 
+project.extensions.findByType(KotlinMultiplatformExtension::class.java)?.apply {
+    targets
+        .filterIsInstance<KotlinNativeTarget>()
+        .flatMap { it.binaries }
+        .forEach { compilationUnit -> compilationUnit.linkerOpts("-lsqlite3") }
+}
