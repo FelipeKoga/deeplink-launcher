@@ -1,5 +1,6 @@
 @file:OptIn(ExperimentalKotlinGradlePluginApi::class)
 
+import extension.getLibrary
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 
 plugins {
@@ -8,6 +9,8 @@ plugins {
     id("dev.koga.deeplinklauncher.code-analysis")
 }
 
+val libs: VersionCatalog = extensions.getByType<VersionCatalogsExtension>().named("libs")
+
 kotlin {
     applyDefaultHierarchyTemplate()
     jvmToolchain(17)
@@ -15,8 +18,8 @@ kotlin {
     androidTarget()
 
     sourceSets {
-        commonMain.dependencies {
-            implementation("org.jetbrains.kotlinx:kotlinx-coroutines-swing:1.8.0")
+        iosMain.dependencies {
+            implementation(libs.getLibrary("stately"))
         }
     }
 
