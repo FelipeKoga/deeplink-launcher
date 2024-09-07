@@ -12,6 +12,6 @@ class InstalledTest {
 
     @Test
     fun `should return false if the program isn't installed`() {
-        TestCase.assertFalse("irineu".installed())
+        TestCase.assertFalse("unknown-program".installed())
     }
 }

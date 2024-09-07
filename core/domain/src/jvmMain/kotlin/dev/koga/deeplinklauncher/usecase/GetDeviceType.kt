@@ -1,12 +1,12 @@
 package dev.koga.deeplinklauncher.usecase
 
-import dev.koga.deeplinklauncher.datasource.AdbDataSource
+import dev.koga.deeplinklauncher.manager.AdbManager
 import dev.koga.deeplinklauncher.model.ProtoText
 import dev.koga.deeplinklauncher.model.Target
 import io.github.aakira.napier.log
 
-class DeviceParser(
-    private val adbProgram: AdbDataSource
+class GetDeviceType(
+    private val adbManager: AdbManager
 ) {
 
     suspend operator fun invoke(protoText: ProtoText): Target.Device {
@@ -21,7 +21,7 @@ class DeviceParser(
             "SOCKET" -> Target.Device.Emulator(
                 serial = serial,
                 active = active,
-                name = adbProgram.getEmulatorName(
+                name = adbManager.getEmulatorName(
                     serial = serial
                 ).ifEmpty {
                     serial
@@ -31,7 +31,7 @@ class DeviceParser(
             else -> Target.Device.Physical(
                 serial = serial,
                 active = active,
-                name = adbProgram.getDeviceName(
+                name = adbManager.getDeviceName(
                     serial = serial
                 ).ifEmpty {
                     serial
