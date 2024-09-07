@@ -24,12 +24,11 @@ import org.koin.compose.koinInject
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
 @Composable
-fun LaunchTarget() {
-
-    val manager: LaunchTargetManager = koinInject()
-
+fun DevicesDropdown(
+    modifier: Modifier,
+    manager: DevicesDropdownManager = koinInject()
+) {
     val uiState by manager.uiState.collectAsState()
-
     var expanded by remember { mutableStateOf(false) }
 
     ExposedDropdownMenuBox(
@@ -37,12 +36,10 @@ fun LaunchTarget() {
         onExpandedChange = {
             expanded = !expanded && uiState.targets.size > 1
         },
-        modifier = Modifier
+        modifier = modifier
             .clip(RoundedCornerShape(4.dp))
             .onPointerEvent(PointerEventType.Scroll) {
-
                 val delta = it.changes.first().scrollDelta.y.toInt()
-
                 when {
                     delta < 0 -> manager.prev()
                     delta > 0 -> manager.next()
@@ -50,18 +47,17 @@ fun LaunchTarget() {
             }
             .border(
                 width = 1.dp,
-                color = colorScheme.secondary,
+                color = colorScheme.secondary.copy(alpha = .3f),
                 shape = RoundedCornerShape(4.dp)
             )
             .hoverIndication(
                 enabled = uiState.targets.size > 1,
             )
     ) {
-
         Row(
             modifier = Modifier
                 .menuAnchor()
-                .padding(4.dp),
+                .padding(horizontal = 12.dp, vertical = 8.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
 
@@ -85,7 +81,6 @@ fun LaunchTarget() {
             Spacer(Modifier.width(8.dp))
 
             if (uiState.targets.size > 1) {
-
                 Icon(
                     imageVector = Icons.Default.ArrowDropDown,
                     contentDescription = null,

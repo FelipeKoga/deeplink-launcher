@@ -7,5 +7,4 @@ import dev.koga.deeplinklauncher.DLLTopBarDefaults
 @Composable
 actual fun HomeTopBarTitle(modifier: Modifier) {
     DLLTopBarDefaults.title(modifier = modifier, text = "DeepLink Launcher")
-
 }

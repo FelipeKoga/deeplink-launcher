@@ -3,25 +3,22 @@ package dev.koga.deeplinklauncher.screen.component.launchtarget
 import dev.koga.deeplinklauncher.datasource.TargetDataSource
 import dev.koga.deeplinklauncher.model.Target
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 
-class LaunchTargetManager(
-    private val targetDataSource: TargetDataSource
+class DevicesDropdownManager(
+    private val targetDataSource: TargetDataSource,
+    coroutineScope: CoroutineScope,
 ) {
-
-    private val coroutines = CoroutineScope(Dispatchers.IO)
-
     val uiState = combine(
         targetDataSource.current,
         targetDataSource.track()
     ) { current, targets ->
         targets.toUiState(current)
     }.stateIn(
-        scope = coroutines,
-        initialValue = LaunchTargetUiState(),
+        scope = coroutineScope,
+        initialValue = DevicesUiState(),
         started = SharingStarted.WhileSubscribed()
     )
 

@@ -38,9 +38,9 @@ import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.koin.getScreenModel
 import dev.koga.deeplinklauncher.BoxPreview
 import dev.koga.deeplinklauncher.DLLHorizontalDivider
-import dev.koga.deeplinklauncher.DLLNavigationIcon
 import dev.koga.deeplinklauncher.DLLSingleChoiceSegmentedButtonRow
 import dev.koga.deeplinklauncher.DLLTopBar
+import dev.koga.deeplinklauncher.DLLTopBarDefaults
 import dev.koga.deeplinklauncher.LocalRootNavigator
 import dev.koga.deeplinklauncher.model.ExportFileType
 import dev.koga.deeplinklauncher.permission.StoragePermission
@@ -81,8 +81,12 @@ class ExportScreen : Screen {
         Scaffold(
             topBar = {
                 DLLTopBar(
-                    title = "Export DeepLinks",
-                    navigationIcon = { DLLNavigationIcon(onClicked = navigator::pop) },
+                    title = {
+                        DLLTopBarDefaults.title("Export DeepLinks")
+                    },
+                    navigationIcon = {
+                        DLLTopBarDefaults.navigationIcon(onClicked = navigator::pop)
+                    },
                 )
             },
             snackbarHost = { SnackbarHost(snackbarHostState) },
