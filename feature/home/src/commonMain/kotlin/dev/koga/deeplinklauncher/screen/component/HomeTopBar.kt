@@ -1,13 +1,13 @@
 package dev.koga.deeplinklauncher.screen.component
 
-import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.slideInHorizontally
-import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutHorizontally
-import androidx.compose.animation.slideOutVertically
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.ArrowBack
 import androidx.compose.material.icons.rounded.Clear
@@ -27,7 +27,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
@@ -94,11 +93,11 @@ internal fun HomeTopBar(
             isSearching,
             enter = slideInHorizontally(
                 initialOffsetX = { fullWidth -> fullWidth }, // Start from the right
-                animationSpec = tween(durationMillis = 500)
+                animationSpec = tween(durationMillis = 500),
             ),
             exit = slideOutHorizontally(
-                targetOffsetX = { fullWidth -> fullWidth }
-            )
+                targetOffsetX = { fullWidth -> fullWidth },
+            ),
         ) {
             HomeSearchBar(
                 modifier = Modifier
@@ -120,7 +119,6 @@ internal fun HomeTopBar(
                 },
             )
         }
-
     }
 }
 

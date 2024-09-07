@@ -9,19 +9,19 @@ actual class GetDeepLinkMetadata {
 
         val components = NSURLComponents.componentsWithURL(
             url = nsurl,
-            resolvingAgainstBaseURL = false
+            resolvingAgainstBaseURL = false,
         ) ?: return DeepLinkMetadata(
             link = link,
             scheme = null,
             query = null,
-            host = null
+            host = null,
         )
 
         return DeepLinkMetadata(
             link = link,
             scheme = components.scheme,
             query = components.query,
-            host = components.host
+            host = components.host,
         )
     }
 }

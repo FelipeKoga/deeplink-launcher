@@ -8,7 +8,7 @@ actual class ShareDeepLink {
     actual operator fun invoke(deepLink: DeepLink) {
         val activityViewController = UIActivityViewController(
             activityItems = listOf(deepLink.link),
-            applicationActivities = null
+            applicationActivities = null,
         )
 
         // Access the root view controller and present the share sheet
@@ -16,7 +16,7 @@ actual class ShareDeepLink {
         rootViewController?.presentViewController(
             activityViewController,
             animated = true,
-            completion = null
+            completion = null,
         )
     }
 }

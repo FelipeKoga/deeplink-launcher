@@ -2,8 +2,17 @@ package dev.koga.deeplinklauncher.platform
 
 import dev.koga.deeplinklauncher.model.FileType
 import kotlinx.cinterop.ExperimentalForeignApi
-
-import platform.Foundation.*
+import platform.Foundation.NSDocumentDirectory
+import platform.Foundation.NSFileManager
+import platform.Foundation.NSString
+import platform.Foundation.NSURL
+import platform.Foundation.NSUTF8StringEncoding
+import platform.Foundation.NSUserDomainMask
+import platform.Foundation.URLByAppendingPathComponent
+import platform.Foundation.create
+import platform.Foundation.writeToURL
+import kotlin.OptIn
+import kotlin.String
 
 actual class SaveFile {
     @OptIn(ExperimentalForeignApi::class)

@@ -13,13 +13,13 @@ sealed class Target {
         data class Emulator(
             override val serial: String,
             override val active: Boolean = true,
-            override val name: String = serial
+            override val name: String = serial,
         ) : Device()
 
         data class Physical(
             override val serial: String,
             override val active: Boolean = true,
-            override val name: String = serial
+            override val name: String = serial,
         ) : Device()
     }
 }

@@ -13,13 +13,13 @@ class DevicesDropdownManager(
 ) {
     val uiState = combine(
         targetDataSource.current,
-        targetDataSource.track()
+        targetDataSource.track(),
     ) { current, targets ->
         targets.toUiState(current)
     }.stateIn(
         scope = coroutineScope,
         initialValue = DevicesUiState(),
-        started = SharingStarted.WhileSubscribed()
+        started = SharingStarted.WhileSubscribed(),
     )
 
     fun select(target: Target) {

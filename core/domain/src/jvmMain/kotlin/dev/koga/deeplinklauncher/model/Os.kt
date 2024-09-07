@@ -3,7 +3,8 @@ package dev.koga.deeplinklauncher.model
 enum class Os {
     LINUX,
     WINDOWS,
-    MAC;
+    MAC,
+    ;
 
     companion object {
         fun get(

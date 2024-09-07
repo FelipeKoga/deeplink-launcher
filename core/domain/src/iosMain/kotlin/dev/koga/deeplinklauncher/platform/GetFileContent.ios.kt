@@ -2,8 +2,8 @@ package dev.koga.deeplinklauncher.platform
 
 import kotlinx.cinterop.ExperimentalForeignApi
 import platform.Foundation.NSString
-import platform.Foundation.stringWithContentsOfFile
 import platform.Foundation.NSUTF8StringEncoding
+import platform.Foundation.stringWithContentsOfFile
 
 actual class GetFileContent {
     @OptIn(ExperimentalForeignApi::class)

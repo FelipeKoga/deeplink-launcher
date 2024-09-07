@@ -16,7 +16,6 @@ fun String.installed(): Boolean {
 }
 
 fun String.get(regex: Regex): MatchResult {
-
     val match = regex.find(this) ?: error("No match found")
 
     return match
