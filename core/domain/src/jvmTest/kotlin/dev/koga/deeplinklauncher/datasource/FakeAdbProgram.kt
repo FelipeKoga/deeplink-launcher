@@ -1,17 +1,17 @@
 package dev.koga.deeplinklauncher.datasource
 
+import dev.koga.deeplinklauncher.manager.AdbManager
 import dev.koga.deeplinklauncher.model.FakeDevice
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
-class FakeAdbProgram(
-) : AdbDataSource {
+class FakeAdbManager : AdbManager {
 
     override var installed: Boolean = false
 
     var devices = mutableMapOf<String, FakeDevice>()
 
-    override suspend fun startActivity(
+    override suspend fun execute(
         serial: String,
         action: String, arg: String
     ): Process {

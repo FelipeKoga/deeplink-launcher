@@ -1,6 +1,6 @@
 package dev.koga.deeplinklauncher.usecase
 
-import dev.koga.deeplinklauncher.datasource.FakeAdbProgram
+import dev.koga.deeplinklauncher.datasource.FakeAdbManager
 import dev.koga.deeplinklauncher.model.FakeDevice
 import dev.koga.deeplinklauncher.model.ProtoText
 import dev.koga.deeplinklauncher.model.Target
@@ -9,26 +9,25 @@ import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Test
 
-class DeviceParserTest {
+class GetDeviceTypeTest {
 
-    private lateinit var parser: DeviceParser
-    private lateinit var adbProgram: FakeAdbProgram
+    private lateinit var getDeviceType: GetDeviceType
+    private lateinit var adbManager: FakeAdbManager
 
     @Before
     fun setUp() {
-
-        adbProgram = FakeAdbProgram()
-        parser = DeviceParser(adbProgram)
+        adbManager = FakeAdbManager()
+        getDeviceType = GetDeviceType(adbManager)
     }
 
     @Test
     fun `testing parser`() = runTest {
 
-        adbProgram.devices["ZF523HKK7K"] = FakeDevice(
+        adbManager.devices["ZF523HKK7K"] = FakeDevice(
             name = "Pixel 3"
         )
 
-        adbProgram.devices["emulator-5554"] = FakeDevice(
+        adbManager.devices["emulator-5554"] = FakeDevice(
             properties = mapOf(
                 "emulator_name" to "Nexus 5X"
             )
@@ -66,6 +65,6 @@ class DeviceParserTest {
             )
         )
 
-        assertEquals(expected, target.map { parser(it) })
+        assertEquals(expected, target.map { getDeviceType(it) })
     }
 }
