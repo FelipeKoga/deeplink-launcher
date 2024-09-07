@@ -1,7 +1,8 @@
 package dev.koga.deeplinklauncher.datasource
 
+import dev.koga.deeplinklauncher.manager.AdbManager
 import dev.koga.deeplinklauncher.model.Target
-import dev.koga.deeplinklauncher.usecase.DeviceParser
+import dev.koga.deeplinklauncher.usecase.GetDeviceType
 import dev.koga.deeplinklauncher.util.ext.addOrUpdate
 import dev.koga.deeplinklauncher.util.ext.next
 import dev.koga.deeplinklauncher.util.ext.previous
@@ -9,32 +10,25 @@ import dev.koga.deeplinklauncher.util.ext.useProtoText
 import kotlinx.coroutines.flow.*
 
 class TargetDataSource(
-    private val adbDataSource: AdbDataSource,
-    private val parser: DeviceParser
+    private val adbManager: AdbManager,
+    private val getDeviceType: GetDeviceType
 ) {
+    private val targets = MutableStateFlow(listOf<Target>(Target.Browser))
 
     private val _current = MutableStateFlow<Target>(Target.Browser)
     val current = _current.asStateFlow()
 
-    private val _targets = MutableStateFlow(listOf<Target>(Target.Browser))
-    val targets = _targets.asStateFlow()
-
     private fun update(targets: List<Target>) {
-
-        _targets.value = targets
+        this.targets.update { targets }
 
         _current.update { target ->
-            targets.find {
-                it == target
-            } ?: Target.Browser
+            targets.find { it == target } ?: Target.Browser
         }
     }
 
     fun select(target: Target) {
         _current.update {
-            targets.value.find {
-                it == target
-            } ?: Target.Browser
+            targets.value.find { it == target } ?: Target.Browser
         }
     }
 
@@ -47,18 +41,17 @@ class TargetDataSource(
     }
 
     fun track() = flow {
-
-        if (!adbDataSource.installed) return@flow
+        if (!adbManager.installed) return@flow
 
         val devices = mutableListOf<Target.Device>()
 
-        adbDataSource.trackDevices()
+        adbManager.trackDevices()
             .inputStream
             .bufferedReader()
             .useProtoText(target = "device") { deviceProtoText ->
 
                 devices.addOrUpdate(
-                    parser(deviceProtoText)
+                    getDeviceType(deviceProtoText)
                 )
 
                 emit(

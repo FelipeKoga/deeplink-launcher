@@ -1,20 +1,42 @@
-package dev.koga.deeplinklauncher.platform
+package dev.koga.deeplinklauncher.manager
 
-import dev.koga.deeplinklauncher.datasource.AdbDataSource
+import dev.koga.deeplinklauncher.model.Os
 import dev.koga.deeplinklauncher.util.ext.installed
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
-class AdbProgram(private val path: String) : AdbDataSource {
+interface AdbManager {
+
+    val installed: Boolean
+
+    suspend fun execute(
+        serial: String,
+        action: String,
+        arg: String,
+    ): Process
+
+    suspend fun trackDevices(): Process
+
+    suspend fun getProperty(serial: String, key: String): String
+
+    suspend fun getDeviceName(serial: String): String
+
+    suspend fun getEmulatorName(serial: String): String
+
+    suspend fun getDeviceModel(serial: String): String
+}
+
+internal class AdbManagerImpl(
+    private val path: String
+) : AdbManager {
 
     override val installed get() = path.installed()
 
-    override suspend fun startActivity(
+    override suspend fun execute(
         serial: String,
         action: String,
         arg: String,
     ): Process {
-
         return withContext(Dispatchers.IO) {
             ProcessBuilder(
                 path,
@@ -30,7 +52,6 @@ class AdbProgram(private val path: String) : AdbDataSource {
     }
 
     override suspend fun trackDevices(): Process {
-
         return withContext(Dispatchers.IO) {
             ProcessBuilder(
                 path,
@@ -41,7 +62,6 @@ class AdbProgram(private val path: String) : AdbDataSource {
     }
 
     override suspend fun getProperty(serial: String, key: String): String {
-
         val process = withContext(Dispatchers.IO) {
             ProcessBuilder(
                 path,
@@ -61,7 +81,6 @@ class AdbProgram(private val path: String) : AdbDataSource {
     }
 
     override suspend fun getDeviceName(serial: String): String {
-
         val process = withContext(Dispatchers.IO) {
             ProcessBuilder(
                 path,
@@ -84,7 +103,6 @@ class AdbProgram(private val path: String) : AdbDataSource {
     }
 
     override suspend fun getDeviceModel(serial: String): String {
-
         return getProperty(
             serial = serial,
             key = "ro.product.model"
@@ -92,7 +110,6 @@ class AdbProgram(private val path: String) : AdbDataSource {
     }
 
     override suspend fun getEmulatorName(serial: String): String {
-
         return getProperty(
             serial = serial,
             key = "ro.kernel.qemu.avd_name"
@@ -100,8 +117,30 @@ class AdbProgram(private val path: String) : AdbDataSource {
     }
 
     companion object {
-        fun from(directory: String): AdbProgram {
-            return AdbProgram("$directory/platform-tools/adb")
+        fun build(): AdbManager {
+            if ("adb".installed()) {
+                return AdbManagerImpl("adb")
+            }
+
+            System.getenv("ANDROID_HOME")?.let {
+                return AdbManagerImpl(it)
+            }
+
+            val userHome = System.getProperty("user.home")
+
+            return when (Os.get()) {
+                Os.LINUX -> {
+                    AdbManagerImpl("$userHome/Android/Sdk/platform-tools/adb")
+                }
+
+                Os.WINDOWS -> {
+                    AdbManagerImpl("$userHome/AppData/Local/Android/Sdk/platform-tools/adb")
+                }
+
+                Os.MAC -> {
+                    AdbManagerImpl("$userHome/Library/Android/sdk/platform-tools/adb")
+                }
+            }
         }
     }
 }
