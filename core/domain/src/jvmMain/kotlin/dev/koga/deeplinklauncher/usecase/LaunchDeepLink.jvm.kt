@@ -1,33 +1,36 @@
 package dev.koga.deeplinklauncher.usecase
 
+import dev.koga.deeplinklauncher.datasource.AdbDataSource
 import dev.koga.deeplinklauncher.datasource.DeepLinkDataSource
+import dev.koga.deeplinklauncher.datasource.TargetDataSource
 import dev.koga.deeplinklauncher.model.DeepLink
+import dev.koga.deeplinklauncher.model.Target
 import dev.koga.deeplinklauncher.util.ext.currentLocalDateTime
+import kotlinx.coroutines.runBlocking
 import java.awt.Desktop
 import java.net.URI
 
 actual class LaunchDeepLink(
-    private val dataSource: DeepLinkDataSource,
-    private val startActivity: ExecuteAdb,
+    private val deepLinkDataSource: DeepLinkDataSource,
+    private val targetDataSource: TargetDataSource,
+    private val adbProgram: AdbDataSource
 ) {
     actual fun launch(url: String): LaunchDeepLinkResult {
-        val adbResult = launchWithAdb(url)
-
-        if (adbResult is LaunchDeepLinkResult.Success) {
-            return adbResult
+        return when(val target = targetDataSource.current.value) {
+            is Target.Browser -> launchDesktopBrowser(url)
+            is Target.Device -> launchWithAdb(url, target)
         }
-
-        val browserResult = launchDesktopBrowser(url)
-
-        return browserResult
     }
 
-    private fun launchWithAdb(link: String): LaunchDeepLinkResult {
+    private fun launchWithAdb(link: String, target: Target.Device): LaunchDeepLinkResult {
         return try {
-            val process = startActivity(
-                action = "android.intent.action.VIEW",
-                arg = link,
-            )
+            val process = runBlocking {
+                adbProgram.startActivity(
+                    serial = target.serial,
+                    action = "android.intent.action.VIEW",
+                    arg = link,
+                )
+            }
 
             return if (process.exitValue() == 0) {
                 LaunchDeepLinkResult.Success(link)
@@ -57,7 +60,7 @@ actual class LaunchDeepLink(
     }
 
     actual fun launch(deepLink: DeepLink): LaunchDeepLinkResult {
-        dataSource.upsertDeepLink(deepLink.copy(lastLaunchedAt = currentLocalDateTime))
+        deepLinkDataSource.upsertDeepLink(deepLink.copy(lastLaunchedAt = currentLocalDateTime))
 
         return launch(deepLink.link)
     }

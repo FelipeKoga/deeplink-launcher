@@ -19,6 +19,15 @@ kotlin {
         androidMain.dependencies {
             implementation(libs.androidx.core)
         }
+
+        jvmMain.dependencies {
+            implementation(libs.napier)
+        }
+
+        jvmTest.dependencies {
+            implementation(libs.junit)
+            implementation(libs.kotlinx.coroutines.test)
+        }
     }
 }
 
