@@ -1,16 +1,16 @@
 [versions]
 datastorePreferencesCore = "1.1.1"
-kotlinxSerializationJson = "1.6.3"
+kotlinxSerializationJson = "1.7.1"
 
 androidGradlePlugin = "8.2.2"
-jetbrains-kotlinxDatetime = "0.5.0"
+jetbrains-kotlinxDatetime = "0.6.0"
 kotlin = "2.0.0"
 kotlinx-immutable = "0.3.7"
 
 compose-plugin = "1.6.11"
-compose-runtime = "1.6.8"
+compose-runtime = "1.7.0"
 
-androidx-activity = "1.9.1"
+androidx-activity = "1.9.2"
 androidx-core = "1.13.1"
 
 material3WindowSizeClass = "0.5.0"
@@ -29,11 +29,11 @@ ktlint = "0.50.0"
 detekt = "1.22.0"
 composerules = "0.0.26"
 
-firebase-bom = "33.1.2"
+firebase-bom = "33.2.0"
 firebase-crashlytics-plugin = "3.0.2"
 google-services = "4.4.2"
 stately = "2.0.7"
-aboutlibraries = "11.2.2"
+aboutlibraries = "11.2.3"
 
 junit = "4.13.2"
 
@@ -81,7 +81,7 @@ composerules = { module = "com.twitter.compose.rules:detekt", version.ref = "com
 firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebase-bom" }
 firebase-crashlytics = { module = "com.google.firebase:firebase-crashlytics" }
 
-aboutlibraries_compose = { module = "com.mikepenz:aboutlibraries-compose", version.ref = "aboutlibraries" }
+aboutlibraries_compose = { module = "com.mikepenz:aboutlibraries-compose-m3", version.ref = "aboutlibraries" }
 compose-runtime = { module = "androidx.compose.runtime:runtime", version.ref = "compose-runtime" }
 
 junit = { module = "junit:junit", version.ref = "junit" }

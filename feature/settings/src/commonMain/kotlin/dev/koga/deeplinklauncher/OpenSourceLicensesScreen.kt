@@ -2,16 +2,13 @@ package dev.koga.deeplinklauncher
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import cafe.adriel.voyager.core.screen.Screen
-import com.mikepenz.aboutlibraries.ui.compose.LibrariesContainer
-import com.mikepenz.aboutlibraries.ui.compose.LibraryDefaults
-import com.mikepenz.aboutlibraries.ui.compose.rememberLibraries
+import com.mikepenz.aboutlibraries.ui.compose.m3.LibrariesContainer
+import com.mikepenz.aboutlibraries.ui.compose.m3.rememberLibraries
 import dev.koga.resources.Res
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 
@@ -39,15 +36,8 @@ object OpenSourceLicensesScreen : Screen {
             },
         ) { contentPadding ->
             LibrariesContainer(
-                libraries,
+                libraries = libraries,
                 modifier = Modifier.padding(contentPadding),
-                colors = LibraryDefaults.libraryColors(
-                    backgroundColor = MaterialTheme.colorScheme.surface,
-                    contentColor = MaterialTheme.colorScheme.onSurface,
-                    badgeContentColor = MaterialTheme.colorScheme.onPrimary,
-                    badgeBackgroundColor = MaterialTheme.colorScheme.primary,
-                    dialogConfirmButtonColor = MaterialTheme.colorScheme.primary,
-                ),
             )
         }
     }
