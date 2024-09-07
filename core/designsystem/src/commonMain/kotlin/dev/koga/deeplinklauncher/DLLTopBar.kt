@@ -9,17 +9,38 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import dev.koga.deeplinklauncher.button.DLLIconButton
 
-@Composable
-fun DLLNavigationIcon(modifier: Modifier = Modifier, onClicked: () -> Unit) {
-    DLLIconButton(
-        modifier = modifier,
-        onClick = onClicked,
+object DLLTopBarDefaults {
+
+    @Composable
+    fun title(
+        text: String,
+        modifier: Modifier = Modifier,
     ) {
-        Icon(
-            imageVector = Icons.AutoMirrored.Rounded.ArrowBack,
-            contentDescription = "Back",
+        Text(
+            modifier = modifier,
+            text = text,
+            style = MaterialTheme.typography.titleMedium.copy(
+                fontWeight = FontWeight.Bold,
+            ),
         )
     }
+
+    @Composable
+    fun navigationIcon(
+        onClicked: () -> Unit,
+        modifier: Modifier = Modifier,
+    ) {
+        DLLIconButton(
+            modifier = modifier,
+            onClick = onClicked,
+        ) {
+            Icon(
+                imageVector = Icons.AutoMirrored.Rounded.ArrowBack,
+                contentDescription = "Back",
+            )
+        }
+    }
+
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -43,36 +64,6 @@ fun DLLTopBar(
         navigationIcon = {
             if (navigationIcon != null) navigationIcon()
         },
-        actions = actions,
-    )
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun DLLTopBar(
-    modifier: Modifier = Modifier,
-    title: String = "",
-    navigationIcon: @Composable (() -> Unit)? = null,
-    actions: @Composable (RowScope.() -> Unit) = {},
-    scrollBehavior: TopAppBarScrollBehavior? = null,
-    colors: TopAppBarColors = TopAppBarDefaults.topAppBarColors(
-        containerColor = MaterialTheme.colorScheme.background,
-        scrolledContainerColor = MaterialTheme.colorScheme.background,
-    ),
-) {
-    DLLTopBar(
-        modifier = modifier,
-        scrollBehavior = scrollBehavior,
-        colors = colors,
-        title = {
-            Text(
-                text = title,
-                style = MaterialTheme.typography.titleMedium.copy(
-                    fontWeight = FontWeight.Bold,
-                ),
-            )
-        },
-        navigationIcon = navigationIcon,
         actions = actions,
     )
 }

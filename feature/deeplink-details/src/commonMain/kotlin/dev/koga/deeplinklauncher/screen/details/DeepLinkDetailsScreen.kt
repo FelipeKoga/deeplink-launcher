@@ -34,8 +34,8 @@ import cafe.adriel.voyager.core.screen.ScreenKey
 import cafe.adriel.voyager.koin.getScreenModel
 import cafe.adriel.voyager.navigator.bottomSheet.LocalBottomSheetNavigator
 import dev.koga.deeplinklauncher.DLLHorizontalDivider
-import dev.koga.deeplinklauncher.DLLNavigationIcon
 import dev.koga.deeplinklauncher.DLLTopBar
+import dev.koga.deeplinklauncher.DLLTopBarDefaults
 import dev.koga.deeplinklauncher.LocalRootNavigator
 import dev.koga.deeplinklauncher.SharedScreen
 import dev.koga.deeplinklauncher.button.DLLIconButton
@@ -188,15 +188,21 @@ private fun DetailsTopBar(
 
     DLLTopBar(
         modifier = modifier,
-        title = if (mode is DetailsMode.Duplicate) "Duplicate DeepLink" else "",
+        title = {
+            DLLTopBarDefaults.title(
+                text = if (mode is DetailsMode.Duplicate) "Duplicate DeepLink" else ""
+            )
+        },
         colors = TopAppBarDefaults.topAppBarColors(
             containerColor = Color.Transparent,
         ),
         navigationIcon = {
             if (showNavigationIcon) {
-                DLLNavigationIcon(onClicked = {
-                    changeDetailsTo(mode.backTo!!)
-                })
+                DLLTopBarDefaults.navigationIcon(
+                    onClicked = {
+                        changeDetailsTo(mode.backTo!!)
+                    }
+                )
             }
         },
         actions = {

@@ -140,9 +140,9 @@ fun SettingsScreenUI(
     Scaffold(
         topBar = {
             DLLTopBar(
-                title = "",
+                title = { },
                 navigationIcon = {
-                    DLLNavigationIcon(onClicked = onBack)
+                    DLLTopBarDefaults.navigationIcon(onClicked = onBack)
                 },
             )
         },

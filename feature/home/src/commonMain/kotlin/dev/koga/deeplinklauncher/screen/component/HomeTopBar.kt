@@ -2,6 +2,11 @@ package dev.koga.deeplinklauncher.screen.component
 
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutHorizontally
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.ArrowBack
@@ -44,73 +49,83 @@ internal fun HomeTopBar(
     onSearch: (String) -> Unit,
 ) {
     val focusRequester = remember { FocusRequester() }
-    var searchLayout by rememberSaveable {
+    var isSearching by rememberSaveable {
         mutableStateOf(false)
     }
 
-    LaunchedEffect(searchLayout) {
-        if (searchLayout) {
+    LaunchedEffect(isSearching) {
+        if (isSearching) {
             delay(150L)
             focusRequester.requestFocus()
         }
     }
 
-    Column(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalAlignment = Alignment.CenterHorizontally,
-    ) {
-        AnimatedContent(searchLayout) { target ->
-            when (target) {
-                true -> HomeSearchBar(
-                    modifier = Modifier
-                        .padding(
-                            top = 8.dp,
-                            bottom = 4.dp,
-                            start = 12.dp,
-                            end = 12.dp,
-                        )
-                        .statusBarsPadding()
-                        .focusRequester(focusRequester),
-                    value = search,
-                    onSearch = onSearch,
-                    onClose = {
-                        searchLayout = false
-                        focusRequester.freeFocus()
-                        onSearch("")
+    Box(modifier = Modifier.fillMaxWidth()) {
+        DLLTopBar(
+            modifier = modifier,
+            scrollBehavior = scrollBehavior,
+            title = { HomeTopBarTitle() },
+            actions = {
+                DLLIconButton(
+                    onClick = {
+                        isSearching = true
                     },
-                )
+                ) {
+                    Icon(
+                        imageVector = Icons.Rounded.Search,
+                        contentDescription = "settings",
+                    )
+                }
 
-                false -> HomeTopBarImpl(
-                    modifier = modifier,
-                    scrollBehavior = scrollBehavior,
-                    actions = {
-                        DLLIconButton(
-                            onClick = {
-                                searchLayout = true
-                            },
-                        ) {
-                            Icon(
-                                imageVector = Icons.Rounded.Search,
-                                contentDescription = "settings",
-                            )
-                        }
+                DLLIconButton(
+                    onClick = onSettingsScreen,
+                ) {
+                    Icon(
+                        painter = painterResource(
+                            dev.koga.resources.Res.drawable.ic_settings_24dp,
+                        ),
+                        contentDescription = "settings",
+                    )
+                }
+            },
+        )
 
-                        DLLIconButton(
-                            onClick = onSettingsScreen,
-                        ) {
-                            Icon(
-                                painter = painterResource(
-                                    dev.koga.resources.Res.drawable.ic_settings_24dp,
-                                ),
-                                contentDescription = "settings",
-                            )
-                        }
-                    },
-                )
-            }
+        AnimatedVisibility(
+            isSearching,
+            enter = slideInHorizontally(
+                initialOffsetX = { fullWidth -> fullWidth }, // Start from the right
+                animationSpec = tween(durationMillis = 500)
+            ),
+            exit = slideOutHorizontally(
+                targetOffsetX = { fullWidth -> fullWidth }
+            )
+        ) {
+            HomeSearchBar(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(
+                        top = 8.dp,
+                        bottom = 4.dp,
+                        start = 12.dp,
+                        end = 12.dp,
+                    )
+                    .statusBarsPadding()
+                    .focusRequester(focusRequester),
+                value = search,
+                onSearch = onSearch,
+                onClose = {
+                    isSearching = false
+                    focusRequester.freeFocus()
+                    onSearch("")
+                },
+            )
         }
+
     }
 }
+
+@Composable
+expect fun HomeTopBarTitle(modifier: Modifier = Modifier)
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -168,12 +183,3 @@ private fun HomeSearchBar(
         },
     )
 }
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-internal expect fun HomeTopBarImpl(
-    modifier: Modifier = Modifier,
-    navigationIcon: @Composable (() -> Unit)? = null,
-    actions: @Composable (RowScope.() -> Unit) = {},
-    scrollBehavior: TopAppBarScrollBehavior? = null,
-)

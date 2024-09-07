@@ -40,9 +40,9 @@ import cafe.adriel.voyager.core.screen.Screen
 import com.darkrockstudios.libraries.mpfilepicker.FilePicker
 import dev.koga.deeplinklauncher.BoxPreview
 import dev.koga.deeplinklauncher.DLLHorizontalDivider
-import dev.koga.deeplinklauncher.DLLNavigationIcon
 import dev.koga.deeplinklauncher.DLLSingleChoiceSegmentedButtonRow
 import dev.koga.deeplinklauncher.DLLTopBar
+import dev.koga.deeplinklauncher.DLLTopBarDefaults
 import dev.koga.deeplinklauncher.LocalRootNavigator
 import dev.koga.deeplinklauncher.file.GetFileRealPath
 import dev.koga.deeplinklauncher.model.FileType
@@ -124,8 +124,12 @@ class ImportScreen : Screen {
         Scaffold(
             topBar = {
                 DLLTopBar(
-                    title = "Import DeepLinks",
-                    navigationIcon = { DLLNavigationIcon(onClicked = navigator::pop) },
+                    title = {
+                        DLLTopBarDefaults.title("Import DeepLinks")
+                    },
+                    navigationIcon = {
+                        DLLTopBarDefaults.navigationIcon(onClicked = navigator::pop)
+                    },
                 )
             },
             snackbarHost = {
