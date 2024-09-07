@@ -9,7 +9,7 @@ import dev.koga.deeplinklauncher.model.Target
 
 data class DevicesUiState(
     val selected: Option = Target.Browser.toUiState(),
-    val targets: List<Option> = listOf(selected)
+    val targets: List<Option> = listOf(selected),
 ) {
 
     data class Option(
@@ -21,25 +21,25 @@ data class DevicesUiState(
 }
 
 fun List<Target>.toUiState(
-    selected: Target
+    selected: Target,
 ) = DevicesUiState(
     targets = map {
         it.toUiState(
-            selected = selected == it
+            selected = selected == it,
         )
     },
-    selected = selected.toUiState()
+    selected = selected.toUiState(),
 )
 
 fun Target.toUiState(
-    selected: Boolean = true
+    selected: Boolean = true,
 ) = when (this) {
     Target.Browser -> {
         DevicesUiState.Option(
             target = this,
             selected = selected,
             name = "Default Browser",
-            icon = Icons.Rounded.Public
+            icon = Icons.Rounded.Public,
         )
     }
 
@@ -48,7 +48,7 @@ fun Target.toUiState(
             target = this,
             selected = selected,
             name = name,
-            icon = Icons.Rounded.Devices
+            icon = Icons.Rounded.Devices,
         )
     }
 
@@ -57,7 +57,7 @@ fun Target.toUiState(
             target = this,
             selected = selected,
             name = name,
-            icon = Icons.Rounded.Smartphone
+            icon = Icons.Rounded.Smartphone,
         )
     }
 }

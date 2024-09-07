@@ -13,10 +13,10 @@ import java.net.URI
 actual class LaunchDeepLink(
     private val deepLinkDataSource: DeepLinkDataSource,
     private val targetDataSource: TargetDataSource,
-    private val adbManager: AdbManager
+    private val adbManager: AdbManager,
 ) {
     actual fun launch(url: String): LaunchDeepLinkResult {
-        return when(val target = targetDataSource.current.value) {
+        return when (val target = targetDataSource.current.value) {
             is Target.Browser -> launchDesktopBrowser(url)
             is Target.Device -> launchWithAdb(url, target)
         }

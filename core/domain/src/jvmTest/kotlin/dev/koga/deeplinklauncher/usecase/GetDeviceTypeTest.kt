@@ -1,6 +1,6 @@
 package dev.koga.deeplinklauncher.usecase
 
-import dev.koga.deeplinklauncher.datasource.FakeAdbManager
+import dev.koga.deeplinklauncher.manager.FakeAdbManager
 import dev.koga.deeplinklauncher.model.FakeDevice
 import dev.koga.deeplinklauncher.model.ProtoText
 import dev.koga.deeplinklauncher.model.Target
@@ -22,15 +22,14 @@ class GetDeviceTypeTest {
 
     @Test
     fun `testing parser`() = runTest {
-
         adbManager.devices["ZF523HKK7K"] = FakeDevice(
-            name = "Pixel 3"
+            name = "Pixel 3",
         )
 
         adbManager.devices["emulator-5554"] = FakeDevice(
             properties = mapOf(
-                "emulator_name" to "Nexus 5X"
-            )
+                "emulator_name" to "Nexus 5X",
+            ),
         )
 
         val target = listOf(
@@ -39,17 +38,17 @@ class GetDeviceTypeTest {
                 fields = mapOf(
                     "serial" to "ZF523HKK7K",
                     "state" to "DEVICE",
-                    "connection_type" to "USB"
-                )
+                    "connection_type" to "USB",
+                ),
             ),
             ProtoText(
                 name = "device",
                 fields = mapOf(
                     "serial" to "emulator-5554",
                     "state" to "OFFLINE",
-                    "connection_type" to "SOCKET"
-                )
-            )
+                    "connection_type" to "SOCKET",
+                ),
+            ),
         )
 
         val expected = listOf(
@@ -62,7 +61,7 @@ class GetDeviceTypeTest {
                 serial = "emulator-5554",
                 name = "Nexus 5X",
                 active = false,
-            )
+            ),
         )
 
         assertEquals(expected, target.map { getDeviceType(it) })

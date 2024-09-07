@@ -7,11 +7,15 @@ import dev.koga.deeplinklauncher.util.ext.addOrUpdate
 import dev.koga.deeplinklauncher.util.ext.next
 import dev.koga.deeplinklauncher.util.ext.previous
 import dev.koga.deeplinklauncher.util.ext.useProtoText
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.update
 
 class TargetDataSource(
     private val adbManager: AdbManager,
-    private val getDeviceType: GetDeviceType
+    private val getDeviceType: GetDeviceType,
 ) {
     private val targets = MutableStateFlow(listOf<Target>(Target.Browser))
 
@@ -51,7 +55,7 @@ class TargetDataSource(
             .useProtoText(target = "device") { deviceProtoText ->
 
                 devices.addOrUpdate(
-                    getDeviceType(deviceProtoText)
+                    getDeviceType(deviceProtoText),
                 )
 
                 emit(
@@ -59,8 +63,8 @@ class TargetDataSource(
                         Target.Browser,
                         *devices.filter { device ->
                             device.active
-                        }.toTypedArray()
-                    )
+                        }.toTypedArray(),
+                    ),
                 )
             }
     }.onEach {

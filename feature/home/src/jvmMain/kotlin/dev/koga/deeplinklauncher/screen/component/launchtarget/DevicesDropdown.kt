@@ -1,13 +1,27 @@
 package dev.koga.deeplinklauncher.screen.component.launchtarget
 
 import androidx.compose.foundation.border
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
-import androidx.compose.material3.*
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExposedDropdownMenuBox
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme.colorScheme
-import androidx.compose.runtime.*
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
@@ -21,12 +35,11 @@ import dev.koga.deeplinklauncher.theme.typography
 import dev.koga.deeplinklauncher.util.ext.hoverIndication
 import org.koin.compose.koinInject
 
-
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
 @Composable
 fun DevicesDropdown(
     modifier: Modifier,
-    manager: DevicesDropdownManager = koinInject()
+    manager: DevicesDropdownManager = koinInject(),
 ) {
     val uiState by manager.uiState.collectAsState()
     var expanded by remember { mutableStateOf(false) }
@@ -48,11 +61,11 @@ fun DevicesDropdown(
             .border(
                 width = 1.dp,
                 color = colorScheme.secondary.copy(alpha = .3f),
-                shape = RoundedCornerShape(4.dp)
+                shape = RoundedCornerShape(4.dp),
             )
             .hoverIndication(
                 enabled = uiState.targets.size > 1,
-            )
+            ),
     ) {
         Row(
             modifier = Modifier
@@ -60,12 +73,11 @@ fun DevicesDropdown(
                 .padding(horizontal = 12.dp, vertical = 8.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
-
             Icon(
                 imageVector = uiState.selected.icon,
                 contentDescription = null,
                 tint = colorScheme.secondary,
-                modifier = Modifier.size(18.dp)
+                modifier = Modifier.size(18.dp),
             )
 
             Spacer(Modifier.width(8.dp))
@@ -74,8 +86,8 @@ fun DevicesDropdown(
                 text = uiState.selected.name,
                 style = typography.labelLarge.copy(
                     fontWeight = FontWeight.SemiBold,
-                    fontSize = 16.sp
-                )
+                    fontSize = 16.sp,
+                ),
             )
 
             Spacer(Modifier.width(8.dp))
@@ -85,7 +97,7 @@ fun DevicesDropdown(
                     imageVector = Icons.Default.ArrowDropDown,
                     contentDescription = null,
                     tint = colorScheme.secondary,
-                    modifier = Modifier.size(18.dp)
+                    modifier = Modifier.size(18.dp),
                 )
             }
         }
@@ -94,8 +106,8 @@ fun DevicesDropdown(
             expanded = expanded,
             onDismissRequest = { expanded = false },
             modifier = Modifier.exposedDropdownSize(
-                matchTextFieldWidth = false
-            )
+                matchTextFieldWidth = false,
+            ),
         ) {
             uiState.targets.forEach { target ->
                 DropdownMenuItem(
@@ -103,7 +115,7 @@ fun DevicesDropdown(
                         Icon(
                             imageVector = target.icon,
                             contentDescription = null,
-                            modifier = Modifier.size(16.dp)
+                            modifier = Modifier.size(16.dp),
                         )
                     },
                     text = {
@@ -114,8 +126,8 @@ fun DevicesDropdown(
                                     FontWeight.Bold
                                 } else {
                                     FontWeight.SemiBold
-                                }
-                            )
+                                },
+                            ),
                         )
                     },
                     onClick = {

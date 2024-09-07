@@ -27,7 +27,7 @@ interface AdbManager {
 }
 
 internal class AdbManagerImpl(
-    private val path: String
+    private val path: String,
 ) : AdbManager {
 
     override val installed get() = path.installed()
@@ -56,7 +56,7 @@ internal class AdbManagerImpl(
             ProcessBuilder(
                 path,
                 "track-devices",
-                "--proto-text"
+                "--proto-text",
             ).start()
         }
     }
@@ -65,9 +65,11 @@ internal class AdbManagerImpl(
         val process = withContext(Dispatchers.IO) {
             ProcessBuilder(
                 path,
-                "-s", serial,
+                "-s",
+                serial,
                 "shell",
-                "getprop", key
+                "getprop",
+                key,
             ).start().also {
                 it.waitFor()
             }
@@ -84,12 +86,13 @@ internal class AdbManagerImpl(
         val process = withContext(Dispatchers.IO) {
             ProcessBuilder(
                 path,
-                "-s", serial,
+                "-s",
+                serial,
                 "shell",
                 "settings",
                 "get",
                 "global",
-                "device_name"
+                "device_name",
             ).start().also {
                 it.waitFor()
             }
@@ -105,14 +108,14 @@ internal class AdbManagerImpl(
     override suspend fun getDeviceModel(serial: String): String {
         return getProperty(
             serial = serial,
-            key = "ro.product.model"
+            key = "ro.product.model",
         )
     }
 
     override suspend fun getEmulatorName(serial: String): String {
         return getProperty(
             serial = serial,
-            key = "ro.kernel.qemu.avd_name"
+            key = "ro.kernel.qemu.avd_name",
         )
     }
 

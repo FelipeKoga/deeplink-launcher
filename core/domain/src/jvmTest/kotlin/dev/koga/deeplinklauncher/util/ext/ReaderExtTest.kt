@@ -8,14 +8,13 @@ class ReaderExtTest {
 
     @Test
     fun testUseProtoText() {
-
         val target = """
                 device {
                     serial: "ZF523HKK7K"
                     state: DEVICE
                     connection_type: USB
                 }
-            """.trimIndent()
+        """.trimIndent()
 
         val reader = target.reader()
 
@@ -31,10 +30,10 @@ class ReaderExtTest {
                 fields = mapOf(
                     "serial" to "ZF523HKK7K",
                     "state" to "DEVICE",
-                    "connection_type" to "USB"
-                )
+                    "connection_type" to "USB",
+                ),
             ),
-            protoText
+            protoText,
         )
     }
 }

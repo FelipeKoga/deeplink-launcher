@@ -41,4 +41,3 @@ internal class NativeDriverFactory : DriverFactory {
         private const val DATABASE_PATH = "Application Support/databases/"
     }
 }
-

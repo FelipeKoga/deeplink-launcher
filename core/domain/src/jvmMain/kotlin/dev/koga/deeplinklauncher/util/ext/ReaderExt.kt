@@ -5,9 +5,8 @@ import java.io.Reader
 
 inline fun Reader.useProtoText(
     target: String,
-    block: (ProtoText) -> Unit
+    block: (ProtoText) -> Unit,
 ) {
-
     val protoTextRegex = Regex(pattern = "($target)\\s*(\\{[^}]+})")
 
     val builder = StringBuilder()
@@ -18,7 +17,6 @@ inline fun Reader.useProtoText(
             builder.append(line)
 
             protoTextRegex.find(builder)?.let {
-
                 val (name, text) = it.destructured
 
                 block(ProtoText.from(name, text))
