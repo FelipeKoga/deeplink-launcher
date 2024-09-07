@@ -35,8 +35,12 @@ object OpenSourceLicensesScreen : Screen {
         Scaffold(
             topBar = {
                 DLLTopBar(
-                    title = "Open Source Licenses",
-                    navigationIcon = { DLLNavigationIcon(onClicked = navigator::pop) },
+                    title = {
+                        DLLTopBarDefaults.title("Open Source Licenses")
+                    },
+                    navigationIcon = {
+                        DLLTopBarDefaults.navigationIcon(onClicked = navigator::pop)
+                    },
                 )
             },
         ) { contentPadding ->

@@ -66,7 +66,10 @@ class FolderDetailsScreen(private val folderId: String) : Screen {
         Scaffold(
             topBar = {
                 DLLTopBar(
-                    navigationIcon = { DLLNavigationIcon(onClicked = navigator::pop) },
+                    title = {},
+                    navigationIcon = {
+                        DLLTopBarDefaults.navigationIcon(onClicked = navigator::pop)
+                    },
                     actions = {
                         DLLIconButton(
                             onClick = { showDeleteDialog = true },

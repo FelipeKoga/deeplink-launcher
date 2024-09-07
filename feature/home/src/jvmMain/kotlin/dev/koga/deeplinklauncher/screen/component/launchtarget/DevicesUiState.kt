@@ -7,7 +7,7 @@ import androidx.compose.material.icons.rounded.Smartphone
 import androidx.compose.ui.graphics.vector.ImageVector
 import dev.koga.deeplinklauncher.model.Target
 
-data class LaunchTargetUiState(
+data class DevicesUiState(
     val selected: Option = Target.Browser.toUiState(),
     val targets: List<Option> = listOf(selected)
 ) {
@@ -22,7 +22,7 @@ data class LaunchTargetUiState(
 
 fun List<Target>.toUiState(
     selected: Target
-) = LaunchTargetUiState(
+) = DevicesUiState(
     targets = map {
         it.toUiState(
             selected = selected == it
@@ -35,7 +35,7 @@ fun Target.toUiState(
     selected: Boolean = true
 ) = when (this) {
     Target.Browser -> {
-        LaunchTargetUiState.Option(
+        DevicesUiState.Option(
             target = this,
             selected = selected,
             name = "Default Browser",
@@ -44,7 +44,7 @@ fun Target.toUiState(
     }
 
     is Target.Device.Emulator -> {
-        LaunchTargetUiState.Option(
+        DevicesUiState.Option(
             target = this,
             selected = selected,
             name = name,
@@ -53,7 +53,7 @@ fun Target.toUiState(
     }
 
     is Target.Device.Physical -> {
-        LaunchTargetUiState.Option(
+        DevicesUiState.Option(
             target = this,
             selected = selected,
             name = name,
