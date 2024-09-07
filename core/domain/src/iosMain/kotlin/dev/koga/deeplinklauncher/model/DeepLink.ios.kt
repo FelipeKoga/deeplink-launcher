@@ -9,7 +9,7 @@ actual val String.isLinkValid: Boolean
 
         val components = NSURLComponents.componentsWithURL(
             url = nsurl,
-            resolvingAgainstBaseURL = false
+            resolvingAgainstBaseURL = false,
         )
 
         return components?.scheme != null && components.host != null

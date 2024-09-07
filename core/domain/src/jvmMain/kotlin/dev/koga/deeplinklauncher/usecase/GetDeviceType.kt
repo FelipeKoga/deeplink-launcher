@@ -6,11 +6,10 @@ import dev.koga.deeplinklauncher.model.Target
 import io.github.aakira.napier.log
 
 class GetDeviceType(
-    private val adbManager: AdbManager
+    private val adbManager: AdbManager,
 ) {
 
     suspend operator fun invoke(protoText: ProtoText): Target.Device {
-
         log { "device: $protoText" }
 
         val serial = protoText.fields["serial"] as String
@@ -22,20 +21,20 @@ class GetDeviceType(
                 serial = serial,
                 active = active,
                 name = adbManager.getEmulatorName(
-                    serial = serial
+                    serial = serial,
                 ).ifEmpty {
                     serial
-                }
+                },
             )
 
             else -> Target.Device.Physical(
                 serial = serial,
                 active = active,
                 name = adbManager.getDeviceName(
-                    serial = serial
+                    serial = serial,
                 ).ifEmpty {
                     serial
-                }
+                },
             )
         }
     }

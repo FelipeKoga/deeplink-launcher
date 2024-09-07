@@ -96,9 +96,8 @@ class DeepLinkDetailsScreen(
 
         SelectionContainer {
             Column {
-
                 BottomSheetDefaults.DragHandle(
-                    modifier = Modifier.align(Alignment.CenterHorizontally)
+                    modifier = Modifier.align(Alignment.CenterHorizontally),
                 )
 
                 DetailsTopBar(
@@ -190,7 +189,7 @@ private fun DetailsTopBar(
         modifier = modifier,
         title = {
             DLLTopBarDefaults.title(
-                text = if (mode is DetailsMode.Duplicate) "Duplicate DeepLink" else ""
+                text = if (mode is DetailsMode.Duplicate) "Duplicate DeepLink" else "",
             )
         },
         colors = TopAppBarDefaults.topAppBarColors(
@@ -201,7 +200,7 @@ private fun DetailsTopBar(
                 DLLTopBarDefaults.navigationIcon(
                     onClicked = {
                         changeDetailsTo(mode.backTo!!)
-                    }
+                    },
                 )
             }
         },

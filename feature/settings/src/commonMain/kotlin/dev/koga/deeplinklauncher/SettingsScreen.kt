@@ -31,11 +31,11 @@ import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.registry.rememberScreen
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.koin.getScreenModel
+import dev.koga.deeplinklauncher.platform.Platform
+import dev.koga.deeplinklauncher.platform.platform
 import dev.koga.deeplinklauncher.sheets.AppThemeBottomSheet
 import dev.koga.deeplinklauncher.sheets.DeleteDataBottomSheet
 import dev.koga.deeplinklauncher.sheets.SuggestionsOptionBottomSheet
-import dev.koga.deeplinklauncher.platform.Platform
-import dev.koga.deeplinklauncher.platform.platform
 import dev.koga.resources.Res
 import dev.koga.resources.ic_chevron_right_24dp
 import dev.koga.resources.ic_launch_24dp

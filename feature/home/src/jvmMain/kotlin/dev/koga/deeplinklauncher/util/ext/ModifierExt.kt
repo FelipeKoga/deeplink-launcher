@@ -15,13 +15,13 @@ fun Modifier.hoverIndication(
         MutableInteractionSource()
     },
     enabled: Boolean = true,
-    indication: Indication = LocalIndication.current
+    indication: Indication = LocalIndication.current,
 ): Modifier {
     return indication(
         indication = indication,
-        interactionSource = interactionSource
+        interactionSource = interactionSource,
     ).hoverable(
         enabled = enabled,
-        interactionSource = interactionSource
+        interactionSource = interactionSource,
     )
 }

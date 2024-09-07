@@ -1,8 +1,5 @@
 package dev.koga.deeplinklauncher.permission
 
-import platform.Photos.PHPhotoLibrary
-import platform.Photos.PHAuthorizationStatusAuthorized
-
 actual class StoragePermission {
 
     actual fun request() {
