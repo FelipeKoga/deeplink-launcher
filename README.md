@@ -13,7 +13,7 @@
     <img src="https://img.shields.io/github/stars/FelipeKoga/deeplink-launcher" alt="Stars" />
   </a>
   <a href="https://github.com/FelipeKoga/deeplink-launcher/actions/workflows/run-tests.yml">
-    <img src="https://github.com/FelipeKoga/deeplink-launcher/actions/workflows/quality.yml/badge.svg" alt="Run Unit Tests" />
+    <img src="https://github.com/FelipeKoga/deeplink-launcher/actions/workflows/quality.yml/badge.svg" alt="Lint and unit tests" />
   </a>
   <a href="https://github.com/FelipeKoga/deeplink-launcher/actions/workflows/deploy-release.yml">
     <img src="https://github.com/FelipeKoga/deeplink-launcher/actions/workflows/deploy-release.yml/badge.svg" alt="Deploy Release" />
