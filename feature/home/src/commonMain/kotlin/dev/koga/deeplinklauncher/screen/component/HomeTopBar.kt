@@ -2,10 +2,7 @@ package dev.koga.deeplinklauncher.screen.component
 
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.ArrowBack
 import androidx.compose.material.icons.rounded.Clear
@@ -83,10 +80,9 @@ internal fun HomeTopBar(
                     },
                 )
 
-                false -> DLLTopBar(
+                false -> HomeTopBarImpl(
                     modifier = modifier,
                     scrollBehavior = scrollBehavior,
-                    title = "Deeplink Launcher",
                     actions = {
                         DLLIconButton(
                             onClick = {
@@ -172,3 +168,12 @@ private fun HomeSearchBar(
         },
     )
 }
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+internal expect fun HomeTopBarImpl(
+    modifier: Modifier = Modifier,
+    navigationIcon: @Composable (() -> Unit)? = null,
+    actions: @Composable (RowScope.() -> Unit) = {},
+    scrollBehavior: TopAppBarScrollBehavior? = null,
+)

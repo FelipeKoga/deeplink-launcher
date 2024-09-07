@@ -41,6 +41,10 @@ kotlin {
             implementation(compose.ui)
             implementation(compose.components.resources)
         }
+
+        jvmMain.dependencies {
+            api(libs.napier)
+        }
     }
 }
 

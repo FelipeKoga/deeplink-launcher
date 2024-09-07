@@ -1,16 +1,17 @@
 package dev.koga.deeplinklauncher.di
 
+import dev.koga.deeplinklauncher.datasource.AdbDataSource
+import dev.koga.deeplinklauncher.datasource.TargetDataSource
 import dev.koga.deeplinklauncher.platform.GetFileContent
 import dev.koga.deeplinklauncher.platform.PlatformInfo
 import dev.koga.deeplinklauncher.platform.SaveFile
 import dev.koga.deeplinklauncher.platform.ShareFile
 import dev.koga.deeplinklauncher.provider.UUIDProvider
-import dev.koga.deeplinklauncher.usecase.GetDeepLinkMetadata
-import dev.koga.deeplinklauncher.usecase.LaunchDeepLink
-import dev.koga.deeplinklauncher.usecase.ShareDeepLink
-import dev.koga.deeplinklauncher.usecase.ExecuteAdb
+import dev.koga.deeplinklauncher.usecase.*
 import org.koin.core.module.Module
+import org.koin.core.module.dsl.factoryOf
 import org.koin.core.module.dsl.singleOf
+import org.koin.dsl.bind
 import org.koin.dsl.module
 
 internal actual val platformDomainModule: Module = module {
@@ -21,7 +22,9 @@ internal actual val platformDomainModule: Module = module {
     singleOf(::GetFileContent)
     singleOf(::GetDeepLinkMetadata)
     singleOf(::PlatformInfo)
+    singleOf(::TargetDataSource)
+    singleOf(::DeviceParser)
 
-    single { ExecuteAdb }
+    single { AdbProvider() } bind AdbDataSource::class
     single { UUIDProvider }
 }
