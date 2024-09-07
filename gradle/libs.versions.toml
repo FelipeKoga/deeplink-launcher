@@ -35,6 +35,10 @@ google-services = "4.4.2"
 stately = "2.0.7"
 aboutlibraries = "11.2.2"
 
+junit = "4.13.2"
+
+napier = "2.7.1"
+
 [libraries]
 android-gradle-plugin = { module = "com.android.tools.build:gradle", version.ref = "androidGradlePlugin" }
 androidx-datastore-preferences-core = { module = "androidx.datastore:datastore-preferences-core", version.ref = "datastorePreferencesCore" }
@@ -47,6 +51,7 @@ androidx-core = { module = "androidx.core:core-ktx", version.ref = "androidx-cor
 
 kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinxCoroutinesCore" }
 kotlinx-coroutines-swing = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-swing", version.ref = "kotlinxCoroutinesCore" }
+kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "kotlinxCoroutinesCore" }
 kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "jetbrains-kotlinxDatetime" }
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinxSerializationJson" }
 kotlinx-immutable = { module = "org.jetbrains.kotlinx:kotlinx-collections-immutable", version.ref = "kotlinx-immutable" }
@@ -78,6 +83,10 @@ firebase-crashlytics = { module = "com.google.firebase:firebase-crashlytics" }
 
 aboutlibraries_compose = { module = "com.mikepenz:aboutlibraries-compose", version.ref = "aboutlibraries" }
 compose-runtime = { module = "androidx.compose.runtime:runtime", version.ref = "compose-runtime" }
+
+junit = { module = "junit:junit", version.ref = "junit" }
+
+napier = { module = "io.github.aakira:napier", version.ref = "napier"}
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "androidGradlePlugin" }

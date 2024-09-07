@@ -14,3 +14,10 @@ fun String.installed(): Boolean {
 
     return process.waitFor() == 0
 }
+
+fun String.get(regex: Regex): MatchResult {
+
+    val match = regex.find(this) ?: error("No match found")
+
+    return match
+}
