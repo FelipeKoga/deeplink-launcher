@@ -1,3 +1,4 @@
+import org.apache.tools.ant.Target
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 
 plugins {
@@ -59,12 +60,18 @@ compose.desktop {
                 shortcut = true
             }
 
+            macOS {
+                bundleID = "dev.koga.deeplinklauncher"
+                iconFile.set(project.file("assets/icon.icns"))
+            }
+
             targetFormats(
                 TargetFormat.Exe,
                 TargetFormat.Rpm,
                 TargetFormat.Deb,
                 TargetFormat.Msi,
-                TargetFormat.Pkg
+                TargetFormat.Pkg,
+                TargetFormat.Dmg,
             )
         }
     }
