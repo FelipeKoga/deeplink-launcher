@@ -3,13 +3,15 @@ package dev.koga.deeplinklauncher.di
 import dev.koga.deeplinklauncher.datasource.TargetDataSource
 import dev.koga.deeplinklauncher.manager.AdbManager
 import dev.koga.deeplinklauncher.manager.AdbManagerImpl
+import dev.koga.deeplinklauncher.manager.XcrunManager
+import dev.koga.deeplinklauncher.manager.XcrunManagerImpl
 import dev.koga.deeplinklauncher.platform.GetFileContent
 import dev.koga.deeplinklauncher.platform.PlatformInfo
 import dev.koga.deeplinklauncher.platform.SaveFile
 import dev.koga.deeplinklauncher.platform.ShareFile
 import dev.koga.deeplinklauncher.provider.UUIDProvider
+import dev.koga.deeplinklauncher.usecase.GetAdbDeviceType
 import dev.koga.deeplinklauncher.usecase.GetDeepLinkMetadata
-import dev.koga.deeplinklauncher.usecase.GetDeviceType
 import dev.koga.deeplinklauncher.usecase.LaunchDeepLink
 import dev.koga.deeplinklauncher.usecase.ShareDeepLink
 import org.koin.core.module.Module
@@ -26,8 +28,9 @@ internal actual val platformDomainModule: Module = module {
     singleOf(::GetDeepLinkMetadata)
     singleOf(::PlatformInfo)
     singleOf(::TargetDataSource)
-    singleOf(::GetDeviceType)
+    singleOf(::GetAdbDeviceType)
 
     single { AdbManagerImpl.build() } bind AdbManager::class
+    single { XcrunManagerImpl.build() } bind XcrunManager::class
     single { UUIDProvider }
 }
