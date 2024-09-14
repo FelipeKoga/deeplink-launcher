@@ -1,6 +1,5 @@
-package dev.koga.deeplinklauncher.model
+package dev.koga.deeplinklauncher.devicebridge
 
-private val PairRegex = Regex(pattern = "([^{\\s]+)\\s*:\\s*\"?([^\"\\s}]+)")
 
 data class ProtoText(
     val name: String,
@@ -11,7 +10,7 @@ data class ProtoText(
         fun fromAdb(
             name: String,
             text: String,
-            regex: Regex = PairRegex,
+            regex: Regex = Regex(pattern = "([^{\\s]+)\\s*:\\s*\"?([^\"\\s}]+)"),
         ): ProtoText {
             val pairs = mutableMapOf<String, String>()
 
@@ -34,7 +33,7 @@ data class ProtoText(
             return ProtoText(
                 name = name,
                 fields = mapOf(
-                    "serial" to udid
+                    "udid" to udid
                 ),
             )
         }

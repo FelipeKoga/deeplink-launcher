@@ -5,15 +5,12 @@ import androidx.compose.ui.window.application
 import androidx.compose.ui.window.rememberWindowState
 import dev.koga.deeplinklauncher.App
 import dev.koga.deeplinklauncher.initKoin
-import io.github.aakira.napier.DebugAntilog
-import io.github.aakira.napier.Napier
 
 fun main() = application {
-    Napier.base(DebugAntilog())
     initKoin()
 
     val windowState = rememberWindowState(
-        placement = WindowPlacement.Maximized,
+        placement = WindowPlacement.Floating,
     )
 
     Window(
