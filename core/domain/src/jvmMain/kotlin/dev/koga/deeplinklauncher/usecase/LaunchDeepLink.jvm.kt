@@ -1,25 +1,23 @@
 package dev.koga.deeplinklauncher.usecase
 
 import dev.koga.deeplinklauncher.datasource.DeepLinkDataSource
-import dev.koga.deeplinklauncher.datasource.TargetDataSource
-import dev.koga.deeplinklauncher.manager.AdbManager
-import dev.koga.deeplinklauncher.manager.XcrunManager
+import dev.koga.deeplinklauncher.TargetsTracker
+import dev.koga.deeplinklauncher.devicebridge.Adb
+import dev.koga.deeplinklauncher.devicebridge.Xcrun
 import dev.koga.deeplinklauncher.model.DeepLink
 import dev.koga.deeplinklauncher.model.Target
-import dev.koga.deeplinklauncher.platform.Platform
 import dev.koga.deeplinklauncher.util.ext.currentLocalDateTime
-import kotlinx.coroutines.runBlocking
 import java.awt.Desktop
 import java.net.URI
 
 actual class LaunchDeepLink(
     private val deepLinkDataSource: DeepLinkDataSource,
-    private val targetDataSource: TargetDataSource,
-    private val adbManager: AdbManager,
-    private val xcrunManager: XcrunManager,
+    private val targetsTracker: TargetsTracker,
+    private val adb: Adb,
+    private val xcrun: Xcrun,
 ) {
     actual suspend fun launch(url: String): LaunchDeepLinkResult {
-        return when (val target = targetDataSource.current.value) {
+        return when (val target = targetsTracker.current.value) {
             is Target.Browser -> launchDesktopBrowser(url)
             is Target.Device -> launch(url, target)
         }
@@ -31,25 +29,22 @@ actual class LaunchDeepLink(
     ): LaunchDeepLinkResult {
         return try {
             val process = when (target.platform) {
-                Platform.ANDROID -> adbManager.execute(
-                    serial = target.serial,
-                    action = "android.intent.action.VIEW",
-                    arg = link,
+                Target.Device.Platform.ANDROID -> adb.launch(
+                    id = target.id,
+                    link = link,
                 )
 
-                Platform.IOS -> xcrunManager.execute(
-                    udid = target.serial,
-                    arg = link
+                Target.Device.Platform.IOS -> xcrun.launch(
+                    id = target.id,
+                    link = link
                 )
-
-                Platform.JVM -> TODO()
             }
 
             return if (process.exitValue() == 0) {
                 LaunchDeepLinkResult.Success(link)
             } else {
                 val errorStream = process.errorStream.bufferedReader().readText()
-                LaunchDeepLinkResult.Failure(Exception("ADB command failed with error: $errorStream"))
+                LaunchDeepLinkResult.Failure(Exception("Command failed with error: $errorStream"))
             }
         } catch (e: Exception) {
             LaunchDeepLinkResult.Failure(e)

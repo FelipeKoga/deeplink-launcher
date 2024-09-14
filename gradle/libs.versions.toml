@@ -37,7 +37,7 @@ aboutlibraries = "11.2.3"
 
 junit = "4.13.2"
 
-napier = "2.7.1"
+composeIcons = "1.1.0"
 
 [libraries]
 android-gradle-plugin = { module = "com.android.tools.build:gradle", version.ref = "androidGradlePlugin" }
@@ -86,7 +86,7 @@ compose-runtime = { module = "androidx.compose.runtime:runtime", version.ref = "
 
 junit = { module = "junit:junit", version.ref = "junit" }
 
-napier = { module = "io.github.aakira:napier", version.ref = "napier"}
+composeIcons-fontAwesome = { module = "br.com.devsrsouza.compose.icons:font-awesome", version.ref = "composeIcons" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "androidGradlePlugin" }

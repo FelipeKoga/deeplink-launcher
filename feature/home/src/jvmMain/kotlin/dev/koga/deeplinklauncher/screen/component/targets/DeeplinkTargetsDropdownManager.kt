@@ -1,36 +1,37 @@
-package dev.koga.deeplinklauncher.screen.component.launchtarget
+package dev.koga.deeplinklauncher.screen.component.targets
 
-import dev.koga.deeplinklauncher.datasource.TargetDataSource
+import dev.koga.deeplinklauncher.TargetsTracker
 import dev.koga.deeplinklauncher.model.Target
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 
-class DevicesDropdownManager(
-    private val targetDataSource: TargetDataSource,
+class DeeplinkTargetsDropdownManager(
+    private val targetsTracker: TargetsTracker,
     coroutineScope: CoroutineScope,
 ) {
+
     val uiState = combine(
-        targetDataSource.current,
-        targetDataSource.track(),
+        targetsTracker.current,
+        targetsTracker.targets,
     ) { current, targets ->
         targets.toUiState(current)
     }.stateIn(
         scope = coroutineScope,
-        initialValue = DevicesUiState(),
+        initialValue = DeeplinkTargetsUiState(),
         started = SharingStarted.WhileSubscribed(),
     )
 
     fun select(target: Target) {
-        targetDataSource.select(target)
+        targetsTracker.select(target)
     }
 
     fun next() {
-        targetDataSource.next()
+        targetsTracker.next()
     }
 
     fun prev() {
-        targetDataSource.prev()
+        targetsTracker.prev()
     }
 }
