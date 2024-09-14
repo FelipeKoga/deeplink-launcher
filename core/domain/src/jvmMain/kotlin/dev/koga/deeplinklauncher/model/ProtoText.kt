@@ -8,7 +8,7 @@ data class ProtoText(
 ) {
     companion object {
 
-        fun from(
+        fun fromAdb(
             name: String,
             text: String,
             regex: Regex = PairRegex,
@@ -24,6 +24,18 @@ data class ProtoText(
             return ProtoText(
                 name = name,
                 fields = pairs,
+            )
+        }
+
+        fun fromXcrun(
+            name: String,
+            udid: String,
+        ): ProtoText {
+            return ProtoText(
+                name = name,
+                fields = mapOf(
+                    "serial" to udid
+                ),
             )
         }
     }
