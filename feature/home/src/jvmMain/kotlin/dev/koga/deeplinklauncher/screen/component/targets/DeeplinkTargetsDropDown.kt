@@ -1,4 +1,4 @@
-package dev.koga.deeplinklauncher.screen.component.launchtarget
+package dev.koga.deeplinklauncher.screen.component.targets
 
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Row
@@ -37,9 +37,9 @@ import org.koin.compose.koinInject
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
 @Composable
-fun DevicesDropdown(
+fun DeeplinkTargetsDropDown(
     modifier: Modifier,
-    manager: DevicesDropdownManager = koinInject(),
+    manager: DeeplinkTargetsDropdownManager = koinInject(),
 ) {
     val uiState by manager.uiState.collectAsState()
     var expanded by remember { mutableStateOf(false) }

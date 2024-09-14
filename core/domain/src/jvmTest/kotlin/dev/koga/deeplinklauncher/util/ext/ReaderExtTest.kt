@@ -1,6 +1,6 @@
 package dev.koga.deeplinklauncher.util.ext
 
-import dev.koga.deeplinklauncher.model.ProtoText
+import dev.koga.deeplinklauncher.devicebridge.ProtoText
 import org.junit.Assert.assertEquals
 import org.junit.Test
 

@@ -2,7 +2,7 @@ package dev.koga.deeplinklauncher.usecase
 
 import dev.koga.deeplinklauncher.manager.FakeAdbManager
 import dev.koga.deeplinklauncher.model.FakeDevice
-import dev.koga.deeplinklauncher.model.ProtoText
+import dev.koga.deeplinklauncher.devicebridge.ProtoText
 import dev.koga.deeplinklauncher.model.Target
 import junit.framework.TestCase.assertEquals
 import kotlinx.coroutines.test.runTest
@@ -53,12 +53,12 @@ class GetDeviceTypeTest {
 
         val expected = listOf(
             Target.Device.Physical(
-                serial = "ZF523HKK7K",
+                id = "ZF523HKK7K",
                 name = "Pixel 3",
                 active = true,
             ),
             Target.Device.Emulator(
-                serial = "emulator-5554",
+                id = "emulator-5554",
                 name = "Nexus 5X",
                 active = false,
             ),
