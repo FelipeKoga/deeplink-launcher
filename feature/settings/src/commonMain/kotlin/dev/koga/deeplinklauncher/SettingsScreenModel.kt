@@ -44,7 +44,9 @@ class SettingsScreenModel(
     }
 
     fun navigateToStore() {
-        launchDeepLink.launch(ANDROID_PLAY_STORE_PATH)
+        screenModelScope.launch {
+            launchDeepLink.launch(ANDROID_PLAY_STORE_PATH)
+        }
     }
 
     fun changeSuggestionsPreference(enabled: Boolean) {
@@ -54,7 +56,9 @@ class SettingsScreenModel(
     }
 
     fun navigateToGithub() {
-        launchDeepLink.launch("https://github.com/FelipeKoga/deeplink-launcher")
+        screenModelScope.launch {
+            launchDeepLink.launch("https://github.com/FelipeKoga/deeplink-launcher")
+        }
     }
 
     companion object {

@@ -3,8 +3,8 @@ package dev.koga.deeplinklauncher.usecase
 import dev.koga.deeplinklauncher.model.DeepLink
 
 expect class LaunchDeepLink {
-    fun launch(url: String): LaunchDeepLinkResult
-    fun launch(deepLink: DeepLink): LaunchDeepLinkResult
+    suspend fun launch(url: String): LaunchDeepLinkResult
+    suspend fun launch(deepLink: DeepLink): LaunchDeepLinkResult
 }
 
 sealed interface LaunchDeepLinkResult {

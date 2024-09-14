@@ -1,8 +1,10 @@
 package dev.koga.deeplinklauncher.datasource
 
 import dev.koga.deeplinklauncher.manager.AdbManager
+import dev.koga.deeplinklauncher.manager.XcrunManager
 import dev.koga.deeplinklauncher.model.Target
-import dev.koga.deeplinklauncher.usecase.GetDeviceType
+import dev.koga.deeplinklauncher.platform.Platform
+import dev.koga.deeplinklauncher.usecase.GetAdbDeviceType
 import dev.koga.deeplinklauncher.util.ext.addOrUpdate
 import dev.koga.deeplinklauncher.util.ext.next
 import dev.koga.deeplinklauncher.util.ext.previous
@@ -15,7 +17,8 @@ import kotlinx.coroutines.flow.update
 
 class TargetDataSource(
     private val adbManager: AdbManager,
-    private val getDeviceType: GetDeviceType,
+    private val xcrunManager: XcrunManager,
+    private val getAdbDeviceType: GetAdbDeviceType,
 ) {
     private val targets = MutableStateFlow(listOf<Target>(Target.Browser))
 
@@ -49,24 +52,55 @@ class TargetDataSource(
 
         val devices = mutableListOf<Target.Device>()
 
-        adbManager.trackDevices()
-            .inputStream
-            .bufferedReader()
-            .useProtoText(target = "device") { deviceProtoText ->
+        if (xcrunManager.installed) {
+            val a = xcrunManager
+                .trackDevices()
+                .inputStream
+                .bufferedReader()
+                .use { it.readText() }
 
-                devices.addOrUpdate(
-                    getDeviceType(deviceProtoText),
-                )
+            println("AAAAAAA : $a")
+            xcrunManager.trackDevices()
+                .inputStream
+                .bufferedReader()
+                .useProtoText(target = "iPhone|iPad") { device ->
+                    devices.addOrUpdate(
+                        Target.Device.Emulator(
+                            serial = device.fields["serial"].toString(),
+                            name = device.name,
+                            platform = Platform.IOS
+                        )
+                    )
 
-                emit(
-                    listOf(
-                        Target.Browser,
-                        *devices.filter { device ->
-                            device.active
-                        }.toTypedArray(),
-                    ),
-                )
-            }
+                    emit(
+                        listOf(
+                            Target.Browser,
+                            *devices.filter { device ->
+                                device.active
+                            }.toTypedArray(),
+                        ),
+                    )
+                }
+        }
+
+        if (adbManager.installed) {
+            adbManager.trackDevices()
+                .inputStream
+                .bufferedReader()
+                .useProtoText(target = "device") { deviceProtoText ->
+                    devices.addOrUpdate(getAdbDeviceType(deviceProtoText))
+
+                    emit(
+                        listOf(
+                            Target.Browser,
+                            *devices.filter { device ->
+                                device.active
+                            }.toTypedArray(),
+                        ),
+                    )
+                }
+        }
+
     }.onEach {
         update(it)
     }

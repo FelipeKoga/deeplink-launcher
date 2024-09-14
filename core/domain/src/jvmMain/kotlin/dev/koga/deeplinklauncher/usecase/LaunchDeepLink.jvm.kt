@@ -3,8 +3,10 @@ package dev.koga.deeplinklauncher.usecase
 import dev.koga.deeplinklauncher.datasource.DeepLinkDataSource
 import dev.koga.deeplinklauncher.datasource.TargetDataSource
 import dev.koga.deeplinklauncher.manager.AdbManager
+import dev.koga.deeplinklauncher.manager.XcrunManager
 import dev.koga.deeplinklauncher.model.DeepLink
 import dev.koga.deeplinklauncher.model.Target
+import dev.koga.deeplinklauncher.platform.Platform
 import dev.koga.deeplinklauncher.util.ext.currentLocalDateTime
 import kotlinx.coroutines.runBlocking
 import java.awt.Desktop
@@ -14,22 +16,33 @@ actual class LaunchDeepLink(
     private val deepLinkDataSource: DeepLinkDataSource,
     private val targetDataSource: TargetDataSource,
     private val adbManager: AdbManager,
+    private val xcrunManager: XcrunManager,
 ) {
-    actual fun launch(url: String): LaunchDeepLinkResult {
+    actual suspend fun launch(url: String): LaunchDeepLinkResult {
         return when (val target = targetDataSource.current.value) {
             is Target.Browser -> launchDesktopBrowser(url)
-            is Target.Device -> launchWithAdb(url, target)
+            is Target.Device -> launch(url, target)
         }
     }
 
-    private fun launchWithAdb(link: String, target: Target.Device): LaunchDeepLinkResult {
+    private suspend fun launch(
+        link: String,
+        target: Target.Device
+    ): LaunchDeepLinkResult {
         return try {
-            val process = runBlocking {
-                adbManager.execute(
+            val process = when (target.platform) {
+                Platform.ANDROID -> adbManager.execute(
                     serial = target.serial,
                     action = "android.intent.action.VIEW",
                     arg = link,
                 )
+
+                Platform.IOS -> xcrunManager.execute(
+                    udid = target.serial,
+                    arg = link
+                )
+
+                Platform.JVM -> TODO()
             }
 
             return if (process.exitValue() == 0) {
@@ -59,7 +72,7 @@ actual class LaunchDeepLink(
         }
     }
 
-    actual fun launch(deepLink: DeepLink): LaunchDeepLinkResult {
+    actual suspend fun launch(deepLink: DeepLink): LaunchDeepLinkResult {
         deepLinkDataSource.upsertDeepLink(deepLink.copy(lastLaunchedAt = currentLocalDateTime))
 
         return launch(deepLink.link)
