@@ -29,11 +29,13 @@ data class ProtoText(
         fun fromXcrun(
             name: String,
             udid: String,
+            state: String,
         ): ProtoText {
             return ProtoText(
                 name = name,
                 fields = mapOf(
-                    "udid" to udid
+                    "udid" to udid,
+                    "state" to state,
                 ),
             )
         }

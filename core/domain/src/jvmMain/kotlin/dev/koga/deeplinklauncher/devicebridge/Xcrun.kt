@@ -5,10 +5,14 @@ import dev.koga.deeplinklauncher.util.ext.installed
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.flow.updateAndGet
 import kotlinx.coroutines.withContext
 import java.io.Reader
+import java.util.concurrent.CopyOnWriteArrayList
 
 class Xcrun(
     private val path: String,
@@ -18,9 +22,9 @@ class Xcrun(
 
     override val installed get() = path.installed()
 
-    private val tracking = mutableListOf<DeviceBridge.Device>()
+    private val tracking = MutableStateFlow<List<DeviceBridge.Device>>(emptyList())
     override val devices: List<DeviceBridge.Device>
-        get() = tracking.toList()
+        get() = tracking.value
 
     override suspend fun launch(
         id: String,
@@ -46,22 +50,11 @@ class Xcrun(
                 "simctl",
                 "list",
                 "devices"
-            ).start()
-
-            val bootedDevices = ProcessBuilder("grep", "Booted").start()
-            bootedDevices.outputStream.bufferedWriter().use { writer ->
-                devicesProcess.inputStream.bufferedReader().useLines { lines ->
-                    lines.forEach { line ->
-                        writer.write(line)
-                        writer.newLine()
-                    }
-                }
+            ).start().also {
+                it.waitFor()
             }
 
-            devicesProcess.waitFor()
-            bootedDevices.waitFor()
-
-            bootedDevices
+            devicesProcess
                 .inputStream
                 .bufferedReader()
                 .process { protoText ->
@@ -70,21 +63,22 @@ class Xcrun(
                         name = protoText.name,
                         platform = DeviceBridge.Platform.IOS,
                         isEmulator = true,
+                        active = protoText.fields["state"] == "Booted",
                     )
 
-                    tracking.addOrUpdate(device)
-
-                    emit(tracking)
+                    emit(tracking.updateAndGet {
+                        it.addOrReplace(device)
+                    })
                 }
 
-            delay(timeMillis = 10000)
+            delay(timeMillis = 5000)
         }
     }.flowOn(dispatcher)
 
     private inline fun Reader.process(
         block: (ProtoText) -> Unit,
     ) {
-        val iOSDeviceRegex = Regex(pattern = "\\s*(.+)\\s*\\(([-A-F0-9]+)\\)\\s*\\((Booted)\\)")
+        val iOSDeviceRegex = Regex(pattern = "\\s*(.+?)\\s*\\(([-A-F0-9]+)\\)\\s*\\((Booted|Shutdown)\\)")
 
         val builder = StringBuilder()
 
@@ -92,14 +86,13 @@ class Xcrun(
             lines.forEach { line ->
                 builder.append(line)
                 iOSDeviceRegex.find(builder)?.let {
-                    val (name, udid) = it.destructured
-                    block(ProtoText.fromXcrun(name, udid))
+                    val (name, udid, state) = it.destructured
+                    block(ProtoText.fromXcrun(name, udid, state))
                     builder.clear()
                 }
             }
         }
     }
-
 
     companion object {
         fun build(dispatcher: CoroutineDispatcher): Xcrun {
