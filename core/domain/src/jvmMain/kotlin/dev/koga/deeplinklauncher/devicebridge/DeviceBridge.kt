@@ -13,6 +13,7 @@ interface DeviceBridge {
     data class Device(
         val id: String,
         val name: String,
+        val active: Boolean,
         val isEmulator: Boolean,
         val platform: Platform
     )
@@ -23,12 +24,9 @@ interface DeviceBridge {
     }
 }
 
-fun MutableList<DeviceBridge.Device>.addOrUpdate(device: DeviceBridge.Device) {
-    val index = indexOfFirst { it.id == device.id }
+fun List<DeviceBridge.Device>.addOrReplace(device: DeviceBridge.Device): List<DeviceBridge.Device> {
+    val foundDevice = firstOrNull { it.id == device.id }
 
-    if (index == -1) {
-        add(device)
-    } else {
-        set(index, device)
-    }
+    return if (foundDevice == null) this + device
+    else this.map { if (it == foundDevice) device else it }
 }
