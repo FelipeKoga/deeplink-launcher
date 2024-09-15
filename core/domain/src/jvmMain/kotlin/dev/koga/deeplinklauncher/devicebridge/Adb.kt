@@ -5,8 +5,10 @@ import dev.koga.deeplinklauncher.util.ext.installed
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.updateAndGet
 import kotlinx.coroutines.withContext
 import java.io.Reader
 
@@ -17,10 +19,9 @@ class Adb(
 
     override val installed get() = path.installed()
 
-    private val tracking = mutableListOf<DeviceBridge.Device>()
-
+    private val tracking = MutableStateFlow<List<DeviceBridge.Device>>(emptyList())
     override val devices: List<DeviceBridge.Device>
-        get() = tracking.toList()
+        get() = tracking.value
 
     override suspend fun launch(
         id: String,
@@ -52,6 +53,7 @@ class Adb(
             .process { protoText ->
                 val serial = protoText.fields["serial"] as String
                 val type = protoText.fields["connection_type"] as String
+                val active = protoText.fields["state"] == "DEVICE"
 
                 val device = when (type) {
                     "SOCKET" -> DeviceBridge.Device(
@@ -63,6 +65,7 @@ class Adb(
                         },
                         platform = DeviceBridge.Platform.ANDROID,
                         isEmulator = true,
+                        active = active,
                     )
 
                     else -> DeviceBridge.Device(
@@ -74,12 +77,13 @@ class Adb(
                         },
                         platform = DeviceBridge.Platform.ANDROID,
                         isEmulator = false,
+                        active = active
                     )
                 }
 
-                tracking.addOrUpdate(device)
-
-                emit(tracking)
+                emit(tracking.updateAndGet {
+                    it.addOrReplace(device)
+                })
             }
     }.flowOn(dispatcher)
 
@@ -161,7 +165,7 @@ class Adb(
         }
     }
 
-     companion object {
+    companion object {
         fun build(dispatcher: CoroutineDispatcher): Adb {
             if ("adb".installed()) {
                 return Adb(path = "adb", dispatcher = dispatcher)

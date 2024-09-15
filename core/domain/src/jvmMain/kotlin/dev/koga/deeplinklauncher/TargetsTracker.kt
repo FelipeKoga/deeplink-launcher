@@ -27,12 +27,13 @@ class TargetsTracker(
     private val androidDevices = adb
         .track()
         .map { devices ->
-            devices.map {
-                Target.Device(
+            devices.mapNotNull {
+                if (it.active) Target.Device(
                     id = it.id,
                     name = it.name,
                     platform = Target.Device.Platform.ANDROID
                 )
+                else null
             }
         }
         .stateIn(
@@ -44,12 +45,13 @@ class TargetsTracker(
     private val iOSDevices = xcrun
         .track()
         .map { devices ->
-            devices.map {
-                Target.Device(
+            devices.mapNotNull {
+                if (it.active) Target.Device(
                     id = it.id,
                     name = it.name,
                     platform = Target.Device.Platform.IOS
                 )
+                else null
             }
         }.stateIn(
             scope = coroutineScope,
