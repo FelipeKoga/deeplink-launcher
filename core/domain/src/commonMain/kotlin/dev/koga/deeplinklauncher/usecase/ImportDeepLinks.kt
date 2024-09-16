@@ -21,9 +21,6 @@ class ImportDeepLinks(
     fun invoke(filePath: String, fileType: FileType): ImportDeepLinksOutput {
         return try {
             val fileContents = getFileContent(filePath)
-
-            println(fileContents)
-
             when (fileType) {
                 FileType.JSON -> {
                     val json = Json {
@@ -115,7 +112,6 @@ class ImportDeepLinks(
 
             ImportDeepLinksOutput.Success
         } catch (e: Exception) {
-            println(e)
             ImportDeepLinksOutput.Error.Unknown
         }
     }

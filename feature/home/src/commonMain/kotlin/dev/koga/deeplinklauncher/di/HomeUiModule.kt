@@ -7,6 +7,8 @@ import org.koin.dsl.module
 
 val homeUiModule = module {
     factoryOf(::HomeScreenModel)
+
+    includes(platformHomeUiModule)
 }
 
 expect val platformHomeUiModule: Module
