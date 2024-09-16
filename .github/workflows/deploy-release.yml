@@ -147,6 +147,34 @@ jobs:
           path: |
             ./desktopApp/build/compose/binaries/main/exe/*.exe
 
+  build-dmg:
+    runs-on: macos-14
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'zulu'
+          cache: gradle
+
+      - name: Grant execute permission for gradlew
+        run: ./gradlew.bat
+
+      - name: Build DMG
+        run: ./gradlew.bat :desktopApp:packageDmg
+
+      - name: Upload DMG
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: desktop-macos-dmg
+          path: |
+            ./desktopApp/build/compose/binaries/main/dmg/*.dmg
+
   create-release:
     needs: [build-apk, build-deb, build-exe]
     runs-on: ubuntu-latest
@@ -164,6 +192,12 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: desktop-ubuntu-deb
+          path: ${{ env.DOWNLOADS_PATH }}
+
+      - name: Download desktop macos dmg artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: desktop-macos-dmg
           path: ${{ env.DOWNLOADS_PATH }}
 
       - name: Download android APK artifact
