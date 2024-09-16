@@ -41,6 +41,8 @@ internal class Xcrun private constructor(
     }
 
     override fun track(): Flow<List<DeviceBridge.Device>> = flow {
+        emit(emptyList())
+
         while (true) {
             val inputStream = ProcessBuilder(
                 path,
@@ -71,10 +73,6 @@ internal class Xcrun private constructor(
 
     companion object {
         private const val XCRUN_TRACK_DEVICES_DELAY = 5000L
-        val XCRUN_DEVICES_REGEX = Regex(
-            pattern = "\\s*(.+?)\\s*\\(([-A-F0-9]+)\\)\\s*\\((Booted|Shutdown)\\)",
-            RegexOption.IGNORE_CASE,
-        )
 
         fun build(dispatcher: CoroutineDispatcher): Xcrun {
             if ("xcrun".installed()) {
