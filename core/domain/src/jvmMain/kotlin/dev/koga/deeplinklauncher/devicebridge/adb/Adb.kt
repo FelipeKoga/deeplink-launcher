@@ -42,6 +42,8 @@ internal class Adb private constructor(
     }
 
     override fun track(): Flow<List<DeviceBridge.Device>> = flow {
+        emit(emptyList())
+
         val inputStream = ProcessBuilder(
             path,
             "track-devices",
