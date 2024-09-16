@@ -12,11 +12,8 @@
   <a href="https://github.com/FelipeKoga/deeplink-launcher/stargazers">
     <img src="https://img.shields.io/github/stars/FelipeKoga/deeplink-launcher" alt="Stars" />
   </a>
-  <a href="https://github.com/FelipeKoga/deeplink-launcher/actions/workflows/quality.yml.yml">
-    <img src="https://github.com/FelipeKoga/deeplink-launcher/actions/workflows/quality.yml/badge.svg" alt="Lint and unit tests" />
-  </a>
-  <a href="https://github.com/FelipeKoga/deeplink-launcher/actions/workflows/deploy-release.yml">
-    <img src="https://github.com/FelipeKoga/deeplink-launcher/actions/workflows/deploy-release.yml/badge.svg" alt="Deploy Release" />
+  <a href="https://github.com/FelipeKoga/deeplink-launcher/actions/workflows/release.yml">
+    <img src="https://github.com/FelipeKoga/deeplink-launcher/actions/workflows/release.yml/badge.svg" alt="Release" />
   </a>
 </p>
 
