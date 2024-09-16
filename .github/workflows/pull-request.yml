@@ -1,9 +1,8 @@
-name: Run Unit Tests
+name: Pull Request
 
 on:
-  push:
-    branches: [ "main" ]
   pull_request:
+    branches: [ "main" ]
 
   workflow_dispatch:
 
