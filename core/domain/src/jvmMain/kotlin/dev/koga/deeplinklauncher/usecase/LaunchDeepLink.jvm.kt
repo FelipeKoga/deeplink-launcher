@@ -23,12 +23,12 @@ actual class LaunchDeepLink(
 
     private suspend fun launch(
         link: String,
-        device: DeeplinkTarget.Device
+        device: DeeplinkTarget.Device,
     ): LaunchDeepLinkResult {
         return try {
             val process = deviceBridge.launch(
                 id = device.id,
-                link = link
+                link = link,
             )
 
             return if (process.exitValue() == 0) {

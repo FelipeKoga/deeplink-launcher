@@ -27,7 +27,7 @@ class DeeplinkTargetStateManager internal constructor(
                 DeeplinkTarget.Device(
                     id = it.id,
                     name = it.name,
-                    platform = it.platform
+                    platform = it.platform,
                 )
             } else {
                 null
@@ -40,7 +40,7 @@ class DeeplinkTargetStateManager internal constructor(
     }.stateIn(
         scope = coroutineScope,
         started = SharingStarted.Lazily,
-        initialValue = emptyList()
+        initialValue = emptyList(),
     )
 
     private val _current = MutableStateFlow<DeeplinkTarget>(DeeplinkTarget.Browser)

@@ -23,6 +23,6 @@ internal object XcrunParser {
 
     @Serializable
     private data class DevicesResponse(
-        @SerialName("devices") val devices: Map<String, List<XcrunDevice>>
+        @SerialName("devices") val devices: Map<String, List<XcrunDevice>>,
     )
 }
