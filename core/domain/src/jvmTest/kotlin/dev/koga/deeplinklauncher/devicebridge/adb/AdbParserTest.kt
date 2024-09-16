@@ -1,7 +1,7 @@
 package dev.koga.deeplinklauncher.devicebridge.adb
 
 import kotlinx.coroutines.test.runTest
-import org.junit.Assert.*
+import org.junit.Assert.assertEquals
 import org.junit.Test
 
 class AdbParserTest {
@@ -33,18 +33,18 @@ class AdbParserTest {
             AdbDevice(
                 serial = "ZF523HKK7K",
                 state = "DEVICE",
-                connectionType = "USB"
+                connectionType = "USB",
             ),
-            devices[0]
+            devices[0],
         )
 
         assertEquals(
             AdbDevice(
                 serial = "emulator-5554",
                 state = "DEVICE",
-                connectionType = "SOCKET"
+                connectionType = "SOCKET",
             ),
-            devices[1]
+            devices[1],
         )
     }
 }
