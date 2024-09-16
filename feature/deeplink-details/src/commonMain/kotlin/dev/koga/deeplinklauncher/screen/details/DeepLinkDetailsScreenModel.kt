@@ -111,7 +111,9 @@ class DeepLinkDetailsScreenModel(
     }
 
     fun launch() {
-        launchDeepLink.launch(deepLink.value)
+        screenModelScope.launch {
+            launchDeepLink.launch(deepLink.value)
+        }
     }
 
     fun delete() {

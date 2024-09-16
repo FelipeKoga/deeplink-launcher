@@ -137,8 +137,6 @@ class HomeScreenModel(
 
     private fun insertDeepLink(link: String) {
         screenModelScope.launch {
-            println(currentLocalDateTime)
-
             deepLinkDataSource.upsertDeepLink(
                 DeepLink(
                     id = UUIDProvider.get(),

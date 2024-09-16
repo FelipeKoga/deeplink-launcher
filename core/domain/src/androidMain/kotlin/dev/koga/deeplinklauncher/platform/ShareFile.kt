@@ -16,7 +16,6 @@ actual class ShareFile(
             Uri.parse(filePath) // Parse the content URI string
         } else {
             val file = File(filePath)
-            println(file.readText())
             FileProvider.getUriForFile(
                 context,
                 "dev.koga.deeplinklauncher.android.provider",

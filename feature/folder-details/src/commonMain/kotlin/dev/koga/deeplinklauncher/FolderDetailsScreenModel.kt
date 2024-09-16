@@ -84,7 +84,9 @@ class FolderDetailsScreenModel(
     }
 
     fun launch(deepLink: DeepLink) {
-        launchDeepLink.launch(deepLink)
+        screenModelScope.launch {
+            launchDeepLink.launch(deepLink)
+        }
     }
 }
 
