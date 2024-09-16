@@ -16,10 +16,6 @@ actual class ShareFile {
                 throw IOException("File does not exist: $filePath")
             }
 
-            // Print file content to console (or handle as needed)
-            println(file.readText())
-
-            // Optionally, open the file with the default system application
             if (Desktop.isDesktopSupported()) {
                 val desktop = Desktop.getDesktop()
                 if (desktop.isSupported(Desktop.Action.OPEN)) {
