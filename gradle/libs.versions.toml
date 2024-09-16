@@ -37,7 +37,7 @@ aboutlibraries = "11.2.3"
 
 junit = "4.13.2"
 
-composeIcons = "1.1.0"
+composeIcons = "1.1.1"
 
 [libraries]
 android-gradle-plugin = { module = "com.android.tools.build:gradle", version.ref = "androidGradlePlugin" }
