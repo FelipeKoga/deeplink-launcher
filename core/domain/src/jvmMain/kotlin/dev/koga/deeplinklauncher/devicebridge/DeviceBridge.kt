@@ -13,7 +13,7 @@ interface DeviceBridge {
 
     suspend fun launch(
         id: String,
-        link: String
+        link: String,
     ): Process
 
     data class Device(
@@ -21,12 +21,12 @@ interface DeviceBridge {
         val name: String,
         val active: Boolean,
         val isEmulator: Boolean,
-        val platform: Platform
+        val platform: Platform,
     )
 
     enum class Platform {
         ANDROID,
-        IOS
+        IOS,
     }
 }
 

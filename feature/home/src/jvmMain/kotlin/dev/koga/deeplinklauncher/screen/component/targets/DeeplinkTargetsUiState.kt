@@ -48,6 +48,6 @@ fun DeeplinkTarget.toUiState(
         icon = when (platform) {
             DeviceBridge.Platform.ANDROID -> Icons.Rounded.Smartphone
             DeviceBridge.Platform.IOS -> Icons.Rounded.Smartphone
-        }
+        },
     )
 }

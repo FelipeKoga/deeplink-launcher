@@ -78,7 +78,7 @@ internal class Adb private constructor(
             emit(
                 tracking.updateAndGet { devices ->
                     devices.addOrReplace(device)
-                }
+                },
             )
         }
     }.flowOn(dispatcher)
@@ -134,14 +134,16 @@ internal class Adb private constructor(
         )
     }
 
-
     private fun List<DeviceBridge.Device>.addOrReplace(
-        device: DeviceBridge.Device
+        device: DeviceBridge.Device,
     ): List<DeviceBridge.Device> {
         val foundDevice = firstOrNull { it.id == device.id }
 
-        return if (foundDevice == null) this + device
-        else this.map { if (it == foundDevice) device else it }
+        return if (foundDevice == null) {
+            this + device
+        } else {
+            this.map { if (it == foundDevice) device else it }
+        }
     }
 
     companion object {
@@ -153,7 +155,7 @@ internal class Adb private constructor(
             System.getenv("ANDROID_HOME")?.let {
                 return Adb(
                     path = it,
-                    dispatcher = dispatcher
+                    dispatcher = dispatcher,
                 )
             }
 
@@ -163,21 +165,21 @@ internal class Adb private constructor(
                 Os.LINUX -> {
                     Adb(
                         path = "$userHome/Android/Sdk/platform-tools/adb",
-                        dispatcher = dispatcher
+                        dispatcher = dispatcher,
                     )
                 }
 
                 Os.WINDOWS -> {
                     Adb(
                         path = "$userHome/AppData/Local/Android/Sdk/platform-tools/adb",
-                        dispatcher = dispatcher
+                        dispatcher = dispatcher,
                     )
                 }
 
                 Os.MAC -> {
                     Adb(
                         path = "$userHome/Library/Android/sdk/platform-tools/adb",
-                        dispatcher = dispatcher
+                        dispatcher = dispatcher,
                     )
                 }
             }

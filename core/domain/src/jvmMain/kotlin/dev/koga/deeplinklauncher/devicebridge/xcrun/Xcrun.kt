@@ -48,7 +48,7 @@ internal class Xcrun private constructor(
                 "list",
                 "--json",
                 "devices",
-                "available"
+                "available",
             ).start().also {
                 it.waitFor()
             }.inputStream
@@ -73,7 +73,7 @@ internal class Xcrun private constructor(
         private const val XCRUN_TRACK_DEVICES_DELAY = 5000L
         val XCRUN_DEVICES_REGEX = Regex(
             pattern = "\\s*(.+?)\\s*\\(([-A-F0-9]+)\\)\\s*\\((Booted|Shutdown)\\)",
-            RegexOption.IGNORE_CASE
+            RegexOption.IGNORE_CASE,
         )
 
         fun build(dispatcher: CoroutineDispatcher): Xcrun {

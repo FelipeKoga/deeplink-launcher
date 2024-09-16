@@ -13,6 +13,6 @@ sealed interface DeeplinkTarget {
     data class Device(
         override val id: String,
         val name: String,
-        val platform: DeviceBridge.Platform
+        val platform: DeviceBridge.Platform,
     ) : DeeplinkTarget
 }

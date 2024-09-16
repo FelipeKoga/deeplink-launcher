@@ -28,8 +28,8 @@ internal object AdbParser {
                     AdbDevice(
                         serial = serial,
                         connectionType = connectionType,
-                        state = state
-                    )
+                        state = state,
+                    ),
                 )
             }
     }
