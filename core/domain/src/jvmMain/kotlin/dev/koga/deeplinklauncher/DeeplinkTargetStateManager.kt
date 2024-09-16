@@ -6,6 +6,7 @@ import dev.koga.deeplinklauncher.util.ext.next
 import dev.koga.deeplinklauncher.util.ext.previous
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -15,6 +16,7 @@ import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 
+@OptIn(ExperimentalCoroutinesApi::class)
 class DeeplinkTargetStateManager internal constructor(
     deviceBridge: DeviceBridge,
     dispatcher: CoroutineDispatcher,
@@ -39,7 +41,7 @@ class DeeplinkTargetStateManager internal constructor(
         listOf(DeeplinkTarget.Browser) + it
     }.stateIn(
         scope = coroutineScope,
-        started = SharingStarted.Lazily,
+        started = SharingStarted.WhileSubscribed(),
         initialValue = emptyList(),
     )
 
