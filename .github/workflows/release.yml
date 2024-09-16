@@ -9,9 +9,6 @@ on:
         default: 'v1.0.0'
         type: string
 
-permissions:
-  contents: write
-
 jobs:
   create-tag:
     runs-on: ubuntu-latest
