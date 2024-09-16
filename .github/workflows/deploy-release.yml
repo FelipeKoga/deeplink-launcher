@@ -148,8 +148,8 @@ jobs:
             ./desktopApp/build/compose/binaries/main/exe/*.exe
 
   build-dmg:
+    needs: create-tag
     runs-on: macos-14
-
     steps:
       - name: Checkout
         uses: actions/checkout@v4
