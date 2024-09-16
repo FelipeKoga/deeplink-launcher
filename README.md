@@ -5,7 +5,7 @@
 <h1 align="center">DeepLink Launcher</h1>
 
 <p align="center">
-  Simplify deeplink management with DeepLink Launcher. Built on Compose Multiplatform and Material3, this tool offers developers and QA teams an intuitive interface for executing, organizing, tracking, and sharing deeplinks.
+  Deeplink Launcher is a multiplatform app designed for executing and managing deeplinks. This tool offers developers and QA teams an intuitive interface for testing, organizing, tracking, and sharing deeplinks.
 </p>
 
 <p align="center">
@@ -16,14 +16,6 @@
     <img src="https://github.com/FelipeKoga/deeplink-launcher/actions/workflows/release.yml/badge.svg" alt="Release" />
   </a>
 </p>
-
-## Screenshots
-
-#### Android
-![Screenshot 1](docs/screenshots/android-screenshot.png)
-
-#### Desktop
-![Screenshot 2](docs/screenshots/desktop-screenshot.png)
 
 ## Platforms
 
@@ -60,6 +52,14 @@
 - **Duplicate DeepLink**: Easily duplicate existing deeplinks, saving time when creating similar entries or variations.
 - **Theme Support**: Customize your experience by switching between Light and Dark modes.
 - **Search**: Quickly find deeplinks by searching for keywords.
+
+## Screenshots
+
+#### Android
+![Screenshot 1](docs/screenshots/android-screenshot.png)
+
+#### Desktop
+![Screenshot 2](docs/screenshots/desktop-screenshot.png)
 
 ## Built With
 <div>
