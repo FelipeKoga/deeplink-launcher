@@ -149,7 +149,7 @@ jobs:
 
   build-dmg:
     needs: create-tag
-    runs-on: macos-14
+    runs-on: macos-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -161,11 +161,8 @@ jobs:
           distribution: 'zulu'
           cache: gradle
 
-      - name: Grant execute permission for gradlew
-        run: ./gradlew.bat
-
       - name: Build DMG
-        run: ./gradlew.bat :desktopApp:packageDmg
+        run: ./gradlew :desktopApp:packageDmg
 
       - name: Upload DMG
         if: always()
