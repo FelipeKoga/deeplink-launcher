@@ -54,10 +54,6 @@ internal class Adb private constructor(
             "--proto-text",
         ).start()
 
-        if (process.waitFor() != 0) {
-            return@flow
-        }
-
         AdbParser.parse(process.inputStream) { adbDevice ->
             val device = when (adbDevice.connectionType) {
                 "SOCKET" -> DeviceBridge.Device(
