@@ -1,5 +1,6 @@
-package dev.koga.deeplinklauncher.devicebridge
+package dev.koga.deeplinklauncher.devicebridge.xcrun
 
+import dev.koga.deeplinklauncher.devicebridge.DeviceBridge
 import dev.koga.deeplinklauncher.model.Os
 import dev.koga.deeplinklauncher.util.ext.installed
 import kotlinx.coroutines.CoroutineDispatcher
@@ -8,23 +9,19 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
-import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.flow.updateAndGet
 import kotlinx.coroutines.withContext
-import java.io.Reader
-import java.util.concurrent.CopyOnWriteArrayList
 
-class Xcrun(
+internal class Xcrun private constructor(
     private val path: String,
     private val dispatcher: CoroutineDispatcher,
 ) : DeviceBridge {
 
-
-    override val installed get() = path.installed()
-
     private val tracking = MutableStateFlow<List<DeviceBridge.Device>>(emptyList())
     override val devices: List<DeviceBridge.Device>
         get() = tracking.value
+
+    override val installed get() = path.installed()
 
     override suspend fun launch(
         id: String,
@@ -45,56 +42,40 @@ class Xcrun(
 
     override fun track(): Flow<List<DeviceBridge.Device>> = flow {
         while (true) {
-            val devicesProcess = ProcessBuilder(
+            val inputStream = ProcessBuilder(
                 path,
                 "simctl",
                 "list",
-                "devices"
+                "--json",
+                "devices",
+                "available"
             ).start().also {
                 it.waitFor()
+            }.inputStream
+
+            val devices = XcrunParser.parse(inputStream).map {
+                DeviceBridge.Device(
+                    id = it.udid,
+                    name = it.name,
+                    platform = DeviceBridge.Platform.IOS,
+                    isEmulator = true,
+                    active = it.state == "Booted",
+                )
             }
 
-            devicesProcess
-                .inputStream
-                .bufferedReader()
-                .process { protoText ->
-                    val device = DeviceBridge.Device(
-                        id = protoText.fields["udid"].toString(),
-                        name = protoText.name,
-                        platform = DeviceBridge.Platform.IOS,
-                        isEmulator = true,
-                        active = protoText.fields["state"] == "Booted",
-                    )
+            emit(tracking.updateAndGet { devices })
 
-                    emit(tracking.updateAndGet {
-                        it.addOrReplace(device)
-                    })
-                }
-
-            delay(timeMillis = 5000)
+            delay(timeMillis = XCRUN_TRACK_DEVICES_DELAY)
         }
     }.flowOn(dispatcher)
 
-    private inline fun Reader.process(
-        block: (ProtoText) -> Unit,
-    ) {
-        val iOSDeviceRegex = Regex(pattern = "\\s*(.+?)\\s*\\(([-A-F0-9]+)\\)\\s*\\((Booted|Shutdown)\\)")
-
-        val builder = StringBuilder()
-
-        return useLines { lines ->
-            lines.forEach { line ->
-                builder.append(line)
-                iOSDeviceRegex.find(builder)?.let {
-                    val (name, udid, state) = it.destructured
-                    block(ProtoText.fromXcrun(name, udid, state))
-                    builder.clear()
-                }
-            }
-        }
-    }
-
     companion object {
+        private const val XCRUN_TRACK_DEVICES_DELAY = 5000L
+        val XCRUN_DEVICES_REGEX = Regex(
+            pattern = "\\s*(.+?)\\s*\\(([-A-F0-9]+)\\)\\s*\\((Booted|Shutdown)\\)",
+            RegexOption.IGNORE_CASE
+        )
+
         fun build(dispatcher: CoroutineDispatcher): Xcrun {
             if ("xcrun".installed()) {
                 return Xcrun("xcrun", dispatcher)

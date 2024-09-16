@@ -1,8 +1,10 @@
 package dev.koga.deeplinklauncher.di
 
-import dev.koga.deeplinklauncher.TargetsTracker
-import dev.koga.deeplinklauncher.devicebridge.Adb
-import dev.koga.deeplinklauncher.devicebridge.Xcrun
+import dev.koga.deeplinklauncher.DeeplinkTargetStateManager
+import dev.koga.deeplinklauncher.devicebridge.DeviceBridge
+import dev.koga.deeplinklauncher.devicebridge.DeviceBridgeWrapper
+import dev.koga.deeplinklauncher.devicebridge.adb.Adb
+import dev.koga.deeplinklauncher.devicebridge.xcrun.Xcrun
 import dev.koga.deeplinklauncher.platform.GetFileContent
 import dev.koga.deeplinklauncher.platform.PlatformInfo
 import dev.koga.deeplinklauncher.platform.SaveFile
@@ -25,8 +27,9 @@ internal actual val platformDomainModule: Module = module {
     singleOf(::GetFileContent)
     singleOf(::GetDeepLinkMetadata)
     singleOf(::PlatformInfo)
-    single { TargetsTracker(get(), get(), Dispatchers.Main) }
+    single { DeeplinkTargetStateManager(get(), Dispatchers.Main) }
     single { Adb.build(dispatcher = Dispatchers.IO) } bind Adb::class
     single { Xcrun.build(dispatcher = Dispatchers.IO) } bind Xcrun::class
+    single { DeviceBridgeWrapper(get(), get()) } bind DeviceBridge::class
     single { UUIDProvider }
 }

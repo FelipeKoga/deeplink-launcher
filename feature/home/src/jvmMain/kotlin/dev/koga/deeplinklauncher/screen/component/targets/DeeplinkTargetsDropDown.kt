@@ -131,7 +131,7 @@ fun DeeplinkTargetsDropDown(
                         )
                     },
                     onClick = {
-                        manager.select(target.target)
+                        manager.select(target.deeplinkTarget)
                         expanded = false
                     },
                 )

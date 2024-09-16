@@ -1,5 +1,6 @@
-package dev.koga.deeplinklauncher.devicebridge
+package dev.koga.deeplinklauncher.devicebridge.adb
 
+import dev.koga.deeplinklauncher.devicebridge.DeviceBridge
 import dev.koga.deeplinklauncher.model.Os
 import dev.koga.deeplinklauncher.util.ext.installed
 import kotlinx.coroutines.CoroutineDispatcher
@@ -10,9 +11,8 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.updateAndGet
 import kotlinx.coroutines.withContext
-import java.io.Reader
 
-class Adb(
+internal class Adb private constructor(
     private val path: String,
     private val dispatcher: CoroutineDispatcher,
 ) : DeviceBridge {
@@ -42,49 +42,45 @@ class Adb(
     }
 
     override fun track(): Flow<List<DeviceBridge.Device>> = flow {
-        ProcessBuilder(
+        val inputStream = ProcessBuilder(
             path,
             "track-devices",
             "--proto-text",
-        )
-            .start()
-            .inputStream
-            .bufferedReader()
-            .process { protoText ->
-                val serial = protoText.fields["serial"] as String
-                val type = protoText.fields["connection_type"] as String
-                val active = protoText.fields["state"] == "DEVICE"
+        ).start().inputStream
 
-                val device = when (type) {
-                    "SOCKET" -> DeviceBridge.Device(
-                        id = serial,
-                        name = getEmulatorName(
-                            serial = serial,
-                        ).ifEmpty {
-                            serial
-                        },
-                        platform = DeviceBridge.Platform.ANDROID,
-                        isEmulator = true,
-                        active = active,
-                    )
+        AdbParser.parse(inputStream) { adbDevice ->
+            val device = when (adbDevice.connectionType) {
+                "SOCKET" -> DeviceBridge.Device(
+                    id = adbDevice.serial,
+                    name = getEmulatorName(
+                        serial = adbDevice.serial,
+                    ).ifEmpty {
+                        adbDevice.serial
+                    },
+                    platform = DeviceBridge.Platform.ANDROID,
+                    isEmulator = true,
+                    active = adbDevice.state == "DEVICE",
+                )
 
-                    else -> DeviceBridge.Device(
-                        id = serial,
-                        name = getDeviceName(
-                            serial = serial,
-                        ).ifEmpty {
-                            serial
-                        },
-                        platform = DeviceBridge.Platform.ANDROID,
-                        isEmulator = false,
-                        active = active
-                    )
-                }
-
-                emit(tracking.updateAndGet {
-                    it.addOrReplace(device)
-                })
+                else -> DeviceBridge.Device(
+                    id = adbDevice.serial,
+                    name = getDeviceName(
+                        serial = adbDevice.serial,
+                    ).ifEmpty {
+                        adbDevice.serial
+                    },
+                    platform = DeviceBridge.Platform.ANDROID,
+                    isEmulator = false,
+                    active = adbDevice.state == "DEVICE",
+                )
             }
+
+            emit(
+                tracking.updateAndGet { devices ->
+                    devices.addOrReplace(device)
+                }
+            )
+        }
     }.flowOn(dispatcher)
 
     private suspend fun getProperty(serial: String, key: String): String {
@@ -131,13 +127,6 @@ class Adb(
             .trim()
     }
 
-    private suspend fun getDeviceModel(serial: String): String {
-        return getProperty(
-            serial = serial,
-            key = "ro.product.model",
-        )
-    }
-
     private suspend fun getEmulatorName(serial: String): String {
         return getProperty(
             serial = serial,
@@ -145,24 +134,14 @@ class Adb(
         )
     }
 
-    private inline fun Reader.process(
-        target: String = "device",
-        block: (ProtoText) -> Unit,
-    ) {
-        val protoTextRegex = Regex(pattern = "($target)\\s*(\\{[^}]+})")
 
-        val builder = StringBuilder()
+    private fun List<DeviceBridge.Device>.addOrReplace(
+        device: DeviceBridge.Device
+    ): List<DeviceBridge.Device> {
+        val foundDevice = firstOrNull { it.id == device.id }
 
-        return useLines { lines ->
-            lines.forEach { line ->
-                builder.append(line)
-                protoTextRegex.find(builder)?.let {
-                    val (name, text) = it.destructured
-                    block(ProtoText.fromAdb(name, text))
-                    builder.clear()
-                }
-            }
-        }
+        return if (foundDevice == null) this + device
+        else this.map { if (it == foundDevice) device else it }
     }
 
     companion object {
