@@ -23,8 +23,6 @@ actual fun LocalDateTime.format(format: String): String {
         second = this@format.second.toLong()
     }
 
-    println("formata")
     val nsDate = calendar.dateFromComponents(components) ?: return ""
-    println(nsDate)
-    return dateFormatter.stringFromDate(nsDate).also { println(it) }
+    return dateFormatter.stringFromDate(nsDate)
 }

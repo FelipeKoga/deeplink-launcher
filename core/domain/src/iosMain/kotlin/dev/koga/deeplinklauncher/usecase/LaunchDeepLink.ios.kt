@@ -11,7 +11,7 @@ actual class LaunchDeepLink(
 ) {
     private val application = UIApplication.sharedApplication
 
-    actual fun launch(url: String): LaunchDeepLinkResult {
+    actual suspend fun launch(url: String): LaunchDeepLinkResult {
         val nsurl = NSURL(string = url)
 
         return if (application.canOpenURL(nsurl)) {
@@ -22,7 +22,7 @@ actual class LaunchDeepLink(
         }
     }
 
-    actual fun launch(deepLink: DeepLink): LaunchDeepLinkResult {
+    actual suspend fun launch(deepLink: DeepLink): LaunchDeepLinkResult {
         dataSource.upsertDeepLink(deepLink.copy(lastLaunchedAt = currentLocalDateTime))
         return launch(deepLink.link)
     }
