@@ -1,22 +1,18 @@
 package dev.koga.deeplinklauncher.model
 
+import dev.koga.deeplinklauncher.devicebridge.DeviceBridge
 import dev.koga.deeplinklauncher.provider.UUIDProvider
 
-sealed interface Target {
+sealed interface DeeplinkTarget {
     val id: String
 
-    data object Browser : Target {
+    data object Browser : DeeplinkTarget {
         override val id: String = UUIDProvider.get()
     }
 
     data class Device(
         override val id: String,
         val name: String,
-        val platform: Platform
-    ) : Target {
-        enum class Platform {
-            ANDROID,
-            IOS
-        }
-    }
+        val platform: DeviceBridge.Platform
+    ) : DeeplinkTarget
 }

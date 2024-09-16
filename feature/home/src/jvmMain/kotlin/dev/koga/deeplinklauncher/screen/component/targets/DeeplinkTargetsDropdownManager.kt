@@ -1,20 +1,20 @@
 package dev.koga.deeplinklauncher.screen.component.targets
 
-import dev.koga.deeplinklauncher.TargetsTracker
-import dev.koga.deeplinklauncher.model.Target
+import dev.koga.deeplinklauncher.DeeplinkTargetStateManager
+import dev.koga.deeplinklauncher.model.DeeplinkTarget
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 
 class DeeplinkTargetsDropdownManager(
-    private val targetsTracker: TargetsTracker,
+    private val deeplinkTargetStateManager: DeeplinkTargetStateManager,
     coroutineScope: CoroutineScope,
 ) {
 
     val uiState = combine(
-        targetsTracker.current,
-        targetsTracker.targets,
+        deeplinkTargetStateManager.current,
+        deeplinkTargetStateManager.targets,
     ) { current, targets ->
         targets.toUiState(current)
     }.stateIn(
@@ -23,15 +23,15 @@ class DeeplinkTargetsDropdownManager(
         started = SharingStarted.WhileSubscribed(),
     )
 
-    fun select(target: Target) {
-        targetsTracker.select(target)
+    fun select(deeplinkTarget: DeeplinkTarget) {
+        deeplinkTargetStateManager.select(deeplinkTarget)
     }
 
     fun next() {
-        targetsTracker.next()
+        deeplinkTargetStateManager.next()
     }
 
     fun prev() {
-        targetsTracker.prev()
+        deeplinkTargetStateManager.prev()
     }
 }

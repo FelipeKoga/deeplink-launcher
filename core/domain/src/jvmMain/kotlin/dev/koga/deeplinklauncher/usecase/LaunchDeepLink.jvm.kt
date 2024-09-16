@@ -1,44 +1,35 @@
 package dev.koga.deeplinklauncher.usecase
 
+import dev.koga.deeplinklauncher.DeeplinkTargetStateManager
 import dev.koga.deeplinklauncher.datasource.DeepLinkDataSource
-import dev.koga.deeplinklauncher.TargetsTracker
-import dev.koga.deeplinklauncher.devicebridge.Adb
-import dev.koga.deeplinklauncher.devicebridge.Xcrun
+import dev.koga.deeplinklauncher.devicebridge.DeviceBridge
 import dev.koga.deeplinklauncher.model.DeepLink
-import dev.koga.deeplinklauncher.model.Target
+import dev.koga.deeplinklauncher.model.DeeplinkTarget
 import dev.koga.deeplinklauncher.util.ext.currentLocalDateTime
 import java.awt.Desktop
 import java.net.URI
 
 actual class LaunchDeepLink(
     private val deepLinkDataSource: DeepLinkDataSource,
-    private val targetsTracker: TargetsTracker,
-    private val adb: Adb,
-    private val xcrun: Xcrun,
+    private val deviceBridge: DeviceBridge,
+    private val deeplinkTargetStateManager: DeeplinkTargetStateManager,
 ) {
     actual suspend fun launch(url: String): LaunchDeepLinkResult {
-        return when (val target = targetsTracker.current.value) {
-            is Target.Browser -> launchDesktopBrowser(url)
-            is Target.Device -> launch(url, target)
+        return when (val target = deeplinkTargetStateManager.current.value) {
+            is DeeplinkTarget.Browser -> launchDesktopBrowser(url)
+            is DeeplinkTarget.Device -> launch(url, target)
         }
     }
 
     private suspend fun launch(
         link: String,
-        target: Target.Device
+        device: DeeplinkTarget.Device
     ): LaunchDeepLinkResult {
         return try {
-            val process = when (target.platform) {
-                Target.Device.Platform.ANDROID -> adb.launch(
-                    id = target.id,
-                    link = link,
-                )
-
-                Target.Device.Platform.IOS -> xcrun.launch(
-                    id = target.id,
-                    link = link
-                )
-            }
+            val process = deviceBridge.launch(
+                id = device.id,
+                link = link
+            )
 
             return if (process.exitValue() == 0) {
                 LaunchDeepLinkResult.Success(link)
