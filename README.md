@@ -54,7 +54,8 @@
 </div>
 
 ## Features
-- **Execute Deeplinks**: Quickly and easily execute deeplinks. In the desktop version, ADB is used to automatically trigger the deeplink inside the emulator/device, while on Android, the app utilizes Uri for the same purpose.
+- **Execute Deeplinks**: Quickly and easily execute deeplinks on Android and iOS Devices.
+- **Device Bridge**: The Desktop App integrates with ADB and xcrun to execute deeplinks in real-time on Android and iOS devices. This feature enables direct communication with emulators and physical devices.
 - **Deeplink History**: Track all executed deeplinks.
 - **Favorites**: Mark deeplinks as favorites for quick access.
 - **Folders**: Organize deeplinks into folders for efficient management.
