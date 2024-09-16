@@ -173,7 +173,7 @@ jobs:
             ./desktopApp/build/compose/binaries/main/dmg/*.dmg
 
   create-release:
-    needs: [build-apk, build-deb, build-exe]
+    needs: [build-apk, build-deb, build-exe, build-dmg]
     runs-on: ubuntu-latest
     env:
       DOWNLOADS_PATH: ./downloaded-artifacts
