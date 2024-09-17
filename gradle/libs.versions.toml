@@ -5,7 +5,7 @@ kotlinxSerializationJson = "1.7.1"
 androidGradlePlugin = "8.2.2"
 jetbrains-kotlinxDatetime = "0.6.0"
 kotlin = "2.0.0"
-kotlinx-immutable = "0.3.7"
+kotlinx-immutable = "0.3.8"
 
 compose-plugin = "1.6.11"
 compose-runtime = "1.7.0"
