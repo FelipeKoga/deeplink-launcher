@@ -43,6 +43,10 @@ internal class Xcrun private constructor(
     override fun track(): Flow<List<DeviceBridge.Device>> = flow {
         emit(emptyList())
 
+        if (!installed) {
+            return@flow
+        }
+
         while (true) {
             val inputStream = ProcessBuilder(
                 path,
@@ -85,7 +89,7 @@ internal class Xcrun private constructor(
                 }
 
                 else -> {
-                    throw IllegalStateException("Xcrun is only available on macOS.")
+                    Xcrun(path = "", dispatcher)
                 }
             }
         }

@@ -44,13 +44,17 @@ internal class Adb private constructor(
     override fun track(): Flow<List<DeviceBridge.Device>> = flow {
         emit(emptyList())
 
-        val inputStream = ProcessBuilder(
+        if (!installed) {
+            return@flow
+        }
+
+        val process = ProcessBuilder(
             path,
             "track-devices",
             "--proto-text",
-        ).start().inputStream
+        ).start()
 
-        AdbParser.parse(inputStream) { adbDevice ->
+        AdbParser.parse(process.inputStream) { adbDevice ->
             val device = when (adbDevice.connectionType) {
                 "SOCKET" -> DeviceBridge.Device(
                     id = adbDevice.serial,
