@@ -19,7 +19,7 @@ nativeDriver = "2.0.2"
 voyager = "1.0.0"
 
 koin = "3.5.3"
-koin-compose = "1.1.2"
+koin-compose = "1.1.5"
 
 sqlDelight = "2.0.2"
 kotlinxCoroutinesCore = "1.8.0"
