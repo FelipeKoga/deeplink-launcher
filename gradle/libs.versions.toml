@@ -26,7 +26,7 @@ kotlinxCoroutinesCore = "1.8.0"
 org-jetbrains-kotlin-jvm = "1.9.23"
 
 ktlint = "0.50.0"
-detekt = "1.22.0"
+detekt = "1.23.7"
 composerules = "0.0.26"
 
 firebase-bom = "33.2.0"
