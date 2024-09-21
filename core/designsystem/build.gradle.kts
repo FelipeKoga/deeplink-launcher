@@ -12,7 +12,6 @@ kotlin {
     sourceSets {
         commonMain.dependencies {
             api(projects.core.resources)
-            api(libs.composeIcons.fontAwesome)
             implementation(libs.kotlinx.immutable)
 
             implementation(compose.runtime)
