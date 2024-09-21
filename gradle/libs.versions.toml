@@ -4,7 +4,7 @@ kotlinxSerializationJson = "1.7.1"
 
 androidGradlePlugin = "8.2.2"
 jetbrains-kotlinxDatetime = "0.6.1"
-kotlin = "2.0.0"
+kotlin = "2.0.20"
 kotlinx-immutable = "0.3.8"
 
 compose-plugin = "1.6.11"
@@ -23,7 +23,7 @@ koin-compose = "1.1.5"
 
 sqlDelight = "2.0.2"
 kotlinxCoroutinesCore = "1.9.0"
-org-jetbrains-kotlin-jvm = "1.9.23"
+org-jetbrains-kotlin-jvm = "1.9.25"
 
 ktlint = "0.50.0"
 detekt = "1.23.7"
