@@ -2,7 +2,7 @@
 datastorePreferencesCore = "1.1.1"
 kotlinxSerializationJson = "1.7.3"
 
-androidGradlePlugin = "8.6.1"
+androidGradlePlugin = "8.5.2"
 jetbrains-kotlinxDatetime = "0.6.1"
 kotlin = "2.0.20"
 kotlinx-immutable = "0.3.8"
