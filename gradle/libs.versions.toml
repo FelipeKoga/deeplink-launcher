@@ -37,8 +37,6 @@ aboutlibraries = "11.2.3"
 
 junit = "4.13.2"
 
-composeIcons = "1.1.1"
-
 [libraries]
 android-gradle-plugin = { module = "com.android.tools.build:gradle", version.ref = "androidGradlePlugin" }
 androidx-datastore-preferences-core = { module = "androidx.datastore:datastore-preferences-core", version.ref = "datastorePreferencesCore" }
@@ -85,8 +83,6 @@ aboutlibraries_compose = { module = "com.mikepenz:aboutlibraries-compose-m3", ve
 compose-runtime = { module = "androidx.compose.runtime:runtime", version.ref = "compose-runtime" }
 
 junit = { module = "junit:junit", version.ref = "junit" }
-
-composeIcons-fontAwesome = { module = "br.com.devsrsouza.compose.icons:font-awesome", version.ref = "composeIcons" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "androidGradlePlugin" }
