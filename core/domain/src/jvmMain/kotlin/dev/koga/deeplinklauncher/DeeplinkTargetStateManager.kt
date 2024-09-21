@@ -38,14 +38,14 @@ class DeeplinkTargetStateManager internal constructor(
     }
 
     val targets: StateFlow<List<DeeplinkTarget>> = devices.mapLatest {
-        listOf(DeeplinkTarget.Browser) + it
+        listOf(DeeplinkTarget.Desktop) + it
     }.stateIn(
         scope = coroutineScope,
         started = SharingStarted.WhileSubscribed(),
         initialValue = emptyList(),
     )
 
-    private val _current = MutableStateFlow<DeeplinkTarget>(DeeplinkTarget.Browser)
+    private val _current = MutableStateFlow<DeeplinkTarget>(DeeplinkTarget.Desktop)
     val current = _current.asStateFlow()
 
     fun select(deeplinkTarget: DeeplinkTarget) {

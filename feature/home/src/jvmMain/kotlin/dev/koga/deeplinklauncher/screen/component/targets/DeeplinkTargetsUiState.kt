@@ -1,14 +1,17 @@
 package dev.koga.deeplinklauncher.screen.component.targets
 
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Public
-import androidx.compose.material.icons.rounded.Smartphone
 import androidx.compose.ui.graphics.vector.ImageVector
+import compose.icons.FontAwesomeIcons
+import compose.icons.fontawesomeicons.Brands
+import compose.icons.fontawesomeicons.Solid
+import compose.icons.fontawesomeicons.brands.Android
+import compose.icons.fontawesomeicons.brands.Apple
+import compose.icons.fontawesomeicons.solid.Desktop
 import dev.koga.deeplinklauncher.devicebridge.DeviceBridge
 import dev.koga.deeplinklauncher.model.DeeplinkTarget
 
 data class DeeplinkTargetsUiState(
-    val selected: Option = DeeplinkTarget.Browser.toUiState(),
+    val selected: Option = DeeplinkTarget.Desktop.toUiState(),
     val targets: List<Option> = listOf(selected),
 ) {
 
@@ -32,12 +35,12 @@ fun List<DeeplinkTarget>.toUiState(
 fun DeeplinkTarget.toUiState(
     selected: Boolean = true,
 ) = when (this) {
-    DeeplinkTarget.Browser -> {
+    DeeplinkTarget.Desktop -> {
         DeeplinkTargetsUiState.Option(
             deeplinkTarget = this,
             selected = selected,
-            name = "Default Browser",
-            icon = Icons.Rounded.Public,
+            name = "Desktop",
+            icon = FontAwesomeIcons.Solid.Desktop,
         )
     }
 
@@ -46,8 +49,8 @@ fun DeeplinkTarget.toUiState(
         selected = selected,
         name = name,
         icon = when (platform) {
-            DeviceBridge.Platform.ANDROID -> Icons.Rounded.Smartphone
-            DeviceBridge.Platform.IOS -> Icons.Rounded.Smartphone
+            DeviceBridge.Platform.ANDROID -> FontAwesomeIcons.Brands.Android
+            DeviceBridge.Platform.IOS -> FontAwesomeIcons.Brands.Apple
         },
     )
 }
