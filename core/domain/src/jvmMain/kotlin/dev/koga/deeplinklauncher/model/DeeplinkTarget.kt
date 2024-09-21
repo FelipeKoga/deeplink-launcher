@@ -6,7 +6,7 @@ import dev.koga.deeplinklauncher.provider.UUIDProvider
 sealed interface DeeplinkTarget {
     val id: String
 
-    data object Browser : DeeplinkTarget {
+    data object Desktop : DeeplinkTarget {
         override val id: String = UUIDProvider.get()
     }
 

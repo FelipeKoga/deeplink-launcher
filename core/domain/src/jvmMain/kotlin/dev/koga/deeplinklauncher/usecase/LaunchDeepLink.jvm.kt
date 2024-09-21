@@ -16,7 +16,7 @@ actual class LaunchDeepLink(
 ) {
     actual suspend fun launch(url: String): LaunchDeepLinkResult {
         return when (val target = deeplinkTargetStateManager.current.value) {
-            is DeeplinkTarget.Browser -> launchDesktopBrowser(url)
+            is DeeplinkTarget.Desktop -> launchDesktop(url)
             is DeeplinkTarget.Device -> launch(url, target)
         }
     }
@@ -42,7 +42,7 @@ actual class LaunchDeepLink(
         }
     }
 
-    private fun launchDesktopBrowser(link: String): LaunchDeepLinkResult {
+    private fun launchDesktop(link: String): LaunchDeepLinkResult {
         return try {
             if (!Desktop.isDesktopSupported()) {
                 throw UnsupportedOperationException("Desktop is not supported on this platform.")
