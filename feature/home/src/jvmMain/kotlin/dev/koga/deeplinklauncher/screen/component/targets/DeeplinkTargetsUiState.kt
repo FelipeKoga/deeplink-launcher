@@ -42,7 +42,7 @@ fun DeeplinkTarget.toUiState(
             deeplinkTarget = this,
             selected = selected,
             name = "Desktop",
-            platform = platform
+            platform = platform,
         )
     }
 
@@ -56,7 +56,6 @@ fun DeeplinkTarget.toUiState(
         },
     )
 }
-
 
 val DeeplinkTargetsUiState.Option.icon
     @Composable get() = when (platform) {
