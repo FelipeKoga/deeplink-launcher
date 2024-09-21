@@ -9,7 +9,7 @@ actual class GetDeepLinkMetadata {
         val host = if (remainingLink.startsWith("//")) {
             remainingLink.substringAfter("//").substringBefore("?")
         } else {
-            remainingLink.substringBefore("?") // para casos como mailto ou sms
+            remainingLink.substringBefore("?")
         }
 
         val query = remainingLink.substringAfter("?", "").takeIf { it.isNotBlank() }
