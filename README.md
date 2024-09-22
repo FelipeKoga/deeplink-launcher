@@ -5,7 +5,7 @@
 <h1 align="center">DeepLink Launcher</h1>
 
 <p align="center">
-  Deeplink Launcher is a multiplatform app designed for executing and managing deeplinks. This tool offers developers and QA teams an intuitive interface for testing, organizing, tracking, and sharing deeplinks.
+  DeepLink Launcher is a multiplatform app designed for executing and managing deeplinks. This tool offers developers and QA teams an intuitive interface for testing, organizing, tracking, and sharing deeplinks.
 </p>
 
 <p align="center">
