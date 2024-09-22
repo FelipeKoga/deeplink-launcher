@@ -17,6 +17,10 @@
   </a>
 </p>
 
+## Demo
+
+https://github.com/user-attachments/assets/bdb590c7-f4ad-4aaa-b11e-399fa2b07435
+
 ## Platforms
 
 <div>
@@ -45,6 +49,7 @@
 ## Features
 - **Execute Deeplinks**: Quickly and easily execute deeplinks on Android and iOS Devices.
 - **Device Bridge**: The Desktop App integrates with ADB and xcrun to execute deeplinks in real-time on Android and iOS devices. This feature enables direct communication with emulators and physical devices.
+- **Auto-suggestion**: Get automatic suggestions for deeplinks based on previously executed links.
 - **Deeplink History**: Track all executed deeplinks.
 - **Favorites**: Mark deeplinks as favorites for quick access.
 - **Folders**: Organize deeplinks into folders for efficient management.
@@ -52,14 +57,6 @@
 - **Duplicate DeepLink**: Easily duplicate existing deeplinks, saving time when creating similar entries or variations.
 - **Theme Support**: Customize your experience by switching between Light and Dark modes.
 - **Search**: Quickly find deeplinks by searching for keywords.
-
-## Screenshots
-
-#### Android
-![Screenshot 1](docs/screenshots/android-screenshot.png)
-
-#### Desktop
-![Screenshot 2](docs/screenshots/desktop-screenshot.png)
 
 ## Built With
 <div>
