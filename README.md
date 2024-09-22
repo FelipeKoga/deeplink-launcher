@@ -50,7 +50,7 @@ https://github.com/user-attachments/assets/bdb590c7-f4ad-4aaa-b11e-399fa2b07435
 
 ## Features
 - **Execute Deeplinks**: Quickly and easily execute deeplinks on Android and iOS Devices.
-- **Device Bridge**: The Desktop App integrates with ADB and xcrun to execute deeplinks in real-time on Android and iOS devices. This feature enables direct communication with emulators and physical devices.
+- **Device Bridge**: The Desktop App integrates with **ADB** and **Xcrun** to execute deeplinks in real-time on Android and iOS devices.
 - **Auto-suggestion**: Get automatic suggestions for deeplinks based on previously executed links.
 - **Deeplink History**: Track all executed deeplinks.
 - **Favorites**: Mark deeplinks as favorites for quick access.
