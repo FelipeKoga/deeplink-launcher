@@ -28,22 +28,24 @@ https://github.com/user-attachments/assets/bdb590c7-f4ad-4aaa-b11e-399fa2b07435
     <tr>
       <th>Platform</th>
       <th>Status</th>
+      <th>Download</th>
     </tr>
     <tr>
       <td>Android</td>
       <td>✅</td>
+      <td><a href='https://play.google.com/store/apps/details?id=dev.koga.deeplinklauncher.android'><img alt='Google Play' src='https://play.google.com/intl/en_us/badges/images/generic/en_badge_web_generic.png' width=240/></a></td>
     </tr>
     <tr>
       <td>iOS</td>
       <td>✅</td>
+      <td>Not yet released.</td>
     </tr>
     <tr>
       <td>Desktop</td>
       <td>✅</td>
+      <td>Download the version compatible with your OS <a href="https://github.com/FelipeKoga/deeplink-launcher/releases">here</a></td>
     </tr>
   </table>
-
-  <i>Check out the <a href="https://github.com/FelipeKoga/deeplink-launcher/releases">releases page</a> for downloading the desktop executables and Android APK.</i>
 </div>
 
 ## Features
