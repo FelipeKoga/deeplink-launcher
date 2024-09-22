@@ -19,7 +19,7 @@
 
 ## Demo
 
-![Demo](https://github.com/FelipeKoga/deeplink-launcher/blob/main/docs/demo.gif)
+https://github.com/user-attachments/assets/bdb590c7-f4ad-4aaa-b11e-399fa2b07435
 
 ## Platforms
 
