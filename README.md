@@ -1,22 +1,77 @@
-<p align="center">
-  <img src="androidApp/src/main/res/mipmap-xxxhdpi/ic_launcher_round.webp" alt="DeepLink Launcher Logo" />
-</p>
+### Module Graph
 
-<h1 align="center">DeepLink Launcher</h1>
+```mermaid
+%%{
+  init: {
+    'theme': 'neutral'
+  }
+}%%
 
-<p align="center">
-  Deeplink Launcher is a multiplatform app designed for executing and managing deeplinks. This tool offers developers and QA teams an intuitive interface for testing, organizing, tracking, and sharing deeplinks.
-</p>
-
-<p align="center">
-  <a href="https://github.com/FelipeKoga/deeplink-launcher/stargazers">
-    <img src="https://img.shields.io/github/stars/FelipeKoga/deeplink-launcher" alt="Stars" />
-  </a>
-  <a href="https://github.com/FelipeKoga/deeplink-launcher/actions/workflows/release.yml">
-    <img src="https://github.com/FelipeKoga/deeplink-launcher/actions/workflows/release.yml/badge.svg" alt="Release" />
-  </a>
-</p>
-
+graph LR
+  subgraph :core
+    :core:preferences["preferences"]
+    :core:domain["domain"]
+    :core:database["database"]
+    :core:designsystem["designsystem"]
+    :core:navigation["navigation"]
+    :core:sharedui["sharedui"]
+    :core:resources["resources"]
+  end
+  subgraph :feature
+    :feature:folder-details["folder-details"]
+    :feature:settings["settings"]
+    :feature:import-data["import-data"]
+    :feature:deeplink-details["deeplink-details"]
+    :feature:home["home"]
+    :feature:export-data["export-data"]
+  end
+  :core:preferences --> :core:domain
+  :core:database --> :core:domain
+  :feature:folder-details --> :core:domain
+  :feature:folder-details --> :core:designsystem
+  :feature:folder-details --> :core:navigation
+  :feature:folder-details --> :core:sharedui
+  :core:designsystem --> :core:resources
+  :feature:settings --> :core:domain
+  :feature:settings --> :core:designsystem
+  :feature:settings --> :core:navigation
+  :feature:settings --> :core:sharedui
+  :feature:settings --> :core:preferences
+  :feature:import-data --> :core:domain
+  :feature:import-data --> :core:designsystem
+  :feature:import-data --> :core:navigation
+  :feature:import-data --> :core:sharedui
+  :feature:deeplink-details --> :core:domain
+  :feature:deeplink-details --> :core:designsystem
+  :feature:deeplink-details --> :core:navigation
+  :feature:deeplink-details --> :core:sharedui
+  :feature:home --> :core:domain
+  :feature:home --> :core:designsystem
+  :feature:home --> :core:navigation
+  :feature:home --> :core:sharedui
+  :feature:home --> :core:resources
+  :desktopApp --> :shared
+  :core:sharedui --> :core:domain
+  :core:sharedui --> :core:designsystem
+  :core:sharedui --> :core:resources
+  :feature:export-data --> :core:domain
+  :feature:export-data --> :core:designsystem
+  :feature:export-data --> :core:navigation
+  :feature:export-data --> :core:sharedui
+  :feature:export-data --> :core:resources
+  :shared --> :core:domain
+  :shared --> :core:preferences
+  :shared --> :feature:home
+  :shared --> :feature:settings
+  :shared --> :feature:export-data
+  :shared --> :feature:import-data
+  :shared --> :feature:deeplink-details
+  :shared --> :feature:folder-details
+  :shared --> :core:designsystem
+  :shared --> :core:navigation
+  :shared --> :core:database
+  :androidApp --> :shared
+```
 ## Platforms
 
 <div>
@@ -123,6 +178,5 @@
   </table>
 </div>
 
-## Architecture diagram
+## Module graph
 
-![Architecture Diagram](docs/diagram/architecture_diagram.png)
