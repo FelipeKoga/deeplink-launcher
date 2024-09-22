@@ -18,7 +18,7 @@ actual class GetDeepLinkMetadata {
             link = link,
             scheme = scheme,
             host = host.ifEmpty { null },
-            query = query
+            query = query,
         )
     }
 }
