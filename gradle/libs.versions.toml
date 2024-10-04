@@ -29,7 +29,7 @@ ktlint = "0.50.0"
 detekt = "1.23.7"
 composerules = "0.0.26"
 
-firebase-bom = "33.3.0"
+firebase-bom = "33.4.0"
 firebase-crashlytics-plugin = "3.0.2"
 google-services = "4.4.2"
 stately = "2.1.0"
