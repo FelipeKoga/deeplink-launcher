@@ -18,8 +18,7 @@
 </p>
 
 ## Demo
-
-[![demo](https://img.youtube.com/vi/umB3ZlYJMGA/0.jpg)](https://www.youtube.com/watch?v=umB3ZlYJMGA)
+[![demo](https://github.com/user-attachments/assets/174c5fdd-8e15-4ae2-aa9c-94fc72e2c13c)](https://www.youtube.com/watch?v=umB3ZlYJMGA)
 
 ## Platforms
 
