@@ -2,7 +2,7 @@ import extension.setupBinariesFramework
 
 plugins {
     id("dev.koga.deeplinklauncher.multiplatform")
-    kotlin("plugin.serialization") version "2.0.20"
+    kotlin("plugin.serialization") version "2.0.21"
     alias(libs.plugins.sqlDelight)
 }
 
