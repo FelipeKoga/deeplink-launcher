@@ -41,6 +41,7 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.PlatformImeOptions
 import androidx.compose.ui.unit.dp
 import dev.koga.deeplinklauncher.DLLTextField
 import dev.koga.deeplinklauncher.button.DLLFilledIconButton
@@ -103,7 +104,7 @@ internal fun HomeSheetContent(
                 ),
                 keyboardOptions = KeyboardOptions.Default.copy(
                     keyboardType = KeyboardType.Uri,
-                    autoCorrect = false,
+                    autoCorrectEnabled = false,
                     imeAction = ImeAction.Done,
                 ),
                 keyboardActions = KeyboardActions(
