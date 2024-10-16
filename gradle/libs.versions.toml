@@ -10,7 +10,7 @@ kotlinx-immutable = "0.3.8"
 compose-plugin = "1.6.11"
 compose-runtime = "1.7.3"
 
-androidx-activity = "1.9.2"
+androidx-activity = "1.9.3"
 androidx-core = "1.13.1"
 
 material3WindowSizeClass = "0.5.0"
