@@ -119,8 +119,4 @@
       <td>Library for detecting device window size</td>
     </tr>
   </table>
-</div>
-
-## Architecture diagram
-
-![Architecture Diagram](docs/diagram/architecture_diagram.png)
+</div
