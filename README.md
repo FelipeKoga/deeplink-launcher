@@ -119,4 +119,4 @@
       <td>Library for detecting device window size</td>
     </tr>
   </table>
-</div
+</div>
