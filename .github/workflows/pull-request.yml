@@ -5,18 +5,11 @@ on:
     branches: [ "main" ]
 
 jobs:
-  create-env:
-    runs-on: ubuntu-latest
-    steps:
-      - name: 'Create env file'
-        run: |
-          touch env.properties
-          echo REVENUECAT_API_KEY=${{ secrets.REVENUECAT_API_KEY }} >> env.properties
-          cat env.properties
   run-tests:
     runs-on: ubuntu-latest
     needs: create-env
     steps:
+
       - uses: actions/checkout@v4
 
       - name: Cache Gradle dependencies
@@ -42,6 +35,12 @@ jobs:
 
       - name: Grant execute permission for gradlew
         run: chmod +x ./gradlew
+
+      - name: 'Create env file'
+        run: |
+          touch env.properties
+          echo REVENUECAT_API_KEY=${{ secrets.REVENUECAT_API_KEY }} >> env.properties
+          cat env.properties
 
       - name: Run Unit tests
         run: ./gradlew test
