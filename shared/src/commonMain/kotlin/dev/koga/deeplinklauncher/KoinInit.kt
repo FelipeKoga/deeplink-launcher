@@ -11,6 +11,7 @@ import dev.koga.deeplinklauncher.di.homeUiModule
 import dev.koga.deeplinklauncher.di.importUiModule
 import dev.koga.deeplinklauncher.di.settingsUiModule
 import dev.koga.deeplinklauncher.preferences.di.preferencesModule
+import dev.koga.deeplinklauncher.purchase.purchaseModule
 import dev.koga.deeplinklauncher.screen.ExportScreen
 import dev.koga.deeplinklauncher.screen.ImportScreen
 import dev.koga.deeplinklauncher.screen.details.DeepLinkDetailsScreen
@@ -38,7 +39,7 @@ fun initKoin() {
 fun initKoin(appModule: Module) {
     ScreenRegistry { screenModule() }
 
-    startKoin {
+    val app = startKoin {
         modules(
             homeUiModule,
             folderDetailsUiModule,
@@ -53,6 +54,7 @@ fun initKoin(appModule: Module) {
             domainModule,
             databaseModule,
             preferencesModule,
+            purchaseModule
         )
     }
 }
