@@ -80,6 +80,9 @@ jobs:
           fi
         continue-on-error: false
 
+      - name: 'Create env file'
+        uses: ./.github/workflows/create-env.yml
+
       - name: Build APK
         run: ./gradlew assembleRelease --stacktrace
 
@@ -114,6 +117,9 @@ jobs:
           distribution: 'zulu'
           cache: gradle
 
+      - name: 'Create env file'
+        uses: ./.github/workflows/create-env.yml
+
       - name: Build DEB
         run: ./gradlew :desktopApp:packageDeb
 
@@ -138,6 +144,9 @@ jobs:
           java-version: '17'
           distribution: 'zulu'
           cache: gradle
+
+      - name: 'Create env file'
+        uses: ./.github/workflows/create-env.yml
 
       - name: Grant execute permission for gradlew
         run: ./gradlew.bat
@@ -166,6 +175,9 @@ jobs:
           java-version: '17'
           distribution: 'zulu'
           cache: gradle
+
+      - name: 'Create env file'
+        uses: ./.github/workflows/create-env.yml
 
       - name: Build DMG
         run: ./gradlew :desktopApp:packageDmg
