@@ -9,7 +9,6 @@ jobs:
     runs-on: ubuntu-latest
     needs: create-env
     steps:
-
       - uses: actions/checkout@v4
 
       - name: Cache Gradle dependencies
