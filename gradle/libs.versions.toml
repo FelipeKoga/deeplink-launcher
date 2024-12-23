@@ -29,6 +29,7 @@ stately = "2.1.0"
 aboutlibraries = "11.2.3"
 junit = "4.13.2"
 purchases-kmp = "1.1.0+13.3.0"
+buildkonfig = "0.15.2"
 
 [libraries]
 android-gradle-plugin = { module = "com.android.tools.build:gradle", version.ref = "androidGradlePlugin" }
@@ -68,6 +69,7 @@ aboutlibraries_compose = { module = "com.mikepenz:aboutlibraries-compose-m3", ve
 compose-runtime = { module = "androidx.compose.runtime:runtime", version.ref = "compose-runtime" }
 junit = { module = "junit:junit", version.ref = "junit" }
 revenuecat-core = { module = "com.revenuecat.purchases:purchases-kmp-core", version.ref = "purchases-kmp" }
+build-konfig = { module = "com.codingfeline.buildkonfig:buildkonfig-gradle-plugin", version.ref = "buildkonfig" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "androidGradlePlugin" }
@@ -83,3 +85,4 @@ compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "
 google-services = { id = "com.google.gms.google-services", version.ref = "google-services" }
 crashlytics = { id = "com.google.firebase.crashlytics", version.ref = "firebase-crashlytics-plugin" }
 aboutlibraries_plugin = { id = "com.mikepenz.aboutlibraries.plugin", version.ref = "aboutlibraries" }
+build-konfig = { id = "com.codingfeline.buildkonfig" }

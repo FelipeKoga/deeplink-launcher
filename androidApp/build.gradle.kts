@@ -71,17 +71,14 @@ kotlin {
 
 dependencies {
     implementation(projects.shared)
-
     implementation(libs.androidx.activity.compose)
     implementation(libs.koin.compose)
     implementation(libs.koin.core)
-
+    implementation(libs.koin.android)
     implementation(libs.billing)
     implementation(libs.revenuecat.core)
-
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.crashlytics)
-
     implementation(libs.compose.runtime)
 }
 
