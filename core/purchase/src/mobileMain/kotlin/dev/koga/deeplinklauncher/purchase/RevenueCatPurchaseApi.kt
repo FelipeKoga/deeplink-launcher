@@ -16,16 +16,12 @@ class RevenueCatPurchaseApi : PurchaseApi {
     override val isAvailable = true
 
     override fun init() {
-        println("############ ${BuildKonfig.REVENUECAT_API_KEY}")
         Purchases.configure(apiKey = BuildKonfig.REVENUECAT_API_KEY)
     }
 
     override fun getProducts() = callbackFlow<PersistentList<Product>> {
         Purchases.sharedInstance.getOfferings(
-            onError = { error ->
-                println(error)
-                trySend(persistentListOf())
-            },
+            onError = { trySend(persistentListOf()) },
             onSuccess = { offerings ->
                 val products = offerings.current?.availablePackages?.map {
                     Product(
