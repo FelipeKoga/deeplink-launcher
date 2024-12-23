@@ -8,18 +8,15 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.core.screen.ScreenKey
+import cafe.adriel.voyager.core.screen.uniqueScreenKey
 import com.mikepenz.aboutlibraries.ui.compose.m3.LibrariesContainer
 import com.mikepenz.aboutlibraries.ui.compose.m3.rememberLibraries
 import dev.koga.resources.Res
 import org.jetbrains.compose.resources.ExperimentalResourceApi
-import kotlin.uuid.ExperimentalUuidApi
-import kotlin.uuid.Uuid
 
 object OpenSourceLicensesScreen : Screen {
 
-    @OptIn(ExperimentalUuidApi::class)
-    override val key: ScreenKey
-        get() = Uuid.random().toString()
+    override val key: ScreenKey = uniqueScreenKey
 
     @OptIn(ExperimentalMaterial3Api::class, ExperimentalResourceApi::class)
     @Composable
