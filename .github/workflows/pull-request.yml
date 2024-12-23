@@ -5,6 +5,14 @@ on:
     branches: [ "main" ]
 
 jobs:
+  create-env:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 'Create env file'
+        run: |
+          touch env.properties
+          echo API_KEY=${{ secrets.API_KEY }} >> env.properties
+          cat env.properties
   run-tests:
     runs-on: ubuntu-latest
     steps:
