@@ -1,0 +1,17 @@
+name: Create Environment File
+description: Creates an env file with all secrets and env variables.
+
+inputs:
+  REVENUECAT_API_KEY:
+    description: RevenueCat API key
+    required: true
+
+runs:
+  using: "composite"
+  steps:
+    - name: Create env file
+      shell: bash
+      run: |
+        touch env.properties
+        echo REVENUECAT_API_KEY=${{ inputs.REVENUECAT_API_KEY }} >> env.properties
+        cat env.properties

@@ -20,11 +20,7 @@ actual class ShareFile {
                 val desktop = Desktop.getDesktop()
                 if (desktop.isSupported(Desktop.Action.OPEN)) {
                     desktop.open(file)
-                } else {
-                    println("Opening files is not supported on this system.")
                 }
-            } else {
-                println("Desktop is not supported on this system.")
             }
         } catch (e: IOException) {
             e.printStackTrace()

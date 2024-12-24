@@ -15,7 +15,9 @@ import androidx.compose.ui.unit.dp
 fun DLLModalBottomSheet(
     modifier: Modifier = Modifier,
     onDismiss: () -> Unit,
-    sheetState: SheetState = rememberModalBottomSheetState(),
+    sheetState: SheetState = rememberModalBottomSheetState(
+        skipPartiallyExpanded = true,
+    ),
     content: @Composable () -> Unit,
 ) {
     ModalBottomSheet(

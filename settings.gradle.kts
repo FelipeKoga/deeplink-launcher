@@ -30,6 +30,7 @@ include(":core:sharedui")
 include(":core:navigation")
 include(":core:resources")
 include(":core:preferences")
+include(":core:purchase")
 
 include(":feature:home")
 include(":feature:import-data")
