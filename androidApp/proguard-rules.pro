@@ -11,3 +11,5 @@
 -dontwarn java.awt.event.ActionListener
 -dontwarn javax.swing.SwingUtilities
 -dontwarn javax.swing.Timer
+
+-keep class com.revenuecat.purchases.** { *; }

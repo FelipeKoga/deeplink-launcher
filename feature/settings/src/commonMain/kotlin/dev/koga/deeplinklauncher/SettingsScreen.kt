@@ -17,6 +17,7 @@ import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -33,12 +34,15 @@ import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.koin.getScreenModel
 import dev.koga.deeplinklauncher.platform.Platform
 import dev.koga.deeplinklauncher.platform.platform
+import dev.koga.deeplinklauncher.screen.OpenSourceLicensesScreen
 import dev.koga.deeplinklauncher.sheets.AppThemeBottomSheet
 import dev.koga.deeplinklauncher.sheets.DeleteDataBottomSheet
+import dev.koga.deeplinklauncher.sheets.ProductsBottomSheet
 import dev.koga.deeplinklauncher.sheets.SuggestionsOptionBottomSheet
 import dev.koga.resources.Res
 import dev.koga.resources.ic_chevron_right_24dp
 import dev.koga.resources.ic_launch_24dp
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.painterResource
 
@@ -48,6 +52,7 @@ class SettingsScreen : Screen {
         DELETE_DATA,
         APP_THEME,
         SUGGESTIONS_OPTION,
+        PRODUCTS,
     }
 
     @Composable
@@ -56,12 +61,12 @@ class SettingsScreen : Screen {
         val screenModel = getScreenModel<SettingsScreenModel>()
 
         val preferences by screenModel.preferences.collectAsState()
+        val products by screenModel.products.collectAsState()
 
         val scope = rememberCoroutineScope()
         val importScreen = rememberScreen(SharedScreen.ImportDeepLinks)
         val exportScreen = rememberScreen(SharedScreen.ExportDeepLinks)
-        val snackbarHostState = remember { SnackbarHostState() }
-
+        val snackBarHostState = remember { SnackbarHostState() }
         var bottomSheetType by rememberSaveable { mutableStateOf<BottomSheetType?>(null) }
 
         when (bottomSheetType) {
@@ -71,21 +76,21 @@ class SettingsScreen : Screen {
                     bottomSheetType = null
                     screenModel.deleteAllData()
                     scope.launch {
-                        snackbarHostState.showSnackbar("All data deleted")
+                        snackBarHostState.showSnackbar("All data deleted")
                     }
                 },
                 onDeleteDeepLinks = {
                     bottomSheetType = null
                     screenModel.deleteAllDeepLinks()
                     scope.launch {
-                        snackbarHostState.showSnackbar("Deeplinks deleted")
+                        snackBarHostState.showSnackbar("Deeplinks deleted")
                     }
                 },
                 onDeleteFolders = {
                     bottomSheetType = null
                     screenModel.deleteAllFolders()
                     scope.launch {
-                        snackbarHostState.showSnackbar("Folders deleted")
+                        snackBarHostState.showSnackbar("Folders deleted")
                     }
                 },
             )
@@ -105,11 +110,29 @@ class SettingsScreen : Screen {
                 onChange = { screenModel.changeSuggestionsPreference(it) },
             )
 
+            BottomSheetType.PRODUCTS -> ProductsBottomSheet(
+                products = products,
+                onDismissRequest = { bottomSheetType = null },
+                onSelectProduct = {
+                    bottomSheetType = null
+                    screenModel.purchaseProduct(it)
+                },
+            )
+
             null -> Unit
         }
 
+        LaunchedEffect(true) {
+            screenModel.messages.collectLatest {
+                scope.launch {
+                    snackBarHostState.showSnackbar(it)
+                }
+            }
+        }
+
         SettingsScreenUI(
-            snackbarHostState = snackbarHostState,
+            snackbarHostState = snackBarHostState,
+            isPurchaseAvailable = screenModel.isPurchaseAvailable,
             onBack = navigator::pop,
             onNavigateToExport = { navigator.push(exportScreen) },
             onNavigateToImport = { navigator.push(importScreen) },
@@ -119,6 +142,7 @@ class SettingsScreen : Screen {
             onNavigateToGithub = screenModel::navigateToGithub,
             onShowAppTheme = { bottomSheetType = BottomSheetType.APP_THEME },
             onShowSuggestionsOption = { bottomSheetType = BottomSheetType.SUGGESTIONS_OPTION },
+            onShowProducts = { bottomSheetType = BottomSheetType.PRODUCTS },
         )
     }
 }
@@ -127,6 +151,7 @@ class SettingsScreen : Screen {
 @Composable
 fun SettingsScreenUI(
     snackbarHostState: SnackbarHostState,
+    isPurchaseAvailable: Boolean,
     onBack: () -> Unit,
     onNavigateToExport: () -> Unit,
     onNavigateToImport: () -> Unit,
@@ -136,6 +161,7 @@ fun SettingsScreenUI(
     onShowDeleteDataBottomSheet: () -> Unit,
     onShowAppTheme: () -> Unit,
     onShowSuggestionsOption: () -> Unit,
+    onShowProducts: () -> Unit,
 ) {
     Scaffold(
         topBar = {
@@ -249,6 +275,22 @@ fun SettingsScreenUI(
                 )
             }
 
+            if (isPurchaseAvailable) {
+                item {
+                    SettingsListItem(
+                        title = "Buy me a coffee!",
+                        description = "Check out the source code on GitHub and contribute!",
+                        onClick = onShowProducts,
+                        trailingContent = {
+                            Icon(
+                                painter = painterResource(Res.drawable.ic_chevron_right_24dp),
+                                contentDescription = "navigate",
+                            )
+                        },
+                    )
+                }
+            }
+
             item {
                 SettingsListItem(
                     title = "This project is open-source!",
@@ -311,7 +353,7 @@ fun SettingsScreenUI(
 }
 
 @Composable
-fun SettingsListItem(
+private fun SettingsListItem(
     title: String,
     description: String,
     trailingContent: @Composable () -> Unit,
@@ -340,4 +382,8 @@ fun SettingsListItem(
         },
         trailingContent = trailingContent,
     )
+}
+
+@Composable
+private fun BottomSheetHandler(modifier: Modifier = Modifier) {
 }

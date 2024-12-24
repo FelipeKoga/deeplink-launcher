@@ -16,6 +16,7 @@ kotlin {
             implementation(projects.core.navigation)
             implementation(projects.core.sharedui)
             implementation(projects.core.preferences)
+            implementation(projects.core.purchase)
 
             implementation(libs.kotlinx.coroutines.core)
             implementation(libs.koin.compose)

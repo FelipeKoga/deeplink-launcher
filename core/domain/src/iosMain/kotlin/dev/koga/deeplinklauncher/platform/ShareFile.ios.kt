@@ -15,8 +15,6 @@ actual class ShareFile {
         val rootViewController = UIApplication.sharedApplication.keyWindow?.rootViewController
         rootViewController?.let {
             controller.presentOptionsMenuFromRect(it.view.bounds, it.view, true)
-        } ?: run {
-            println("Unable to find root view controller")
         }
     }
 }
