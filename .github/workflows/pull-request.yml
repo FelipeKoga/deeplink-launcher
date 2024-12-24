@@ -71,5 +71,10 @@ jobs:
       - name: Grant execute permission for gradlew
         run: chmod +x ./gradlew
 
+      - name: Create Environment File
+        uses: ./.github/actions/create-env-action
+        with:
+          REVENUECAT_API_KEY: ${{ secrets.REVENUECAT_API_KEY }}
+
       - name: Run Klint
         run: ./gradlew ktlint
