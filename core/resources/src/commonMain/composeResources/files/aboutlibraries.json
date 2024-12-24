@@ -1,6 +1,6 @@
 {
   "metadata": {
-    "generated": "2024-12-23T00:29:50.436Z"
+    "generated": "2024-12-24T03:55:53.048Z"
   },
   "libraries": [
     {
@@ -320,7 +320,7 @@
           "name": "Adriel Cafe"
         }
       ],
-      "artifactVersion": "1.0.0",
+      "artifactVersion": "1.0.1",
       "description": "A pragmatic navigation library for Jetpack Compose",
       "scm": {
         "connection": "scm:git:ssh://git@github.com/adrielcafe/voyager.git",
@@ -341,7 +341,7 @@
           "name": "Adriel Cafe"
         }
       ],
-      "artifactVersion": "1.0.0",
+      "artifactVersion": "1.0.1",
       "description": "A pragmatic navigation library for Jetpack Compose",
       "scm": {
         "connection": "scm:git:ssh://git@github.com/adrielcafe/voyager.git",
@@ -362,7 +362,7 @@
           "name": "Adriel Cafe"
         }
       ],
-      "artifactVersion": "1.0.0",
+      "artifactVersion": "1.0.1",
       "description": "A pragmatic navigation library for Jetpack Compose",
       "scm": {
         "connection": "scm:git:ssh://git@github.com/adrielcafe/voyager.git",
@@ -383,7 +383,7 @@
           "name": "Adriel Cafe"
         }
       ],
-      "artifactVersion": "1.0.0",
+      "artifactVersion": "1.0.1",
       "description": "A pragmatic navigation library for Jetpack Compose",
       "scm": {
         "connection": "scm:git:ssh://git@github.com/adrielcafe/voyager.git",
@@ -404,7 +404,7 @@
           "name": "Adriel Cafe"
         }
       ],
-      "artifactVersion": "1.0.0",
+      "artifactVersion": "1.0.1",
       "description": "A pragmatic navigation library for Jetpack Compose",
       "scm": {
         "connection": "scm:git:ssh://git@github.com/adrielcafe/voyager.git",
@@ -425,7 +425,7 @@
           "name": "Adriel Cafe"
         }
       ],
-      "artifactVersion": "1.0.0",
+      "artifactVersion": "1.0.1",
       "description": "A pragmatic navigation library for Jetpack Compose",
       "scm": {
         "connection": "scm:git:ssh://git@github.com/adrielcafe/voyager.git",
@@ -530,7 +530,7 @@
           "name": "Mike Penz"
         }
       ],
-      "artifactVersion": "11.2.3",
+      "artifactVersion": "11.3.0-rc02",
       "description": "AboutLibraries automatically detects all dependencies of a project and collects their information including the license. Optionally visualising it via the provided ui components.",
       "scm": {
         "connection": "scm:git@github.com:mikepenz/AboutLibraries.git",
@@ -551,7 +551,7 @@
           "name": "Mike Penz"
         }
       ],
-      "artifactVersion": "11.2.3",
+      "artifactVersion": "11.3.0-rc02",
       "description": "AboutLibraries automatically detects all dependencies of a project and collects their information including the license. Optionally visualising it via the provided ui components.",
       "scm": {
         "connection": "scm:git@github.com:mikepenz/AboutLibraries.git",
@@ -654,7 +654,7 @@
           "name": "The Android Open Source Project"
         }
       ],
-      "artifactVersion": "2.8.3",
+      "artifactVersion": "2.8.4",
       "description": "Compose integration with Lifecycle",
       "scm": {
         "connection": "scm:git:https://android.googlesource.com/platform/frameworks/support",
@@ -1353,7 +1353,7 @@
           "name": "Compose Multiplatform Team"
         }
       ],
-      "artifactVersion": "0.8.15",
+      "artifactVersion": "0.8.18",
       "description": "Kotlin Skia bindings",
       "scm": {
         "connection": "scm:git:https://www.github.com/JetBrains/skiko.git",
