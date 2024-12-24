@@ -11,3 +11,9 @@ plugins {
 //    alias(libs.plugins.crashlytics) apply false
     alias(libs.plugins.aboutlibraries.plugin) apply false
 }
+
+buildscript {
+    dependencies {
+        classpath(libs.build.konfig)
+    }
+}

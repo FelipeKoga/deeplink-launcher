@@ -5,18 +5,27 @@ import android.content.Context
 import com.google.firebase.crashlytics.BuildConfig
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import dev.koga.deeplinklauncher.initKoin
+import dev.koga.deeplinklauncher.purchase.PurchaseApi
+import org.koin.android.ext.android.inject
 import org.koin.dsl.module
 
 class App : Application() {
+
     override fun onCreate() {
         super.onCreate()
+        init()
+    }
 
-        FirebaseCrashlytics.getInstance().setCrashlyticsCollectionEnabled(!BuildConfig.DEBUG)
-
+    private fun init() {
         initKoin(
             appModule = module {
                 single<Context> { this@App }
             },
         )
+
+        val purchaseApi by inject<PurchaseApi>()
+        purchaseApi.init()
+
+        FirebaseCrashlytics.getInstance().isCrashlyticsCollectionEnabled = !BuildConfig.DEBUG
     }
 }

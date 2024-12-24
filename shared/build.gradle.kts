@@ -24,6 +24,7 @@ kotlin {
             implementation(projects.core.designsystem)
             implementation(projects.core.navigation)
             implementation(projects.core.database)
+            api(projects.core.purchase)
             api(projects.core.domain)
             api(projects.core.preferences)
 
