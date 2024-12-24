@@ -17,106 +17,60 @@
   </a>
 </p>
 
-## Demo
+## 🚀 Demo
 [![demo](https://github.com/user-attachments/assets/174c5fdd-8e15-4ae2-aa9c-94fc72e2c13c)](https://www.youtube.com/watch?v=umB3ZlYJMGA)
 
-## Platforms
+## 🌐 Supported Platforms
 
-<div>
-  <table>
-    <tr>
-      <th>Platform</th>
-      <th>Status</th>
-      <th>Download</th>
-    </tr>
-    <tr>
-      <td>Android</td>
-      <td>✅</td>
-      <td><a href='https://play.google.com/store/apps/details?id=dev.koga.deeplinklauncher.android'><img alt='Google Play' src='https://play.google.com/intl/en_us/badges/images/generic/en_badge_web_generic.png' width=240/></a></td>
-    </tr>
-    <tr>
-      <td>iOS</td>
-      <td>✅</td>
-      <td>Not yet released.</td>
-    </tr>
-    <tr>
-      <td>Desktop</td>
-      <td>✅</td>
-      <td>Download the version compatible with your OS <a href="https://github.com/FelipeKoga/deeplink-launcher/releases">here</a></td>
-    </tr>
-  </table>
-</div>
+| Platform  | Status  | Download                                                      |
+|-----------|---------|--------------------------------------------------------------|
+| **Android**  | ✅ Available | [Download on Google Play](https://play.google.com/store/apps/details?id=dev.koga.deeplinklauncher.android) |
+| **iOS**      | ✅ Available | Not yet released.                                             |
+| **Desktop**  | ✅ Available | [Download for Desktop](https://github.com/FelipeKoga/deeplink-launcher/releases) |
 
-## Features
-- **Execute Deeplinks**: Quickly and easily execute deeplinks on Android and iOS Devices.
-- **Device Bridge**: The Desktop App integrates with **ADB** and **Xcrun** to execute deeplinks in real-time on Android and iOS devices.
-- **Auto-suggestion**: Get automatic suggestions for deeplinks based on previously executed links.
-- **Deeplink History**: Track all executed deeplinks.
-- **Favorites**: Mark deeplinks as favorites for quick access.
-- **Folders**: Organize deeplinks into folders for efficient management.
-- **Export/Import**: Share or backup deeplinks and folders in JSON or TXT formats.
-- **Duplicate DeepLink**: Easily duplicate existing deeplinks, saving time when creating similar entries or variations.
-- **Theme Support**: Customize your experience by switching between Light and Dark modes.
-- **Search**: Quickly find deeplinks by searching for keywords.
+## 🔑 Key Features
 
-## Built With
-<div>
-  <table>
-    <tr>
-      <th>Technology</th>
-      <th>Description</th>
-    </tr>
-    <tr>
-      <td><a href="https://github.com/JetBrains/compose-jb">Compose Multiplatform</a></td>
-      <td>Modern UI toolkit for building native UIs across all platforms.</td>
-    </tr>
-    <tr>
-      <td><a href="https://github.com/adrielcafe/voyager">Voyager</a></td>
-      <td>A multiplatform navigation library.</td>
-    </tr>
-    <tr>
-      <td><a href="https://insert-koin.io/">Koin</a></td>
-      <td>Dependency injection framework for Kotlin.</td>
-    </tr>
-    <tr>
-      <td><a href="https://cashapp.github.io/sqldelight/">SQLDelight</a></td>
-      <td>Multiplatform database library generating typesafe Kotlin APIs.</td>
-    </tr>
-    <tr>
-      <td><a href="https://developer.android.com/jetpack/androidx/releases/datastore">DataStore</a></td>
-      <td>Modern data storage solution for storing key-value pairs or protocol buffers with Kotlin coroutines.</td>
-    </tr>
-    <tr>
-      <td><a href="https://m3.material.io/">Material3</a></td>
-      <td>Design system that provides a consistent, intuitive set of user experiences across platforms.</td>
-    </tr>
-    <tr>
-      <td><a href="https://github.com/Kotlin/kotlinx.collections.immutable">Kotlinx Immutable</a></td>
-      <td>Immutable collections for Kotlin.</td>
-    </tr>
-    <tr>
-      <td><a href="https://github.com/Kotlin/kotlinx-datetime">Kotlinx DateTime</a></td>
-      <td>Library for working with date and time in Kotlin.</td>
-    </tr>
-    <tr>
-      <td><a href="https://github.com/mikepenz/AboutLibraries">AboutLibraries</a></td>
-      <td>Library for displaying open-source libraries in Android apps.</td>
-    </tr>
-    <tr>
-      <td><a href="https://github.com/detekt/detekt">Detekt</a></td>
-      <td>Kotlin static code analysis tool.</td>
-    </tr>
-    <tr>
-      <td><a href="https://github.com/pinterest/ktlint">Ktlint</a></td>
-      <td>Kotlin linter for code style.</td>
-    </tr>
-    <tr>
-      <td><a href="https://github.com/Wavesonics/compose-multiplatform-file-picker">MPFilePicker</td>
-      <td>Compose multiplatform file picker</td>
-    </tr>
-    <tr>
-      <td><a href="https://github.com/chrisbanes/material3-windowsizeclass-multiplatform">Material 3 Window Size Class</td>
-      <td>Library for detecting device window size</td>
-    </tr>
-  </table>
-</div>
+- **Execute Deeplinks**: Instantly execute deeplinks on Android, iOS, and Desktop platforms.
+- **Device Bridge**: The Desktop app integrates with **ADB** (Android) and **Xcrun** (iOS) to run deeplinks directly on devices in real-time.
+- **Auto-suggestions**: Get suggestions for deeplinks based on previously executed links.
+- **Deeplink History**: Easily track and revisit all previously executed deeplinks.
+- **Favorites**: Mark your most used deeplinks as favorites for quick access.
+- **Folders**: Organize your deeplinks into folders for better management.
+- **Export/Import**: Export and share your deeplinks in **JSON** or **TXT** formats. Import deeplinks as needed.
+- **Duplicate Deeplinks**: Quickly duplicate existing deeplinks to save time on similar or recurring tasks.
+- **Theme Support**: Choose between Light and Dark themes to match your preferences.
+- **Search**: Find any deeplink fast with the built-in search functionality.
+- **In-App Purchase**: Support the project by buying a coffee (Android only).
+
+## ⚙️ Built With
+
+| Technology | Description |
+|------------|-------------|
+| [**Compose Multiplatform**](https://github.com/JetBrains/compose-jb) | A modern UI toolkit for building native UIs across all platforms. |
+| [**Voyager**](https://github.com/adrielcafe/voyager) | A multiplatform navigation library. |
+| [**Koin**](https://insert-koin.io/) | A powerful dependency injection framework for Kotlin. |
+| [**SQLDelight**](https://cashapp.github.io/sqldelight/) | A multiplatform database library that generates type-safe Kotlin APIs. |
+| [**DataStore**](https://developer.android.com/jetpack/androidx/releases/datastore) | A modern data storage solution for key-value pairs or protocol buffers with Kotlin coroutines. |
+| [**Material3**](https://m3.material.io/) | Google's design system for a consistent user experience across platforms. |
+| [**Kotlinx Immutable**](https://github.com/Kotlin/kotlinx.collections.immutable) | Immutable collections for Kotlin. |
+| [**Kotlinx DateTime**](https://github.com/Kotlin/kotlinx-datetime) | Library for working with date and time in Kotlin. |
+| [**AboutLibraries**](https://github.com/mikepenz/AboutLibraries) | Displays open-source libraries used in Android apps. |
+| [**Detekt**](https://github.com/detekt/detekt) | A static code analysis tool for Kotlin. |
+| [**Ktlint**](https://github.com/pinterest/ktlint) | A Kotlin linter for enforcing code style guidelines. |
+| [**MPFilePicker**](https://github.com/Wavesonics/compose-multiplatform-file-picker) | A multiplatform file picker for Compose. |
+| [**Material 3 Window Size Class**](https://github.com/chrisbanes/material3-windowsizeclass-multiplatform) | A library to detect window size across different platforms. |
+| [**RevenueCat**](https://www.revenuecat.com/) | In-app purchase library for managing subscriptions and one-time purchases. |
+
+## 📥 How to Contribute
+
+We welcome contributions! To report bugs or suggest improvements:
+
+1. **Fork** the repository
+2. Create your **feature branch** (`git checkout -b feature/fooBar`)
+3. **Commit** your changes (`git commit -am 'Add new feature'`)
+4. **Push** to the branch (`git push origin feature/fooBar`)
+5. **Create a new Pull Request** with a detailed description of your changes.
+
+---
+
+Feel free to reach out with any questions or suggestions! 😄
