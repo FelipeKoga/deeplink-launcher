@@ -1,0 +1,16 @@
+name: Create Environment File
+description: Creates an env file with all secrets and env variables.
+
+runs:
+  using: "composite"
+  steps:
+    - uses: actions/checkout@v4
+
+    - name: Create env file
+      shell: bash
+      run: |
+        touch env.properties
+        for secret in $(printenv | grep -E "REVENUECAT_API_KEY|ANOTHER_SECRET|ANY_ENV_VAR" | cut -d'=' -f1); do
+          echo "$secret=$(printenv $secret)" >> env.properties
+        done
+        cat env.properties
