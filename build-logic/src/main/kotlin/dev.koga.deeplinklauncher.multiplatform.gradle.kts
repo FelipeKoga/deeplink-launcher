@@ -16,17 +16,6 @@ kotlin {
     androidTarget()
 
     sourceSets {
-        val mobileMain = create("mobileMain") {
-            kotlin.srcDir("src/mobileMain/kotlin")
-            dependsOn(commonMain.get())
-            dependencies {
-                implementation(libs.getLibrary("revenuecat-core"))
-            }
-        }
-
-        androidMain.get().dependsOn(mobileMain)
-        iosMain.get().dependsOn(mobileMain)
-
         iosMain.dependencies {
             implementation(libs.getLibrary("stately"))
         }

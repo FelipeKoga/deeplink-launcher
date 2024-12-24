@@ -14,10 +14,21 @@ kotlin {
     setupBinariesFramework("purchase")
 
     sourceSets {
+        val noOpMain by creating {
+            dependsOn(commonMain.get())
+        }
+
+        jvmMain.get().dependsOn(noOpMain)
+        iosMain.get().dependsOn(noOpMain)
+
         commonMain.dependencies {
             implementation(libs.kotlinx.immutable)
             implementation(libs.kotlinx.coroutines.core)
             implementation(libs.koin.core)
+        }
+
+        androidMain.dependencies {
+            implementation(libs.revenuecat.core)
         }
     }
 }
