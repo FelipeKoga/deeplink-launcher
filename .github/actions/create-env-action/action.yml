@@ -4,8 +4,6 @@ description: Creates an env file with all secrets and env variables.
 runs:
   using: "composite"
   steps:
-    - uses: actions/checkout@v4
-
     - name: Create env file
       shell: bash
       run: |
