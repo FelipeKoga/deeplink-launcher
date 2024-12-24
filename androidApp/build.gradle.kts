@@ -82,10 +82,6 @@ dependencies {
     implementation(libs.compose.runtime)
 }
 
-tasks.withType(KotlinCompile::class.java) {
-    dependsOn("exportLibraryDefinitions")
-}
-
 fun getSigningKey(secretKey: String, fallbackProps: Properties): String =
     if (!System.getenv(secretKey).isNullOrEmpty()) {
         System.getenv(secretKey)
