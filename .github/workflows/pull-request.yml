@@ -7,7 +7,6 @@ on:
 jobs:
   run-tests:
     runs-on: ubuntu-latest
-    needs: create-env-action
     steps:
       - uses: actions/checkout@v4
 
@@ -43,7 +42,6 @@ jobs:
 
   run-lint:
     runs-on: ubuntu-latest
-    needs: create-env-action
     steps:
       - uses: actions/checkout@v4
 
