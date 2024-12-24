@@ -17,5 +17,4 @@ class NoOpPurchaseApi : PurchaseApi {
     override suspend fun purchase(product: Product): PurchaseResult {
         return PurchaseResult.Error(false)
     }
-
 }

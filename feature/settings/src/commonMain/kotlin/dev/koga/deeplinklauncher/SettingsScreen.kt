@@ -52,7 +52,7 @@ class SettingsScreen : Screen {
         DELETE_DATA,
         APP_THEME,
         SUGGESTIONS_OPTION,
-        PRODUCTS
+        PRODUCTS,
     }
 
     @Composable
@@ -116,7 +116,7 @@ class SettingsScreen : Screen {
                 onSelectProduct = {
                     bottomSheetType = null
                     screenModel.purchaseProduct(it)
-                }
+                },
             )
 
             null -> Unit
@@ -142,7 +142,7 @@ class SettingsScreen : Screen {
             onNavigateToGithub = screenModel::navigateToGithub,
             onShowAppTheme = { bottomSheetType = BottomSheetType.APP_THEME },
             onShowSuggestionsOption = { bottomSheetType = BottomSheetType.SUGGESTIONS_OPTION },
-            onShowProducts = { bottomSheetType = BottomSheetType.PRODUCTS }
+            onShowProducts = { bottomSheetType = BottomSheetType.PRODUCTS },
         )
     }
 }
@@ -386,5 +386,4 @@ private fun SettingsListItem(
 
 @Composable
 private fun BottomSheetHandler(modifier: Modifier = Modifier) {
-
 }

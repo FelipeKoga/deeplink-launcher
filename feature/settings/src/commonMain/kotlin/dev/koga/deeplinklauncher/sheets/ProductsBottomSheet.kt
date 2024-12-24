@@ -55,7 +55,8 @@ fun ProductsBottomSheet(
                 items(products) { product ->
                     ProductCard(
                         product = product,
-                        modifier = Modifier.clickable { onSelectProduct(product) })
+                        modifier = Modifier.clickable { onSelectProduct(product) },
+                    )
                 }
             }
         }
@@ -71,7 +72,7 @@ internal fun ProductCard(modifier: Modifier = Modifier, product: Product) {
                 text = product.title,
                 style = MaterialTheme.typography.bodyMedium.copy(
                     fontWeight = FontWeight.Bold,
-                )
+                ),
             )
         },
         supportingContent = {
@@ -83,8 +84,8 @@ internal fun ProductCard(modifier: Modifier = Modifier, product: Product) {
                 text = product.formattedAmount,
                 style = MaterialTheme.typography.bodyLarge.copy(
                     fontWeight = FontWeight.Bold,
-                )
+                ),
             )
-        }
+        },
     )
 }

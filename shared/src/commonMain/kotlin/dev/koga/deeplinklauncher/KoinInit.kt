@@ -39,7 +39,7 @@ fun initKoin() {
 fun initKoin(appModule: Module) {
     ScreenRegistry { screenModule() }
 
-    val app = startKoin {
+    startKoin {
         modules(
             homeUiModule,
             folderDetailsUiModule,
@@ -54,7 +54,7 @@ fun initKoin(appModule: Module) {
             domainModule,
             databaseModule,
             preferencesModule,
-            purchaseModule
+            purchaseModule,
         )
     }
 }

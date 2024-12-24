@@ -27,17 +27,17 @@ class RevenueCatPurchaseApi : PurchaseApi {
                     Product(
                         title = it.storeProduct.title.replace(
                             regex = "\\(.*?\\)".toRegex(),
-                            replacement = ""
+                            replacement = "",
                         ),
                         description = it.storeProduct.localizedDescription.orEmpty(),
                         formattedAmount = it.storeProduct.price.formatted,
                         amountMicros = it.storeProduct.price.amountMicros,
-                        packageId = it.identifier
+                        packageId = it.identifier,
                     )
                 } ?: emptyList()
 
                 trySend(products.sortedBy { it.amountMicros }.toPersistentList())
-            }
+            },
         )
 
         awaitClose()
@@ -59,7 +59,7 @@ class RevenueCatPurchaseApi : PurchaseApi {
                             continuation.resume(PurchaseResult.Error(userCancelled))
                         },
                     )
-                }
+                },
             )
         }
 }

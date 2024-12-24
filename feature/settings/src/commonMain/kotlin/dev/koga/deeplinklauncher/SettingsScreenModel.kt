@@ -34,7 +34,7 @@ class SettingsScreenModel(
     val products = purchase.getProducts().stateIn(
         scope = screenModelScope,
         started = SharingStarted.WhileSubscribed(),
-        initialValue = persistentListOf()
+        initialValue = persistentListOf(),
     )
 
     private val messageDispatcher = Channel<String>(Channel.UNLIMITED)

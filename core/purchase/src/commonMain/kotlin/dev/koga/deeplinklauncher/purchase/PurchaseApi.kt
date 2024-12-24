@@ -11,4 +11,3 @@ interface PurchaseApi {
     fun getProducts(): Flow<PersistentList<Product>>
     suspend fun purchase(product: Product): PurchaseResult
 }
-
