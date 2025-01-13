@@ -2,7 +2,7 @@
 billing = "7.1.1"
 datastorePreferencesCore = "1.1.1"
 kotlinxSerializationJson = "1.8.0"
-androidGradlePlugin = "8.7.3"
+androidGradlePlugin = "8.8.0"
 jetbrains-kotlinxDatetime = "0.6.1"
 kotlin = "2.1.0"
 kotlinx-immutable = "0.3.8"
