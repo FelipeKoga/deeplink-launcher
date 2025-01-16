@@ -1,0 +1,34 @@
+import extension.setupBinariesFramework
+
+plugins {
+    id("dev.koga.deeplinklauncher.multiplatform")
+    alias(libs.plugins.jetbrainsCompose)
+    alias(libs.plugins.compose.compiler)
+}
+
+kotlin {
+    setupBinariesFramework("deeplink.impl")
+
+    sourceSets {
+        commonMain.dependencies {
+            implementation(projects.feature.deeplink.api)
+            implementation(projects.feature.preferences.api)
+
+            implementation(projects.core.date)
+            implementation(projects.core.database)
+
+            implementation(libs.koin.core)
+            implementation(libs.sqldelight.coroutines.extensions)
+            implementation(libs.kotlinx.coroutines.core)
+            implementation(libs.kotlinx.immutable)
+        }
+
+        jvmMain.dependencies {
+            implementation(projects.feature.devicebridge)
+        }
+    }
+}
+
+android {
+    namespace = "dev.koga.deeplinklauncher.deeplink.impl"
+}

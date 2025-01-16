@@ -18,21 +18,21 @@ import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.navigator.Navigator
 import cafe.adriel.voyager.navigator.bottomSheet.BottomSheetNavigator
 import cafe.adriel.voyager.transitions.SlideTransition
-import dev.koga.deeplinklauncher.datasource.PreferencesDataSource
-import dev.koga.deeplinklauncher.model.AppTheme
-import dev.koga.deeplinklauncher.screen.HomeScreen
-import dev.koga.deeplinklauncher.theme.DLLTheme
-import dev.koga.deeplinklauncher.theme.Theme
+import dev.koga.deeplinklauncher.designsystem.theme.DLLTheme
+import dev.koga.deeplinklauncher.designsystem.theme.Theme
+import dev.koga.deeplinklauncher.home.ui.screen.HomeScreen
+import dev.koga.deeplinklauncher.preferences.api.model.AppTheme
+import dev.koga.deeplinklauncher.preferences.api.repository.PreferencesRepository
 import kotlinx.coroutines.flow.map
 import org.koin.compose.koinInject
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun App() {
-    val preferencesDataSource: PreferencesDataSource = koinInject()
-
-    val preferences by preferencesDataSource.preferencesStream.collectAsState(
-        initial = preferencesDataSource.preferences,
+fun App(
+    preferencesRepository: PreferencesRepository = koinInject()
+) {
+    val preferences by preferencesRepository.preferencesStream.collectAsState(
+        initial = preferencesRepository.preferences,
     )
 
     DLLTheme(

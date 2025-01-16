@@ -2,19 +2,20 @@ package dev.koga.deeplinklauncher
 
 import cafe.adriel.voyager.core.registry.ScreenRegistry
 import cafe.adriel.voyager.core.registry.screenModule
-import dev.koga.deeplinklauncher.di.databaseModule
-import dev.koga.deeplinklauncher.di.deepLinkDetailsUiModule
-import dev.koga.deeplinklauncher.di.domainModule
-import dev.koga.deeplinklauncher.di.exportDeepLinksUiModule
-import dev.koga.deeplinklauncher.di.folderDetailsUiModule
-import dev.koga.deeplinklauncher.di.homeUiModule
-import dev.koga.deeplinklauncher.di.importUiModule
-import dev.koga.deeplinklauncher.di.settingsUiModule
-import dev.koga.deeplinklauncher.preferences.di.preferencesModule
-import dev.koga.deeplinklauncher.purchase.purchaseModule
-import dev.koga.deeplinklauncher.screen.ExportScreen
-import dev.koga.deeplinklauncher.screen.ImportScreen
-import dev.koga.deeplinklauncher.screen.details.DeepLinkDetailsScreen
+import dev.koga.deeplinklauncher.database.di.databaseModule
+import dev.koga.deeplinklauncher.deeplink.impl.di.deeplinkImplModule
+import dev.koga.deeplinklauncher.deeplink.ui.deeplink.screen.details.DeepLinkDetailsScreen
+import dev.koga.deeplinklauncher.deeplink.ui.di.deeplinkUiModule
+import dev.koga.deeplinklauncher.deeplink.ui.folder.screen.details.FolderDetailsScreen
+import dev.koga.deeplinklauncher.file.di.fileModule
+import dev.koga.deeplinklauncher.home.ui.di.homeUiModule
+import dev.koga.deeplinklauncher.importdata.ui.screen.export.ExportScreen
+import dev.koga.deeplinklauncher.importdata.ui.screen.import.ImportScreen
+import dev.koga.deeplinklauncher.importexport.impl.di.importExportImplModule
+import dev.koga.deeplinklauncher.preferences.impl.di.preferencesImplModule
+import dev.koga.deeplinklauncher.purchase.impl.di.purchaseImplModule
+import dev.koga.deeplinklauncher.settings.ui.di.settingsUiModule
+import dev.koga.deeplinklauncher.settings.ui.screen.SettingsScreen
 import org.koin.core.context.startKoin
 import org.koin.core.module.Module
 import org.koin.dsl.module
@@ -41,20 +42,17 @@ fun initKoin(appModule: Module) {
 
     startKoin {
         modules(
-            homeUiModule,
-            folderDetailsUiModule,
-            deepLinkDetailsUiModule,
-            settingsUiModule,
-            importUiModule,
-            exportDeepLinksUiModule,
-        )
-
-        modules(
             appModule,
-            domainModule,
+            deeplinkUiModule,
+            deeplinkImplModule,
+            preferencesImplModule,
+            purchaseImplModule,
+            importExportImplModule,
+            homeUiModule,
+            settingsUiModule,
+            fileModule,
             databaseModule,
-            preferencesModule,
-            purchaseModule,
+            purchaseImplModule,
         )
     }
 }

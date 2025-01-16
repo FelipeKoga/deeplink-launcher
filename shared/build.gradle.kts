@@ -15,18 +15,25 @@ kotlin {
 
     sourceSets {
         commonMain.dependencies {
-            implementation(projects.feature.home)
-            implementation(projects.feature.settings)
-            implementation(projects.feature.exportData)
-            implementation(projects.feature.importData)
-            implementation(projects.feature.deeplinkDetails)
-            implementation(projects.feature.folderDetails)
+            implementation(projects.feature.deeplink.ui)
+            implementation(projects.feature.deeplink.api)
+            implementation(projects.feature.deeplink.impl)
+            implementation(projects.feature.importExport.ui)
+            implementation(projects.feature.importExport.api)
+            implementation(projects.feature.importExport.impl)
+            implementation(projects.feature.preferences.api)
+            implementation(projects.feature.preferences.impl)
+            implementation(projects.feature.settings.ui)
+            implementation(projects.feature.home.ui)
+            implementation(projects.feature.purchase.ui)
+            implementation(projects.feature.purchase.api)
+            implementation(projects.feature.purchase.impl)
+
             implementation(projects.core.designsystem)
             implementation(projects.core.navigation)
             implementation(projects.core.database)
-            api(projects.core.purchase)
-            api(projects.core.domain)
-            api(projects.core.preferences)
+            implementation(projects.core.file)
+            implementation(projects.core.date)
 
             implementation(libs.koin.core)
             implementation(libs.kotlinx.coroutines.core)
@@ -42,11 +49,15 @@ kotlin {
             implementation(compose.ui)
             implementation(compose.components.resources)
         }
+
+        jvmMain.dependencies {
+            implementation(projects.feature.devicebridge)
+        }
     }
 }
 
 android {
-    namespace = "dev.koga.shared"
+    namespace = "dev.koga.deeplinklauncher.shared"
 }
 
 project.extensions.findByType(KotlinMultiplatformExtension::class.java)?.apply {
