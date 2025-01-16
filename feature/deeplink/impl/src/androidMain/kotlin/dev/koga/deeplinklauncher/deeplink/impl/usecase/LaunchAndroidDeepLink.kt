@@ -30,5 +30,4 @@ internal class LaunchAndroidDeepLink(
 
         return launch(deepLink.link)
     }
-
 }

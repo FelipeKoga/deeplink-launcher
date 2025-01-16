@@ -15,5 +15,4 @@ val deeplinkImplModule = module {
     includes(platformModule)
 }
 
-
 expect val platformModule: Module

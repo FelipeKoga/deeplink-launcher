@@ -5,7 +5,7 @@ import dev.koga.deeplinklauncher.importexport.model.FileType
 interface ImportDeepLinks {
     operator fun invoke(
         filePath: String,
-        fileType: FileType
+        fileType: FileType,
     ): ImportDeepLinksResult
 }
 

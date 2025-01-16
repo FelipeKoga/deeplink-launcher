@@ -12,9 +12,9 @@ import dev.koga.deeplinklauncher.deeplink.api.repository.FolderRepository
 import dev.koga.deeplinklauncher.deeplink.api.usecase.GetAutoSuggestionLinks
 import dev.koga.deeplinklauncher.deeplink.api.usecase.GetDeepLinksAndFolderStream
 import dev.koga.deeplinklauncher.deeplink.api.usecase.LaunchDeepLink
-import dev.koga.deeplinklauncher.preferences.api.repository.PreferencesRepository
 import dev.koga.deeplinklauncher.home.ui.screen.state.HomeEvent
 import dev.koga.deeplinklauncher.home.ui.screen.state.HomeUiState
+import dev.koga.deeplinklauncher.preferences.api.repository.PreferencesRepository
 import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.Channel

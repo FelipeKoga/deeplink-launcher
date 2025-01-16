@@ -11,7 +11,7 @@ import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 
 class DuplicateDeepLinkImpl(
-    private val repository: DeepLinkRepository
+    private val repository: DeepLinkRepository,
 ) : DuplicateDeepLink {
 
     override suspend operator fun invoke(

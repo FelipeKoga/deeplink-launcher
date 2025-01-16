@@ -13,7 +13,7 @@ val generalPropertiesHint: AnnotatedString
         return buildAnnotatedString {
             append(
                 "It's possible to add more properties to the object, " +
-                        "such as",
+                    "such as",
             )
 
             withStyle(

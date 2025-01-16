@@ -19,13 +19,13 @@ import kotlin.uuid.Uuid
 internal class DefaultImportDeepLinks(
     private val getFileContent: GetFileContent,
     private val deepLinkRepository: DeepLinkRepository,
-    private val folderRepository: FolderRepository
+    private val folderRepository: FolderRepository,
 ) : ImportDeepLinks {
 
     @OptIn(ExperimentalSerializationApi::class)
     override operator fun invoke(
         filePath: String,
-        fileType: FileType
+        fileType: FileType,
     ): ImportDeepLinksResult {
         return try {
             val fileContents = getFileContent(filePath)

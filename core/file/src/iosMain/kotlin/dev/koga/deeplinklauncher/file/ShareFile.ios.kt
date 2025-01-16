@@ -1,7 +1,6 @@
 package dev.koga.deeplinklauncher.file
 
 import dev.koga.deeplinklauncher.file.model.FileType
-
 import kotlinx.cinterop.ExperimentalForeignApi
 import platform.Foundation.NSURL
 import platform.UIKit.UIApplication

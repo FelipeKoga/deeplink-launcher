@@ -46,14 +46,14 @@ fun OnboardingBottomSheet(
                 style = MaterialTheme.typography.titleMedium.copy(
                     textAlign = TextAlign.Center,
 
-                    ),
+                ),
             )
 
             Spacer(modifier = Modifier.height(34.dp))
 
             Text(
                 text = "Please note that data is stored locally on your device. If you wish to keep a backup" +
-                        " of your data, you can export it from the settings screen.",
+                    " of your data, you can export it from the settings screen.",
                 style = MaterialTheme.typography.bodyMedium.copy(
                     textAlign = TextAlign.Center,
                     fontWeight = FontWeight.SemiBold,

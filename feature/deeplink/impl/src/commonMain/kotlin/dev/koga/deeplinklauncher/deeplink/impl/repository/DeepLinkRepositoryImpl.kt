@@ -2,11 +2,11 @@ package dev.koga.deeplinklauncher.deeplink.impl.repository
 
 import app.cash.sqldelight.coroutines.asFlow
 import app.cash.sqldelight.coroutines.mapToList
-import dev.koga.deeplinklauncher.deeplink.api.model.DeepLink
-import dev.koga.deeplinklauncher.deeplink.api.repository.DeepLinkRepository
 import dev.koga.deeplinklauncher.database.DeepLinkLauncherDatabase
 import dev.koga.deeplinklauncher.database.GetDeepLinkByLink
 import dev.koga.deeplinklauncher.database.SelectAllDeeplinks
+import dev.koga.deeplinklauncher.deeplink.api.model.DeepLink
+import dev.koga.deeplinklauncher.deeplink.api.repository.DeepLinkRepository
 import dev.koga.deeplinklauncher.deeplink.api.repository.FolderRepository
 import dev.koga.deeplinklauncher.deeplink.impl.mapper.toDomain
 import kotlinx.coroutines.Dispatchers
@@ -58,7 +58,6 @@ internal class DeepLinkRepositoryImpl(
 
     override fun upsertDeepLink(deepLink: DeepLink) {
         database.transaction {
-
             deepLink.folder?.let {
                 folderRepository.upsertFolder(it)
             }

@@ -10,7 +10,7 @@ import kotlinx.collections.immutable.persistentListOf
 class GetAutoSuggestionLinksImpl(
     private val repository: DeepLinkRepository,
     private val getDeepLinkMetadata: GetDeepLinkMetadata,
-    private val preferencesRepository: PreferencesRepository
+    private val preferencesRepository: PreferencesRepository,
 ) : GetAutoSuggestionLinks {
 
     override operator fun invoke(link: String): List<String> {

@@ -9,5 +9,4 @@ expect class SaveFile {
         fileContent: String,
         type: FileType,
     ): String?
-
 }

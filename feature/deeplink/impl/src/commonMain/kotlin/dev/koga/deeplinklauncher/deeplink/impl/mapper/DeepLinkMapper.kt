@@ -1,10 +1,10 @@
 package dev.koga.deeplinklauncher.deeplink.impl.mapper
 
-import dev.koga.deeplinklauncher.deeplink.api.model.DeepLink
-import dev.koga.deeplinklauncher.deeplink.api.model.Folder
 import dev.koga.deeplinklauncher.database.GetDeepLinkById
 import dev.koga.deeplinklauncher.database.GetDeepLinkByLink
 import dev.koga.deeplinklauncher.database.SelectAllDeeplinks
+import dev.koga.deeplinklauncher.deeplink.api.model.DeepLink
+import dev.koga.deeplinklauncher.deeplink.api.model.Folder
 import dev.koga.deeplinklauncher.database.Deeplink as DatabaseDeepLink
 
 fun DatabaseDeepLink.toDomain() = DeepLink(

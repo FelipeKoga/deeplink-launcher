@@ -37,5 +37,4 @@ class GetDeepLinksAndFolderStreamImpl(
     private fun filterFolders(folders: List<Folder>, query: String): List<Folder> {
         return folders.filter { it.name.contains(query, true) }
     }
-
 }

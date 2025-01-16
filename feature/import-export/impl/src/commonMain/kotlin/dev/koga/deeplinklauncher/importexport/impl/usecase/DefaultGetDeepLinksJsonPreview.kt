@@ -5,9 +5,9 @@ import dev.koga.deeplinklauncher.deeplink.api.repository.FolderRepository
 import dev.koga.deeplinklauncher.importexport.dto.dateFormat
 import dev.koga.deeplinklauncher.importexport.usecase.GetDeepLinksJsonPreview
 import kotlinx.datetime.format
+import kotlinx.serialization.Serializable
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
-import kotlinx.serialization.Serializable
 
 internal class DefaultGetDeepLinksJsonPreview(
     private val deepLinkRepository: DeepLinkRepository,

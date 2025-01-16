@@ -1,12 +1,11 @@
 package dev.koga.deeplinklauncher.file
 
-import dev.koga.deeplinklauncher.file.model.FileType
-
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Build
 import androidx.core.content.FileProvider
+import dev.koga.deeplinklauncher.file.model.FileType
 import java.io.File
 
 actual class ShareFile(

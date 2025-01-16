@@ -25,7 +25,7 @@ data class DeeplinkTargetsUiState(
     enum class Platform {
         ANDROID,
         IOS,
-        DESKTOP
+        DESKTOP,
     }
 }
 

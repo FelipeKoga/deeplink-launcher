@@ -11,5 +11,3 @@ interface LaunchDeepLink {
         data class Failure(val throwable: Throwable) : Result
     }
 }
-
-

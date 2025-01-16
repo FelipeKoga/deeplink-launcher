@@ -4,7 +4,7 @@ import dev.koga.deeplinklauncher.deeplink.api.repository.DeepLinkRepository
 import dev.koga.deeplinklauncher.importexport.usecase.GetDeepLinksPlainTextPreview
 
 internal class DefaultGetDeepLinksPlainTextPreview(
-    private val repository: DeepLinkRepository
+    private val repository: DeepLinkRepository,
 ) : GetDeepLinksPlainTextPreview {
 
     override operator fun invoke(): String {

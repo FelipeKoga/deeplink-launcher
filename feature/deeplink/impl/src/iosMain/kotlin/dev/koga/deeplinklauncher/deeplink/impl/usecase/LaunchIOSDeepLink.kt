@@ -7,9 +7,8 @@ import dev.koga.deeplinklauncher.deeplink.api.usecase.LaunchDeepLink
 import platform.Foundation.NSURL
 import platform.UIKit.UIApplication
 
-
 internal class LaunchIOSDeepLink(
-    private val repository: DeepLinkRepository
+    private val repository: DeepLinkRepository,
 ) : LaunchDeepLink {
 
     private val application = UIApplication.sharedApplication

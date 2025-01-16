@@ -16,7 +16,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
 internal class FolderRepositoryImpl(
-    private val database: DeepLinkLauncherDatabase
+    private val database: DeepLinkLauncherDatabase,
 ) : FolderRepository {
 
     override fun getFoldersStream(): Flow<List<Folder>> {

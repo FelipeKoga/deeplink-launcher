@@ -1,16 +1,16 @@
 package dev.koga.deeplinklauncher.preferences.impl.repository
 
 import androidx.datastore.core.DataStore
-import androidx.datastore.preferences.core.Preferences as StoragePreferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import dev.koga.deeplinklauncher.preferences.api.model.AppTheme
+import dev.koga.deeplinklauncher.preferences.api.model.Preferences
 import dev.koga.deeplinklauncher.preferences.api.repository.PreferencesRepository
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.runBlocking
-import dev.koga.deeplinklauncher.preferences.api.model.Preferences
+import androidx.datastore.preferences.core.Preferences as StoragePreferences
 
 internal class DefaultPreferencesRepository(
     private val dataStore: DataStore<StoragePreferences>,
