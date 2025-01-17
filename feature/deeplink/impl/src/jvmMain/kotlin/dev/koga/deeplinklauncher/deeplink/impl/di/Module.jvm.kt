@@ -1,14 +1,18 @@
 package dev.koga.deeplinklauncher.deeplink.impl.di
 
 import dev.koga.deeplinklauncher.deeplink.api.usecase.GetDeepLinkMetadata
-import dev.koga.deeplinklauncher.deeplink.impl.usecase.GetJvmDeepLinkMetadata
-import dev.koga.deeplinklauncher.deeplink.impl.usecase.LaunchJvmDeepLink
+import dev.koga.deeplinklauncher.deeplink.api.usecase.LaunchDeepLink
+import dev.koga.deeplinklauncher.deeplink.api.usecase.ValidateDeepLink
+import dev.koga.deeplinklauncher.deeplink.impl.usecase.GetDeepLinkMetadataImpl
+import dev.koga.deeplinklauncher.deeplink.impl.usecase.LaunchDeepLinkImpl
+import dev.koga.deeplinklauncher.deeplink.impl.usecase.ValidateDeepLinkImpl
 import org.koin.core.module.Module
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.bind
 import org.koin.dsl.module
 
 actual val platformModule: Module = module {
-    singleOf(::GetJvmDeepLinkMetadata) bind GetDeepLinkMetadata::class
-    singleOf(::LaunchJvmDeepLink) bind LaunchJvmDeepLink::class
+    singleOf(::GetDeepLinkMetadataImpl) bind GetDeepLinkMetadata::class
+    singleOf(::LaunchDeepLinkImpl) bind LaunchDeepLink::class
+    singleOf(::ValidateDeepLinkImpl) bind ValidateDeepLink::class
 }

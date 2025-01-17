@@ -37,9 +37,12 @@ import dev.koga.deeplinklauncher.SharedScreen
 import dev.koga.deeplinklauncher.designsystem.DLLHorizontalDivider
 import dev.koga.deeplinklauncher.designsystem.DLLTopBar
 import dev.koga.deeplinklauncher.designsystem.DLLTopBarDefaults
+import dev.koga.deeplinklauncher.platform.Platform
+import dev.koga.deeplinklauncher.platform.currentPlatform
+import dev.koga.deeplinklauncher.purchase.ui.ProductsBottomSheet
 import dev.koga.deeplinklauncher.settings.ui.sheets.AppThemeBottomSheet
 import dev.koga.deeplinklauncher.settings.ui.sheets.DeleteDataBottomSheet
-import dev.koga.deeplinklauncher.settings.ui.sheets.ProductsBottomSheet
+import dev.koga.deeplinklauncher.settings.ui.sheets.OpenSourceLicensesSheet
 import dev.koga.deeplinklauncher.settings.ui.sheets.SuggestionsOptionBottomSheet
 import dev.koga.resources.Res
 import dev.koga.resources.ic_chevron_right_24dp
@@ -55,6 +58,7 @@ class SettingsScreen : Screen {
         APP_THEME,
         SUGGESTIONS_OPTION,
         PRODUCTS,
+        OPEN_SOURCE,
     }
 
     @Composable
@@ -121,6 +125,10 @@ class SettingsScreen : Screen {
                 },
             )
 
+            BottomSheetType.OPEN_SOURCE -> OpenSourceLicensesSheet {
+                bottomSheetType = null
+            }
+
             null -> Unit
         }
 
@@ -140,7 +148,7 @@ class SettingsScreen : Screen {
             onNavigateToImport = { navigator.push(importScreen) },
             onShowDeleteDataBottomSheet = { bottomSheetType = BottomSheetType.DELETE_DATA },
             onNavigateToStore = screenModel::navigateToStore,
-            onNavigateToOpenSourceLicenses = { navigator.push(OpenSourceLicensesScreen) },
+            onNavigateToOpenSourceLicenses = { bottomSheetType = BottomSheetType.OPEN_SOURCE },
             onNavigateToGithub = screenModel::navigateToGithub,
             onShowAppTheme = { bottomSheetType = BottomSheetType.APP_THEME },
             onShowSuggestionsOption = { bottomSheetType = BottomSheetType.SUGGESTIONS_OPTION },
@@ -308,7 +316,7 @@ fun SettingsScreenUI(
             }
 
             item {
-                when (platform) {
+                when (currentPlatform) {
                     Platform.ANDROID -> SettingsListItem(
                         title = "Review on the Play Store",
                         description = "Enjoying the app? Please leave a review. Your feedback helps a lot!",

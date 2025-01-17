@@ -7,9 +7,9 @@ import dev.koga.deeplinklauncher.deeplink.api.repository.FolderRepository
 import dev.koga.deeplinklauncher.deeplink.api.usecase.LaunchDeepLink
 import dev.koga.deeplinklauncher.preferences.api.model.AppTheme
 import dev.koga.deeplinklauncher.preferences.api.repository.PreferencesRepository
-import dev.koga.deeplinklauncher.purchase.Product
-import dev.koga.deeplinklauncher.purchase.PurchaseApi
-import dev.koga.deeplinklauncher.purchase.PurchaseResult
+import dev.koga.deeplinklauncher.purchase.api.Product
+import dev.koga.deeplinklauncher.purchase.api.PurchaseApi
+import dev.koga.deeplinklauncher.purchase.api.PurchaseResult
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.SharingStarted

@@ -21,9 +21,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import dev.koga.deeplinklauncher.deeplink.api.model.DeepLink
 import dev.koga.deeplinklauncher.designsystem.DLLSmallChip
 import dev.koga.deeplinklauncher.designsystem.button.DLLIconButton
-import dev.koga.deeplinklauncher.model.DeepLink
 import dev.koga.resources.Res
 import dev.koga.resources.ic_launch_24dp
 import org.jetbrains.compose.resources.painterResource

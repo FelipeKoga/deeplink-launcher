@@ -1,9 +1,9 @@
 package dev.koga.deeplinklauncher.importexport.usecase
 
-import dev.koga.deeplinklauncher.importexport.model.FileType
+import dev.koga.deeplinklauncher.file.model.FileType
 
 interface ImportDeepLinks {
-    operator fun invoke(
+    suspend operator fun invoke(
         filePath: String,
         fileType: FileType,
     ): ImportDeepLinksResult

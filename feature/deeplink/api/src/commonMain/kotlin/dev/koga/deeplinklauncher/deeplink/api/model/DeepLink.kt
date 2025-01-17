@@ -1,5 +1,6 @@
 package dev.koga.deeplinklauncher.deeplink.api.model
 
+import dev.koga.deeplinklauncher.date.currentLocalDateTime
 import kotlinx.datetime.LocalDateTime
 import kotlinx.serialization.Serializable
 
@@ -24,5 +25,3 @@ data class DeepLink(
         )
     }
 }
-
-expect val String.isLinkValid: Boolean

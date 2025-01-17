@@ -3,8 +3,8 @@ import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.WindowPlacement
 import androidx.compose.ui.window.application
 import androidx.compose.ui.window.rememberWindowState
-import dev.koga.deeplinklauncher.App
-import dev.koga.deeplinklauncher.initKoin
+import dev.koga.deeplinklauncher.shared.App
+import dev.koga.deeplinklauncher.shared.initKoin
 
 fun main() = application {
     initKoin()

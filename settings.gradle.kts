@@ -44,5 +44,6 @@ include(
     ":core:navigation",
     ":core:designsystem",
     ":core:database",
+    ":core:platform",
     ":shared"
 )

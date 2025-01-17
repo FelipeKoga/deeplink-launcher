@@ -12,8 +12,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import dev.koga.deeplinklauncher.deeplink.ui.deeplink.screen.details.state.DeepLinkDetailsUiState
 import dev.koga.deeplinklauncher.designsystem.DLLSmallChip
-import dev.koga.deeplinklauncher.screen.details.state.DeepLinkDetailsUiState
 
 @Composable
 fun LaunchModeUI(

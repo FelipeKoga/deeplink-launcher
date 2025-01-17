@@ -26,9 +26,9 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
+import dev.koga.deeplinklauncher.deeplink.api.model.DeepLink
 import dev.koga.deeplinklauncher.designsystem.DLLHorizontalDivider
 import dev.koga.deeplinklauncher.designsystem.DLLTextField
-import dev.koga.deeplinklauncher.model.DeepLink
 
 @Composable
 fun DuplicateModeUI(

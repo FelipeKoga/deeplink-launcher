@@ -1,6 +1,6 @@
 package dev.koga.deeplinklauncher.devicebridge
 
-import dev.koga.deeplinklauncher.model.DeeplinkTarget
+import dev.koga.deeplinklauncher.devicebridge.model.DeeplinkTarget
 import dev.koga.deeplinklauncher.util.ext.next
 import dev.koga.deeplinklauncher.util.ext.previous
 import kotlinx.coroutines.CoroutineDispatcher

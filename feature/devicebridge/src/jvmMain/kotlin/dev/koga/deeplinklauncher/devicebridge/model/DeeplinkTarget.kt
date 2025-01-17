@@ -1,13 +1,16 @@
-package dev.koga.deeplinklauncher.model
+@file:OptIn(ExperimentalUuidApi::class)
+
+package dev.koga.deeplinklauncher.devicebridge.model
 
 import dev.koga.deeplinklauncher.devicebridge.DeviceBridge
-import dev.koga.deeplinklauncher.provider.UUIDProvider
+import kotlin.uuid.ExperimentalUuidApi
+import kotlin.uuid.Uuid
 
 sealed interface DeeplinkTarget {
     val id: String
 
     data object Desktop : DeeplinkTarget {
-        override val id: String = UUIDProvider.get()
+        override val id: String = Uuid.random().toString()
     }
 
     data class Device(

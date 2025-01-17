@@ -42,14 +42,14 @@ import dev.koga.deeplinklauncher.SharedScreen
 import dev.koga.deeplinklauncher.deeplink.api.model.DeepLink
 import dev.koga.deeplinklauncher.deeplink.ui.deeplink.component.DeepLinkCard
 import dev.koga.deeplinklauncher.deeplink.ui.folder.component.DeleteFolderBottomSheet
+import dev.koga.deeplinklauncher.deeplink.ui.folder.component.EditableText
 import dev.koga.deeplinklauncher.designsystem.DLLHorizontalDivider
 import dev.koga.deeplinklauncher.designsystem.DLLTopBar
 import dev.koga.deeplinklauncher.designsystem.DLLTopBarDefaults
 import dev.koga.deeplinklauncher.designsystem.button.DLLIconButton
 import dev.koga.deeplinklauncher.designsystem.theme.LocalDimensions
-import dev.koga.deeplinklauncher.ext.fullLineItem
-import dev.koga.deeplinklauncher.ext.spacer
-import dev.koga.deeplinklauncher.folder.EditableText
+import dev.koga.deeplinklauncher.designsystem.utils.fullLineItem
+import dev.koga.deeplinklauncher.designsystem.utils.spacer
 import kotlinx.coroutines.flow.collectLatest
 import org.koin.core.parameter.parametersOf
 

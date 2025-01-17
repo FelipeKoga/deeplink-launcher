@@ -5,7 +5,6 @@ import com.revenuecat.purchases.kmp.configure
 import dev.koga.deeplinklauncher.purchase.api.Product
 import dev.koga.deeplinklauncher.purchase.api.PurchaseApi
 import dev.koga.deeplinklauncher.purchase.api.PurchaseResult
-import dev.koga.shared.BuildKonfig
 import kotlinx.collections.immutable.PersistentList
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toPersistentList

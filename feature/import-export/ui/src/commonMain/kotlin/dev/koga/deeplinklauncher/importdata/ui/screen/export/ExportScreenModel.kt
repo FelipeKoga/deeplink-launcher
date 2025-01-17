@@ -2,11 +2,11 @@ package dev.koga.deeplinklauncher.importdata.ui.screen.export
 
 import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.screenModelScope
-import dev.koga.deeplinklauncher.model.FileType
-import dev.koga.deeplinklauncher.usecase.ExportDeepLinks
-import dev.koga.deeplinklauncher.usecase.ExportDeepLinksOutput
-import dev.koga.deeplinklauncher.usecase.GetDeepLinksJsonPreview
-import dev.koga.deeplinklauncher.usecase.GetDeepLinksPlainTextPreview
+import dev.koga.deeplinklauncher.file.model.FileType
+import dev.koga.deeplinklauncher.importexport.usecase.ExportDeepLinks
+import dev.koga.deeplinklauncher.importexport.usecase.ExportDeepLinksResult
+import dev.koga.deeplinklauncher.importexport.usecase.GetDeepLinksJsonPreview
+import dev.koga.deeplinklauncher.importexport.usecase.GetDeepLinksPlainTextPreview
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
@@ -28,27 +28,18 @@ class ExportScreenModel(
         jsonFormat = jsonPreview,
     )
 
-    fun export(
-        exportType: ExportFileType,
-    ) {
+    fun export(fileType: FileType) {
         screenModelScope.launch {
-            val response = exportDeepLinks.export(
-                type = when (exportType) {
-                    ExportFileType.JSON -> FileType.JSON
-                    ExportFileType.PLAIN_TEXT -> FileType.TXT
-                },
-            )
-
-            when (response) {
-                ExportDeepLinksOutput.Empty -> messageDispatcher.send(
+            when (val response = exportDeepLinks(fileType)) {
+                ExportDeepLinksResult.Empty -> messageDispatcher.send(
                     "No DeepLinks to export.",
                 )
 
-                is ExportDeepLinksOutput.Error -> messageDispatcher.send(
+                is ExportDeepLinksResult.Error -> messageDispatcher.send(
                     "An error occurred while exporting DeepLinks.",
                 )
 
-                is ExportDeepLinksOutput.Success -> messageDispatcher.send(
+                is ExportDeepLinksResult.Success -> messageDispatcher.send(
                     "DeepLinks exported successfully. " +
                         "Check your downloads folder for a file named ${response.fileName}.",
                 )

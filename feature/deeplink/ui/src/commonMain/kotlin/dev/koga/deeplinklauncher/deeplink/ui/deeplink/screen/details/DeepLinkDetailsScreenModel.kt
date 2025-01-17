@@ -6,12 +6,12 @@ import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.screenModelScope
 import dev.koga.deeplinklauncher.deeplink.api.model.DeepLink
 import dev.koga.deeplinklauncher.deeplink.api.model.Folder
-import dev.koga.deeplinklauncher.deeplink.api.model.isLinkValid
 import dev.koga.deeplinklauncher.deeplink.api.repository.DeepLinkRepository
 import dev.koga.deeplinklauncher.deeplink.api.repository.FolderRepository
 import dev.koga.deeplinklauncher.deeplink.api.usecase.DuplicateDeepLink
 import dev.koga.deeplinklauncher.deeplink.api.usecase.LaunchDeepLink
 import dev.koga.deeplinklauncher.deeplink.api.usecase.ShareDeepLink
+import dev.koga.deeplinklauncher.deeplink.api.usecase.ValidateDeepLink
 import dev.koga.deeplinklauncher.deeplink.ui.deeplink.screen.details.event.DeepLinkDetailsEvent
 import dev.koga.deeplinklauncher.deeplink.ui.deeplink.screen.details.state.DeepLinkDetailsUiState
 import kotlinx.collections.immutable.persistentListOf
@@ -38,6 +38,7 @@ class DeepLinkDetailsScreenModel(
     private val launchDeepLink: LaunchDeepLink,
     private val shareDeepLink: ShareDeepLink,
     private val duplicateDeepLink: DuplicateDeepLink,
+    private val validateDeepLink: ValidateDeepLink,
 ) : ScreenModel {
 
     private val coroutineDebouncer = CoroutineDebouncer()
@@ -89,7 +90,7 @@ class DeepLinkDetailsScreenModel(
         coroutineDebouncer.debounce(screenModelScope, "link") {
             deepLinkRepository.upsertDeepLink(deepLink.value.copy(link = link))
 
-            if (!link.isLinkValid) {
+            if (!validateDeepLink.isValid(link)) {
                 deepLinkErrorMessage.update { "Invalid deeplink" }
             }
         }

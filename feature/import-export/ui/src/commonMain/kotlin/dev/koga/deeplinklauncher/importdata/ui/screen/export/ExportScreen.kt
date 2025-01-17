@@ -41,9 +41,11 @@ import dev.koga.deeplinklauncher.designsystem.DLLHorizontalDivider
 import dev.koga.deeplinklauncher.designsystem.DLLSingleChoiceSegmentedButtonRow
 import dev.koga.deeplinklauncher.designsystem.DLLTopBar
 import dev.koga.deeplinklauncher.designsystem.DLLTopBarDefaults
+import dev.koga.deeplinklauncher.file.StoragePermission
+import dev.koga.deeplinklauncher.file.model.FileType
 import dev.koga.deeplinklauncher.importdata.ui.component.JSONBoxViewer
-import dev.koga.deeplinklauncher.importexport.model.ExportFileType
-import dev.koga.deeplinklauncher.permission.StoragePermission
+import dev.koga.deeplinklauncher.importdata.ui.utils.getByLabel
+import dev.koga.deeplinklauncher.importdata.ui.utils.label
 import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -59,14 +61,14 @@ class ExportScreen : Screen {
         val storagePermission = koinInject<StoragePermission>()
 
         val scope = rememberCoroutineScope()
-        val snackbarHostState = remember { SnackbarHostState() }
-        var selectedExportType by remember { mutableStateOf(ExportFileType.JSON) }
+        val snackBarHostState = remember { SnackbarHostState() }
+        var selectedExportType by remember { mutableStateOf(FileType.JSON) }
         var showPermissionRequest by remember { mutableStateOf(false) }
         val preview = screenModel.preview
 
         LaunchedEffect(Unit) {
             screenModel.messages.collectLatest { message ->
-                snackbarHostState.showSnackbar(
+                snackBarHostState.showSnackbar(
                     message = message,
                     duration = SnackbarDuration.Short,
                 )
@@ -89,7 +91,7 @@ class ExportScreen : Screen {
                     },
                 )
             },
-            snackbarHost = { SnackbarHost(snackbarHostState) },
+            snackbarHost = { SnackbarHost(snackBarHostState) },
         ) { contentPadding ->
             Column(
                 modifier = Modifier
@@ -129,9 +131,9 @@ class ExportScreen : Screen {
 @Composable
 fun ExportContent(
     modifier: Modifier = Modifier,
-    selectedExportType: ExportFileType,
+    selectedExportType: FileType,
     preview: ExportData,
-    onChangeExportType: (ExportFileType) -> Unit,
+    onChangeExportType: (FileType) -> Unit,
 ) {
     Column(
         modifier = modifier
@@ -151,10 +153,10 @@ fun ExportContent(
 
         DLLSingleChoiceSegmentedButtonRow(
             modifier = Modifier.align(Alignment.CenterHorizontally),
-            options = ExportFileType.entries.map { it.label }.toPersistentList(),
+            options = FileType.entries.map { it.label }.toPersistentList(),
             selectedOption = selectedExportType.label,
             onOptionSelected = {
-                onChangeExportType(ExportFileType.getByLabel(it))
+                onChangeExportType(FileType.getByLabel(it))
             },
         )
 
@@ -185,11 +187,11 @@ fun ExportContent(
             },
         ) { index ->
             when (index) {
-                ExportFileType.JSON -> JSONBoxViewer(
+                FileType.JSON -> JSONBoxViewer(
                     text = preview.jsonFormat.ifEmpty { "No DeepLinks" },
                 )
 
-                ExportFileType.PLAIN_TEXT -> JSONBoxViewer(
+                FileType.TXT -> JSONBoxViewer(
                     text = preview.plainTextFormat.ifEmpty { "No DeepLinks" },
                 )
             }

@@ -15,7 +15,6 @@ mpfilepicker = "3.1.0"
 nativeDriver = "2.0.2"
 voyager = "1.0.1"
 koin = "4.0.0"
-koin-compose = "4.0.0"
 sqlDelight = "2.0.2"
 kotlinxCoroutinesCore = "1.10.1"
 org-jetbrains-kotlin-jvm = "2.1.0"
@@ -54,7 +53,7 @@ voyager-screenmodel = { module = "cafe.adriel.voyager:voyager-screenmodel", vers
 voyager-transitions = { module = "cafe.adriel.voyager:voyager-transitions", version.ref = "voyager" }
 voyager-koin = { module = "cafe.adriel.voyager:voyager-koin", version.ref = "voyager" }
 voyager-bottomSheet = { module = "cafe.adriel.voyager:voyager-bottom-sheet-navigator", version.ref = "voyager" }
-koin-compose = { module = "io.insert-koin:koin-compose", version.ref = "koin-compose" }
+koin-compose = { module = "io.insert-koin:koin-compose", version.ref = "koin" }
 koin-core = { module = "io.insert-koin:koin-core", version.ref = "koin" }
 koin-android = { module = "io.insert-koin:koin-android", version.ref = "koin" }
 sqldelight-coroutines-extensions = { module = "app.cash.sqldelight:coroutines-extensions", version.ref = "sqlDelight" }

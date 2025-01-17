@@ -1,7 +1,7 @@
 package dev.koga.deeplinklauncher.home.ui.screen.component.targets
 
 import dev.koga.deeplinklauncher.devicebridge.DeeplinkTargetStateManager
-import dev.koga.deeplinklauncher.model.DeeplinkTarget
+import dev.koga.deeplinklauncher.devicebridge.model.DeeplinkTarget
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine

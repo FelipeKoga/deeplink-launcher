@@ -14,6 +14,7 @@ kotlin {
             implementation(projects.core.designsystem)
             implementation(projects.core.navigation)
             implementation(projects.core.file)
+            implementation(projects.core.date)
             implementation(projects.feature.importExport.api)
 
             implementation(libs.kotlinx.coroutines.core)

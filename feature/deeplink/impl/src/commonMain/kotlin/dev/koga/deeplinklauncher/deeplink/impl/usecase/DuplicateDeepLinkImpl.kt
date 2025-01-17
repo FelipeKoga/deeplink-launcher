@@ -3,15 +3,16 @@
 package dev.koga.deeplinklauncher.deeplink.impl.usecase
 
 import dev.koga.deeplinklauncher.date.currentLocalDateTime
-import dev.koga.deeplinklauncher.deeplink.api.model.isLinkValid
 import dev.koga.deeplinklauncher.deeplink.api.repository.DeepLinkRepository
 import dev.koga.deeplinklauncher.deeplink.api.usecase.DuplicateDeepLink
+import dev.koga.deeplinklauncher.deeplink.api.usecase.ValidateDeepLink
 import kotlinx.coroutines.flow.first
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 
 class DuplicateDeepLinkImpl(
     private val repository: DeepLinkRepository,
+    private val validateDeepLink: ValidateDeepLink,
 ) : DuplicateDeepLink {
 
     override suspend operator fun invoke(
@@ -25,7 +26,7 @@ class DuplicateDeepLinkImpl(
             return DuplicateDeepLink.Result.Error.SameLink
         }
 
-        if (!newLink.isLinkValid) {
+        if (!validateDeepLink.isValid(newLink)) {
             return DuplicateDeepLink.Result.Error.InvalidLink
         }
 

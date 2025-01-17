@@ -1,7 +1,7 @@
 package dev.koga.deeplinklauncher.home.ui.screen.state
 
-import dev.koga.deeplinklauncher.model.DeepLink
-import dev.koga.deeplinklauncher.model.Folder
+import dev.koga.deeplinklauncher.deeplink.api.model.DeepLink
+import dev.koga.deeplinklauncher.deeplink.api.model.Folder
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 

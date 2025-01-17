@@ -18,7 +18,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import dev.koga.deeplinklauncher.designsystem.DLLModalBottomSheet
-import dev.koga.deeplinklauncher.model.AppTheme
+import dev.koga.deeplinklauncher.preferences.api.model.AppTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

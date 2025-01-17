@@ -11,6 +11,7 @@ kotlin {
     sourceSets {
         commonMain.dependencies {
             implementation(projects.feature.deeplink.api)
+            implementation(projects.core.file)
 
             implementation(libs.kotlinx.coroutines.core)
             implementation(libs.kotlinx.immutable)

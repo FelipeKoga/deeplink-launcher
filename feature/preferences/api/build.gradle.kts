@@ -2,6 +2,7 @@ import extension.setupBinariesFramework
 
 plugins {
     id("dev.koga.deeplinklauncher.multiplatform")
+    alias(libs.plugins.kotlin.serialization)
 }
 
 kotlin {
@@ -9,6 +10,7 @@ kotlin {
 
     sourceSets {
         commonMain.dependencies {
+            implementation(libs.kotlinx.serialization.json)
             implementation(libs.kotlinx.coroutines.core)
         }
     }

@@ -13,6 +13,8 @@ kotlin {
             implementation(projects.feature.importExport.api)
             implementation(projects.feature.deeplink.api)
             implementation(projects.core.file)
+            implementation(projects.core.date)
+            implementation(projects.core.platform)
 
             implementation(libs.kotlinx.coroutines.core)
             implementation(libs.kotlinx.immutable)
@@ -24,4 +26,7 @@ kotlin {
 
 android {
     namespace = "dev.koga.deeplinklauncher.importexport.impl"
+}
+dependencies {
+    implementation(project(":core:date"))
 }

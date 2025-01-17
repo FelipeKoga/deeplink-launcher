@@ -1,6 +1,6 @@
 package dev.koga.deeplinklauncher.devicebridge.di
 
-import dev.koga.deeplinklauncher.DeeplinkTargetStateManager
+import dev.koga.deeplinklauncher.devicebridge.DeeplinkTargetStateManager
 import dev.koga.deeplinklauncher.devicebridge.DeviceBridge
 import dev.koga.deeplinklauncher.devicebridge.DeviceBridgeWrapper
 import dev.koga.deeplinklauncher.devicebridge.adb.Adb

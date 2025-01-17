@@ -2,8 +2,6 @@ import extension.setupBinariesFramework
 
 plugins {
     id("dev.koga.deeplinklauncher.multiplatform")
-    alias(libs.plugins.jetbrainsCompose)
-    alias(libs.plugins.compose.compiler)
 }
 
 kotlin {

@@ -80,6 +80,7 @@ dependencies {
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.crashlytics)
     implementation(libs.compose.runtime)
+    implementation(project(":feature:preferences:api"))
 }
 
 fun getSigningKey(secretKey: String, fallbackProps: Properties): String =

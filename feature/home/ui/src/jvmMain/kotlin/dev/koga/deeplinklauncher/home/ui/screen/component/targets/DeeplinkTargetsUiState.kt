@@ -5,7 +5,7 @@ import androidx.compose.material.icons.rounded.Android
 import androidx.compose.material.icons.rounded.DesktopMac
 import androidx.compose.runtime.Composable
 import dev.koga.deeplinklauncher.devicebridge.DeviceBridge
-import dev.koga.deeplinklauncher.model.DeeplinkTarget
+import dev.koga.deeplinklauncher.devicebridge.model.DeeplinkTarget
 import dev.koga.resources.Res
 import dev.koga.resources.ic_apple_24dp
 import org.jetbrains.compose.resources.vectorResource

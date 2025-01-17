@@ -1,3 +1,5 @@
+@file:OptIn(ExperimentalMaterial3Api::class)
+
 package dev.koga.deeplinklauncher.importdata.ui.screen.import
 
 import androidx.compose.animation.AnimatedContent
@@ -20,14 +22,15 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -37,87 +40,45 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
+import cafe.adriel.voyager.koin.getScreenModel
 import com.darkrockstudios.libraries.mpfilepicker.FilePicker
 import dev.koga.deeplinklauncher.LocalRootNavigator
 import dev.koga.deeplinklauncher.designsystem.DLLHorizontalDivider
 import dev.koga.deeplinklauncher.designsystem.DLLSingleChoiceSegmentedButtonRow
 import dev.koga.deeplinklauncher.designsystem.DLLTopBar
 import dev.koga.deeplinklauncher.designsystem.DLLTopBarDefaults
+import dev.koga.deeplinklauncher.file.model.FileType
 import dev.koga.deeplinklauncher.importdata.ui.component.JSONBoxViewer
-import dev.koga.deeplinklauncher.importexport.model.FileType
-import dev.koga.deeplinklauncher.importexport.usecase.ImportDeepLinks
-import dev.koga.deeplinklauncher.importexport.usecase.ImportDeepLinksResult
+import dev.koga.deeplinklauncher.importdata.ui.utils.getByLabel
+import dev.koga.deeplinklauncher.importdata.ui.utils.label
 import kotlinx.collections.immutable.toPersistentList
-import kotlinx.coroutines.launch
-import org.koin.compose.koinInject
-
-private enum class ImportType(val label: String) {
-    JSON("JSON (.json)"),
-    PLAIN_TEXT("Plain text (.txt)"),
-    ;
-
-    companion object {
-        fun getByLabel(label: String): ImportType {
-            return entries.first { it.label == label }
-        }
-    }
-}
+import kotlinx.coroutines.flow.collectLatest
 
 class ImportScreen : Screen {
 
-    @OptIn(ExperimentalMaterial3Api::class)
     @Composable
     override fun Content() {
         val navigator = LocalRootNavigator.current
+        val screenModel = getScreenModel<ImportScreenModel>()
 
-        val importDeepLinks = koinInject<ImportDeepLinks>()
-        val getFileRealPath = koinInject<GetFileRealPath>()
-
-        val scope = rememberCoroutineScope()
-        val snackbarHostState = remember { SnackbarHostState() }
+        val snackBarHostState = remember { SnackbarHostState() }
         var showFilePicker by remember { mutableStateOf(false) }
+
+        LaunchedEffect(Unit) {
+            screenModel.messages.collectLatest { message ->
+                snackBarHostState.showSnackbar(
+                    message = message,
+                    duration = SnackbarDuration.Short,
+                )
+            }
+        }
 
         FilePicker(
             show = showFilePicker,
             fileExtensions = FileType.extensions,
         ) { platformFile ->
             showFilePicker = false
-
-            if (platformFile == null) {
-                return@FilePicker
-            }
-
-            scope.launch {
-                val path = getFileRealPath.get(platformFile.path)
-
-                val fileType = when (path.substringAfterLast(".")) {
-                    FileType.TXT.extension -> FileType.TXT
-                    FileType.JSON.extension -> FileType.JSON
-                    else -> {
-                        snackbarHostState.showSnackbar("Unsupported file type")
-
-                        return@launch
-                    }
-                }
-
-                val response = importDeepLinks.invoke(
-                    filePath = path,
-                    fileType = fileType,
-                )
-
-                when (response) {
-                    is ImportDeepLinksResult.Success -> {
-                        snackbarHostState.showSnackbar("DeepLinks imported successfully")
-                    }
-
-                    is ImportDeepLinksResult.Error -> {
-                        snackbarHostState.showSnackbar(
-                            "Something went wrong. " +
-                                "Check the content structure and try again.",
-                        )
-                    }
-                }
-            }
+            screenModel.import(platformFile ?: return@FilePicker)
         }
 
         Scaffold(
@@ -132,7 +93,7 @@ class ImportScreen : Screen {
                 )
             },
             snackbarHost = {
-                SnackbarHost(snackbarHostState)
+                SnackbarHost(snackBarHostState)
             },
             containerColor = MaterialTheme.colorScheme.background,
         ) { contentPadding ->
@@ -151,7 +112,7 @@ class ImportScreen : Screen {
 
 @Composable
 fun ImportContent(modifier: Modifier = Modifier) {
-    var selectedType by remember { mutableStateOf(ImportType.JSON) }
+    var selectedType by remember { mutableStateOf(FileType.JSON) }
 
     Column(
         modifier = modifier
@@ -200,9 +161,9 @@ fun ImportContent(modifier: Modifier = Modifier) {
         DLLSingleChoiceSegmentedButtonRow(
             modifier = Modifier
                 .align(Alignment.CenterHorizontally),
-            options = ImportType.entries.map { it.label }.toPersistentList(),
+            options = FileType.entries.map { it.label }.toPersistentList(),
             selectedOption = selectedType.label,
-            onOptionSelected = { selectedType = ImportType.getByLabel(it) },
+            onOptionSelected = { selectedType = FileType.getByLabel(it) },
         )
 
         Spacer(modifier = Modifier.height(12.dp))
@@ -223,8 +184,8 @@ fun ImportContent(modifier: Modifier = Modifier) {
             label = "",
         ) { selectedType ->
             when (selectedType) {
-                ImportType.JSON -> JSONTutorial()
-                ImportType.PLAIN_TEXT -> PlainTextTutorial()
+                FileType.JSON -> JSONTutorial()
+                FileType.TXT -> PlainTextTutorial()
             }
         }
     }
