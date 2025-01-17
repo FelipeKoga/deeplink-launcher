@@ -1,5 +1,7 @@
 @file:Suppress("UnstableApiUsage")
 
+
+
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 pluginManagement {
     includeBuild("build-logic")
@@ -20,6 +22,7 @@ dependencyResolutionManagement {
     }
 }
 
+include(":baselineprofile")
 include(":androidApp")
 include(":desktopApp")
 include(":shared")
