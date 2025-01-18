@@ -10,6 +10,7 @@ import dev.koga.deeplinklauncher.deeplink.impl.repository.FolderRepositoryImpl
 import dev.koga.deeplinklauncher.deeplink.impl.usecase.DuplicateDeepLinkImpl
 import dev.koga.deeplinklauncher.deeplink.impl.usecase.GetAutoSuggestionLinksImpl
 import dev.koga.deeplinklauncher.deeplink.impl.usecase.GetDeepLinksAndFolderStreamImpl
+import dev.koga.deeplinklauncher.deeplink.impl.usecase.LaunchDeepLinkImpl
 import org.koin.core.module.Module
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.bind

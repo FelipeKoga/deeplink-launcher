@@ -31,6 +31,7 @@ import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.registry.ScreenRegistry
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.core.screen.ScreenKey
+import cafe.adriel.voyager.core.screen.uniqueScreenKey
 import cafe.adriel.voyager.koin.getScreenModel
 import cafe.adriel.voyager.navigator.bottomSheet.LocalBottomSheetNavigator
 import dev.koga.deeplinklauncher.LocalRootNavigator
@@ -56,7 +57,7 @@ class DeepLinkDetailsScreen(
     private val showFolder: Boolean,
 ) : Screen {
 
-    override val key: ScreenKey = "deeplink_details_$deepLinkId"
+    override val key: ScreenKey = uniqueScreenKey
 
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
@@ -68,9 +69,9 @@ class DeepLinkDetailsScreen(
             parameters = { parametersOf(deepLinkId) },
         )
         val uiState by screenModel.uiState.collectAsState()
+
         var detailsMode by remember { mutableStateOf<DetailsMode>(DetailsMode.Launch) }
         var showDeleteBottomSheet by rememberSaveable { mutableStateOf(false) }
-
         if (showDeleteBottomSheet) {
             DeleteDeepLinkConfirmationBottomSheet(
                 onDismissRequest = { showDeleteBottomSheet = false },
