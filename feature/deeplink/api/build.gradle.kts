@@ -12,11 +12,14 @@ kotlin {
         commonMain.dependencies {
             implementation(projects.feature.preferences.api)
             implementation(projects.core.date)
-
             implementation(libs.kotlinx.coroutines.core)
             implementation(libs.kotlinx.serialization.json)
             implementation(libs.kotlinx.datetime)
             implementation(libs.kotlinx.immutable)
+        }
+
+        jvmMain.dependencies {
+            implementation(projects.feature.deviceBridge.api)
         }
     }
 }

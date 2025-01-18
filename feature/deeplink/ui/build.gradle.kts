@@ -34,10 +34,6 @@ kotlin {
             implementation(compose.components.resources)
             implementation(compose.materialIconsExtended)
         }
-
-        jvmMain.dependencies {
-            implementation(projects.feature.devicebridge)
-        }
     }
 }
 

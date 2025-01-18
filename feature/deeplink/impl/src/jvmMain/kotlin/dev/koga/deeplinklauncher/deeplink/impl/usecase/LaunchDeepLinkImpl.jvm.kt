@@ -1,30 +1,30 @@
 package dev.koga.deeplinklauncher.deeplink.impl.usecase
 
 import dev.koga.deeplinklauncher.date.currentLocalDateTime
+import dev.koga.deeplinklauncher.deeplink.api.DeepLinkTargetStateManager
 import dev.koga.deeplinklauncher.deeplink.api.model.DeepLink
+import dev.koga.deeplinklauncher.deeplink.api.model.DeepLinkTarget
 import dev.koga.deeplinklauncher.deeplink.api.repository.DeepLinkRepository
 import dev.koga.deeplinklauncher.deeplink.api.usecase.LaunchDeepLink
-import dev.koga.deeplinklauncher.devicebridge.DeeplinkTargetStateManager
-import dev.koga.deeplinklauncher.devicebridge.DeviceBridge
-import dev.koga.deeplinklauncher.devicebridge.model.DeeplinkTarget
+import dev.koga.deeplinklauncher.devicebridge.api.DeviceBridge
 import java.awt.Desktop
 import java.net.URI
 
 actual class LaunchDeepLinkImpl(
     private val repository: DeepLinkRepository,
     private val deviceBridge: DeviceBridge,
-    private val deeplinkTargetStateManager: DeeplinkTargetStateManager,
+    private val deepLinkTargetStateManager: DeepLinkTargetStateManager,
 ) : LaunchDeepLink {
     actual override suspend fun launch(url: String): LaunchDeepLink.Result {
-        return when (val target = deeplinkTargetStateManager.current.value) {
-            is DeeplinkTarget.Desktop -> launchDesktop(url)
-            is DeeplinkTarget.Device -> launch(url, target)
+        return when (val target = deepLinkTargetStateManager.current.value) {
+            is DeepLinkTarget.Desktop -> launchDesktop(url)
+            is DeepLinkTarget.Device -> launch(url, target)
         }
     }
 
     private suspend fun launch(
         link: String,
-        device: DeeplinkTarget.Device,
+        device: DeepLinkTarget.Device,
     ): LaunchDeepLink.Result {
         return try {
             val process = deviceBridge.launch(
