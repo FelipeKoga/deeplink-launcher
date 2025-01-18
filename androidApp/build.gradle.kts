@@ -9,6 +9,7 @@ plugins {
     alias(libs.plugins.google.services)
     alias(libs.plugins.crashlytics)
     alias(libs.plugins.compose.compiler)
+    alias(libs.plugins.baselineprofile)
 }
 
 val keystoreProperties = Properties()
@@ -81,6 +82,8 @@ dependencies {
     implementation(libs.firebase.crashlytics)
     implementation(libs.compose.runtime)
     implementation(project(":feature:preferences:api"))
+    implementation(libs.androidx.profileinstaller)
+    "baselineProfile"(project(":baselineprofile"))
 }
 
 fun getSigningKey(secretKey: String, fallbackProps: Properties): String =

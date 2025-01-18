@@ -45,5 +45,6 @@ include(
     ":core:designsystem",
     ":core:database",
     ":core:platform",
-    ":shared"
+    ":shared",
+    ":baselineprofile"
 )
