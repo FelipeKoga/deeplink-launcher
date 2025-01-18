@@ -1,4 +1,3 @@
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import java.util.Properties
 
 plugins {
@@ -72,6 +71,7 @@ kotlin {
 
 dependencies {
     implementation(projects.shared)
+
     implementation(libs.androidx.activity.compose)
     implementation(libs.koin.compose)
     implementation(libs.koin.core)
@@ -81,9 +81,9 @@ dependencies {
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.crashlytics)
     implementation(libs.compose.runtime)
-    implementation(project(":feature:preferences:api"))
     implementation(libs.androidx.profileinstaller)
-    "baselineProfile"(project(":baselineprofile"))
+
+    baselineProfile(projects.baselineprofile)
 }
 
 fun getSigningKey(secretKey: String, fallbackProps: Properties): String =
