@@ -18,5 +18,4 @@ actual val platformModule: Module = module {
     singleOf(::LaunchDeepLinkImpl) bind LaunchDeepLink::class
     singleOf(::ValidateDeepLinkImpl) bind ValidateDeepLink::class
     singleOf(::ShareDeepLinkImpl) bind ShareDeepLink::class
-
 }

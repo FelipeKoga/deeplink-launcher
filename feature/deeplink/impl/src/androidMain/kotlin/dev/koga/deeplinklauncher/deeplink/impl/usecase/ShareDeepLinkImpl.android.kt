@@ -6,7 +6,7 @@ import dev.koga.deeplinklauncher.deeplink.api.model.DeepLink
 import dev.koga.deeplinklauncher.deeplink.api.usecase.ShareDeepLink
 
 actual class ShareDeepLinkImpl(
-    private val context: Context
+    private val context: Context,
 ) : ShareDeepLink {
     actual override fun invoke(deepLink: DeepLink) {
         val sendIntent: Intent = Intent().apply {
