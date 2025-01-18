@@ -11,9 +11,9 @@ import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import dev.koga.deeplinklauncher.App
-import dev.koga.deeplinklauncher.datasource.PreferencesDataSource
-import dev.koga.deeplinklauncher.model.AppTheme
+import dev.koga.deeplinklauncher.preferences.api.model.AppTheme
+import dev.koga.deeplinklauncher.preferences.api.repository.PreferencesRepository
+import dev.koga.deeplinklauncher.shared.App
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
@@ -21,16 +21,14 @@ import org.koin.core.component.inject
 
 class MainActivity : FragmentActivity(), KoinComponent {
 
-    private val preferencesDataSource: PreferencesDataSource by inject()
+    private val preferencesRepository: PreferencesRepository by inject()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        enableEdgeToEdgeForTheme(AppTheme.AUTO)
-
         lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
-                preferencesDataSource.preferencesStream.collectLatest {
+            repeatOnLifecycle(Lifecycle.State.CREATED) {
+                preferencesRepository.preferencesStream.collectLatest {
                     enableEdgeToEdgeForTheme(it.appTheme)
                 }
             }

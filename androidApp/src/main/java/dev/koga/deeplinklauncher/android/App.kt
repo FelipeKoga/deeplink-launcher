@@ -4,8 +4,8 @@ import android.app.Application
 import android.content.Context
 import com.google.firebase.crashlytics.BuildConfig
 import com.google.firebase.crashlytics.FirebaseCrashlytics
-import dev.koga.deeplinklauncher.initKoin
-import dev.koga.deeplinklauncher.purchase.PurchaseApi
+import dev.koga.deeplinklauncher.purchase.api.PurchaseApi
+import dev.koga.deeplinklauncher.shared.initKoin
 import org.koin.android.ext.android.inject
 import org.koin.dsl.module
 
