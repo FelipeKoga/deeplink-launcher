@@ -1,4 +1,4 @@
-package dev.koga.deeplinklauncher.util.ext
+package dev.koga.deeplinklauncher.devicebridge.ext
 
 fun <T> List<T>.next(current: T): T {
     val index = indexOf(current)

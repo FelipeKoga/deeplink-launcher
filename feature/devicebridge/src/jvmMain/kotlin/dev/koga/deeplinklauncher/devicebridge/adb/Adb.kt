@@ -2,7 +2,7 @@ package dev.koga.deeplinklauncher.devicebridge.adb
 
 import dev.koga.deeplinklauncher.devicebridge.DeviceBridge
 import dev.koga.deeplinklauncher.model.Os
-import dev.koga.deeplinklauncher.util.ext.installed
+import dev.koga.deeplinklauncher.devicebridge.ext.installed
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -43,6 +43,8 @@ internal class Adb private constructor(
 
     override fun track(): Flow<List<DeviceBridge.Device>> = flow {
         emit(emptyList())
+
+        println("Installed? ${installed}")
 
         if (!installed) {
             return@flow
@@ -160,7 +162,7 @@ internal class Adb private constructor(
 
             System.getenv("ANDROID_HOME")?.let {
                 return Adb(
-                    path = it,
+                    path = "$it/platform-tools/adb",
                     dispatcher = dispatcher,
                 )
             }

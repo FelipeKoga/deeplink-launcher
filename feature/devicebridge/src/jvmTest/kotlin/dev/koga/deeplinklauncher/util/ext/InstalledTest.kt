@@ -1,5 +1,6 @@
 package dev.koga.deeplinklauncher.util.ext
 
+import dev.koga.deeplinklauncher.devicebridge.ext.installed
 import junit.framework.TestCase
 import org.junit.Test
 

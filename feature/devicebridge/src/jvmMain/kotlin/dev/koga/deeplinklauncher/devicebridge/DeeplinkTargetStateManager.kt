@@ -1,8 +1,8 @@
 package dev.koga.deeplinklauncher.devicebridge
 
 import dev.koga.deeplinklauncher.devicebridge.model.DeeplinkTarget
-import dev.koga.deeplinklauncher.util.ext.next
-import dev.koga.deeplinklauncher.util.ext.previous
+import dev.koga.deeplinklauncher.devicebridge.ext.next
+import dev.koga.deeplinklauncher.devicebridge.ext.previous
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -23,6 +23,7 @@ class DeeplinkTargetStateManager internal constructor(
     private val coroutineScope = CoroutineScope(dispatcher)
 
     private val devices = deviceBridge.track().map { devices ->
+        println(devices)
         devices.mapNotNull {
             if (it.active) {
                 DeeplinkTarget.Device(

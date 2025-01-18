@@ -1,4 +1,4 @@
-package dev.koga.deeplinklauncher.util.ext
+package dev.koga.deeplinklauncher.devicebridge.ext
 
 import dev.koga.deeplinklauncher.model.Os
 

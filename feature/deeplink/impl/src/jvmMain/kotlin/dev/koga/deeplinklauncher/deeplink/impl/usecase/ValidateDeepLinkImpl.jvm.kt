@@ -4,7 +4,7 @@ import dev.koga.deeplinklauncher.deeplink.api.usecase.ValidateDeepLink
 import java.net.URI
 
 actual class ValidateDeepLinkImpl : ValidateDeepLink {
-    override fun isValid(link: String): Boolean {
+    actual override fun isValid(link: String): Boolean {
         return try {
             val uri = URI(link)
             uri.scheme != null && uri.host != null

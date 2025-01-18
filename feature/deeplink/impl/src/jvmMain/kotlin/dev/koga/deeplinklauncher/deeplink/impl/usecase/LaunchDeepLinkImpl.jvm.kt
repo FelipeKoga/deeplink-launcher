@@ -15,7 +15,7 @@ actual class LaunchDeepLinkImpl(
     private val deviceBridge: DeviceBridge,
     private val deeplinkTargetStateManager: DeeplinkTargetStateManager,
 ) : LaunchDeepLink {
-    override suspend fun launch(url: String): LaunchDeepLink.Result {
+    actual override suspend fun launch(url: String): LaunchDeepLink.Result {
         return when (val target = deeplinkTargetStateManager.current.value) {
             is DeeplinkTarget.Desktop -> launchDesktop(url)
             is DeeplinkTarget.Device -> launch(url, target)
@@ -59,7 +59,7 @@ actual class LaunchDeepLinkImpl(
         }
     }
 
-    override suspend fun launch(deepLink: DeepLink): LaunchDeepLink.Result {
+    actual override suspend fun launch(deepLink: DeepLink): LaunchDeepLink.Result {
         repository.upsertDeepLink(deepLink.copy(lastLaunchedAt = currentLocalDateTime))
 
         return launch(deepLink.link)

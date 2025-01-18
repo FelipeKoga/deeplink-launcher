@@ -5,7 +5,7 @@ import dev.koga.deeplinklauncher.deeplink.api.usecase.GetDeepLinkMetadata
 
 actual class GetDeepLinkMetadataImpl : GetDeepLinkMetadata {
 
-    override fun invoke(link: String): DeepLinkMetadata {
+    actual override fun invoke(link: String): DeepLinkMetadata {
         val scheme = link.substringBefore(':', "").takeIf { it.isNotBlank() }
 
         val remainingLink = link.substringAfter(':', "")

@@ -2,7 +2,7 @@ package dev.koga.deeplinklauncher.devicebridge.xcrun
 
 import dev.koga.deeplinklauncher.devicebridge.DeviceBridge
 import dev.koga.deeplinklauncher.model.Os
-import dev.koga.deeplinklauncher.util.ext.installed
+import dev.koga.deeplinklauncher.devicebridge.ext.installed
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
