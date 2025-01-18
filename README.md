@@ -61,15 +61,40 @@
 | [**Material 3 Window Size Class**](https://github.com/chrisbanes/material3-windowsizeclass-multiplatform) | A library to detect window size across different platforms. |
 | [**RevenueCat**](https://www.revenuecat.com/) | In-app purchase library for managing subscriptions and one-time purchases. |
 
-## 📥 How to Contribute
+## 🏗️ Architecture Overview
 
-We welcome contributions! To report bugs or suggest improvements:
+The architecture used is designed to enforce modularization and encapsulation, promoting clean and maintainable code. Here's how it is structured:
 
-1. **Fork** the repository
-2. Create your **feature branch** (`git checkout -b feature/fooBar`)
-3. **Commit** your changes (`git commit -am 'Add new feature'`)
-4. **Push** to the branch (`git push origin feature/fooBar`)
-5. **Create a new Pull Request** with a detailed description of your changes.
+### Modules
+Each feature in the app is divided into three submodules:
+
+1. **:ui**
+   - Contains the user interface components (e.g., screens, widgets, and Compose code).
+   - Depends on the **API Module** for any shared interfaces or contracts.
+
+2. **:ui**
+   - Implements the business logic and core functionality of the feature.
+   - Depends on the **API Module** for interface definitions.
+   - Completely hidden from other feature modules to prevent tight coupling.
+
+3. **:api**
+   - Defines public contracts, such as interfaces and shared data models.
+   - Serves as the communication layer between **UI** and **Impl**, and is the only module exposed to other feature modules.
+
+### Rules
+- **Feature Isolation**: Other feature modules can only access the **API** or **UI Module** of another feature, ensuring clear boundaries and reducing dependencies.
+- **Encapsulation**: The **Impl Module** is internal to the feature, encapsulating its implementation details.
+- **Reusability**: Common components can be placed in the **API Module** for easy reuse across the app.
+
+This approach ensures:
+- **Scalability**: Features can be developed, tested, and maintained independently.
+- **Clear Dependency Management**: Modules explicitly declare their dependencies, making it easy to track changes.
+- **Improved Code Quality**: Separation of concerns makes the codebase easier to navigate and less prone to bugs.
+
+### References
+- [Android Modularization](https://www.reddit.com/r/RedditEng/comments/vwrrrf/android_modularization/)
+- [Android at Scale @ Square](https://www.droidcon.com/2019/11/15/android-at-scale-square/)
+
 
 ---
 
