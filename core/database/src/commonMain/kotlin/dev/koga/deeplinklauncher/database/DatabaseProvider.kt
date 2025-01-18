@@ -1,6 +1,6 @@
 package dev.koga.deeplinklauncher.database
 
-import dev.koga.deeplinklauncher.converter.localDateTimeAdapter
+import dev.koga.deeplinklauncher.database.converter.localDateTimeAdapter
 
 internal class DatabaseProvider(
     private val driverFactory: DriverFactory,
@@ -22,25 +22,7 @@ internal class DatabaseProvider(
             ),
         )
 
-        prepopulateDatabase(database)
         return database
-    }
-
-    private fun prepopulateDatabase(database: DeepLinkLauncherDatabase) {
-        if (driverFactory.shouldPrepopulateDatabase(DATABASE_NAME)) {
-            driverFactory.getPrepopulateData().forEach { deeplink ->
-                database.deepLinkQueries.upsertDeeplink(
-                    id = deeplink.id,
-                    link = deeplink.link,
-                    name = deeplink.name,
-                    description = deeplink.description,
-                    createdAt = deeplink.createdAt,
-                    lastLaunchedAt = null,
-                    isFavorite = deeplink.isFavorite.let { if (it) 1L else 0L },
-                    folderId = deeplink.folder?.id,
-                )
-            }
-        }
     }
 
     private companion object {
