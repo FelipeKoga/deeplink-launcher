@@ -13,7 +13,7 @@ actual class LaunchDeepLinkImpl(
 
     private val application = UIApplication.sharedApplication
 
-    override suspend fun launch(url: String): LaunchDeepLink.Result {
+    actual override suspend fun launch(url: String): LaunchDeepLink.Result {
         val nsurl = NSURL(string = url)
 
         return if (application.canOpenURL(nsurl)) {
@@ -24,7 +24,7 @@ actual class LaunchDeepLinkImpl(
         }
     }
 
-    override suspend fun launch(deepLink: DeepLink): LaunchDeepLink.Result {
+    actual override suspend fun launch(deepLink: DeepLink): LaunchDeepLink.Result {
         repository.upsertDeepLink(deepLink.copy(lastLaunchedAt = currentLocalDateTime))
         return launch(deepLink.link)
     }

@@ -7,7 +7,7 @@ import platform.Foundation.NSURLComponents
 
 actual class GetDeepLinkMetadataImpl : GetDeepLinkMetadata {
 
-    override fun invoke(link: String): DeepLinkMetadata {
+    actual override fun invoke(link: String): DeepLinkMetadata {
         val nsurl = NSURL(string = link)
 
         val components = NSURLComponents.componentsWithURL(
