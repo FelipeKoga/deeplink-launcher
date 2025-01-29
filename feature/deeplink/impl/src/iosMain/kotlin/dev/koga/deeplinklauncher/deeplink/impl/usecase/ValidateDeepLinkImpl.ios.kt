@@ -5,7 +5,7 @@ import platform.Foundation.NSURL
 import platform.Foundation.NSURLComponents
 
 actual class ValidateDeepLinkImpl : ValidateDeepLink {
-    override fun isValid(link: String): Boolean {
+    actual override fun isValid(link: String): Boolean {
         val nsurl = NSURL(string = link)
 
         val components = NSURLComponents.componentsWithURL(
