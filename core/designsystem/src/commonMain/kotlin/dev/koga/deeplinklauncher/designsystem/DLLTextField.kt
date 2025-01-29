@@ -59,17 +59,10 @@ fun DLLTextField(
     textStyle: TextStyle = LocalTextStyle.current,
     leadingIcon: @Composable (() -> Unit)? = null,
 ) {
-    val textFieldValue = remember(value) {
-        TextFieldValue(
-            text = value,
-            selection = if (value.isEmpty()) TextRange.Zero else TextRange(value.length),
-        )
-    }
-
     var isFocused by remember { mutableStateOf(false) }
 
     TextField(
-        value = textFieldValue,
+        value = value,
         modifier = modifier
             .onFocusChanged { isFocused = it.isFocused }
             .fillMaxWidth()
@@ -84,7 +77,7 @@ fun DLLTextField(
                 },
             ),
         onValueChange = {
-            onValueChange(it.text)
+            onValueChange(it)
         },
         readOnly = readOnly,
         textStyle = textStyle,
