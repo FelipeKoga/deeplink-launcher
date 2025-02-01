@@ -1,6 +1,5 @@
 package dev.koga.deeplinklauncher.designsystem
 
-import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
@@ -21,7 +20,7 @@ fun DLLModalBottomSheet(
     content: @Composable () -> Unit,
 ) {
     ModalBottomSheet(
-        modifier = modifier.navigationBarsPadding(),
+        modifier = modifier,
         sheetState = sheetState,
         onDismissRequest = onDismiss,
         containerColor = MaterialTheme.colorScheme.surface,
