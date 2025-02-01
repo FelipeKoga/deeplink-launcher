@@ -1,12 +1,13 @@
 package dev.koga.deeplinklauncher.android
 
 import android.content.res.Configuration
-import android.graphics.Color
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.core.content.ContextCompat
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -24,6 +25,8 @@ class MainActivity : FragmentActivity(), KoinComponent {
     private val preferencesRepository: PreferencesRepository by inject()
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        installSplashScreen()
+
         super.onCreate(savedInstanceState)
 
         lifecycleScope.launch {
@@ -43,8 +46,9 @@ class MainActivity : FragmentActivity(), KoinComponent {
 private fun ComponentActivity.enableEdgeToEdgeForTheme(theme: AppTheme) {
     val mode = resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
 
-    val darkColor = Color.parseColor("#09090B")
-    val lightColor = Color.parseColor("#FFFFFF")
+    val darkColor = ContextCompat.getColor(this, R.color.black700)
+    val lightColor = ContextCompat.getColor(this, R.color.white)
+
     val style = when (theme) {
         AppTheme.LIGHT -> SystemBarStyle.light(lightColor, darkColor)
         AppTheme.DARK -> SystemBarStyle.dark(darkColor)
