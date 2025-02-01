@@ -72,6 +72,7 @@ kotlin {
 dependencies {
     implementation(projects.shared)
 
+    implementation(libs.splashscreen)
     implementation(libs.androidx.activity.compose)
     implementation(libs.koin.compose)
     implementation(libs.koin.core)
