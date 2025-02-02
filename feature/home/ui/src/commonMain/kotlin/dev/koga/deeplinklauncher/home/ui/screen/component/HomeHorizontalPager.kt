@@ -1,7 +1,6 @@
 package dev.koga.deeplinklauncher.home.ui.screen.component
 
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -34,7 +33,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import dev.koga.deeplinklauncher.deeplink.api.model.DeepLink
 import dev.koga.deeplinklauncher.deeplink.api.model.Folder
@@ -54,7 +52,6 @@ internal fun HomeHorizontalPager(
     historyListState: LazyGridState,
     favoritesListState: LazyGridState,
     scrollBehavior: TopAppBarScrollBehavior,
-    paddingBottom: Dp,
     onDeepLinkClicked: (DeepLink) -> Unit,
     onDeepLinkLaunch: (DeepLink) -> Unit,
     onFolderClicked: (Folder) -> Unit,
@@ -69,7 +66,6 @@ internal fun HomeHorizontalPager(
                 listState = historyListState,
                 deepLinks = allDeepLinks,
                 scrollBehavior = scrollBehavior,
-                paddingBottom = paddingBottom,
                 onClick = onDeepLinkClicked,
                 onLaunch = onDeepLinkLaunch,
                 onFolderClicked = onFolderClicked,
@@ -79,7 +75,6 @@ internal fun HomeHorizontalPager(
                 listState = favoritesListState,
                 deepLinks = favoriteDeepLinks,
                 scrollBehavior = scrollBehavior,
-                paddingBottom = paddingBottom,
                 onClick = onDeepLinkClicked,
                 onLaunch = onDeepLinkLaunch,
                 onFolderClicked = onFolderClicked,
@@ -88,7 +83,6 @@ internal fun HomeHorizontalPager(
             HomeTabPage.FOLDERS.ordinal -> FoldersVerticalStaggeredGrid(
                 folders = folders,
                 scrollBehavior = scrollBehavior,
-                paddingBottom = paddingBottom,
                 onAdd = onFolderAdd,
                 onClick = onFolderClicked,
             )
@@ -98,14 +92,12 @@ internal fun HomeHorizontalPager(
 
 @OptIn(
     ExperimentalMaterial3Api::class,
-    ExperimentalFoundationApi::class,
 )
 @Composable
 fun DeepLinksLazyColumn(
     listState: LazyGridState,
     deepLinks: List<DeepLink>,
     scrollBehavior: TopAppBarScrollBehavior,
-    paddingBottom: Dp,
     onClick: (DeepLink) -> Unit,
     onLaunch: (DeepLink) -> Unit,
     onFolderClicked: (Folder) -> Unit,
@@ -113,7 +105,6 @@ fun DeepLinksLazyColumn(
     HomeVerticalGridList(
         state = listState,
         scrollBehavior = scrollBehavior,
-        paddingBottom = paddingBottom,
     ) {
         items(
             count = deepLinks.size,
@@ -122,8 +113,7 @@ fun DeepLinksLazyColumn(
             val deepLink = deepLinks[index]
 
             DeepLinkCard(
-                modifier = Modifier
-                    .animateItemPlacement(),
+                modifier = Modifier.animateItem(fadeInSpec = null, fadeOutSpec = null),
                 deepLink = deepLink,
                 onClick = { onClick(deepLink) },
                 onLaunch = { onLaunch(deepLink) },
@@ -135,14 +125,12 @@ fun DeepLinksLazyColumn(
 
 @OptIn(
     ExperimentalMaterial3Api::class,
-    ExperimentalFoundationApi::class,
     ExperimentalMaterial3WindowSizeClassApi::class,
 )
 @Composable
 fun FoldersVerticalStaggeredGrid(
     folders: ImmutableList<Folder>,
     scrollBehavior: TopAppBarScrollBehavior,
-    paddingBottom: Dp,
     onAdd: () -> Unit,
     onClick: (Folder) -> Unit,
 ) {
@@ -158,12 +146,7 @@ fun FoldersVerticalStaggeredGrid(
         modifier = Modifier
             .fillMaxSize()
             .nestedScroll(scrollBehavior.nestedScrollConnection),
-        contentPadding = PaddingValues(
-            top = 12.dp,
-            start = 12.dp,
-            end = 12.dp,
-            bottom = paddingBottom,
-        ),
+        contentPadding = PaddingValues(12.dp),
         horizontalArrangement = Arrangement.spacedBy(24.dp),
         verticalArrangement = Arrangement.spacedBy(24.dp),
     ) {
@@ -171,10 +154,7 @@ fun FoldersVerticalStaggeredGrid(
             OutlinedCard(
                 onClick = onAdd,
                 shape = RoundedCornerShape(24.dp),
-                border = BorderStroke(
-                    width = 1.dp,
-                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = .3f),
-                ),
+                border = BorderStroke(1.dp, MaterialTheme.colorScheme.surfaceVariant),
             ) {
                 Column(
                     modifier = Modifier
@@ -204,7 +184,7 @@ fun FoldersVerticalStaggeredGrid(
             FolderCard(
                 folder = folders[index],
                 onClick = { onClick(it) },
-                modifier = Modifier.animateItemPlacement(),
+                modifier = Modifier.animateItem(fadeInSpec = null, fadeOutSpec = null),
             )
         }
     }
@@ -216,7 +196,6 @@ fun HomeVerticalGridList(
     modifier: Modifier = Modifier,
     state: LazyGridState,
     scrollBehavior: TopAppBarScrollBehavior,
-    paddingBottom: Dp,
     content: LazyGridScope.() -> Unit,
 ) {
     val windowSizeClass = calculateWindowSizeClass()
@@ -233,12 +212,7 @@ fun HomeVerticalGridList(
         modifier = modifier
             .fillMaxSize()
             .nestedScroll(scrollBehavior.nestedScrollConnection),
-        contentPadding = PaddingValues(
-            top = 12.dp,
-            start = 12.dp,
-            end = 12.dp,
-            bottom = paddingBottom,
-        ),
+        contentPadding = PaddingValues(12.dp),
         horizontalArrangement = Arrangement.spacedBy(24.dp),
         verticalArrangement = Arrangement.spacedBy(24.dp),
     ) {
