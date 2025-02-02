@@ -145,7 +145,7 @@ class DeepLinkDetailsScreenModel(
 
     fun toggleFolder(folder: Folder) {
         deepLinkRepository.upsertDeepLink(
-            deepLink.value.copy(folder = folder.takeIf { folder.id != deepLink.value.folder?.id })
+            deepLink.value.copy(folder = folder.takeIf { folder.id != deepLink.value.folder?.id }),
         )
     }
 

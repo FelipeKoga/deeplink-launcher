@@ -13,8 +13,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
 import androidx.compose.foundation.lazy.staggeredgrid.rememberLazyStaggeredGridState
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Delete
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -37,6 +35,8 @@ import cafe.adriel.voyager.core.registry.ScreenRegistry
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.koin.getScreenModel
 import cafe.adriel.voyager.navigator.bottomSheet.LocalBottomSheetNavigator
+import compose.icons.TablerIcons
+import compose.icons.tablericons.Trash
 import dev.koga.deeplinklauncher.LocalRootNavigator
 import dev.koga.deeplinklauncher.SharedScreen
 import dev.koga.deeplinklauncher.deeplink.api.model.DeepLink
@@ -93,7 +93,7 @@ class FolderDetailsScreen(private val folderId: String) : Screen {
                             onClick = { showDeleteDialog = true },
                         ) {
                             Icon(
-                                imageVector = Icons.Rounded.Delete,
+                                imageVector = TablerIcons.Trash,
                                 contentDescription = "Delete",
                                 modifier = Modifier.size(18.dp),
                             )

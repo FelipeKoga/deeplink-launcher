@@ -1,11 +1,14 @@
 package dev.koga.deeplinklauncher.settings.ui.screen
 
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -32,6 +35,9 @@ import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.registry.rememberScreen
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.koin.getScreenModel
+import compose.icons.TablerIcons
+import compose.icons.tablericons.ChevronRight
+import compose.icons.tablericons.ExternalLink
 import dev.koga.deeplinklauncher.LocalRootNavigator
 import dev.koga.deeplinklauncher.SharedScreen
 import dev.koga.deeplinklauncher.designsystem.DLLHorizontalDivider
@@ -207,7 +213,7 @@ fun SettingsScreenUI(
                     onClick = onShowAppTheme,
                     trailingContent = {
                         Icon(
-                            painter = painterResource(Res.drawable.ic_chevron_right_24dp),
+                            imageVector = TablerIcons.ChevronRight,
                             contentDescription = "navigate",
                         )
                     },
@@ -221,7 +227,7 @@ fun SettingsScreenUI(
                     onClick = onShowSuggestionsOption,
                     trailingContent = {
                         Icon(
-                            painter = painterResource(Res.drawable.ic_chevron_right_24dp),
+                            imageVector = TablerIcons.ChevronRight,
                             contentDescription = "navigate",
                         )
                     },
@@ -235,7 +241,7 @@ fun SettingsScreenUI(
                     onClick = onNavigateToExport,
                     trailingContent = {
                         Icon(
-                            painter = painterResource(Res.drawable.ic_chevron_right_24dp),
+                            imageVector = TablerIcons.ChevronRight,
                             contentDescription = "navigate",
                         )
                     },
@@ -249,7 +255,7 @@ fun SettingsScreenUI(
                     onClick = onNavigateToImport,
                     trailingContent = {
                         Icon(
-                            painter = painterResource(Res.drawable.ic_chevron_right_24dp),
+                            imageVector = TablerIcons.ChevronRight,
                             contentDescription = "navigate",
                         )
                     },
@@ -263,7 +269,7 @@ fun SettingsScreenUI(
                     onClick = onShowDeleteDataBottomSheet,
                     trailingContent = {
                         Icon(
-                            painter = painterResource(Res.drawable.ic_chevron_right_24dp),
+                            imageVector = TablerIcons.ChevronRight,
                             contentDescription = "navigate",
                         )
                     },
@@ -293,7 +299,7 @@ fun SettingsScreenUI(
                         onClick = onShowProducts,
                         trailingContent = {
                             Icon(
-                                painter = painterResource(Res.drawable.ic_chevron_right_24dp),
+                                imageVector = TablerIcons.ChevronRight,
                                 contentDescription = "navigate",
                             )
                         },
@@ -308,7 +314,7 @@ fun SettingsScreenUI(
                     onClick = onNavigateToGithub,
                     trailingContent = {
                         Icon(
-                            painter = painterResource(Res.drawable.ic_launch_24dp),
+                            imageVector = TablerIcons.ExternalLink,
                             contentDescription = "launch",
                         )
                     },
@@ -323,7 +329,7 @@ fun SettingsScreenUI(
                         onClick = onNavigateToStore,
                         trailingContent = {
                             Icon(
-                                painter = painterResource(Res.drawable.ic_launch_24dp),
+                                imageVector = TablerIcons.ExternalLink,
                                 contentDescription = "navigate",
                             )
                         },
@@ -335,7 +341,7 @@ fun SettingsScreenUI(
                         onClick = onNavigateToStore,
                         trailingContent = {
                             Icon(
-                                painter = painterResource(Res.drawable.ic_launch_24dp),
+                                imageVector = TablerIcons.ExternalLink,
                                 contentDescription = "Open Play Store",
                             )
                         },
@@ -352,7 +358,7 @@ fun SettingsScreenUI(
                     onClick = onNavigateToOpenSourceLicenses,
                     trailingContent = {
                         Icon(
-                            painter = painterResource(Res.drawable.ic_chevron_right_24dp),
+                            imageVector = TablerIcons.ChevronRight,
                             contentDescription = "navigate",
                         )
                     },
@@ -369,27 +375,32 @@ private fun SettingsListItem(
     trailingContent: @Composable () -> Unit,
     onClick: () -> Unit = {},
 ) {
-    ListItem(
-        modifier = Modifier.fillMaxWidth().clickable(onClick = onClick),
-        colors = ListItemDefaults.colors(
-            containerColor = Color.Transparent,
-        ),
-        headlineContent = {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable(onClick = onClick)
+            .padding(vertical = 16.dp, horizontal = 12.dp),
+    ) {
+        Column(modifier = Modifier.weight(1f)) {
             Text(
                 text = title,
                 style = MaterialTheme.typography.bodyMedium.copy(
                     fontWeight = FontWeight.Bold,
                 ),
             )
-        },
-        supportingContent = {
+
             Text(
                 text = description,
                 style = MaterialTheme.typography.bodySmall.copy(
                     fontWeight = FontWeight.Normal,
                 ),
             )
-        },
-        trailingContent = trailingContent,
-    )
+        }
+
+        Spacer(modifier = Modifier.width(8.dp))
+
+        trailingContent()
+
+    }
+
 }

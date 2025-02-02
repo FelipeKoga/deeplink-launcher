@@ -21,6 +21,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import compose.icons.TablerIcons
+import compose.icons.tablericons.ExternalLink
 import dev.koga.deeplinklauncher.deeplink.api.model.DeepLink
 import dev.koga.deeplinklauncher.designsystem.DLLSmallChip
 import dev.koga.deeplinklauncher.designsystem.button.DLLIconButton
@@ -75,7 +77,7 @@ fun DeepLinkCard(
                         style = MaterialTheme.typography.titleMedium.copy(
                             fontWeight = FontWeight.SemiBold,
                         ),
-                        maxLines = 3
+                        maxLines = 3,
                     )
 
                     if (deepLink.folder != null && showFolder) {
@@ -92,7 +94,7 @@ fun DeepLinkCard(
                     onClick = onLaunch,
                 ) {
                     Icon(
-                        painter = painterResource(Res.drawable.ic_launch_24dp),
+                        imageVector = TablerIcons.ExternalLink,
                         contentDescription = null,
                     )
                 }

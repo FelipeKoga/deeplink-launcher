@@ -8,8 +8,6 @@ import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.selection.SelectionContainer
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Delete
 import androidx.compose.material.icons.rounded.Edit
 import androidx.compose.material3.BottomSheetDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -34,6 +32,9 @@ import cafe.adriel.voyager.core.screen.ScreenKey
 import cafe.adriel.voyager.core.screen.uniqueScreenKey
 import cafe.adriel.voyager.koin.getScreenModel
 import cafe.adriel.voyager.navigator.bottomSheet.LocalBottomSheetNavigator
+import compose.icons.TablerIcons
+import compose.icons.tablericons.Edit
+import compose.icons.tablericons.Trash
 import dev.koga.deeplinklauncher.LocalRootNavigator
 import dev.koga.deeplinklauncher.SharedScreen
 import dev.koga.deeplinklauncher.deeplink.api.model.DeepLink
@@ -211,7 +212,7 @@ private fun DetailsTopBar(
                         onClick = onDelete,
                     ) {
                         Icon(
-                            imageVector = Icons.Rounded.Delete,
+                            imageVector = TablerIcons.Trash,
                             contentDescription = "Delete deeplink",
                         )
                     }
@@ -223,7 +224,7 @@ private fun DetailsTopBar(
                         onClick = { changeDetailsTo(DetailsMode.Edit) },
                     ) {
                         Icon(
-                            imageVector = Icons.Rounded.Edit,
+                            imageVector = TablerIcons.Edit,
                             contentDescription = "Edit deeplink",
                         )
                     }
@@ -234,7 +235,7 @@ private fun DetailsTopBar(
                         onClick = onDelete,
                     ) {
                         Icon(
-                            imageVector = Icons.Rounded.Delete,
+                            imageVector = TablerIcons.Trash,
                             contentDescription = "Delete deeplink",
                         )
                     }

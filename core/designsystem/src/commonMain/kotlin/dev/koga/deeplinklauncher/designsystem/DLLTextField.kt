@@ -66,7 +66,7 @@ fun DLLTextField(
         if (value != textFieldValue.text) {
             textFieldValue = textFieldValue.copy(
                 text = value,
-                selection = TextRange(value.length)
+                selection = TextRange(value.length),
             )
         }
     }

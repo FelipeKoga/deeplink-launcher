@@ -17,8 +17,6 @@ import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -34,6 +32,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import compose.icons.TablerIcons
+import compose.icons.tablericons.Plus
 import dev.koga.deeplinklauncher.deeplink.api.model.DeepLink
 import dev.koga.deeplinklauncher.deeplink.api.model.Folder
 import dev.koga.deeplinklauncher.deeplink.ui.deeplink.component.DeepLinkCard
@@ -164,7 +164,7 @@ fun FoldersVerticalStaggeredGrid(
                     horizontalAlignment = Alignment.CenterHorizontally,
                 ) {
                     Icon(
-                        imageVector = Icons.Rounded.Add,
+                        imageVector = TablerIcons.Plus,
                         contentDescription = null,
                         modifier = Modifier.size(24.dp),
                         tint = MaterialTheme.colorScheme.onSurface,

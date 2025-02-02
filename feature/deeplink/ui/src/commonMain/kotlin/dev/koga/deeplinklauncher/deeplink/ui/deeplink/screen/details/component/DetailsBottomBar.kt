@@ -40,6 +40,12 @@ import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Popup
 import androidx.compose.ui.window.PopupProperties
+import compose.icons.TablerIcons
+import compose.icons.tablericons.ArrowLeft
+import compose.icons.tablericons.ChevronRight
+import compose.icons.tablericons.Copy
+import compose.icons.tablericons.ExternalLink
+import compose.icons.tablericons.Share
 import dev.koga.deeplinklauncher.designsystem.button.DLLIconButton
 import dev.koga.deeplinklauncher.platform.canShareContent
 import dev.koga.resources.Res
@@ -129,7 +135,7 @@ fun DeepLinkDetailsBottomBar(
             if (canShareContent) {
                 DLLIconButton(onClick = onShare) {
                     Icon(
-                        imageVector = Icons.Rounded.Share,
+                        imageVector = TablerIcons.Share,
                         contentDescription = "Share",
                         tint = MaterialTheme.colorScheme.onSurface,
                     )
@@ -146,7 +152,7 @@ fun DeepLinkDetailsBottomBar(
                 },
             ) {
                 Icon(
-                    painter = painterResource(Res.drawable.ic_content_copy_24dp),
+                    imageVector = TablerIcons.Copy,
                     contentDescription = "Copy Link",
                     tint = MaterialTheme.colorScheme.onSurface,
                 )
@@ -181,7 +187,7 @@ fun DeepLinkDetailsBottomBar(
                 Spacer(modifier = Modifier.width(8.dp))
 
                 Icon(
-                    painter = painterResource(Res.drawable.ic_launch_24dp),
+                    imageVector = TablerIcons.ExternalLink,
                     contentDescription = "Launch",
                     modifier = Modifier.size(18.dp),
                 )

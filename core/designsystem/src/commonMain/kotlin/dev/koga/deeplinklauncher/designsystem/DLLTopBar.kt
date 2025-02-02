@@ -1,8 +1,6 @@
 package dev.koga.deeplinklauncher.designsystem
 
 import androidx.compose.foundation.layout.RowScope
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.rounded.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -14,6 +12,8 @@ import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
+import compose.icons.TablerIcons
+import compose.icons.tablericons.ArrowLeft
 import dev.koga.deeplinklauncher.designsystem.button.DLLIconButton
 
 object DLLTopBarDefaults {
@@ -42,7 +42,7 @@ object DLLTopBarDefaults {
             onClick = onClicked,
         ) {
             Icon(
-                imageVector = Icons.AutoMirrored.Rounded.ArrowBack,
+                imageVector = TablerIcons.ArrowLeft,
                 contentDescription = "Back",
             )
         }

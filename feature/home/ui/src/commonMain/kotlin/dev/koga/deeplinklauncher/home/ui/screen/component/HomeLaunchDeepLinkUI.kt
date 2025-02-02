@@ -15,9 +15,8 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Clear
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
@@ -44,6 +43,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import compose.icons.TablerIcons
+import compose.icons.tablericons.ExternalLink
+import compose.icons.tablericons.X
 import dev.koga.deeplinklauncher.designsystem.DLLHorizontalDivider
 import dev.koga.deeplinklauncher.designsystem.DLLTextField
 import dev.koga.deeplinklauncher.designsystem.button.DLLFilledIconButton
@@ -71,7 +73,10 @@ internal fun HomeLaunchDeepLinkUI(
         derivedStateOf { isFocused && suggestions.isNotEmpty() }
     }
 
-    Card(shape = RoundedCornerShape(topStart = 12.dp, topEnd = 12.dp)) {
+    Card(
+        shape = RoundedCornerShape(topStart = 12.dp, topEnd = 12.dp),
+        elevation = CardDefaults.elevatedCardElevation(defaultElevation = 0.dp)
+    ) {
         Column(
             modifier = modifier
                 .fillMaxWidth()
@@ -118,12 +123,12 @@ internal fun HomeLaunchDeepLinkUI(
                                     onValueChange("")
                                 },
                                 colors = IconButtonDefaults.iconButtonColors(
-                                    contentColor = MaterialTheme.colorScheme.secondary
+                                    contentColor = MaterialTheme.colorScheme.secondary,
                                 ),
                                 modifier = modifier,
                             ) {
                                 Icon(
-                                    imageVector = Icons.Rounded.Clear,
+                                    imageVector = TablerIcons.X,
                                     contentDescription = "Clear",
                                 )
                             }
@@ -134,13 +139,14 @@ internal fun HomeLaunchDeepLinkUI(
                 DLLFilledIconButton(
                     modifier = Modifier.padding(start = 12.dp),
                     onClick = launch,
+                    enabled = value.isNotBlank(),
                     colors = IconButtonDefaults.filledIconButtonColors(
                         containerColor = MaterialTheme.colorScheme.primary,
                         contentColor = MaterialTheme.colorScheme.onPrimary,
                     ),
                 ) {
                     Icon(
-                        painter = painterResource(Res.drawable.ic_launch_24dp),
+                        imageVector = TablerIcons.ExternalLink,
                         contentDescription = "Launch",
                     )
                 }

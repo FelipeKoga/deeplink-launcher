@@ -17,12 +17,12 @@ class MainActivity : FragmentActivity(), KoinComponent {
         enableEdgeToEdge(
             statusBarStyle = SystemBarStyle.auto(
                 Color.TRANSPARENT,
-                Color.TRANSPARENT
+                Color.TRANSPARENT,
             ),
             navigationBarStyle = SystemBarStyle.light(
                 Color.TRANSPARENT,
-                Color.TRANSPARENT
-            )
+                Color.TRANSPARENT,
+            ),
         )
 
         super.onCreate(savedInstanceState)

@@ -10,8 +10,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.rounded.ArrowBack
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -25,6 +23,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
+import compose.icons.TablerIcons
+import compose.icons.tablericons.ArrowLeft
 import dev.koga.deeplinklauncher.designsystem.DLLModalBottomSheet
 import dev.koga.deeplinklauncher.designsystem.DLLTextField
 import dev.koga.deeplinklauncher.designsystem.button.DLLIconButton
@@ -60,7 +60,7 @@ fun AddFolderBottomSheetContent(
         Row(verticalAlignment = Alignment.CenterVertically) {
             if (showNavBack) {
                 DLLIconButton(onClick = onBack) {
-                    Icon(Icons.AutoMirrored.Rounded.ArrowBack, contentDescription = "Back")
+                    Icon(TablerIcons.ArrowLeft, contentDescription = "Back")
                 }
 
                 Spacer(modifier = Modifier.width(12.dp))

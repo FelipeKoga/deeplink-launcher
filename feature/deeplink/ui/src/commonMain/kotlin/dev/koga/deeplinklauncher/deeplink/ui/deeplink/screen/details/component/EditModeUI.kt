@@ -14,10 +14,7 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material.icons.rounded.Check
 import androidx.compose.material3.AssistChip
 import androidx.compose.material3.AssistChipDefaults
@@ -36,6 +33,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import compose.icons.TablerIcons
+import compose.icons.tablericons.Check
+import compose.icons.tablericons.Plus
 import dev.koga.deeplinklauncher.deeplink.api.model.Folder
 import dev.koga.deeplinklauncher.deeplink.ui.deeplink.screen.details.state.DeepLinkDetailsUiState
 import dev.koga.deeplinklauncher.designsystem.DLLTextField
@@ -70,7 +70,7 @@ fun EditModeUI(
         modifier = modifier.verticalScroll(rememberScrollState()),
     ) {
         Column(
-            modifier = Modifier.padding(horizontal = 24.dp)
+            modifier = Modifier.padding(horizontal = 24.dp),
         ) {
             DeepLinkDetailsTextField(
                 text = deepLink.name.orEmpty(),
@@ -114,31 +114,31 @@ fun EditModeUI(
         LazyRow(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(12.dp),
-            contentPadding = PaddingValues(horizontal = 24.dp)
+            contentPadding = PaddingValues(horizontal = 24.dp),
         ) {
             item {
                 AssistChip(
                     shape = CircleShape,
                     leadingIcon = {
                         Icon(
-                            imageVector = Icons.Rounded.Add,
+                            imageVector = TablerIcons.Plus,
                             contentDescription = null,
-                            modifier = Modifier.size(12.dp)
+                            modifier = Modifier.size(12.dp),
                         )
                     },
                     label = {
                         Text(
                             text = "Add folder",
                             style = MaterialTheme.typography.labelSmall.copy(
-                                fontWeight = FontWeight.SemiBold
-                            )
+                                fontWeight = FontWeight.SemiBold,
+                            ),
                         )
                     },
                     colors = AssistChipDefaults.assistChipColors(
                         containerColor = MaterialTheme.colorScheme.surfaceContainerHighest,
                     ),
                     border = null,
-                    onClick = { showAddFolderBottomSheet = true }
+                    onClick = { showAddFolderBottomSheet = true },
                 )
             }
 
@@ -154,8 +154,8 @@ fun EditModeUI(
                         Text(
                             text = folder.name,
                             style = MaterialTheme.typography.labelSmall.copy(
-                                fontWeight = FontWeight.SemiBold
-                            )
+                                fontWeight = FontWeight.SemiBold,
+                            ),
 
                         )
                     },
@@ -166,83 +166,23 @@ fun EditModeUI(
                         selectedLabelColor = MaterialTheme.colorScheme.onPrimary,
                         selectedTrailingIconColor = MaterialTheme.colorScheme.onPrimary,
 
-                        ),
+                    ),
                     border = BorderStroke(
                         1.dp,
-                        color = MaterialTheme.colorScheme.surfaceContainerHighest
+                        color = MaterialTheme.colorScheme.surfaceContainerHighest,
                     ),
                     trailingIcon = {
                         if (selected) {
                             Icon(
-                                imageVector = Icons.Rounded.Check,
+                                imageVector = TablerIcons.Check,
                                 contentDescription = null,
-                                modifier = Modifier.size(12.dp)
+                                modifier = Modifier.size(12.dp),
                             )
                         }
-                    }
+                    },
                 )
             }
         }
-
-
-//            AnimatedContent(
-//                targetState = deepLink.folder,
-//                label = "",
-//                modifier = Modifier.fillMaxWidth(),
-//            ) { folder ->
-//                when (folder == null) {
-//                    true -> DLLAssistChip(
-//                        modifier = Modifier.fillMaxWidth(),
-//                        onClick = { showSelectFolderBottomSheet = true },
-//                        leadingIcon = {
-//                            Icon(
-//                                imageVector = Icons.Rounded.Add,
-//                                contentDescription = "",
-//                                modifier = Modifier.size(18.dp),
-//                            )
-//                        },
-//                        trailingIcon = {
-//                        },
-//                        label = {
-//                            Text(
-//                                text = "Add Folder",
-//                                modifier = Modifier.padding(vertical = 12.dp),
-//                                style = MaterialTheme.typography.bodyMedium,
-//                            )
-//                        },
-//                    )
-//
-//                    false -> DLLAssistChip(
-//                        modifier = Modifier.fillMaxWidth(),
-//                        onClick = onRemoveFolder,
-//                        leadingIcon = {
-//                            Icon(
-//                                painterResource(Res.drawable.ic_folder_24dp),
-//                                contentDescription = null,
-//                                tint = MaterialTheme.colorScheme.secondary,
-//                            )
-//                        },
-//                        trailingIcon = {
-//                            DLLIconButton(onClick = onRemoveFolder) {
-//                                Icon(
-//                                    imageVector = Icons.Rounded.Clear,
-//                                    contentDescription = "Remove folder",
-//                                )
-//                            }
-//                        },
-//                        label = {
-//                            Text(
-//                                text = folder.name,
-//                                modifier = Modifier.padding(vertical = 12.dp).weight(1f),
-//                                style = MaterialTheme.typography.bodyMedium.copy(
-//                                    fontWeight = FontWeight.Bold,
-//                                ),
-//                            )
-//                        },
-//                    )
-//                }
-//            }
-
 
         Spacer(modifier = Modifier.padding(vertical = 24.dp))
     }
