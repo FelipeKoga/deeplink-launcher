@@ -387,7 +387,5 @@ private fun SettingsListItem(
         Spacer(modifier = Modifier.width(8.dp))
 
         trailingContent()
-
     }
-
 }

@@ -70,7 +70,6 @@ fun LaunchModeUI(
         }
     }
 
-
     Column(
         modifier = modifier
             .fillMaxWidth()
@@ -128,7 +127,7 @@ fun LaunchModeUI(
             }
 
             Row(
-                verticalAlignment = Alignment.CenterVertically
+                verticalAlignment = Alignment.CenterVertically,
             ) {
                 Text(
                     text = uiState.deepLink.link,

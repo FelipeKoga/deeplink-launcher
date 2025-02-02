@@ -1,6 +1,5 @@
 package dev.koga.deeplinklauncher.settings.ui.screen
 
-
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
@@ -36,7 +35,7 @@ object OpenSourceLicenses : Screen {
                     },
                     navigationIcon = {
                         DLLTopBarDefaults.navigationIcon(onClicked = navigator::pop)
-                    }
+                    },
                 )
             },
         ) { contentPadding ->
@@ -51,5 +50,4 @@ object OpenSourceLicenses : Screen {
             )
         }
     }
-
 }

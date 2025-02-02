@@ -49,10 +49,7 @@ import compose.icons.tablericons.X
 import dev.koga.deeplinklauncher.designsystem.DLLHorizontalDivider
 import dev.koga.deeplinklauncher.designsystem.DLLTextField
 import dev.koga.deeplinklauncher.designsystem.button.DLLFilledIconButton
-import dev.koga.resources.Res
-import dev.koga.resources.ic_launch_24dp
 import kotlinx.collections.immutable.ImmutableList
-import org.jetbrains.compose.resources.painterResource
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -75,7 +72,7 @@ internal fun HomeLaunchDeepLinkUI(
 
     Card(
         shape = RoundedCornerShape(topStart = 12.dp, topEnd = 12.dp),
-        elevation = CardDefaults.elevatedCardElevation(defaultElevation = 0.dp)
+        elevation = CardDefaults.elevatedCardElevation(defaultElevation = 0.dp),
     ) {
         Column(
             modifier = modifier

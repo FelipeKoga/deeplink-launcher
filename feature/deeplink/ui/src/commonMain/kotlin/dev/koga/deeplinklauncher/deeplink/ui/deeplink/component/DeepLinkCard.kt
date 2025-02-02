@@ -26,9 +26,6 @@ import compose.icons.tablericons.ExternalLink
 import dev.koga.deeplinklauncher.deeplink.api.model.DeepLink
 import dev.koga.deeplinklauncher.designsystem.DLLSmallChip
 import dev.koga.deeplinklauncher.designsystem.button.DLLIconButton
-import dev.koga.resources.Res
-import dev.koga.resources.ic_launch_24dp
-import org.jetbrains.compose.resources.painterResource
 
 @Composable
 fun DeepLinkCard(

@@ -102,7 +102,7 @@ class DeepLinkDetailsScreen(
                 DetailsTopBar(
                     onBack = { detailsMode = DetailsMode.Launch },
                     onDelete = { showDeleteBottomSheet = true },
-                    mode = detailsMode
+                    mode = detailsMode,
                 )
 
                 AnimatedContent(
@@ -160,7 +160,7 @@ class DeepLinkDetailsScreen(
                             onFavorite = screenModel::toggleFavorite,
                             onLaunch = screenModel::launch,
                             onDuplicate = { detailsMode = DetailsMode.Duplicate(detailsMode) },
-                            onEdit = { detailsMode = DetailsMode.Edit }
+                            onEdit = { detailsMode = DetailsMode.Edit },
                         )
                     }
                 }
@@ -176,7 +176,7 @@ private fun DetailsTopBar(
     modifier: Modifier = Modifier,
     mode: DetailsMode,
     onBack: () -> Unit,
-    onDelete: () -> Unit
+    onDelete: () -> Unit,
 ) {
     val showNavigationIcon by remember(mode) {
         derivedStateOf { mode.backTo != null }
@@ -185,7 +185,7 @@ private fun DetailsTopBar(
     Row(
         modifier = modifier.fillMaxWidth().padding(horizontal = 12.dp, vertical = 8.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically
+        verticalAlignment = Alignment.CenterVertically,
     ) {
         if (showNavigationIcon) {
             DLLIconButton(
@@ -194,7 +194,7 @@ private fun DetailsTopBar(
                 Icon(
                     imageVector = TablerIcons.ArrowLeft,
                     contentDescription = "Back",
-                    tint = MaterialTheme.colorScheme.primary
+                    tint = MaterialTheme.colorScheme.primary,
                 )
             }
         }
@@ -206,7 +206,7 @@ private fun DetailsTopBar(
                 Icon(
                     imageVector = TablerIcons.Trash,
                     contentDescription = "Delete deeplink",
-                    tint = MaterialTheme.colorScheme.primary
+                    tint = MaterialTheme.colorScheme.primary,
                 )
             }
         }
