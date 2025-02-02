@@ -12,8 +12,9 @@ kotlin {
     sourceSets {
         commonMain.dependencies {
             api(projects.core.resources)
-            implementation(libs.kotlinx.immutable)
+            api(libs.composeIcons.tablerIcons)
 
+            implementation(libs.kotlinx.immutable)
             implementation(compose.runtime)
             implementation(compose.foundation)
             implementation(compose.material3)
