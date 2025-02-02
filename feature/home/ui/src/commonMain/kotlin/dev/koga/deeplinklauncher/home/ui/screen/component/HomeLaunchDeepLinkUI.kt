@@ -17,9 +17,9 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Clear
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.ElevatedCard
+import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.ListItemDefaults
@@ -44,9 +44,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import dev.koga.deeplinklauncher.designsystem.DLLHorizontalDivider
 import dev.koga.deeplinklauncher.designsystem.DLLTextField
 import dev.koga.deeplinklauncher.designsystem.button.DLLFilledIconButton
-import dev.koga.deeplinklauncher.designsystem.button.DLLIconButton
 import dev.koga.resources.Res
 import dev.koga.resources.ic_launch_24dp
 import kotlinx.collections.immutable.ImmutableList
@@ -71,15 +71,7 @@ internal fun HomeLaunchDeepLinkUI(
         derivedStateOf { isFocused && suggestions.isNotEmpty() }
     }
 
-    ElevatedCard(
-        colors = CardDefaults.cardColors(
-            containerColor = Color.Transparent,
-        ),
-        shape = RoundedCornerShape(topStart = 12.dp, topEnd = 12.dp),
-        elevation = CardDefaults.elevatedCardElevation(
-            defaultElevation = 0.5.dp
-        )
-    ) {
+    Card(shape = RoundedCornerShape(topStart = 12.dp, topEnd = 12.dp)) {
         Column(
             modifier = modifier
                 .fillMaxWidth()
@@ -119,11 +111,17 @@ internal fun HomeLaunchDeepLinkUI(
                         AnimatedVisibility(
                             visible = isFocused,
                         ) {
-                            DLLIconButton(onClick = {
-                                isFocused = false
-                                focusManager.clearFocus()
-                                onValueChange("")
-                            }) {
+                            IconButton(
+                                onClick = {
+                                    isFocused = false
+                                    focusManager.clearFocus()
+                                    onValueChange("")
+                                },
+                                colors = IconButtonDefaults.iconButtonColors(
+                                    contentColor = MaterialTheme.colorScheme.secondary
+                                ),
+                                modifier = modifier,
+                            ) {
                                 Icon(
                                     imageVector = Icons.Rounded.Clear,
                                     contentDescription = "Clear",
@@ -133,11 +131,9 @@ internal fun HomeLaunchDeepLinkUI(
                     },
                 )
 
-
                 DLLFilledIconButton(
                     modifier = Modifier.padding(start = 12.dp),
                     onClick = launch,
-                    enabled = value.isNotBlank(),
                     colors = IconButtonDefaults.filledIconButtonColors(
                         containerColor = MaterialTheme.colorScheme.primary,
                         contentColor = MaterialTheme.colorScheme.onPrimary,
@@ -169,6 +165,10 @@ internal fun HomeLaunchDeepLinkUI(
                 LazyColumn(
                     modifier = Modifier.animateContentSize(),
                 ) {
+                    item {
+                        DLLHorizontalDivider()
+                    }
+
                     items(
                         items = suggestions,
                         key = { it },

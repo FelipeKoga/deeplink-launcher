@@ -75,6 +75,7 @@ fun DeepLinkCard(
                         style = MaterialTheme.typography.titleMedium.copy(
                             fontWeight = FontWeight.SemiBold,
                         ),
+                        maxLines = 3
                     )
 
                     if (deepLink.folder != null && showFolder) {

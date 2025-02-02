@@ -75,9 +75,7 @@ fun SelectFolderContent(
     onAdd: () -> Unit,
 ) {
     LazyColumn(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(horizontal = 24.dp),
+        modifier = Modifier.padding(horizontal = 24.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
         item {

@@ -154,9 +154,7 @@ fun FolderDetailsScreenContent(
             Column(modifier = Modifier.padding(horizontal = 12.dp)) {
                 Text(
                     text = "Name",
-                    style = MaterialTheme.typography.labelSmall.copy(
-                        fontWeight = FontWeight.Light,
-                    ),
+                    style = MaterialTheme.typography.labelSmall,
                 )
 
                 Spacer(modifier = Modifier.height(8.dp))
@@ -180,9 +178,7 @@ fun FolderDetailsScreenContent(
 
                 Text(
                     text = "Description",
-                    style = MaterialTheme.typography.labelSmall.copy(
-                        fontWeight = FontWeight.Light,
-                    ),
+                    style = MaterialTheme.typography.labelSmall,
                 )
 
                 Spacer(modifier = Modifier.height(8.dp))

@@ -29,10 +29,11 @@ private val darkScheme = darkColorScheme(
     onSecondary = Color(0xFF09090B),
     background = Color(0xFF09090B),
     onBackground = Color(0xFFFAFAFA),
-    surface = Color(0xFF151518),
+    surface = Color(0xFF0d0d0d),
     onSurface = Color(0xFFFAFAFA),
     surfaceVariant = Color(0xFF27272A),
     onSurfaceVariant = Color(0xFFFAFAFA),
+    surfaceContainerHighest = Color(0xFF181818)
 )
 
 @Composable
