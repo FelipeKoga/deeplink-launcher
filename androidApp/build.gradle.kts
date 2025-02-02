@@ -4,7 +4,6 @@ plugins {
     id("com.android.application")
     id("kotlin-android")
     id("dev.koga.deeplinklauncher.code-analysis")
-    id("com.mikepenz.aboutlibraries.plugin")
     alias(libs.plugins.google.services)
     alias(libs.plugins.crashlytics)
     alias(libs.plugins.compose.compiler)

@@ -12,8 +12,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.ListItem
-import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
@@ -29,7 +27,6 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.registry.rememberScreen
@@ -48,14 +45,9 @@ import dev.koga.deeplinklauncher.platform.currentPlatform
 import dev.koga.deeplinklauncher.purchase.ui.ProductsBottomSheet
 import dev.koga.deeplinklauncher.settings.ui.sheets.AppThemeBottomSheet
 import dev.koga.deeplinklauncher.settings.ui.sheets.DeleteDataBottomSheet
-import dev.koga.deeplinklauncher.settings.ui.sheets.OpenSourceLicensesSheet
 import dev.koga.deeplinklauncher.settings.ui.sheets.SuggestionsOptionBottomSheet
-import dev.koga.resources.Res
-import dev.koga.resources.ic_chevron_right_24dp
-import dev.koga.resources.ic_launch_24dp
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
-import org.jetbrains.compose.resources.painterResource
 
 class SettingsScreen : Screen {
 
@@ -64,7 +56,6 @@ class SettingsScreen : Screen {
         APP_THEME,
         SUGGESTIONS_OPTION,
         PRODUCTS,
-        OPEN_SOURCE,
     }
 
     @Composable
@@ -131,10 +122,6 @@ class SettingsScreen : Screen {
                 },
             )
 
-            BottomSheetType.OPEN_SOURCE -> OpenSourceLicensesSheet {
-                bottomSheetType = null
-            }
-
             null -> Unit
         }
 
@@ -154,7 +141,7 @@ class SettingsScreen : Screen {
             onNavigateToImport = { navigator.push(importScreen) },
             onShowDeleteDataBottomSheet = { bottomSheetType = BottomSheetType.DELETE_DATA },
             onNavigateToStore = screenModel::navigateToStore,
-            onNavigateToOpenSourceLicenses = { bottomSheetType = BottomSheetType.OPEN_SOURCE },
+            onNavigateToOpenSourceLicenses = { navigator.push(OpenSourceLicenses) },
             onNavigateToGithub = screenModel::navigateToGithub,
             onShowAppTheme = { bottomSheetType = BottomSheetType.APP_THEME },
             onShowSuggestionsOption = { bottomSheetType = BottomSheetType.SUGGESTIONS_OPTION },
