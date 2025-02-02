@@ -136,8 +136,7 @@ class DeepLinkDetailsScreen(
                                 onDescriptionChanged = screenModel::updateDescription,
                                 onLinkChanged = screenModel::updateLink,
                                 onAddFolder = screenModel::insertFolder,
-                                onSelectFolder = screenModel::selectFolder,
-                                onRemoveFolder = screenModel::removeFolderFromDeepLink,
+                                onToggleFolder = screenModel::toggleFolder,
                             )
 
                             is DetailsMode.Duplicate -> DuplicateModeUI(

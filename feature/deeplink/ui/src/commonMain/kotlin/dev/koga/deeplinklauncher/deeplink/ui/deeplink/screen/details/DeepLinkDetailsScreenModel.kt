@@ -140,15 +140,13 @@ class DeepLinkDetailsScreenModel(
 
         folderRepository.upsertFolder(folder)
 
-        selectFolder(folder)
+        toggleFolder(folder)
     }
 
-    fun selectFolder(folder: Folder) {
-        deepLinkRepository.upsertDeepLink(deepLink.value.copy(folder = folder))
-    }
-
-    fun removeFolderFromDeepLink() {
-        deepLinkRepository.upsertDeepLink(deepLink.value.copy(folder = null))
+    fun toggleFolder(folder: Folder) {
+        deepLinkRepository.upsertDeepLink(
+            deepLink.value.copy(folder = folder.takeIf { folder.id != deepLink.value.folder?.id })
+        )
     }
 
     fun duplicate(
