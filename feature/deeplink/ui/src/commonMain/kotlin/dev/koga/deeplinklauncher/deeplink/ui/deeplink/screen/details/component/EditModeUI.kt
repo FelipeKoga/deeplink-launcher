@@ -1,19 +1,25 @@
 package dev.koga.deeplinklauncher.deeplink.ui.deeplink.screen.details.component
 
-import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.text.selection.SelectionContainer
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Add
-import androidx.compose.material.icons.rounded.Clear
+import androidx.compose.material.icons.rounded.Check
+import androidx.compose.material3.AssistChip
+import androidx.compose.material3.AssistChipDefaults
+import androidx.compose.material3.FilterChip
+import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -23,18 +29,16 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import compose.icons.TablerIcons
+import compose.icons.tablericons.Check
+import compose.icons.tablericons.Plus
 import dev.koga.deeplinklauncher.deeplink.api.model.Folder
 import dev.koga.deeplinklauncher.deeplink.ui.deeplink.screen.details.state.DeepLinkDetailsUiState
-import dev.koga.deeplinklauncher.designsystem.DLLAssistChip
-import dev.koga.deeplinklauncher.designsystem.DLLHorizontalDivider
 import dev.koga.deeplinklauncher.designsystem.DLLTextField
-import dev.koga.deeplinklauncher.designsystem.button.DLLIconButton
-import dev.koga.resources.Res
-import dev.koga.resources.ic_folder_24dp
-import org.jetbrains.compose.resources.painterResource
 
 @Composable
 fun EditModeUI(
@@ -44,39 +48,29 @@ fun EditModeUI(
     onDescriptionChanged: (String) -> Unit,
     onLinkChanged: (String) -> Unit,
     onAddFolder: (String, String) -> Unit,
-    onSelectFolder: (Folder) -> Unit,
-    onRemoveFolder: () -> Unit,
+    onToggleFolder: (Folder) -> Unit,
 ) {
     val deepLink = uiState.deepLink
 
-    var showSelectFolderBottomSheet by remember {
+    var showAddFolderBottomSheet by remember {
         mutableStateOf(false)
     }
 
-    if (showSelectFolderBottomSheet) {
-        SelectFolderBottomSheet(
-            folders = uiState.folders,
-            onDismissRequest = {
-                showSelectFolderBottomSheet = false
-            },
+    if (showAddFolderBottomSheet) {
+        AddFolderBottomSheet(
+            onDismiss = { showAddFolderBottomSheet = false },
             onAdd = { name, description ->
                 onAddFolder(name, description)
-                showSelectFolderBottomSheet = false
-            },
-            onClick = {
-                onSelectFolder(it)
-                showSelectFolderBottomSheet = false
+                showAddFolderBottomSheet = false
             },
         )
     }
 
-    SelectionContainer(
-        modifier = modifier,
+    Column(
+        modifier = modifier.verticalScroll(rememberScrollState()),
     ) {
         Column(
-            modifier = Modifier
-                .padding(24.dp)
-                .verticalScroll(rememberScrollState()),
+            modifier = Modifier.padding(horizontal = 24.dp),
         ) {
             DeepLinkDetailsTextField(
                 text = deepLink.name.orEmpty(),
@@ -84,7 +78,7 @@ fun EditModeUI(
                 label = "Name",
             )
 
-            Spacer(modifier = Modifier.height(24.dp))
+            Spacer(modifier = Modifier.height(12.dp))
 
             DeepLinkDetailsTextField(
                 text = deepLink.description.orEmpty(),
@@ -92,67 +86,7 @@ fun EditModeUI(
                 label = "Description",
             )
 
-            Spacer(modifier = Modifier.height(24.dp))
-
-            AnimatedContent(
-                targetState = deepLink.folder,
-                label = "",
-                modifier = Modifier.fillMaxWidth(),
-            ) { folder ->
-                when (folder == null) {
-                    true -> DLLAssistChip(
-                        modifier = Modifier.fillMaxWidth(),
-                        onClick = { showSelectFolderBottomSheet = true },
-                        leadingIcon = {
-                            Icon(
-                                imageVector = Icons.Rounded.Add,
-                                contentDescription = "",
-                                modifier = Modifier.size(18.dp),
-                            )
-                        },
-                        trailingIcon = {
-                        },
-                        label = {
-                            Text(
-                                text = "Add Folder",
-                                modifier = Modifier.padding(vertical = 12.dp),
-                                style = MaterialTheme.typography.bodyMedium,
-                            )
-                        },
-                    )
-
-                    false -> DLLAssistChip(
-                        modifier = Modifier.fillMaxWidth(),
-                        onClick = onRemoveFolder,
-                        leadingIcon = {
-                            Icon(
-                                painterResource(Res.drawable.ic_folder_24dp),
-                                contentDescription = null,
-                                tint = MaterialTheme.colorScheme.secondary,
-                            )
-                        },
-                        trailingIcon = {
-                            DLLIconButton(onClick = onRemoveFolder) {
-                                Icon(
-                                    imageVector = Icons.Rounded.Clear,
-                                    contentDescription = "Remove folder",
-                                )
-                            }
-                        },
-                        label = {
-                            Text(
-                                text = folder.name,
-                                modifier = Modifier.padding(vertical = 12.dp).weight(1f),
-                                style = MaterialTheme.typography.bodyMedium.copy(
-                                    fontWeight = FontWeight.Bold,
-                                ),
-                            )
-                        },
-                    )
-                }
-            }
-
-            DLLHorizontalDivider(modifier = Modifier.padding(vertical = 24.dp))
+            Spacer(modifier = Modifier.height(12.dp))
 
             DeepLinkDetailsTextField(
                 text = deepLink.link,
@@ -174,8 +108,83 @@ fun EditModeUI(
                 )
             }
 
-            Spacer(modifier = Modifier.padding(vertical = 24.dp))
+            Spacer(modifier = Modifier.height(16.dp))
         }
+
+        LazyRow(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(12.dp),
+            contentPadding = PaddingValues(horizontal = 24.dp),
+        ) {
+            item {
+                AssistChip(
+                    shape = CircleShape,
+                    leadingIcon = {
+                        Icon(
+                            imageVector = TablerIcons.Plus,
+                            contentDescription = null,
+                            modifier = Modifier.size(12.dp),
+                        )
+                    },
+                    label = {
+                        Text(
+                            text = "Add folder",
+                            style = MaterialTheme.typography.labelSmall.copy(
+                                fontWeight = FontWeight.SemiBold,
+                            ),
+                        )
+                    },
+                    colors = AssistChipDefaults.assistChipColors(
+                        containerColor = MaterialTheme.colorScheme.surfaceContainerHighest,
+                    ),
+                    border = null,
+                    onClick = { showAddFolderBottomSheet = true },
+                )
+            }
+
+            items(uiState.folders) { folder ->
+                val selected = uiState.deepLink.folder?.id == folder.id
+
+                FilterChip(
+                    selected = selected,
+                    onClick = {
+                        onToggleFolder(folder)
+                    },
+                    label = {
+                        Text(
+                            text = folder.name,
+                            style = MaterialTheme.typography.labelSmall.copy(
+                                fontWeight = FontWeight.SemiBold,
+                            ),
+
+                        )
+                    },
+                    shape = CircleShape,
+                    colors = FilterChipDefaults.filterChipColors(
+                        containerColor = MaterialTheme.colorScheme.surface,
+                        selectedContainerColor = MaterialTheme.colorScheme.primary,
+                        selectedLabelColor = MaterialTheme.colorScheme.onPrimary,
+                        selectedTrailingIconColor = MaterialTheme.colorScheme.onPrimary,
+
+                    ),
+                    border = BorderStroke(
+                        1.dp,
+                        color = MaterialTheme.colorScheme.surfaceContainerHighest,
+                    ),
+                    trailingIcon = {
+                        if (selected) {
+                            Icon(
+                                imageVector = TablerIcons.Check,
+                                contentDescription = null,
+                                modifier = Modifier.size(12.dp),
+                            )
+                        }
+                    },
+                )
+            }
+        }
+
+        Spacer(modifier = Modifier.padding(vertical = 24.dp))
     }
 }
 

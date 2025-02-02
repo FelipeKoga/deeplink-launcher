@@ -1,16 +1,17 @@
 package dev.koga.deeplinklauncher.settings.ui.screen
 
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.ListItem
-import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
@@ -26,12 +27,14 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.registry.rememberScreen
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.koin.getScreenModel
+import compose.icons.TablerIcons
+import compose.icons.tablericons.ChevronRight
+import compose.icons.tablericons.ExternalLink
 import dev.koga.deeplinklauncher.LocalRootNavigator
 import dev.koga.deeplinklauncher.SharedScreen
 import dev.koga.deeplinklauncher.designsystem.DLLHorizontalDivider
@@ -42,14 +45,9 @@ import dev.koga.deeplinklauncher.platform.currentPlatform
 import dev.koga.deeplinklauncher.purchase.ui.ProductsBottomSheet
 import dev.koga.deeplinklauncher.settings.ui.sheets.AppThemeBottomSheet
 import dev.koga.deeplinklauncher.settings.ui.sheets.DeleteDataBottomSheet
-import dev.koga.deeplinklauncher.settings.ui.sheets.OpenSourceLicensesSheet
 import dev.koga.deeplinklauncher.settings.ui.sheets.SuggestionsOptionBottomSheet
-import dev.koga.resources.Res
-import dev.koga.resources.ic_chevron_right_24dp
-import dev.koga.resources.ic_launch_24dp
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
-import org.jetbrains.compose.resources.painterResource
 
 class SettingsScreen : Screen {
 
@@ -58,7 +56,6 @@ class SettingsScreen : Screen {
         APP_THEME,
         SUGGESTIONS_OPTION,
         PRODUCTS,
-        OPEN_SOURCE,
     }
 
     @Composable
@@ -125,10 +122,6 @@ class SettingsScreen : Screen {
                 },
             )
 
-            BottomSheetType.OPEN_SOURCE -> OpenSourceLicensesSheet {
-                bottomSheetType = null
-            }
-
             null -> Unit
         }
 
@@ -148,7 +141,7 @@ class SettingsScreen : Screen {
             onNavigateToImport = { navigator.push(importScreen) },
             onShowDeleteDataBottomSheet = { bottomSheetType = BottomSheetType.DELETE_DATA },
             onNavigateToStore = screenModel::navigateToStore,
-            onNavigateToOpenSourceLicenses = { bottomSheetType = BottomSheetType.OPEN_SOURCE },
+            onNavigateToOpenSourceLicenses = { navigator.push(OpenSourceLicenses) },
             onNavigateToGithub = screenModel::navigateToGithub,
             onShowAppTheme = { bottomSheetType = BottomSheetType.APP_THEME },
             onShowSuggestionsOption = { bottomSheetType = BottomSheetType.SUGGESTIONS_OPTION },
@@ -207,7 +200,7 @@ fun SettingsScreenUI(
                     onClick = onShowAppTheme,
                     trailingContent = {
                         Icon(
-                            painter = painterResource(Res.drawable.ic_chevron_right_24dp),
+                            imageVector = TablerIcons.ChevronRight,
                             contentDescription = "navigate",
                         )
                     },
@@ -221,7 +214,7 @@ fun SettingsScreenUI(
                     onClick = onShowSuggestionsOption,
                     trailingContent = {
                         Icon(
-                            painter = painterResource(Res.drawable.ic_chevron_right_24dp),
+                            imageVector = TablerIcons.ChevronRight,
                             contentDescription = "navigate",
                         )
                     },
@@ -235,7 +228,7 @@ fun SettingsScreenUI(
                     onClick = onNavigateToExport,
                     trailingContent = {
                         Icon(
-                            painter = painterResource(Res.drawable.ic_chevron_right_24dp),
+                            imageVector = TablerIcons.ChevronRight,
                             contentDescription = "navigate",
                         )
                     },
@@ -249,7 +242,7 @@ fun SettingsScreenUI(
                     onClick = onNavigateToImport,
                     trailingContent = {
                         Icon(
-                            painter = painterResource(Res.drawable.ic_chevron_right_24dp),
+                            imageVector = TablerIcons.ChevronRight,
                             contentDescription = "navigate",
                         )
                     },
@@ -263,7 +256,7 @@ fun SettingsScreenUI(
                     onClick = onShowDeleteDataBottomSheet,
                     trailingContent = {
                         Icon(
-                            painter = painterResource(Res.drawable.ic_chevron_right_24dp),
+                            imageVector = TablerIcons.ChevronRight,
                             contentDescription = "navigate",
                         )
                     },
@@ -293,7 +286,7 @@ fun SettingsScreenUI(
                         onClick = onShowProducts,
                         trailingContent = {
                             Icon(
-                                painter = painterResource(Res.drawable.ic_chevron_right_24dp),
+                                imageVector = TablerIcons.ChevronRight,
                                 contentDescription = "navigate",
                             )
                         },
@@ -308,7 +301,7 @@ fun SettingsScreenUI(
                     onClick = onNavigateToGithub,
                     trailingContent = {
                         Icon(
-                            painter = painterResource(Res.drawable.ic_launch_24dp),
+                            imageVector = TablerIcons.ExternalLink,
                             contentDescription = "launch",
                         )
                     },
@@ -323,7 +316,7 @@ fun SettingsScreenUI(
                         onClick = onNavigateToStore,
                         trailingContent = {
                             Icon(
-                                painter = painterResource(Res.drawable.ic_launch_24dp),
+                                imageVector = TablerIcons.ExternalLink,
                                 contentDescription = "navigate",
                             )
                         },
@@ -335,7 +328,7 @@ fun SettingsScreenUI(
                         onClick = onNavigateToStore,
                         trailingContent = {
                             Icon(
-                                painter = painterResource(Res.drawable.ic_launch_24dp),
+                                imageVector = TablerIcons.ExternalLink,
                                 contentDescription = "Open Play Store",
                             )
                         },
@@ -352,7 +345,7 @@ fun SettingsScreenUI(
                     onClick = onNavigateToOpenSourceLicenses,
                     trailingContent = {
                         Icon(
-                            painter = painterResource(Res.drawable.ic_chevron_right_24dp),
+                            imageVector = TablerIcons.ChevronRight,
                             contentDescription = "navigate",
                         )
                     },
@@ -369,27 +362,30 @@ private fun SettingsListItem(
     trailingContent: @Composable () -> Unit,
     onClick: () -> Unit = {},
 ) {
-    ListItem(
-        modifier = Modifier.fillMaxWidth().clickable(onClick = onClick),
-        colors = ListItemDefaults.colors(
-            containerColor = Color.Transparent,
-        ),
-        headlineContent = {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable(onClick = onClick)
+            .padding(vertical = 16.dp, horizontal = 12.dp),
+    ) {
+        Column(modifier = Modifier.weight(1f)) {
             Text(
                 text = title,
                 style = MaterialTheme.typography.bodyMedium.copy(
                     fontWeight = FontWeight.Bold,
                 ),
             )
-        },
-        supportingContent = {
+
             Text(
                 text = description,
                 style = MaterialTheme.typography.bodySmall.copy(
                     fontWeight = FontWeight.Normal,
                 ),
             )
-        },
-        trailingContent = trailingContent,
-    )
+        }
+
+        Spacer(modifier = Modifier.width(8.dp))
+
+        trailingContent()
+    }
 }

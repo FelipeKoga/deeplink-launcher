@@ -13,6 +13,6 @@ actual class ValidateDeepLinkImpl : ValidateDeepLink {
             resolvingAgainstBaseURL = false,
         )
 
-        return components?.scheme != null && components.host != null
+        return components?.scheme != null
     }
 }

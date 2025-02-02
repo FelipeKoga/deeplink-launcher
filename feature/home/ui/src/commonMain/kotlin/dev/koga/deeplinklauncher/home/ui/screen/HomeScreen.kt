@@ -1,21 +1,15 @@
 package dev.koga.deeplinklauncher.home.ui.screen
 
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.safeDrawing
-import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.pager.rememberPagerState
-import androidx.compose.material3.BottomSheetScaffold
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.SheetValue
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.material3.rememberBottomSheetScaffoldState
-import androidx.compose.material3.rememberStandardBottomSheetState
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -26,7 +20,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.registry.ScreenRegistry
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.koin.getNavigatorScreenModel
@@ -35,7 +28,7 @@ import dev.koga.deeplinklauncher.LocalRootNavigator
 import dev.koga.deeplinklauncher.SharedScreen
 import dev.koga.deeplinklauncher.deeplink.ui.deeplink.screen.details.component.AddFolderBottomSheet
 import dev.koga.deeplinklauncher.home.ui.screen.component.HomeHorizontalPager
-import dev.koga.deeplinklauncher.home.ui.screen.component.HomeSheetContent
+import dev.koga.deeplinklauncher.home.ui.screen.component.HomeLaunchDeepLinkUI
 import dev.koga.deeplinklauncher.home.ui.screen.component.HomeTabRow
 import dev.koga.deeplinklauncher.home.ui.screen.component.HomeTopBar
 import dev.koga.deeplinklauncher.home.ui.screen.component.OnboardingBottomSheet
@@ -106,66 +99,54 @@ class HomeScreen : Screen {
             },
         )
 
-        Box(
-            modifier = Modifier.windowInsetsPadding(WindowInsets.safeDrawing),
-        ) {
-            BottomSheetScaffold(
-                scaffoldState = rememberBottomSheetScaffoldState(
-                    bottomSheetState = rememberStandardBottomSheetState(
-                        initialValue = SheetValue.Expanded,
-                        confirmValueChange = { it != SheetValue.Hidden },
-                    ),
-                ),
-                topBar = {
-                    HomeTopBar(
-                        search = uiState.searchInput,
-                        scrollBehavior = scrollBehavior,
-                        onSettingsScreen = {
-                            val settingsScreen = ScreenRegistry.get(SharedScreen.Settings)
-                            navigator.push(settingsScreen)
-                        },
-                        onSearch = screenModel::onSearch,
-                    )
-                },
-                sheetContainerColor = MaterialTheme.colorScheme.surface,
-                containerColor = MaterialTheme.colorScheme.background,
-                sheetTonalElevation = 0.dp,
-                sheetContent = {
-                    HomeSheetContent(
-                        value = uiState.deepLinkInput,
-                        onValueChange = screenModel::onDeepLinkTextChanged,
-                        suggestions = uiState.suggestions,
-                        launch = screenModel::launchDeepLink,
-                        errorMessage = uiState.errorMessage,
-                        onSuggestionClicked = { screenModel.onDeepLinkTextChanged(it) },
-                    )
-                },
-            ) { contentPadding ->
-                Column(
-                    modifier = Modifier
-                        .padding(contentPadding)
-                        .fillMaxSize(),
-                ) {
-                    HomeTabRow(pagerState = pagerState)
+        Scaffold(
+            topBar = {
+                HomeTopBar(
+                    search = uiState.searchInput,
+                    scrollBehavior = scrollBehavior,
+                    onSettingsScreen = {
+                        val settingsScreen = ScreenRegistry.get(SharedScreen.Settings)
+                        navigator.push(settingsScreen)
+                    },
+                    onSearch = screenModel::onSearch,
+                )
+            },
+            containerColor = MaterialTheme.colorScheme.background,
+            bottomBar = {
+                HomeLaunchDeepLinkUI(
+                    modifier = Modifier.navigationBarsPadding(),
+                    value = uiState.deepLinkInput,
+                    onValueChange = screenModel::onDeepLinkTextChanged,
+                    suggestions = uiState.suggestions,
+                    launch = screenModel::launchDeepLink,
+                    errorMessage = uiState.errorMessage,
+                    onSuggestionClicked = { screenModel.onDeepLinkTextChanged(it) },
+                )
+            },
+        ) { contentPadding ->
+            Column(
+                modifier = Modifier
+                    .padding(contentPadding)
+                    .fillMaxSize(),
+            ) {
+                HomeTabRow(pagerState = pagerState)
 
-                    HomeHorizontalPager(
-                        allDeepLinks = uiState.deepLinks,
-                        favoriteDeepLinks = uiState.favorites,
-                        folders = uiState.folders,
-                        pagerState = pagerState,
-                        scrollBehavior = scrollBehavior,
-                        paddingBottom = 320.dp,
-                        onDeepLinkClicked = { bottomSheetNavigator.navigateToDeepLinkDetails(it.id) },
-                        onDeepLinkLaunch = screenModel::launchDeepLink,
-                        onFolderClicked = {
-                            val screen = ScreenRegistry.get(SharedScreen.FolderDetails(it.id))
-                            navigator.push(screen)
-                        },
-                        onFolderAdd = { showAddFolderBottomSheet = true },
-                        historyListState = historyListState,
-                        favoritesListState = favoritesListState,
-                    )
-                }
+                HomeHorizontalPager(
+                    allDeepLinks = uiState.deepLinks,
+                    favoriteDeepLinks = uiState.favorites,
+                    folders = uiState.folders,
+                    pagerState = pagerState,
+                    scrollBehavior = scrollBehavior,
+                    onDeepLinkClicked = { bottomSheetNavigator.navigateToDeepLinkDetails(it.id) },
+                    onDeepLinkLaunch = screenModel::launchDeepLink,
+                    onFolderClicked = {
+                        val screen = ScreenRegistry.get(SharedScreen.FolderDetails(it.id))
+                        navigator.push(screen)
+                    },
+                    onFolderAdd = { showAddFolderBottomSheet = true },
+                    historyListState = historyListState,
+                    favoritesListState = favoritesListState,
+                )
             }
         }
     }
@@ -176,7 +157,7 @@ class HomeScreen : Screen {
 }
 
 @Composable
-fun HomeEventsHandler(
+private fun HomeEventsHandler(
     events: Flow<HomeEvent>,
     onDeepLinkLaunched: () -> Unit,
     onShowOnboarding: () -> Unit,
