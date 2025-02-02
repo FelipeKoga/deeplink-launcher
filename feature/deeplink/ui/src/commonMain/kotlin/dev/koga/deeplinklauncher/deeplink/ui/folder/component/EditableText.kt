@@ -8,10 +8,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Close
-import androidx.compose.material.icons.rounded.Done
-import androidx.compose.material.icons.rounded.Edit
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
@@ -23,6 +19,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import compose.icons.TablerIcons
+import compose.icons.tablericons.Check
+import compose.icons.tablericons.Pencil
+import compose.icons.tablericons.X
 import dev.koga.deeplinklauncher.designsystem.DLLTextField
 import dev.koga.deeplinklauncher.designsystem.button.DLLFilledIconButton
 import dev.koga.deeplinklauncher.designsystem.button.DLLIconButton
@@ -81,7 +81,7 @@ fun EditableText(
                                     ),
                                 ) {
                                     Icon(
-                                        imageVector = Icons.Rounded.Done,
+                                        imageVector = TablerIcons.Check,
                                         contentDescription = "Save",
                                     )
                                 }
@@ -93,7 +93,7 @@ fun EditableText(
                                     modifier = Modifier.size(18.dp),
                                 ) {
                                     Icon(
-                                        imageVector = Icons.Rounded.Close,
+                                        imageVector = TablerIcons.X,
                                         contentDescription = "Close",
                                     )
                                 }
@@ -116,7 +116,7 @@ fun EditableText(
                         modifier = Modifier.size(18.dp),
                     ) {
                         Icon(
-                            imageVector = Icons.Rounded.Edit,
+                            imageVector = TablerIcons.Pencil,
                             contentDescription = "Edit",
                         )
                     }

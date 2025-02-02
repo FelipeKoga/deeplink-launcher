@@ -7,7 +7,7 @@ actual class ValidateDeepLinkImpl : ValidateDeepLink {
     actual override fun isValid(link: String): Boolean {
         return try {
             val uri = URI(link)
-            uri.scheme != null && uri.host != null
+            uri.scheme != null
         } catch (e: Exception) {
             false
         }

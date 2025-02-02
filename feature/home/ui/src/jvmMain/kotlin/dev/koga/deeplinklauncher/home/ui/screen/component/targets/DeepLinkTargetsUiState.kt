@@ -1,14 +1,12 @@
 package dev.koga.deeplinklauncher.home.ui.screen.component.targets
 
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Android
-import androidx.compose.material.icons.rounded.DesktopMac
 import androidx.compose.runtime.Composable
+import compose.icons.TablerIcons
+import compose.icons.tablericons.BrandAndroid
+import compose.icons.tablericons.BrandApple
+import compose.icons.tablericons.DeviceDesktop
 import dev.koga.deeplinklauncher.deeplink.api.model.DeepLinkTarget
 import dev.koga.deeplinklauncher.devicebridge.api.DeviceBridge
-import dev.koga.resources.Res
-import dev.koga.resources.ic_apple_24dp
-import org.jetbrains.compose.resources.vectorResource
 
 data class DeepLinkTargetsUiState(
     val selected: Option = DeepLinkTarget.Desktop.toUiState(),
@@ -63,7 +61,7 @@ fun DeepLinkTarget.toUiState(
 
 val DeepLinkTargetsUiState.Option.icon
     @Composable get() = when (platform) {
-        DeepLinkTargetsUiState.Platform.ANDROID -> Icons.Rounded.Android
-        DeepLinkTargetsUiState.Platform.IOS -> vectorResource(Res.drawable.ic_apple_24dp)
-        DeepLinkTargetsUiState.Platform.DESKTOP -> Icons.Rounded.DesktopMac
+        DeepLinkTargetsUiState.Platform.ANDROID -> TablerIcons.BrandAndroid
+        DeepLinkTargetsUiState.Platform.IOS -> TablerIcons.BrandApple
+        DeepLinkTargetsUiState.Platform.DESKTOP -> TablerIcons.DeviceDesktop
     }

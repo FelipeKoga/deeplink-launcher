@@ -10,8 +10,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.ArrowBack
-import androidx.compose.material.icons.rounded.Clear
-import androidx.compose.material.icons.rounded.Search
 import androidx.compose.material3.DockedSearchBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -32,12 +30,13 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import compose.icons.TablerIcons
+import compose.icons.tablericons.Search
+import compose.icons.tablericons.Settings
+import compose.icons.tablericons.X
 import dev.koga.deeplinklauncher.designsystem.DLLTopBar
 import dev.koga.deeplinklauncher.designsystem.button.DLLIconButton
-import dev.koga.resources.Res
-import dev.koga.resources.ic_settings_24dp
 import kotlinx.coroutines.delay
-import org.jetbrains.compose.resources.painterResource
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -72,7 +71,7 @@ internal fun HomeTopBar(
                     },
                 ) {
                     Icon(
-                        imageVector = Icons.Rounded.Search,
+                        imageVector = TablerIcons.Search,
                         contentDescription = "settings",
                     )
                 }
@@ -81,9 +80,7 @@ internal fun HomeTopBar(
                     onClick = onSettingsScreen,
                 ) {
                     Icon(
-                        painter = painterResource(
-                            Res.drawable.ic_settings_24dp,
-                        ),
+                        imageVector = TablerIcons.Settings,
                         contentDescription = "settings",
                     )
                 }
@@ -93,7 +90,7 @@ internal fun HomeTopBar(
         AnimatedVisibility(
             isSearching,
             enter = slideInHorizontally(
-                initialOffsetX = { fullWidth -> fullWidth }, // Start from the right
+                initialOffsetX = { fullWidth -> fullWidth },
                 animationSpec = tween(durationMillis = 500),
             ),
             exit = slideOutHorizontally(
@@ -174,7 +171,7 @@ private fun HomeSearchBar(
                     onClick = { onSearch("") },
                 ) {
                     Icon(
-                        imageVector = Icons.Rounded.Clear,
+                        imageVector = TablerIcons.X,
                         contentDescription = "Clear",
                     )
                 }
