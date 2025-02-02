@@ -2,17 +2,18 @@ package dev.koga.deeplinklauncher.deeplink.ui.deeplink.screen.details
 
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.selection.SelectionContainer
-import androidx.compose.material.icons.rounded.Edit
 import androidx.compose.material3.BottomSheetDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -24,7 +25,6 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.registry.ScreenRegistry
 import cafe.adriel.voyager.core.screen.Screen
@@ -33,22 +33,19 @@ import cafe.adriel.voyager.core.screen.uniqueScreenKey
 import cafe.adriel.voyager.koin.getScreenModel
 import cafe.adriel.voyager.navigator.bottomSheet.LocalBottomSheetNavigator
 import compose.icons.TablerIcons
-import compose.icons.tablericons.Edit
+import compose.icons.tablericons.ArrowLeft
 import compose.icons.tablericons.Trash
 import dev.koga.deeplinklauncher.LocalRootNavigator
 import dev.koga.deeplinklauncher.SharedScreen
 import dev.koga.deeplinklauncher.deeplink.api.model.DeepLink
-import dev.koga.deeplinklauncher.deeplink.ui.deeplink.screen.details.component.DeepLinkDetailsBottomBar
+import dev.koga.deeplinklauncher.deeplink.ui.deeplink.screen.details.component.DeepLinkDetailsActions
 import dev.koga.deeplinklauncher.deeplink.ui.deeplink.screen.details.component.DeleteDeepLinkConfirmationBottomSheet
 import dev.koga.deeplinklauncher.deeplink.ui.deeplink.screen.details.component.DuplicateModeUI
 import dev.koga.deeplinklauncher.deeplink.ui.deeplink.screen.details.component.EditModeUI
 import dev.koga.deeplinklauncher.deeplink.ui.deeplink.screen.details.component.LaunchModeUI
 import dev.koga.deeplinklauncher.deeplink.ui.deeplink.screen.details.event.DeepLinkDetailsEvent
 import dev.koga.deeplinklauncher.designsystem.DLLHorizontalDivider
-import dev.koga.deeplinklauncher.designsystem.DLLTopBar
-import dev.koga.deeplinklauncher.designsystem.DLLTopBarDefaults
 import dev.koga.deeplinklauncher.designsystem.button.DLLIconButton
-import dev.koga.deeplinklauncher.designsystem.button.DLLOutlinedIconButton
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collectLatest
 import org.koin.core.parameter.parametersOf
@@ -103,9 +100,9 @@ class DeepLinkDetailsScreen(
                 )
 
                 DetailsTopBar(
-                    mode = detailsMode,
+                    onBack = { detailsMode = DetailsMode.Launch },
                     onDelete = { showDeleteBottomSheet = true },
-                    changeDetailsTo = { detailsMode = it },
+                    mode = detailsMode
                 )
 
                 AnimatedContent(
@@ -157,13 +154,13 @@ class DeepLinkDetailsScreen(
                             modifier = Modifier.padding(top = 24.dp),
                         )
 
-                        DeepLinkDetailsBottomBar(
-                            link = uiState.deepLink.link,
+                        DeepLinkDetailsActions(
                             isFavorite = uiState.deepLink.isFavorite,
                             onShare = screenModel::share,
                             onFavorite = screenModel::toggleFavorite,
                             onLaunch = screenModel::launch,
                             onDuplicate = { detailsMode = DetailsMode.Duplicate(detailsMode) },
+                            onEdit = { detailsMode = DetailsMode.Edit }
                         )
                     }
                 }
@@ -174,77 +171,46 @@ class DeepLinkDetailsScreen(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun DetailsTopBar(
     modifier: Modifier = Modifier,
     mode: DetailsMode,
-    onDelete: () -> Unit,
-    changeDetailsTo: (DetailsMode) -> Unit,
+    onBack: () -> Unit,
+    onDelete: () -> Unit
 ) {
     val showNavigationIcon by remember(mode) {
         derivedStateOf { mode.backTo != null }
     }
 
-    DLLTopBar(
-        modifier = modifier,
-        title = {
-            DLLTopBarDefaults.title(
-                text = if (mode is DetailsMode.Duplicate) "Duplicate DeepLink" else "",
-            )
-        },
-        colors = TopAppBarDefaults.topAppBarColors(
-            containerColor = Color.Transparent,
-        ),
-        navigationIcon = {
-            if (showNavigationIcon) {
-                DLLTopBarDefaults.navigationIcon(
-                    onClicked = {
-                        changeDetailsTo(mode.backTo!!)
-                    },
+    Row(
+        modifier = modifier.fillMaxWidth().padding(horizontal = 12.dp, vertical = 8.dp),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        if (showNavigationIcon) {
+            DLLIconButton(
+                onClick = onBack,
+            ) {
+                Icon(
+                    imageVector = TablerIcons.ArrowLeft,
+                    contentDescription = "Back",
+                    tint = MaterialTheme.colorScheme.primary
                 )
             }
-        },
-        actions = {
-            when (mode) {
-                DetailsMode.Launch -> {
-                    DLLIconButton(
-                        onClick = onDelete,
-                    ) {
-                        Icon(
-                            imageVector = TablerIcons.Trash,
-                            contentDescription = "Delete deeplink",
-                        )
-                    }
+        }
 
-                    Spacer(modifier = Modifier.width(16.dp))
-
-                    DLLOutlinedIconButton(
-                        modifier = Modifier,
-                        onClick = { changeDetailsTo(DetailsMode.Edit) },
-                    ) {
-                        Icon(
-                            imageVector = TablerIcons.Edit,
-                            contentDescription = "Edit deeplink",
-                        )
-                    }
-                }
-
-                DetailsMode.Edit -> {
-                    DLLIconButton(
-                        onClick = onDelete,
-                    ) {
-                        Icon(
-                            imageVector = TablerIcons.Trash,
-                            contentDescription = "Delete deeplink",
-                        )
-                    }
-                }
-
-                is DetailsMode.Duplicate -> Unit
+        if (mode is DetailsMode.Edit) {
+            DLLIconButton(
+                onClick = onDelete,
+            ) {
+                Icon(
+                    imageVector = TablerIcons.Trash,
+                    contentDescription = "Delete deeplink",
+                    tint = MaterialTheme.colorScheme.primary
+                )
             }
-        },
-    )
+        }
+    }
 }
 
 @Composable

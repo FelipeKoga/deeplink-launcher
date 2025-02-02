@@ -5,6 +5,7 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -23,6 +24,7 @@ import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -34,11 +36,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import compose.icons.TablerIcons
+import compose.icons.tablericons.ArrowLeft
 import compose.icons.tablericons.Check
 import compose.icons.tablericons.Plus
+import compose.icons.tablericons.Trash
 import dev.koga.deeplinklauncher.deeplink.api.model.Folder
 import dev.koga.deeplinklauncher.deeplink.ui.deeplink.screen.details.state.DeepLinkDetailsUiState
 import dev.koga.deeplinklauncher.designsystem.DLLTextField
+import dev.koga.deeplinklauncher.designsystem.DLLTopBarDefaults
+import dev.koga.deeplinklauncher.designsystem.button.DLLIconButton
 
 @Composable
 fun EditModeUI(
@@ -157,7 +163,7 @@ fun EditModeUI(
                                 fontWeight = FontWeight.SemiBold,
                             ),
 
-                        )
+                            )
                     },
                     shape = CircleShape,
                     colors = FilterChipDefaults.filterChipColors(
@@ -166,7 +172,7 @@ fun EditModeUI(
                         selectedLabelColor = MaterialTheme.colorScheme.onPrimary,
                         selectedTrailingIconColor = MaterialTheme.colorScheme.onPrimary,
 
-                    ),
+                        ),
                     border = BorderStroke(
                         1.dp,
                         color = MaterialTheme.colorScheme.surfaceContainerHighest,

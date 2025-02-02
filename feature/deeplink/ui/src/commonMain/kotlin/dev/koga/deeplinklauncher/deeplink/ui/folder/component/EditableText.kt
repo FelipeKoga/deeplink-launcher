@@ -20,6 +20,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import compose.icons.TablerIcons
+import compose.icons.tablericons.Check
 import compose.icons.tablericons.Pencil
 import compose.icons.tablericons.SquareCheck
 import compose.icons.tablericons.X
@@ -81,7 +82,7 @@ fun EditableText(
                                     ),
                                 ) {
                                     Icon(
-                                        imageVector = TablerIcons.SquareCheck,
+                                        imageVector = TablerIcons.Check,
                                         contentDescription = "Save",
                                     )
                                 }
