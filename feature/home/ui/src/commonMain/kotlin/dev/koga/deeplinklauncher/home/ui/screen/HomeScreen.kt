@@ -116,8 +116,8 @@ class HomeScreen : Screen {
                     pagerState = pagerState,
                     modifier = Modifier.hazeEffect(
                         state = hazeState,
-                        style = HazeMaterials.regular(containerColor = MaterialTheme.colorScheme.background)
-                    )
+                        style = HazeMaterials.regular(containerColor = MaterialTheme.colorScheme.background),
+                    ),
                 )
             },
             bottomBar = {
@@ -126,7 +126,7 @@ class HomeScreen : Screen {
                         .clip(RoundedCornerShape(12.dp))
                         .hazeEffect(
                             state = hazeState,
-                            style = HazeMaterials.thick()
+                            style = HazeMaterials.thick(),
                         )
                         .navigationBarsPadding(),
                     value = uiState.deepLinkInput,
@@ -140,11 +140,12 @@ class HomeScreen : Screen {
         ) {
             HorizontalPager(
                 state = pagerState,
-                modifier = Modifier.fillMaxSize()
+                modifier = Modifier.fillMaxSize(),
             ) { page ->
                 when (page) {
                     HomeTabPage.HISTORY.ordinal,
-                    HomeTabPage.FAVORITES.ordinal -> DeepLinksLazyColumn(
+                    HomeTabPage.FAVORITES.ordinal,
+                    -> DeepLinksLazyColumn(
                         modifier = Modifier.hazeSource(hazeState),
                         listState = historyListState,
                         deepLinks = uiState.deepLinks,
@@ -153,7 +154,7 @@ class HomeScreen : Screen {
                         onLaunch = screenModel::launchDeepLink,
                         onFolderClicked = {
                             navigator.push(
-                                ScreenRegistry.get(SharedScreen.FolderDetails(it.id))
+                                ScreenRegistry.get(SharedScreen.FolderDetails(it.id)),
                             )
                         },
                     )
@@ -164,7 +165,7 @@ class HomeScreen : Screen {
                         folders = uiState.folders,
                         onClick = {
                             navigator.push(
-                                ScreenRegistry.get(SharedScreen.FolderDetails(it.id))
+                                ScreenRegistry.get(SharedScreen.FolderDetails(it.id)),
                             )
                         },
                         onAdd = { showAddFolderBottomSheet = true },

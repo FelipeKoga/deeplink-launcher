@@ -39,7 +39,6 @@ import dev.koga.deeplinklauncher.deeplink.ui.deeplink.component.DeepLinkCard
 import dev.koga.deeplinklauncher.deeplink.ui.folder.component.FolderCard
 import kotlinx.collections.immutable.ImmutableList
 
-
 @Composable
 fun DeepLinksLazyColumn(
     modifier: Modifier = Modifier,
@@ -60,7 +59,7 @@ fun DeepLinksLazyColumn(
     HomeVerticalGridList(
         modifier = modifier,
         state = listState,
-        contentPadding = padding
+        contentPadding = padding,
     ) {
         items(
             count = deepLinks.size,

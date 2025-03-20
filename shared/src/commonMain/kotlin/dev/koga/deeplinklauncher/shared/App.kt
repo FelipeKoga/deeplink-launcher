@@ -1,6 +1,5 @@
 package dev.koga.deeplinklauncher.shared
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.shape.RoundedCornerShape

@@ -15,8 +15,6 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
@@ -32,7 +30,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
-import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -41,22 +38,18 @@ import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
-import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
-import cafe.adriel.voyager.navigator.bottomSheet.BottomSheetNavigator
 import compose.icons.TablerIcons
 import compose.icons.tablericons.ExternalLink
 import compose.icons.tablericons.X
 import dev.koga.deeplinklauncher.designsystem.DLLHorizontalDivider
 import dev.koga.deeplinklauncher.designsystem.DLLTextField
-import dev.koga.deeplinklauncher.designsystem.button.DLLFilledIconButton
 import dev.koga.deeplinklauncher.designsystem.button.DLLIconButton
 import dev.koga.deeplinklauncher.designsystem.defaultTextFieldColors
 import kotlinx.collections.immutable.ImmutableList
-import kotlinx.coroutines.flow.map
 
 @Composable
 internal fun HomeLaunchDeepLinkUI(
@@ -194,7 +187,6 @@ internal fun HomeLaunchDeepLinkUI(
         }
     }
 }
-
 
 @Composable
 private fun SuggestionListItem(modifier: Modifier = Modifier, suggestion: String) {

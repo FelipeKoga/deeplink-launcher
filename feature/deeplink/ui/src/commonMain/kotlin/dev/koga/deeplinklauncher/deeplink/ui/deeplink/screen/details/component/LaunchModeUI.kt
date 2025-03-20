@@ -151,7 +151,7 @@ fun LaunchModeUI(
                         imageVector = TablerIcons.Copy,
                         contentDescription = "Copy Link",
                         tint = MaterialTheme.colorScheme.onSurface,
-                        modifier = Modifier.size(16.dp)
+                        modifier = Modifier.size(16.dp),
                     )
                 }
             }
