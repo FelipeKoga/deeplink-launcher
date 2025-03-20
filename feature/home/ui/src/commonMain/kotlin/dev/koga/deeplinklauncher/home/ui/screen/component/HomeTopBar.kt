@@ -5,9 +5,11 @@ import androidx.compose.animation.core.tween
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.pager.PagerState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.ArrowBack
 import androidx.compose.material3.DockedSearchBar
@@ -17,7 +19,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SearchBarDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
-import androidx.compose.material3.TopAppBarScrollBehavior
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -28,6 +30,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import compose.icons.TablerIcons
@@ -43,9 +46,9 @@ import kotlinx.coroutines.delay
 internal fun HomeTopBar(
     modifier: Modifier = Modifier,
     search: String,
-    scrollBehavior: TopAppBarScrollBehavior,
     onSettingsScreen: () -> Unit,
     onSearch: (String) -> Unit,
+    pagerState: PagerState,
 ) {
     val focusRequester = remember { FocusRequester() }
     var isSearching by rememberSaveable {
@@ -59,33 +62,38 @@ internal fun HomeTopBar(
         }
     }
 
-    Box(modifier = Modifier.fillMaxWidth()) {
-        DLLTopBar(
-            modifier = modifier,
-            scrollBehavior = scrollBehavior,
-            title = { HomeTopBarTitle() },
-            actions = {
-                DLLIconButton(
-                    onClick = {
-                        isSearching = true
-                    },
-                ) {
-                    Icon(
-                        imageVector = TablerIcons.Search,
-                        contentDescription = "settings",
-                    )
-                }
+    Box(modifier = modifier.fillMaxWidth()) {
+        Column {
+            DLLTopBar(
+                title = { HomeTopBarTitle() },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = Color.Transparent,
+                ),
+                actions = {
+                    DLLIconButton(
+                        onClick = {
+                            isSearching = true
+                        },
+                    ) {
+                        Icon(
+                            imageVector = TablerIcons.Search,
+                            contentDescription = "settings",
+                        )
+                    }
 
-                DLLIconButton(
-                    onClick = onSettingsScreen,
-                ) {
-                    Icon(
-                        imageVector = TablerIcons.Settings,
-                        contentDescription = "settings",
-                    )
-                }
-            },
-        )
+                    DLLIconButton(
+                        onClick = onSettingsScreen,
+                    ) {
+                        Icon(
+                            imageVector = TablerIcons.Settings,
+                            contentDescription = "settings",
+                        )
+                    }
+                },
+            )
+
+            HomeTabRow(pagerState = pagerState)
+        }
 
         AnimatedVisibility(
             isSearching,

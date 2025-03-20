@@ -14,19 +14,18 @@ kotlin {
             implementation(projects.feature.deeplink.ui)
             implementation(projects.feature.preferences.api)
             implementation(projects.core.date)
-
             implementation(projects.core.designsystem)
             implementation(projects.core.navigation)
             implementation(projects.core.resources)
 
             implementation(libs.kotlinx.coroutines.core)
             implementation(libs.koin.compose)
-            implementation(libs.voyager.screenmodel)
-            implementation(libs.voyager.navigator)
-            implementation(libs.voyager.koin)
-            implementation(libs.voyager.bottomSheet)
+            implementation(libs.bundles.voyager)
             implementation(libs.kotlinx.immutable)
             implementation(libs.material3.windowSizeClass)
+
+            implementation(libs.haze)
+            implementation(libs.haze.materials)
 
             implementation(compose.runtime)
             implementation(compose.foundation)

@@ -48,7 +48,6 @@ fun App(
                 BottomSheetNavigator(
                     modifier = Modifier
                         .fillMaxSize()
-                        .background(MaterialTheme.colorScheme.background)
                         .imePadding(),
                     sheetBackgroundColor = MaterialTheme.colorScheme.surface,
                     sheetShape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp),
