@@ -17,10 +17,10 @@
   </a>
 </p>
 
-## 🚀 Demo
+## Demo
 [![demo](https://github.com/user-attachments/assets/174c5fdd-8e15-4ae2-aa9c-94fc72e2c13c)](https://www.youtube.com/watch?v=umB3ZlYJMGA)
 
-## 🌐 Supported Platforms
+## Supported Platforms
 
 | Platform  | Status  | Download                                                      |
 |-----------|---------|--------------------------------------------------------------|
@@ -28,7 +28,7 @@
 | **iOS**      | ✅ Available | Not yet released.                                             |
 | **Desktop**  | ✅ Available | [Download for Desktop](https://github.com/FelipeKoga/deeplink-launcher/releases) |
 
-## 🔑 Key Features
+## Features
 
 - **Execute Deeplinks**: Instantly execute deeplinks on Android, iOS, and Desktop platforms.
 - **Device Bridge**: The Desktop app integrates with **ADB** (Android) and **Xcrun** (iOS) to run deeplinks directly on devices in real-time.
@@ -42,7 +42,7 @@
 - **Search**: Find any deeplink fast with the built-in search functionality.
 - **In-App Purchase**: Support the project by buying a coffee (Android only).
 
-## ⚙️ Built With
+## Built With
 
 | Technology | Description |
 |------------|-------------|
@@ -61,7 +61,7 @@
 | [**Material 3 Window Size Class**](https://github.com/chrisbanes/material3-windowsizeclass-multiplatform) | A library to detect window size across different platforms. |
 | [**RevenueCat**](https://www.revenuecat.com/) | In-app purchase library for managing subscriptions and one-time purchases. |
 
-## 🏗️ Architecture Overview
+## Architecture Overview
 
 The architecture used is designed to enforce modularization and encapsulation, promoting clean and maintainable code. Here's how it is structured:
 
