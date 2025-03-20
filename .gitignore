@@ -11,3 +11,4 @@ xcuserdata
 *.pepk
 .kotlin
 env.properties
+keystore.properties
