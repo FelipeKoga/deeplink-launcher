@@ -5,7 +5,8 @@ plugins {
     id("kotlin-android")
     id("dev.koga.deeplinklauncher.code-analysis")
     alias(libs.plugins.google.services)
-    alias(libs.plugins.crashlytics)
+    alias(libs.plugins.firebase.crashlytics)
+    alias(libs.plugins.firebase.perf)
     alias(libs.plugins.compose.compiler)
     alias(libs.plugins.baselineprofile)
 }
@@ -80,6 +81,7 @@ dependencies {
     implementation(libs.revenuecat.core)
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.crashlytics)
+    implementation(libs.firebase.perf)
     implementation(libs.compose.runtime)
     implementation(libs.androidx.profileinstaller)
 
