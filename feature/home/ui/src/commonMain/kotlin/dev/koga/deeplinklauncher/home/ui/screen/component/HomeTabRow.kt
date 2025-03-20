@@ -2,10 +2,11 @@ package dev.koga.deeplinklauncher.home.ui.screen.component
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
@@ -14,6 +15,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -33,8 +35,8 @@ internal fun HomeTabRow(
             Box(
                 modifier = Modifier
                     .tabIndicatorOffset(it[pagerState.currentPage])
-                    .width(1.dp)
-                    .height(4.dp)
+                    .fillMaxWidth(.3f)
+                    .height(2.dp)
                     .background(color = MaterialTheme.colorScheme.primary, shape = CircleShape),
             )
         },
@@ -48,6 +50,7 @@ internal fun HomeTabRow(
             val selected = it.ordinal == pagerState.currentPage
             Tab(
                 selected = selected,
+                modifier = Modifier.clip(RoundedCornerShape(topStart = 8.dp, topEnd = 8.dp)),
                 onClick = {
                     scope.launch {
                         pagerState.animateScrollToPage(it.ordinal)
@@ -66,7 +69,7 @@ internal fun HomeTabRow(
                         ),
                     )
                 },
-                unselectedContentColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                unselectedContentColor = MaterialTheme.colorScheme.secondary,
                 selectedContentColor = MaterialTheme.colorScheme.onBackground,
             )
         }

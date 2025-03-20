@@ -18,6 +18,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import compose.icons.tablericons.Folder
 import dev.koga.deeplinklauncher.deeplink.api.model.Folder
 import dev.koga.resources.Res
 import dev.koga.resources.folder_deeplink_count

@@ -5,32 +5,31 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.calculateEndPadding
+import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyGridScope
 import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
-import androidx.compose.foundation.pager.HorizontalPager
-import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import compose.icons.TablerIcons
 import compose.icons.tablericons.Plus
@@ -38,73 +37,29 @@ import dev.koga.deeplinklauncher.deeplink.api.model.DeepLink
 import dev.koga.deeplinklauncher.deeplink.api.model.Folder
 import dev.koga.deeplinklauncher.deeplink.ui.deeplink.component.DeepLinkCard
 import dev.koga.deeplinklauncher.deeplink.ui.folder.component.FolderCard
-import dev.koga.deeplinklauncher.home.ui.screen.HomeTabPage
 import kotlinx.collections.immutable.ImmutableList
 
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-internal fun HomeHorizontalPager(
-    modifier: Modifier = Modifier,
-    allDeepLinks: ImmutableList<DeepLink>,
-    favoriteDeepLinks: ImmutableList<DeepLink>,
-    folders: ImmutableList<Folder>,
-    pagerState: PagerState,
-    historyListState: LazyGridState,
-    favoritesListState: LazyGridState,
-    scrollBehavior: TopAppBarScrollBehavior,
-    onDeepLinkClicked: (DeepLink) -> Unit,
-    onDeepLinkLaunch: (DeepLink) -> Unit,
-    onFolderClicked: (Folder) -> Unit,
-    onFolderAdd: () -> Unit,
-) {
-    HorizontalPager(
-        state = pagerState,
-        modifier = modifier.fillMaxSize(),
-    ) { page ->
-        when (page) {
-            HomeTabPage.HISTORY.ordinal -> DeepLinksLazyColumn(
-                listState = historyListState,
-                deepLinks = allDeepLinks,
-                scrollBehavior = scrollBehavior,
-                onClick = onDeepLinkClicked,
-                onLaunch = onDeepLinkLaunch,
-                onFolderClicked = onFolderClicked,
-            )
-
-            HomeTabPage.FAVORITES.ordinal -> DeepLinksLazyColumn(
-                listState = favoritesListState,
-                deepLinks = favoriteDeepLinks,
-                scrollBehavior = scrollBehavior,
-                onClick = onDeepLinkClicked,
-                onLaunch = onDeepLinkLaunch,
-                onFolderClicked = onFolderClicked,
-            )
-
-            HomeTabPage.FOLDERS.ordinal -> FoldersVerticalStaggeredGrid(
-                folders = folders,
-                scrollBehavior = scrollBehavior,
-                onAdd = onFolderAdd,
-                onClick = onFolderClicked,
-            )
-        }
-    }
-}
-
-@OptIn(
-    ExperimentalMaterial3Api::class,
-)
 @Composable
 fun DeepLinksLazyColumn(
+    modifier: Modifier = Modifier,
     listState: LazyGridState,
     deepLinks: List<DeepLink>,
-    scrollBehavior: TopAppBarScrollBehavior,
+    contentPadding: PaddingValues,
     onClick: (DeepLink) -> Unit,
     onLaunch: (DeepLink) -> Unit,
     onFolderClicked: (Folder) -> Unit,
 ) {
+    val padding = PaddingValues(
+        start = contentPadding.calculateStartPadding(LayoutDirection.Ltr),
+        end = contentPadding.calculateEndPadding(LayoutDirection.Ltr),
+        top = contentPadding.calculateTopPadding() + 12.dp,
+        bottom = contentPadding.calculateBottomPadding() + 12.dp,
+    )
+
     HomeVerticalGridList(
+        modifier = modifier,
         state = listState,
-        scrollBehavior = scrollBehavior,
+        contentPadding = padding,
     ) {
         items(
             count = deepLinks.size,
@@ -113,7 +68,8 @@ fun DeepLinksLazyColumn(
             val deepLink = deepLinks[index]
 
             DeepLinkCard(
-                modifier = Modifier.animateItem(fadeInSpec = null, fadeOutSpec = null),
+                modifier = Modifier
+                    .animateItem(fadeInSpec = null, fadeOutSpec = null),
                 deepLink = deepLink,
                 onClick = { onClick(deepLink) },
                 onLaunch = { onLaunch(deepLink) },
@@ -123,17 +79,50 @@ fun DeepLinksLazyColumn(
     }
 }
 
-@OptIn(
-    ExperimentalMaterial3Api::class,
-    ExperimentalMaterial3WindowSizeClassApi::class,
-)
+@OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
+@Composable
+fun HomeVerticalGridList(
+    modifier: Modifier = Modifier,
+    state: LazyGridState,
+    contentPadding: PaddingValues,
+    content: LazyGridScope.() -> Unit,
+) {
+    val windowSizeClass = calculateWindowSizeClass()
+
+    val numberOfColumns = when (windowSizeClass.widthSizeClass) {
+        WindowWidthSizeClass.Medium -> 2
+        WindowWidthSizeClass.Expanded -> 3
+        else -> 1
+    }
+
+    LazyVerticalGrid(
+        columns = GridCells.Fixed(numberOfColumns),
+        state = state,
+        modifier = modifier.fillMaxSize().padding(horizontal = 12.dp),
+        contentPadding = contentPadding,
+        horizontalArrangement = Arrangement.spacedBy(24.dp),
+        verticalArrangement = Arrangement.spacedBy(12.dp),
+    ) {
+        content()
+    }
+}
+
+@OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
 @Composable
 fun FoldersVerticalStaggeredGrid(
+    modifier: Modifier = Modifier,
     folders: ImmutableList<Folder>,
-    scrollBehavior: TopAppBarScrollBehavior,
+    contentPadding: PaddingValues,
     onAdd: () -> Unit,
     onClick: (Folder) -> Unit,
 ) {
+    val padding = PaddingValues(
+        start = contentPadding.calculateStartPadding(LayoutDirection.Ltr),
+        end = contentPadding.calculateEndPadding(LayoutDirection.Ltr),
+        top = contentPadding.calculateTopPadding() + 12.dp,
+        bottom = contentPadding.calculateBottomPadding() + 12.dp,
+    )
+
     val windowSizeClass = calculateWindowSizeClass()
     val numberOfColumns = when (windowSizeClass.widthSizeClass) {
         WindowWidthSizeClass.Expanded -> 3
@@ -143,10 +132,8 @@ fun FoldersVerticalStaggeredGrid(
     LazyVerticalGrid(
         columns = GridCells.Fixed(numberOfColumns),
         state = rememberLazyGridState(),
-        modifier = Modifier
-            .fillMaxSize()
-            .nestedScroll(scrollBehavior.nestedScrollConnection),
-        contentPadding = PaddingValues(12.dp),
+        modifier = modifier.fillMaxSize().padding(horizontal = 12.dp),
+        contentPadding = padding,
         horizontalArrangement = Arrangement.spacedBy(24.dp),
         verticalArrangement = Arrangement.spacedBy(24.dp),
     ) {
@@ -187,35 +174,5 @@ fun FoldersVerticalStaggeredGrid(
                 modifier = Modifier.animateItem(fadeInSpec = null, fadeOutSpec = null),
             )
         }
-    }
-}
-
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3WindowSizeClassApi::class)
-@Composable
-fun HomeVerticalGridList(
-    modifier: Modifier = Modifier,
-    state: LazyGridState,
-    scrollBehavior: TopAppBarScrollBehavior,
-    content: LazyGridScope.() -> Unit,
-) {
-    val windowSizeClass = calculateWindowSizeClass()
-
-    val numberOfColumns = when (windowSizeClass.widthSizeClass) {
-        WindowWidthSizeClass.Medium -> 2
-        WindowWidthSizeClass.Expanded -> 3
-        else -> 1
-    }
-
-    LazyVerticalGrid(
-        columns = GridCells.Fixed(numberOfColumns),
-        state = state,
-        modifier = modifier
-            .fillMaxSize()
-            .nestedScroll(scrollBehavior.nestedScrollConnection),
-        contentPadding = PaddingValues(12.dp),
-        horizontalArrangement = Arrangement.spacedBy(24.dp),
-        verticalArrangement = Arrangement.spacedBy(24.dp),
-    ) {
-        content()
     }
 }

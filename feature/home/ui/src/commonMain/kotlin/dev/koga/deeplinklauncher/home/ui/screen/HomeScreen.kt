@@ -1,16 +1,16 @@
+@file:OptIn(ExperimentalMaterial3Api::class)
+
 package dev.koga.deeplinklauncher.home.ui.screen
 
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.navigationBarsPadding
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
+import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -20,16 +20,23 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.registry.ScreenRegistry
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.koin.getNavigatorScreenModel
 import cafe.adriel.voyager.navigator.bottomSheet.LocalBottomSheetNavigator
+import dev.chrisbanes.haze.HazeState
+import dev.chrisbanes.haze.hazeEffect
+import dev.chrisbanes.haze.hazeSource
+import dev.chrisbanes.haze.materials.ExperimentalHazeMaterialsApi
+import dev.chrisbanes.haze.materials.HazeMaterials
 import dev.koga.deeplinklauncher.LocalRootNavigator
 import dev.koga.deeplinklauncher.SharedScreen
 import dev.koga.deeplinklauncher.deeplink.ui.deeplink.screen.details.component.AddFolderBottomSheet
-import dev.koga.deeplinklauncher.home.ui.screen.component.HomeHorizontalPager
+import dev.koga.deeplinklauncher.home.ui.screen.component.DeepLinksLazyColumn
+import dev.koga.deeplinklauncher.home.ui.screen.component.FoldersVerticalStaggeredGrid
 import dev.koga.deeplinklauncher.home.ui.screen.component.HomeLaunchDeepLinkUI
-import dev.koga.deeplinklauncher.home.ui.screen.component.HomeTabRow
 import dev.koga.deeplinklauncher.home.ui.screen.component.HomeTopBar
 import dev.koga.deeplinklauncher.home.ui.screen.component.OnboardingBottomSheet
 import dev.koga.deeplinklauncher.home.ui.screen.state.HomeEvent
@@ -38,9 +45,9 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 
+@OptIn(ExperimentalHazeMaterialsApi::class)
 class HomeScreen : Screen {
 
-    @OptIn(ExperimentalMaterial3Api::class)
     @Composable
     override fun Content() {
         val scope = rememberCoroutineScope()
@@ -48,15 +55,13 @@ class HomeScreen : Screen {
         val bottomSheetNavigator = LocalBottomSheetNavigator.current
         val screenModel = navigator.getNavigatorScreenModel<HomeScreenModel>()
         val uiState by screenModel.uiState.collectAsState()
+        val hazeState = remember { HazeState() }
 
         val historyListState = rememberLazyGridState()
         val favoritesListState = rememberLazyGridState()
         val pagerState = rememberPagerState(
             initialPage = HomeTabPage.HISTORY.ordinal,
             pageCount = { HomeTabPage.entries.size },
-        )
-        val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(
-            rememberTopAppBarState(),
         )
 
         var showAddFolderBottomSheet by remember { mutableStateOf(false) }
@@ -103,50 +108,69 @@ class HomeScreen : Screen {
             topBar = {
                 HomeTopBar(
                     search = uiState.searchInput,
-                    scrollBehavior = scrollBehavior,
                     onSettingsScreen = {
                         val settingsScreen = ScreenRegistry.get(SharedScreen.Settings)
                         navigator.push(settingsScreen)
                     },
                     onSearch = screenModel::onSearch,
+                    pagerState = pagerState,
+                    modifier = Modifier.hazeEffect(
+                        state = hazeState,
+                        style = HazeMaterials.regular(containerColor = MaterialTheme.colorScheme.background),
+                    ),
                 )
             },
-            containerColor = MaterialTheme.colorScheme.background,
             bottomBar = {
                 HomeLaunchDeepLinkUI(
-                    modifier = Modifier.navigationBarsPadding(),
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(12.dp))
+                        .hazeEffect(
+                            state = hazeState,
+                            style = HazeMaterials.thick(),
+                        )
+                        .navigationBarsPadding(),
                     value = uiState.deepLinkInput,
-                    onValueChange = screenModel::onDeepLinkTextChanged,
                     suggestions = uiState.suggestions,
-                    launch = screenModel::launchDeepLink,
                     errorMessage = uiState.errorMessage,
-                    onSuggestionClicked = { screenModel.onDeepLinkTextChanged(it) },
+                    launch = screenModel::launchDeepLink,
+                    onSuggestionClicked = screenModel::onDeepLinkTextChanged,
+                    onValueChange = screenModel::onDeepLinkTextChanged,
                 )
             },
-        ) { contentPadding ->
-            Column(
-                modifier = Modifier
-                    .padding(contentPadding)
-                    .fillMaxSize(),
-            ) {
-                HomeTabRow(pagerState = pagerState)
+        ) {
+            HorizontalPager(
+                state = pagerState,
+                modifier = Modifier.fillMaxSize(),
+            ) { page ->
+                when (page) {
+                    HomeTabPage.HISTORY.ordinal,
+                    HomeTabPage.FAVORITES.ordinal,
+                    -> DeepLinksLazyColumn(
+                        modifier = Modifier.hazeSource(hazeState),
+                        listState = historyListState,
+                        deepLinks = uiState.deepLinks,
+                        contentPadding = it,
+                        onClick = { bottomSheetNavigator.navigateToDeepLinkDetails(it.id) },
+                        onLaunch = screenModel::launchDeepLink,
+                        onFolderClicked = {
+                            navigator.push(
+                                ScreenRegistry.get(SharedScreen.FolderDetails(it.id)),
+                            )
+                        },
+                    )
 
-                HomeHorizontalPager(
-                    allDeepLinks = uiState.deepLinks,
-                    favoriteDeepLinks = uiState.favorites,
-                    folders = uiState.folders,
-                    pagerState = pagerState,
-                    scrollBehavior = scrollBehavior,
-                    onDeepLinkClicked = { bottomSheetNavigator.navigateToDeepLinkDetails(it.id) },
-                    onDeepLinkLaunch = screenModel::launchDeepLink,
-                    onFolderClicked = {
-                        val screen = ScreenRegistry.get(SharedScreen.FolderDetails(it.id))
-                        navigator.push(screen)
-                    },
-                    onFolderAdd = { showAddFolderBottomSheet = true },
-                    historyListState = historyListState,
-                    favoritesListState = favoritesListState,
-                )
+                    HomeTabPage.FOLDERS.ordinal -> FoldersVerticalStaggeredGrid(
+                        modifier = Modifier.hazeSource(hazeState),
+                        contentPadding = it,
+                        folders = uiState.folders,
+                        onClick = {
+                            navigator.push(
+                                ScreenRegistry.get(SharedScreen.FolderDetails(it.id)),
+                            )
+                        },
+                        onAdd = { showAddFolderBottomSheet = true },
+                    )
+                }
             }
         }
     }

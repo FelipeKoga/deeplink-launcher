@@ -1,6 +1,5 @@
 package dev.koga.deeplinklauncher.shared
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -48,7 +47,6 @@ fun App(
                 BottomSheetNavigator(
                     modifier = Modifier
                         .fillMaxSize()
-                        .background(MaterialTheme.colorScheme.background)
                         .imePadding(),
                     sheetBackgroundColor = MaterialTheme.colorScheme.surface,
                     sheetShape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp),

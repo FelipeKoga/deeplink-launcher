@@ -4,19 +4,17 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
@@ -34,6 +32,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
@@ -48,10 +47,10 @@ import compose.icons.tablericons.ExternalLink
 import compose.icons.tablericons.X
 import dev.koga.deeplinklauncher.designsystem.DLLHorizontalDivider
 import dev.koga.deeplinklauncher.designsystem.DLLTextField
-import dev.koga.deeplinklauncher.designsystem.button.DLLFilledIconButton
+import dev.koga.deeplinklauncher.designsystem.button.DLLIconButton
+import dev.koga.deeplinklauncher.designsystem.defaultTextFieldColors
 import kotlinx.collections.immutable.ImmutableList
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 internal fun HomeLaunchDeepLinkUI(
     modifier: Modifier = Modifier,
@@ -70,122 +69,119 @@ internal fun HomeLaunchDeepLinkUI(
         derivedStateOf { isFocused && suggestions.isNotEmpty() }
     }
 
-    Card(
-        shape = RoundedCornerShape(topStart = 12.dp, topEnd = 12.dp),
-        elevation = CardDefaults.elevatedCardElevation(defaultElevation = 0.dp),
+    Column(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(12.dp),
     ) {
-        Column(
-            modifier = modifier
+        Row(
+            modifier = Modifier
                 .fillMaxWidth()
-                .padding(12.dp),
+                .padding(horizontal = 0.dp)
+                .padding(bottom = 12.dp),
+            verticalAlignment = Alignment.CenterVertically,
         ) {
-            Row(
+            DLLTextField(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 0.dp)
-                    .padding(bottom = 12.dp),
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                DLLTextField(
-                    modifier = Modifier
-                        .weight(1f)
-                        .focusRequester(focusRequester)
-                        .onFocusChanged {
-                            if (!isFocused) {
-                                isFocused = it.isFocused
-                            }
-                        },
-                    value = value,
-                    onValueChange = onValueChange,
-                    label = "Launch your deeplink here",
-                    keyboardOptions = KeyboardOptions.Default.copy(
-                        keyboardType = KeyboardType.Uri,
-                        autoCorrectEnabled = false,
-                        imeAction = ImeAction.Done,
-                    ),
-                    keyboardActions = KeyboardActions(
-                        onDone = { launch() },
-                    ),
-                    textStyle = MaterialTheme.typography.bodyMedium.copy(
-                        fontWeight = FontWeight.Bold,
-                    ),
-                    trailingIcon = {
-                        AnimatedVisibility(
-                            visible = isFocused,
-                        ) {
-                            IconButton(
-                                onClick = {
-                                    isFocused = false
-                                    focusManager.clearFocus()
-                                    onValueChange("")
-                                },
-                                colors = IconButtonDefaults.iconButtonColors(
-                                    contentColor = MaterialTheme.colorScheme.secondary,
-                                ),
-                                modifier = modifier,
-                            ) {
-                                Icon(
-                                    imageVector = TablerIcons.X,
-                                    contentDescription = "Clear",
-                                )
-                            }
+                    .weight(1f)
+                    .focusRequester(focusRequester)
+                    .onFocusChanged {
+                        if (!isFocused) {
+                            isFocused = it.isFocused
                         }
                     },
-                )
+                value = value,
+                onValueChange = onValueChange,
+                label = "Type your deeplink here...",
+                keyboardOptions = KeyboardOptions.Default.copy(
+                    keyboardType = KeyboardType.Uri,
+                    autoCorrectEnabled = false,
+                    imeAction = ImeAction.Done,
+                ),
+                colors = defaultTextFieldColors.copy(
+                    unfocusedContainerColor = Color.Transparent,
+                    focusedContainerColor = Color.Transparent,
+                ),
+                keyboardActions = KeyboardActions(
+                    onDone = { launch() },
+                ),
+                textStyle = MaterialTheme.typography.bodyMedium.copy(
+                    fontWeight = FontWeight.Bold,
+                ),
+                trailingIcon = {
+                    AnimatedVisibility(
+                        visible = isFocused,
+                    ) {
+                        IconButton(
+                            onClick = {
+                                isFocused = false
+                                focusManager.clearFocus()
+                                onValueChange("")
+                            },
+                            colors = IconButtonDefaults.iconButtonColors(
+                                contentColor = MaterialTheme.colorScheme.secondary,
+                            ),
+                            modifier = modifier,
+                        ) {
+                            Icon(
+                                imageVector = TablerIcons.X,
+                                contentDescription = "Clear",
+                                modifier = Modifier.size(16.dp),
+                            )
+                        }
+                    }
+                },
+            )
 
-                DLLFilledIconButton(
-                    modifier = Modifier.padding(start = 12.dp),
-                    onClick = launch,
-                    enabled = value.isNotBlank(),
-                    colors = IconButtonDefaults.filledIconButtonColors(
-                        containerColor = MaterialTheme.colorScheme.primary,
-                        contentColor = MaterialTheme.colorScheme.onPrimary,
-                    ),
-                ) {
-                    Icon(
-                        imageVector = TablerIcons.ExternalLink,
-                        contentDescription = "Launch",
-                    )
+            DLLIconButton(
+                modifier = Modifier.padding(start = 12.dp),
+                onClick = launch,
+                enabled = value.isNotBlank(),
+            ) {
+                Icon(
+                    imageVector = TablerIcons.ExternalLink,
+                    contentDescription = "Launch",
+                )
+            }
+        }
+
+        AnimatedVisibility(
+            visible = errorMessage != null,
+        ) {
+            Text(
+                text = errorMessage.orEmpty(),
+                modifier = Modifier.padding(bottom = 4.dp),
+                style = MaterialTheme.typography.labelMedium.copy(
+                    color = MaterialTheme.colorScheme.error,
+                    fontWeight = FontWeight.Bold,
+                ),
+            )
+        }
+
+        AnimatedVisibility(
+            visible = showSuggestions,
+        ) {
+            LazyColumn(
+                modifier = Modifier.animateContentSize(),
+            ) {
+                item {
+                    DLLHorizontalDivider(thickness = .3.dp)
                 }
-            }
 
-            AnimatedVisibility(
-                visible = errorMessage != null,
-            ) {
-                Text(
-                    text = errorMessage.orEmpty(),
-                    modifier = Modifier.padding(bottom = 4.dp),
-                    style = MaterialTheme.typography.labelMedium.copy(
-                        color = MaterialTheme.colorScheme.error,
-                        fontWeight = FontWeight.Bold,
-                    ),
-                )
-            }
-
-            AnimatedVisibility(
-                visible = showSuggestions,
-            ) {
-                LazyColumn(
-                    modifier = Modifier.animateContentSize(),
-                ) {
-                    item {
-                        DLLHorizontalDivider()
-                    }
-
-                    items(
-                        items = suggestions,
-                        key = { it },
-                    ) { suggestion ->
-                        SuggestionListItem(
-                            modifier = Modifier
-                                .animateItem(fadeInSpec = null, fadeOutSpec = null)
-                                .clickable {
-                                    focusRequester.requestFocus()
-                                    onSuggestionClicked(suggestion)
-                                },
-                            suggestion = suggestion,
-                        )
-                    }
+                items(
+                    items = suggestions,
+                    key = { it },
+                ) { suggestion ->
+                    SuggestionListItem(
+                        modifier = Modifier
+                            .animateItem(fadeInSpec = null, fadeOutSpec = null)
+                            .clip(RoundedCornerShape(8.dp))
+                            .clickable {
+                                focusRequester.requestFocus()
+                                onSuggestionClicked(suggestion)
+                            },
+                        suggestion = suggestion,
+                    )
                 }
             }
         }
