@@ -24,6 +24,7 @@ detekt = "1.23.8"
 composerules = "0.0.26"
 firebase-bom = "33.10.0"
 firebase-crashlytics-plugin = "3.0.3"
+firebase-perf-plugin = "1.4.2"
 google-services = "4.4.2"
 stately = "2.1.0"
 aboutlibraries = "11.6.3"
@@ -75,6 +76,7 @@ detekt = { module = "io.gitlab.arturbosch.detekt:detekt-gradle-plugin", version.
 composerules = { module = "com.twitter.compose.rules:detekt", version.ref = "composerules" }
 firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebase-bom" }
 firebase-crashlytics = { module = "com.google.firebase:firebase-crashlytics" }
+firebase-perf = { module = "com.google.firebase:firebase-perf" }
 aboutlibraries_compose = { module = "com.mikepenz:aboutlibraries-compose-m3", version.ref = "aboutlibraries" }
 compose-runtime = { module = "androidx.compose.runtime:runtime", version.ref = "compose-runtime" }
 junit = { module = "junit:junit", version.ref = "junit" }
@@ -109,7 +111,8 @@ org-jetbrains-kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "org
 jetbrainsCompose = { id = "org.jetbrains.compose", version.ref = "compose-plugin" }
 compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 google-services = { id = "com.google.gms.google-services", version.ref = "google-services" }
-crashlytics = { id = "com.google.firebase.crashlytics", version.ref = "firebase-crashlytics-plugin" }
+firebase-crashlytics = { id = "com.google.firebase.crashlytics", version.ref = "firebase-crashlytics-plugin" }
+firebase-perf = { id = "com.google.firebase.firebase-perf", version.ref = "firebase-perf-plugin"}
 aboutlibraries_plugin = { id = "com.mikepenz.aboutlibraries.plugin", version.ref = "aboutlibraries" }
 build-konfig = { id = "com.codingfeline.buildkonfig" }
 android-test = { id = "com.android.test", version.ref = "androidGradlePlugin" }
