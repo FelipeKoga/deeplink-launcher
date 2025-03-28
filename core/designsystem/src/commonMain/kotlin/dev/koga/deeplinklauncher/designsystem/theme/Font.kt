@@ -4,26 +4,29 @@ import androidx.compose.material3.Typography
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
-import dev.koga.resources.Montserrat_Black
-import dev.koga.resources.Montserrat_Bold
-import dev.koga.resources.Montserrat_Medium
-import dev.koga.resources.Montserrat_Regular
-import dev.koga.resources.Montserrat_Semibold
-import dev.koga.resources.Montserrat_Thin
+import dev.koga.resources.Nunito_Black
+import dev.koga.resources.Nunito_Bold
+import dev.koga.resources.Nunito_ExtraBold
+import dev.koga.resources.Nunito_ExtraLight
+import dev.koga.resources.Nunito_Light
+import dev.koga.resources.Nunito_Medium
+import dev.koga.resources.Nunito_Regular
+import dev.koga.resources.Nunito_SemiBold
 import dev.koga.resources.Res
 import org.jetbrains.compose.resources.Font
 
 val appFont
     @Composable get() = FontFamily(
-        Font(Res.font.Montserrat_Thin, FontWeight.Thin),
-        Font(Res.font.Montserrat_Regular, FontWeight.Normal),
-        Font(Res.font.Montserrat_Medium, FontWeight.Medium),
-        Font(Res.font.Montserrat_Semibold, FontWeight.SemiBold),
-        Font(Res.font.Montserrat_Bold, FontWeight.Bold),
-        Font(Res.font.Montserrat_Black, FontWeight.Black),
+        Font(Res.font.Nunito_Regular, FontWeight.Normal),
+        Font(Res.font.Nunito_Medium, FontWeight.Medium),
+        Font(Res.font.Nunito_SemiBold, FontWeight.SemiBold),
+        Font(Res.font.Nunito_Bold, FontWeight.Bold),
+        Font(Res.font.Nunito_ExtraBold, FontWeight.ExtraBold),
+        Font(Res.font.Nunito_Black, FontWeight.Black),
+        Font(Res.font.Nunito_Light, FontWeight.Light),
+        Font(Res.font.Nunito_ExtraLight, FontWeight.ExtraLight),
     )
 
-// Set of Material typography styles to start with
 private val defaultTypography = Typography()
 
 val typography
