@@ -132,6 +132,7 @@ fun LaunchModeUI(
             ) {
                 Text(
                     text = uiState.deepLink.link,
+                    modifier = Modifier.weight(1f),
                     style = MaterialTheme.typography.titleMedium.copy(
                         fontWeight = FontWeight.Bold,
                         color = MaterialTheme.colorScheme.onBackground,
