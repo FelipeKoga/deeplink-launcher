@@ -2,7 +2,7 @@ import kotlinx.datetime.Clock
 
 object AndroidAppConfiguration {
     private const val MAJOR_VERSION = 1
-    private const val MINOR_VERSION = 9
+    private const val MINOR_VERSION = 10
     private const val PATCH_VERSION = 0
 
     const val VERSION_NAME = "$MAJOR_VERSION.$MINOR_VERSION.$PATCH_VERSION"
@@ -21,5 +21,5 @@ object AndroidAppConfiguration {
 }
 
 object DesktopAppConfiguration {
-    const val VERSION_NAME = "1.2.0"
+    const val VERSION_NAME = "1.10.0"
 }
