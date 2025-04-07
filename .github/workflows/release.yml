@@ -52,6 +52,9 @@ jobs:
           distribution: 'zulu'
           cache: gradle
 
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v3
+
       - name: Create Environment File
         uses: ./.github/actions/create-env-action
         with:
@@ -59,9 +62,6 @@ jobs:
 
       - name: Grant execute permission for gradlew
         run: chmod +x ./gradlew
-
-      - name: Update dependencies
-        run: ./gradlew dependencies
 
       - name: Decode Release Key
         run: |
