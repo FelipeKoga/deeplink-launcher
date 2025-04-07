@@ -87,6 +87,10 @@ jobs:
         with:
           REVENUECAT_API_KEY: ${{ secrets.REVENUECAT_API_KEY }}
 
+
+      - name: Update baselineprofile files
+        run: ./gradlew generateReleaseBaselineProfile
+
       - name: Build APK
         run: ./gradlew assembleRelease --stacktrace
 
