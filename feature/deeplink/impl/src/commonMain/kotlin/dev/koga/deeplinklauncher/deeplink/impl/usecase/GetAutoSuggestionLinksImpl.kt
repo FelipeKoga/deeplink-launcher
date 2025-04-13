@@ -1,6 +1,7 @@
 package dev.koga.deeplinklauncher.deeplink.impl.usecase
 
 import dev.koga.deeplinklauncher.deeplink.api.model.DeepLinkMetadata
+import dev.koga.deeplinklauncher.deeplink.api.model.Suggestion
 import dev.koga.deeplinklauncher.deeplink.api.repository.DeepLinkRepository
 import dev.koga.deeplinklauncher.deeplink.api.usecase.GetAutoSuggestionLinks
 import dev.koga.deeplinklauncher.deeplink.api.usecase.GetDeepLinkMetadata
@@ -11,13 +12,22 @@ class GetAutoSuggestionLinksImpl(
     private val repository: DeepLinkRepository,
     private val getDeepLinkMetadata: GetDeepLinkMetadata,
     private val preferencesRepository: PreferencesRepository,
+    private val getDeepLinkFromClipboard: GetDeepLinkFromClipboard,
 ) : GetAutoSuggestionLinks {
 
-    override operator fun invoke(link: String): List<String> {
+    override operator fun invoke(link: String): List<Suggestion> {
         if (preferencesRepository.preferences.shouldDisableDeepLinkSuggestions) {
-            return persistentListOf()
+            return listOf()
         }
 
+        val suggestions = getSuggestionsBasedOnHistory(link)
+        if (link.isNotBlank()) return suggestions
+        val deeplinkFromClipboard = getDeepLinkFromClipboard() ?: return suggestions
+
+        return listOf(Suggestion.Clipboard(deeplinkFromClipboard)) + suggestions
+    }
+
+    private fun getSuggestionsBasedOnHistory(link: String): List<Suggestion> {
         val deepLinks = repository.getDeepLinks()
 
         val deepLinksMetadata = deepLinks.map { getDeepLinkMetadata(it.link) }
@@ -40,23 +50,26 @@ class GetAutoSuggestionLinksImpl(
         }.distinct().take(n = MAX_RESULTS)
     }
 
-    private fun List<DeepLinkMetadata>.schemes(text: String): List<String> {
+    private fun List<DeepLinkMetadata>.schemes(text: String): List<Suggestion> {
         return filter { it.scheme != null && it.scheme!!.contains(text) }.map {
-            when {
-                it.link.contains("://") -> "${it.scheme}://"
-                else -> "${it.scheme}:"
-            }
+            Suggestion.History(
+                text = when {
+                    it.link.contains("://") -> "${it.scheme}://"
+                    else -> "${it.scheme}:"
+                }
+            )
         }
     }
 
-    private fun List<DeepLinkMetadata>.hosts(scheme: String): List<String> {
-        return filter { it.scheme == scheme && it.host != null }.map { it.link }
+    private fun List<DeepLinkMetadata>.hosts(scheme: String): List<Suggestion> {
+        return filter { it.scheme == scheme && it.host != null }
+            .map { Suggestion.History(text = it.link) }
     }
 
-    private fun List<DeepLinkMetadata>.queries(scheme: String, host: String): List<String> {
+    private fun List<DeepLinkMetadata>.queries(scheme: String, host: String): List<Suggestion> {
         return filter {
             it.scheme == scheme && it.host == host && !it.query.isNullOrBlank()
-        }.map { it.link }
+        }.map { Suggestion.History(text = it.link) }
     }
 
     companion object {
