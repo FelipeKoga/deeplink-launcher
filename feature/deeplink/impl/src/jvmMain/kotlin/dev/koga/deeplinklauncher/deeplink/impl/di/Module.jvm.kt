@@ -6,6 +6,7 @@ import dev.koga.deeplinklauncher.deeplink.api.usecase.LaunchDeepLink
 import dev.koga.deeplinklauncher.deeplink.api.usecase.ShareDeepLink
 import dev.koga.deeplinklauncher.deeplink.api.usecase.ValidateDeepLink
 import dev.koga.deeplinklauncher.deeplink.impl.manager.DeepLinkTargetStateManagerImpl
+import dev.koga.deeplinklauncher.deeplink.impl.usecase.GetDeepLinkFromClipboard
 import dev.koga.deeplinklauncher.deeplink.impl.usecase.GetDeepLinkMetadataImpl
 import dev.koga.deeplinklauncher.deeplink.impl.usecase.LaunchDeepLinkImpl
 import dev.koga.deeplinklauncher.deeplink.impl.usecase.ShareDeepLinkImpl
@@ -21,6 +22,7 @@ actual val platformModule: Module = module {
     singleOf(::LaunchDeepLinkImpl) bind LaunchDeepLink::class
     singleOf(::ValidateDeepLinkImpl) bind ValidateDeepLink::class
     singleOf(::ShareDeepLinkImpl) bind ShareDeepLink::class
+    singleOf(::GetDeepLinkFromClipboard)
 
     single {
         DeepLinkTargetStateManagerImpl(

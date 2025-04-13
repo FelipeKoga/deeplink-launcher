@@ -5,6 +5,7 @@ import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -18,8 +19,6 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
-import androidx.compose.material3.ListItem
-import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -43,23 +42,26 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import compose.icons.TablerIcons
+import compose.icons.tablericons.ArrowUp
 import compose.icons.tablericons.ExternalLink
 import compose.icons.tablericons.X
+import dev.koga.deeplinklauncher.deeplink.api.model.Suggestion
 import dev.koga.deeplinklauncher.designsystem.DLLHorizontalDivider
 import dev.koga.deeplinklauncher.designsystem.DLLTextField
 import dev.koga.deeplinklauncher.designsystem.button.DLLIconButton
 import dev.koga.deeplinklauncher.designsystem.defaultTextFieldColors
 import kotlinx.collections.immutable.ImmutableList
+import kotlinx.coroutines.delay
 
 @Composable
 internal fun HomeLaunchDeepLinkUI(
     modifier: Modifier = Modifier,
     value: String,
     errorMessage: String? = null,
-    suggestions: ImmutableList<String>,
+    suggestions: ImmutableList<Suggestion>,
     onValueChange: (String) -> Unit,
     launch: () -> Unit,
-    onSuggestionClicked: (String) -> Unit,
+    onSuggestionClicked: (Suggestion) -> Unit,
 ) {
     val focusRequester = remember { FocusRequester() }
     val focusManager = LocalFocusManager.current
@@ -170,7 +172,7 @@ internal fun HomeLaunchDeepLinkUI(
 
                 items(
                     items = suggestions,
-                    key = { it },
+                    key = { it.text },
                 ) { suggestion ->
                     SuggestionListItem(
                         modifier = Modifier
@@ -189,10 +191,15 @@ internal fun HomeLaunchDeepLinkUI(
 }
 
 @Composable
-private fun SuggestionListItem(modifier: Modifier = Modifier, suggestion: String) {
+private fun SuggestionListItem(
+    modifier: Modifier = Modifier,
+    suggestion: Suggestion,
+    animationDelay: Long = 0,
+) {
     var visible by remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
+        delay(animationDelay)
         visible = true
     }
 
@@ -201,19 +208,35 @@ private fun SuggestionListItem(modifier: Modifier = Modifier, suggestion: String
         enter = slideInHorizontally(),
         exit = slideOutHorizontally(),
     ) {
-        ListItem(
-            modifier = modifier,
-            colors = ListItemDefaults.colors(
-                containerColor = Color.Transparent,
-            ),
-            headlineContent = {
+        Row(
+            modifier = modifier.fillMaxWidth().padding(horizontal = 12.dp, vertical = 12.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween,
+        ) {
+            Column {
+                if (suggestion is Suggestion.Clipboard) {
+                    Text(
+                        text = "Deeplink from clipboard",
+                        style = MaterialTheme.typography.labelSmall.copy(
+                            fontWeight = FontWeight.SemiBold,
+                            color = MaterialTheme.colorScheme.secondary,
+                        ),
+                    )
+                }
                 Text(
-                    text = suggestion,
+                    text = suggestion.text,
                     style = MaterialTheme.typography.bodyMedium.copy(
                         fontWeight = FontWeight.SemiBold,
                     ),
                 )
-            },
-        )
+            }
+
+            Icon(
+                imageVector = TablerIcons.ArrowUp,
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.secondary,
+                modifier = Modifier.size(16.dp),
+            )
+        }
     }
 }

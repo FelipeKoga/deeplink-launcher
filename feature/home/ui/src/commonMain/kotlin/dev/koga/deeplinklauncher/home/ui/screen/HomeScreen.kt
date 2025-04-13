@@ -133,7 +133,7 @@ class HomeScreen : Screen {
                     suggestions = uiState.suggestions,
                     errorMessage = uiState.errorMessage,
                     launch = screenModel::launchDeepLink,
-                    onSuggestionClicked = screenModel::onDeepLinkTextChanged,
+                    onSuggestionClicked = screenModel::onSuggestionClicked,
                     onValueChange = screenModel::onDeepLinkTextChanged,
                 )
             },
