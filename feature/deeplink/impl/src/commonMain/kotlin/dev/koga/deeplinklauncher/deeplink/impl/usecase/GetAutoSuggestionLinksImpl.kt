@@ -6,7 +6,6 @@ import dev.koga.deeplinklauncher.deeplink.api.repository.DeepLinkRepository
 import dev.koga.deeplinklauncher.deeplink.api.usecase.GetAutoSuggestionLinks
 import dev.koga.deeplinklauncher.deeplink.api.usecase.GetDeepLinkMetadata
 import dev.koga.deeplinklauncher.preferences.api.repository.PreferencesRepository
-import kotlinx.collections.immutable.persistentListOf
 
 class GetAutoSuggestionLinksImpl(
     private val repository: DeepLinkRepository,
@@ -56,7 +55,7 @@ class GetAutoSuggestionLinksImpl(
                 text = when {
                     it.link.contains("://") -> "${it.scheme}://"
                     else -> "${it.scheme}:"
-                }
+                },
             )
         }
     }
