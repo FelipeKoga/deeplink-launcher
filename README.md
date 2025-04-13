@@ -17,8 +17,8 @@
   </a>
 </p>
 
-## Demo
-![demo](./docs/demo.gif)
+## Screenshot
+![screenshot](./docs/screenshot.png)
 
 ## Features
 
