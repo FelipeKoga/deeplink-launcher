@@ -24,7 +24,7 @@
 
 - **Execute Deeplinks**: Instantly execute deeplinks on Android, iOS, and Desktop platforms.
 - **Device Bridge**: The Desktop app integrates with **ADB** (Android) and **Xcrun** (iOS) to run deeplinks directly on devices in real-time.
-- **Auto-suggestions**: Get suggestions for deeplinks based on previously executed links.
+- **Auto-suggestions**: Suggests deeplinks based on your usage history and clipboard content.
 - **Deeplink History**: Easily track and revisit all previously executed deeplinks.
 - **Favorites**: Mark your most used deeplinks as favorites for quick access.
 - **Folders**: Organize your deeplinks into folders for better management.
