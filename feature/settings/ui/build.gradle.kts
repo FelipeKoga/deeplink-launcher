@@ -4,6 +4,7 @@ plugins {
     id("dev.koga.deeplinklauncher.multiplatform")
     alias(libs.plugins.jetbrainsCompose)
     alias(libs.plugins.compose.compiler)
+    alias(libs.plugins.kotlin.serialization)
 }
 
 kotlin {
@@ -13,19 +14,21 @@ kotlin {
         commonMain.dependencies {
             implementation(projects.feature.deeplink.api)
             implementation(projects.feature.preferences.api)
-            implementation(projects.feature.purchase.ui)
+            implementation(projects.feature.purchase.api)
 
             implementation(projects.core.designsystem)
             implementation(projects.core.navigation)
             implementation(projects.core.platform)
+            implementation(projects.core.coroutines)
 
             implementation(libs.kotlinx.coroutines.core)
+            
             implementation(libs.koin.compose)
-            implementation(libs.voyager.screenmodel)
-            implementation(libs.voyager.navigator)
-            implementation(libs.voyager.koin)
+            implementation(libs.koin.viewmodel)
+
             implementation(libs.kotlinx.immutable)
             implementation(libs.aboutlibraries.compose)
+            implementation(libs.compose.navigation)
 
             implementation(compose.runtime)
             implementation(compose.foundation)

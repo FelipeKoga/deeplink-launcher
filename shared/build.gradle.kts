@@ -23,9 +23,8 @@ kotlin {
             implementation(projects.feature.importExport.impl)
             api(projects.feature.preferences.api)
             implementation(projects.feature.preferences.impl)
-            implementation(projects.feature.settings.ui)
+            implementation(projects.feature.settings)
             implementation(projects.feature.home.ui)
-            implementation(projects.feature.purchase.ui)
             api(projects.feature.purchase.api)
             implementation(projects.feature.purchase.impl)
 
@@ -41,6 +40,7 @@ kotlin {
             implementation(libs.voyager.bottomSheet)
             implementation(libs.voyager.navigator)
             implementation(libs.voyager.transitions)
+            implementation(libs.compose.navigation)
 
             implementation(compose.runtime)
             implementation(compose.foundation)

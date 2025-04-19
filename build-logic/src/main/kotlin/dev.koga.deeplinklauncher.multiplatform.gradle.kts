@@ -16,6 +16,13 @@ kotlin {
     androidTarget()
 
     sourceSets {
+        val mobileMain by creating {
+            dependsOn(commonMain.get())
+        }
+
+        androidMain.get().dependsOn(mobileMain)
+        iosMain.get().dependsOn(mobileMain)
+
         iosMain.dependencies {
             implementation(libs.getLibrary("stately"))
         }

@@ -6,7 +6,7 @@ import dev.koga.deeplinklauncher.deeplink.ui.deeplink.screen.details.DeepLinkDet
 import dev.koga.deeplinklauncher.deeplink.ui.folder.screen.details.FolderDetailsScreen
 import dev.koga.deeplinklauncher.importdata.ui.screen.export.ExportScreen
 import dev.koga.deeplinklauncher.importdata.ui.screen.import.ImportScreen
-import dev.koga.deeplinklauncher.settings.ui.screen.SettingsScreen
+import dev.koga.deeplinklauncher.settings.ui.SettingsScreen
 import org.koin.core.module.Module
 
 internal val screenModule = screenModule {
