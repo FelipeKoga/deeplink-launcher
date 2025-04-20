@@ -176,7 +176,7 @@ internal fun HomeLaunchDeepLinkUI(
                 ) { suggestion ->
                     SuggestionListItem(
                         modifier = Modifier
-                            .animateItem(fadeInSpec = null, fadeOutSpec = null)
+                            .animateItem()
                             .clip(RoundedCornerShape(8.dp))
                             .clickable {
                                 focusRequester.requestFocus()
