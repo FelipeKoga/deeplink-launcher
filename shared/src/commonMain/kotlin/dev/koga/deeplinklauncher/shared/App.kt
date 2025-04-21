@@ -28,7 +28,7 @@ import org.koin.compose.koinInject
 fun App(
     preferencesRepository: PreferencesRepository = koinInject(),
 
-) {
+    ) {
     val preferences by preferencesRepository.preferencesStream.collectAsStateWithLifecycle(
         preferencesRepository.preferences,
     )
@@ -38,11 +38,10 @@ fun App(
     val appGraph: AppGraph = koinInject()
 
     LaunchedEffect(Unit) {
-        appNavigator.destination.collect {
-            println("destination: $it")
-            when (it) {
+        appNavigator.destination.collect { (route, navOptions) ->
+            when (route) {
                 AppNavigationRoute.Back -> navController.popBackStack()
-                else -> navController.navigate(it)
+                else -> navController.navigate(route, navOptions)
             }
         }
     }

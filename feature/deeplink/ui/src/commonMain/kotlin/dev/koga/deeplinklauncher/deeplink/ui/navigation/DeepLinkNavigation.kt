@@ -36,5 +36,12 @@ class DeepLinkNavigation(
                 viewModel = koinViewModel()
             )
         }
+
+        dialog<AppNavigationRoute.AddFolder> {
+            AddFolderBottomSheet(
+                onDismiss =  appNavigator::back,
+                viewModel = koinViewModel()
+            )
+        }
     }
 }

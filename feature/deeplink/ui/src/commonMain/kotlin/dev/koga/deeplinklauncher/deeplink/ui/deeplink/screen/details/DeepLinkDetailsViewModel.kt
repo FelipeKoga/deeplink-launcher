@@ -15,27 +15,27 @@ import dev.koga.deeplinklauncher.deeplink.api.usecase.DuplicateDeepLink
 import dev.koga.deeplinklauncher.deeplink.api.usecase.LaunchDeepLink
 import dev.koga.deeplinklauncher.deeplink.api.usecase.ShareDeepLink
 import dev.koga.deeplinklauncher.deeplink.api.usecase.ValidateDeepLink
-import dev.koga.deeplinklauncher.deeplink.ui.deeplink.screen.details.event.DeepLinkDetailsEvent
+import dev.koga.deeplinklauncher.deeplink.ui.deeplink.screen.details.state.DeepLinkDetailsAction
 import dev.koga.deeplinklauncher.deeplink.ui.deeplink.screen.details.state.DeepLinkDetailsUiState
+import dev.koga.deeplinklauncher.deeplink.ui.deeplink.screen.details.state.DuplicateAction
+import dev.koga.deeplinklauncher.deeplink.ui.deeplink.screen.details.state.EditAction
+import dev.koga.deeplinklauncher.deeplink.ui.deeplink.screen.details.state.LaunchAction
 import dev.koga.deeplinklauncher.navigation.AppNavigationRoute
 import dev.koga.deeplinklauncher.navigation.AppNavigator
+import dev.koga.deeplinklauncher.navigation.back
 import kotlinx.collections.immutable.toPersistentList
-import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.filterNotNull
-import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlin.uuid.ExperimentalUuidApi
-import kotlin.uuid.Uuid
 
-@OptIn(ExperimentalUuidApi::class)
 class DeepLinkDetailsViewModel(
     savedStateHandle: SavedStateHandle,
-    private val folderRepository: FolderRepository,
+    folderRepository: FolderRepository,
     private val deepLinkRepository: DeepLinkRepository,
     private val launchDeepLink: LaunchDeepLink,
     private val shareDeepLink: ShareDeepLink,
@@ -91,10 +91,7 @@ class DeepLinkDetailsViewModel(
         ),
     )
 
-    private val eventDispatcher = Channel<DeepLinkDetailsEvent>(Channel.UNLIMITED)
-    val events = eventDispatcher.receiveAsFlow()
-
-    fun onAction(action: Action) {
+    fun onAction(action: DeepLinkDetailsAction) {
         when (action) {
             is EditAction -> onEditAction(action)
             is LaunchAction -> onLaunchAction(action)
@@ -104,12 +101,16 @@ class DeepLinkDetailsViewModel(
 
     private fun onLaunchAction(action: LaunchAction) {
         when (action) {
-            LaunchAction.Delete -> delete()
             LaunchAction.Duplicate -> mode.update { Mode.DUPLICATE }
             LaunchAction.Edit -> mode.update { Mode.EDIT }
             LaunchAction.Launch -> launch()
             LaunchAction.Share -> share()
             LaunchAction.ToggleFavorite -> toggleFavorite()
+            LaunchAction.NavigateToFolder -> appNavigator.navigate(
+                AppNavigationRoute.FolderDetails(
+                    id = deepLink.value.folder?.id.orEmpty()
+                )
+            )
         }
     }
 
@@ -127,6 +128,7 @@ class DeepLinkDetailsViewModel(
             is EditAction.OnLinkChanged -> updateLink(action.text)
             is EditAction.OnNameChanged -> updateName(action.text)
             is EditAction.ToggleFolder -> toggleFolder(action.folder)
+            EditAction.Delete -> delete()
             EditAction.Back -> mode.update { Mode.LAUNCH }
         }
     }
@@ -170,24 +172,12 @@ class DeepLinkDetailsViewModel(
     private fun delete() {
         viewModelScope.launch {
             deepLinkRepository.deleteDeepLink(deepLink.value.id)
-            eventDispatcher.send(DeepLinkDetailsEvent.Deleted)
+            appNavigator.back()
         }
     }
 
     private fun share() {
         shareDeepLink(deepLink.value)
-    }
-
-    private fun insertFolder(name: String, description: String) {
-        val folder = Folder(
-            id = Uuid.random().toString(),
-            name = name,
-            description = description,
-        )
-
-        folderRepository.upsertFolder(folder)
-
-        toggleFolder(folder)
     }
 
     private fun toggleFolder(folder: Folder) {
@@ -225,7 +215,13 @@ class DeepLinkDetailsViewModel(
                 }
 
                 is DuplicateDeepLink.Result.Success -> {
-                    eventDispatcher.send(DeepLinkDetailsEvent.Duplicated(response.deepLink))
+                    appNavigator.back()
+                    appNavigator.navigate(
+                        route = AppNavigationRoute.DeepLinkDetails(
+                            id = response.deepLink.id,
+                            showFolder = true
+                        ),
+                    )
                 }
             }
         }

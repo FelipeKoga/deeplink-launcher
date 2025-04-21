@@ -36,6 +36,7 @@ import androidx.compose.ui.window.PopupProperties
 import compose.icons.TablerIcons
 import compose.icons.tablericons.Copy
 import dev.koga.deeplinklauncher.deeplink.ui.deeplink.screen.details.state.DeepLinkDetailsUiState
+import dev.koga.deeplinklauncher.deeplink.ui.deeplink.screen.details.state.LaunchAction
 import dev.koga.deeplinklauncher.designsystem.DLLSmallChip
 import dev.koga.deeplinklauncher.designsystem.button.DLLIconButton
 import kotlinx.coroutines.delay
@@ -44,7 +45,7 @@ import kotlinx.coroutines.delay
 fun LaunchModeUI(
     modifier: Modifier,
     uiState: DeepLinkDetailsUiState,
-    onFolderClicked: () -> Unit = {},
+    onAction: (LaunchAction) -> Unit,
 ) {
     val clipboardManager = LocalClipboardManager.current
 
@@ -73,97 +74,106 @@ fun LaunchModeUI(
     Column(
         modifier = modifier
             .fillMaxWidth()
-            .padding(16.dp)
-            .verticalScroll(rememberScrollState()),
     ) {
-        if (!uiState.deepLink.name.isNullOrBlank()) {
-            Text(
-                text = uiState.deepLink.name.orEmpty(),
-                style = MaterialTheme.typography.titleLarge.copy(
-                    color = MaterialTheme.colorScheme.secondary,
-                    fontWeight = FontWeight.SemiBold,
-                ),
-            )
-        }
-
-        if (!uiState.deepLink.description.isNullOrBlank()) {
-            Spacer(modifier = Modifier.padding(top = 2.dp))
-
-            Text(
-                text = uiState.deepLink.description.orEmpty(),
-                style = MaterialTheme.typography.bodySmall.copy(
-                    fontWeight = FontWeight.Normal,
-                    color = MaterialTheme.colorScheme.onBackground,
-                ),
-            )
-        }
-
-        Spacer(modifier = Modifier.padding(top = 12.dp))
-
-        Box(modifier = Modifier.fillMaxWidth()) {
-            if (showCopyPopUp) {
-                Popup(
-                    offset = copyCoordinatesOffset,
-                    properties = PopupProperties(
-                        focusable = false,
-                        dismissOnBackPress = true,
-                        dismissOnClickOutside = true,
+        Column(
+            modifier = Modifier
+                .padding(16.dp)
+                .verticalScroll(rememberScrollState()),
+        ) {
+            if (!uiState.deepLink.name.isNullOrBlank()) {
+                Text(
+                    text = uiState.deepLink.name.orEmpty(),
+                    style = MaterialTheme.typography.titleLarge.copy(
+                        color = MaterialTheme.colorScheme.secondary,
+                        fontWeight = FontWeight.SemiBold,
                     ),
-                ) {
-                    Text(
-                        text = "Copied!",
-                        style = MaterialTheme.typography.labelMedium.copy(
-                            fontWeight = FontWeight.Bold,
-                            color = MaterialTheme.colorScheme.onPrimary,
-                        ),
-                        modifier = Modifier
-                            .background(
-                                MaterialTheme.colorScheme.primary,
-                                RoundedCornerShape(12.dp),
-                            )
-                            .padding(vertical = 4.dp, horizontal = 8.dp),
-                    )
-                }
+                )
             }
 
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
+            if (!uiState.deepLink.description.isNullOrBlank()) {
+                Spacer(modifier = Modifier.padding(top = 2.dp))
+
                 Text(
-                    text = uiState.deepLink.link,
-                    modifier = Modifier.weight(1f),
-                    style = MaterialTheme.typography.titleMedium.copy(
-                        fontWeight = FontWeight.Bold,
+                    text = uiState.deepLink.description.orEmpty(),
+                    style = MaterialTheme.typography.bodySmall.copy(
+                        fontWeight = FontWeight.Normal,
                         color = MaterialTheme.colorScheme.onBackground,
                     ),
                 )
+            }
 
-                DLLIconButton(
-                    modifier = Modifier.onGloballyPositioned {
-                        copyCoordinates = it
-                    },
-                    onClick = {
-                        clipboardManager.setText(AnnotatedString(uiState.deepLink.link))
-                        showCopyPopUp = true
-                    },
-                ) {
-                    Icon(
-                        imageVector = TablerIcons.Copy,
-                        contentDescription = "Copy Link",
-                        tint = MaterialTheme.colorScheme.onSurface,
-                        modifier = Modifier.size(16.dp),
-                    )
+            Spacer(modifier = Modifier.padding(top = 12.dp))
+
+            Box(modifier = Modifier.fillMaxWidth()) {
+                if (showCopyPopUp) {
+                    Popup(
+                        offset = copyCoordinatesOffset,
+                        properties = PopupProperties(
+                            focusable = false,
+                            dismissOnBackPress = true,
+                            dismissOnClickOutside = true,
+                        ),
+                    ) {
+                        Text(
+                            text = "Copied!",
+                            style = MaterialTheme.typography.labelMedium.copy(
+                                fontWeight = FontWeight.Bold,
+                                color = MaterialTheme.colorScheme.onPrimary,
+                            ),
+                            modifier = Modifier
+                                .background(
+                                    MaterialTheme.colorScheme.primary,
+                                    RoundedCornerShape(12.dp),
+                                )
+                                .padding(vertical = 4.dp, horizontal = 8.dp),
+                        )
+                    }
                 }
+
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Text(
+                        text = uiState.deepLink.link,
+                        modifier = Modifier.weight(1f),
+                        style = MaterialTheme.typography.titleMedium.copy(
+                            fontWeight = FontWeight.Bold,
+                            color = MaterialTheme.colorScheme.onBackground,
+                        ),
+                    )
+
+                    DLLIconButton(
+                        modifier = Modifier.onGloballyPositioned {
+                            copyCoordinates = it
+                        },
+                        onClick = {
+                            clipboardManager.setText(AnnotatedString(uiState.deepLink.link))
+                            showCopyPopUp = true
+                        },
+                    ) {
+                        Icon(
+                            imageVector = TablerIcons.Copy,
+                            contentDescription = "Copy Link",
+                            tint = MaterialTheme.colorScheme.onSurface,
+                            modifier = Modifier.size(16.dp),
+                        )
+                    }
+                }
+            }
+
+            if (uiState.deepLink.folder != null) {
+                Spacer(modifier = Modifier.padding(top = 24.dp))
+
+                DLLSmallChip(
+                    label = uiState.deepLink.folder!!.name,
+                    onClick = { onAction(LaunchAction.NavigateToFolder) },
+                )
             }
         }
 
-        if (uiState.deepLink.folder != null) {
-            Spacer(modifier = Modifier.padding(top = 24.dp))
-
-            DLLSmallChip(
-                label = uiState.deepLink.folder!!.name,
-                onClick = onFolderClicked,
-            )
-        }
+        DeepLinkDetailsActions(
+            isFavorite = uiState.deepLink.isFavorite,
+            onAction = onAction,
+        )
     }
 }

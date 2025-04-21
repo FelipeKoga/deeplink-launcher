@@ -1,4 +1,4 @@
-package dev.koga.deeplinklauncher.deeplink.ui.deeplink.screen.details.component
+package dev.koga.deeplinklauncher.deeplink.ui.deeplink.screen.details.deletedeeplink
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column

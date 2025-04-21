@@ -23,7 +23,7 @@ import compose.icons.TablerIcons
 import compose.icons.tablericons.ExternalLink
 import compose.icons.tablericons.Pencil
 import compose.icons.tablericons.Share
-import dev.koga.deeplinklauncher.deeplink.ui.deeplink.screen.details.LaunchAction
+import dev.koga.deeplinklauncher.deeplink.ui.deeplink.screen.details.state.LaunchAction
 import dev.koga.deeplinklauncher.designsystem.button.DLLIconButton
 import dev.koga.deeplinklauncher.platform.canShareContent
 import dev.koga.resources.Res
