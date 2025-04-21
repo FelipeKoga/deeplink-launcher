@@ -23,7 +23,7 @@ kotlin {
             implementation(projects.feature.importExport.impl)
             api(projects.feature.preferences.api)
             implementation(projects.feature.preferences.impl)
-            implementation(projects.feature.settings)
+            implementation(projects.feature.settings.ui)
             implementation(projects.feature.home.ui)
             api(projects.feature.purchase.api)
             implementation(projects.feature.purchase.impl)
@@ -33,6 +33,7 @@ kotlin {
             implementation(projects.core.database)
             implementation(projects.core.file)
             implementation(projects.core.date)
+            implementation(projects.core.coroutines)
 
             implementation(libs.koin.core)
             implementation(libs.kotlinx.coroutines.core)

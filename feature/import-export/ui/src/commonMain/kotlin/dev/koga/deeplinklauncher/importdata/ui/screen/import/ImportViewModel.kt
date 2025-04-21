@@ -1,25 +1,27 @@
 package dev.koga.deeplinklauncher.importdata.ui.screen.import
 
-import cafe.adriel.voyager.core.model.ScreenModel
-import cafe.adriel.voyager.core.model.screenModelScope
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.darkrockstudios.libraries.mpfilepicker.MPFile
 import dev.koga.deeplinklauncher.file.GetFileRealPath
 import dev.koga.deeplinklauncher.file.model.FileType
 import dev.koga.deeplinklauncher.importexport.usecase.ImportDeepLinks
 import dev.koga.deeplinklauncher.importexport.usecase.ImportDeepLinksResult
+import dev.koga.deeplinklauncher.navigation.AppNavigator
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 
-class ImportScreenModel(
+class ImportViewModel(
     private val importDeepLinks: ImportDeepLinks,
     private val getFileRealPath: GetFileRealPath,
-) : ScreenModel {
+    private val appNavigator: AppNavigator,
+) : ViewModel(), AppNavigator by appNavigator {
 
     private val _messageDispatcher = Channel<String>(Channel.UNLIMITED)
     val messages = _messageDispatcher.receiveAsFlow()
 
-    fun import(platformFile: MPFile<Any>) = screenModelScope.launch {
+    fun import(platformFile: MPFile<Any>) = viewModelScope.launch {
         val path = getFileRealPath.get(platformFile.path)
 
         val fileType = when (path.substringAfterLast(".")) {
@@ -44,7 +46,7 @@ class ImportScreenModel(
             is ImportDeepLinksResult.Error -> {
                 _messageDispatcher.send(
                     "Something went wrong. " +
-                        "Check the content structure and try again.",
+                            "Check the content structure and try again.",
                 )
             }
         }

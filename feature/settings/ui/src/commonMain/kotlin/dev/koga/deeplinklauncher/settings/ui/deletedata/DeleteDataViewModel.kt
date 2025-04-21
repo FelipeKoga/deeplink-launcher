@@ -3,7 +3,6 @@ package dev.koga.deeplinklauncher.settings.ui.deletedata
 import androidx.lifecycle.ViewModel
 import dev.koga.deeplinklauncher.deeplink.api.repository.DeepLinkRepository
 import dev.koga.deeplinklauncher.deeplink.api.repository.FolderRepository
-import dev.koga.deeplinklauncher.settings.ui.suggestions.DeletionType
 
 enum class DeletionType {
     ALL,

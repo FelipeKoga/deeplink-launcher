@@ -20,9 +20,7 @@ kotlin {
             implementation(libs.kotlinx.coroutines.core)
             implementation(libs.kotlinx.immutable)
             implementation(libs.koin.compose)
-            implementation(libs.voyager.screenmodel)
-            implementation(libs.voyager.navigator)
-            implementation(libs.voyager.koin)
+            implementation(libs.koin.viewmodel)
             implementation(libs.mpfilepicker)
 
             implementation(compose.runtime)

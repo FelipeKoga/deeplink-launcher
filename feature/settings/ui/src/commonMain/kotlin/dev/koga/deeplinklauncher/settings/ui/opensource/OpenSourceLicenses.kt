@@ -7,10 +7,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalUriHandler
-import cafe.adriel.voyager.core.screen.Screen
 import com.mikepenz.aboutlibraries.ui.compose.m3.LibrariesContainer
 import com.mikepenz.aboutlibraries.ui.compose.m3.rememberLibraries
-import dev.koga.deeplinklauncher.LocalRootNavigator
 import dev.koga.deeplinklauncher.designsystem.DLLTopBar
 import dev.koga.deeplinklauncher.designsystem.DLLTopBarDefaults
 import dev.koga.resources.Res

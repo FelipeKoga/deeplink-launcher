@@ -22,12 +22,10 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -39,10 +37,8 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
-import cafe.adriel.voyager.core.screen.Screen
-import cafe.adriel.voyager.koin.getScreenModel
 import com.darkrockstudios.libraries.mpfilepicker.FilePicker
-import dev.koga.deeplinklauncher.LocalRootNavigator
+import com.darkrockstudios.libraries.mpfilepicker.MPFile
 import dev.koga.deeplinklauncher.designsystem.DLLHorizontalDivider
 import dev.koga.deeplinklauncher.designsystem.DLLSingleChoiceSegmentedButtonRow
 import dev.koga.deeplinklauncher.designsystem.DLLTopBar
@@ -51,67 +47,73 @@ import dev.koga.deeplinklauncher.file.model.FileType
 import dev.koga.deeplinklauncher.importdata.ui.component.JSONBoxViewer
 import dev.koga.deeplinklauncher.importdata.ui.utils.getByLabel
 import dev.koga.deeplinklauncher.importdata.ui.utils.label
+import dev.koga.deeplinklauncher.navigation.AppNavigationRoute
 import kotlinx.collections.immutable.toPersistentList
-import kotlinx.coroutines.flow.collectLatest
 
-class ImportScreen : Screen {
 
-    @Composable
-    override fun Content() {
-        val navigator = LocalRootNavigator.current
-        val screenModel = getScreenModel<ImportScreenModel>()
+@Composable
+fun ImportScreen(
+    viewModel: ImportViewModel,
+) {
+    ImportUI(
+        onImport = viewModel::import,
+        onBack = { viewModel.navigate(AppNavigationRoute.Back) }
+    )
+}
 
-        val snackBarHostState = remember { SnackbarHostState() }
-        var showFilePicker by remember { mutableStateOf(false) }
+@Composable
+private fun ImportUI(
+    onImport: (MPFile<Any>) -> Unit,
+    onBack: () -> Unit,
+) {
+    val snackBarHostState = remember { SnackbarHostState() }
+    var showFilePicker by remember { mutableStateOf(false) }
 
-        LaunchedEffect(Unit) {
-            screenModel.messages.collectLatest { message ->
-                snackBarHostState.showSnackbar(
-                    message = message,
-                    duration = SnackbarDuration.Short,
-                )
-            }
-        }
+//    LaunchedEffect(Unit) {
+//        screenModel.messages.collectLatest { message ->
+//            snackBarHostState.showSnackbar(
+//                message = message,
+//                duration = SnackbarDuration.Short,
+//            )
+//        }
+//    }
 
-        FilePicker(
-            show = showFilePicker,
-            fileExtensions = FileType.extensions,
-        ) { platformFile ->
-            showFilePicker = false
-            screenModel.import(platformFile ?: return@FilePicker)
-        }
+    FilePicker(
+        show = showFilePicker,
+        fileExtensions = FileType.extensions,
+    ) { platformFile ->
+        showFilePicker = false
+        onImport(platformFile ?: return@FilePicker)
+    }
 
-        Scaffold(
-            topBar = {
-                DLLTopBar(
-                    title = {
-                        DLLTopBarDefaults.title("Import DeepLinks")
-                    },
-                    navigationIcon = {
-                        DLLTopBarDefaults.navigationIcon(onClicked = navigator::pop)
-                    },
-                )
-            },
-            snackbarHost = {
-                SnackbarHost(snackBarHostState)
-            },
-            containerColor = MaterialTheme.colorScheme.background,
-        ) { contentPadding ->
-            Column(modifier = Modifier.padding(contentPadding).fillMaxSize()) {
-                ImportContent(
-                    modifier = Modifier.weight(1f),
-                )
+    Scaffold(
+        topBar = {
+            DLLTopBar(
+                title = {
+                    DLLTopBarDefaults.title("Import DeepLinks")
+                },
+                navigationIcon = {
+                    DLLTopBarDefaults.navigationIcon(onClicked = onBack)
+                },
+            )
+        },
+        snackbarHost = {
+            SnackbarHost(snackBarHostState)
+        },
+        containerColor = MaterialTheme.colorScheme.background,
+    ) { contentPadding ->
+        Column(modifier = Modifier.padding(contentPadding).fillMaxSize()) {
+            ImportContent(modifier = Modifier.weight(1f))
 
-                ImportFooter {
-                    showFilePicker = true
-                }
+            ImportFooter {
+                showFilePicker = true
             }
         }
     }
 }
 
 @Composable
-fun ImportContent(modifier: Modifier = Modifier) {
+private fun ImportContent(modifier: Modifier = Modifier) {
     var selectedType by remember { mutableStateOf(FileType.JSON) }
 
     Column(
@@ -173,10 +175,10 @@ fun ImportContent(modifier: Modifier = Modifier) {
             transitionSpec = {
                 if (targetState > initialState) {
                     slideInHorizontally { width -> width } + fadeIn() togetherWith
-                        slideOutHorizontally { width -> -width } + fadeOut()
+                            slideOutHorizontally { width -> -width } + fadeOut()
                 } else {
                     slideInHorizontally { width -> -width } + fadeIn() togetherWith
-                        slideOutHorizontally { width -> width } + fadeOut()
+                            slideOutHorizontally { width -> width } + fadeOut()
                 }.using(
                     SizeTransform(clip = false),
                 )
@@ -216,7 +218,7 @@ fun JSONTutorial() {
     ) {
         Text(
             text = "The most basic JSON format is an object that only " +
-                "contains a link property.",
+                    "contains a link property.",
             style = MaterialTheme.typography.titleSmall.copy(
                 fontWeight = FontWeight.Normal,
             ),
@@ -274,7 +276,7 @@ fun PlainTextTutorial() {
     Column {
         Text(
             text = "The plain text format is a simple list of deeplinks, " +
-                "one per line.",
+                    "one per line.",
             style = MaterialTheme.typography.titleSmall.copy(
                 fontWeight = FontWeight.Normal,
             ),

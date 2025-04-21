@@ -25,12 +25,12 @@ class ProductsViewModel(
         viewModelScope.launch {
             when (val response = purchaseApi.purchase(product)) {
                 PurchaseResult.Success -> {
-                    messageDispatcher.send("Thank you for your support!")
+//                    messageDispatcher.send("Thank you for your support!")
                 }
 
                 is PurchaseResult.Error -> {
                     if (!response.userCancelled) {
-                        messageDispatcher.send("Something went wrong, please try again")
+//                        messageDispatcher.send("Something went wrong, please try again")
                     }
                 }
             }

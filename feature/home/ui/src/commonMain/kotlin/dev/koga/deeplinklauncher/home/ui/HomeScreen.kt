@@ -31,7 +31,7 @@ import dev.koga.deeplinklauncher.home.ui.component.HomeTopBar
 import dev.koga.deeplinklauncher.home.ui.component.OnboardingBottomSheet
 import dev.koga.deeplinklauncher.home.ui.state.HomeEvent
 import dev.koga.deeplinklauncher.home.ui.state.HomeUiState
-import dev.koga.deeplinklauncher.navigation.Route
+import dev.koga.deeplinklauncher.navigation.AppNavigationRoute
 import kotlinx.coroutines.flow.Flow
 
 @Composable
@@ -42,7 +42,7 @@ fun HomeScreen(
 
     HomeUI(
         uiState = uiState,
-        onAction = viewModel::onAction
+        onAction = viewModel::onAction,
     )
 }
 
@@ -50,7 +50,7 @@ fun HomeScreen(
 @Composable
 internal fun HomeUI(
     uiState: HomeUiState,
-    onAction: (HomeAction) -> Unit
+    onAction: (HomeAction) -> Unit,
 ) {
     val hazeState = remember { HazeState() }
 
@@ -101,7 +101,9 @@ internal fun HomeUI(
         topBar = {
             HomeTopBar(
                 search = uiState.searchInput,
-                onSettingsScreen = { onAction(HomeAction.Navigate(Route.Settings)) },
+                onSettingsScreen = {
+                    onAction(HomeAction.Navigate(AppNavigationRoute.Settings.Root))
+                },
                 onSearch = { onAction(HomeAction.Search(it)) },
                 pagerState = pagerState,
                 modifier = Modifier.hazeEffect(
@@ -141,17 +143,35 @@ internal fun HomeUI(
                     deepLinks = uiState.deepLinks,
                     contentPadding = it,
                     onClick = {
-                        onAction(HomeAction.Navigate(Route.DeepLinkDetails(it.id, true)))
+                        onAction(
+                            HomeAction.Navigate(
+                                AppNavigationRoute.DeepLinkDetails(it.id, true)
+                            )
+                        )
                     },
-                    onLaunch = { onAction(HomeAction.LaunchDeepLink(it)) },
-                    onFolderClicked = { onAction(HomeAction.Navigate(Route.FolderDetails(it.id))) },
+                    onLaunch = {
+                        onAction(HomeAction.LaunchDeepLink(it))
+                    },
+                    onFolderClicked = {
+                        onAction(
+                            HomeAction.Navigate(
+                                AppNavigationRoute.FolderDetails(it.id)
+                            )
+                        )
+                    },
                 )
 
                 HomeTabPage.FOLDERS.ordinal -> FoldersVerticalStaggeredGrid(
                     modifier = Modifier.hazeSource(hazeState),
                     contentPadding = it,
                     folders = uiState.folders,
-                    onClick = { onAction(HomeAction.Navigate(Route.FolderDetails(it.id))) },
+                    onClick = {
+                        onAction(
+                            HomeAction.Navigate(
+                                AppNavigationRoute.FolderDetails(it.id)
+                            )
+                        )
+                    },
                     onAdd = { showAddFolderBottomSheet = true },
                 )
             }

@@ -14,6 +14,7 @@ import dev.koga.deeplinklauncher.deeplink.api.usecase.GetDeepLinksAndFolderStrea
 import dev.koga.deeplinklauncher.deeplink.api.usecase.LaunchDeepLink
 import dev.koga.deeplinklauncher.home.ui.state.DeepLinkInputState
 import dev.koga.deeplinklauncher.home.ui.state.HomeUiState
+import dev.koga.deeplinklauncher.navigation.AppNavigator
 import dev.koga.deeplinklauncher.preferences.api.repository.PreferencesRepository
 import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -36,7 +37,7 @@ class HomeViewModel(
     private val folderRepository: FolderRepository,
     private val launchDeepLink: LaunchDeepLink,
     private val preferencesRepository: PreferencesRepository,
-    private val navigator: DLLNavigator,
+    private val appNavigator: AppNavigator,
 ) : ViewModel() {
 
     private val searchInput = MutableStateFlow("")
@@ -74,7 +75,6 @@ class HomeViewModel(
 
     fun onAction(action: HomeAction) {
         when (action) {
-            is HomeAction.Navigate -> navigator.navigate(action.route)
             is HomeAction.AddFolder -> addFolder(action.name, action.description)
             is HomeAction.LaunchDeepLink -> launchDeepLink(action.deepLink)
             is HomeAction.Search -> searchInput.update { action.text }
@@ -82,6 +82,7 @@ class HomeViewModel(
             is HomeAction.OnSuggestionClicked -> onDeepLinkTextChanged(action.suggestion.text)
             HomeAction.LaunchInputDeepLink -> launchDeepLink()
             HomeAction.OnOnboardingShown -> onboardingShown()
+            is HomeAction.Navigate -> appNavigator.navigate(action.route)
         }
     }
 

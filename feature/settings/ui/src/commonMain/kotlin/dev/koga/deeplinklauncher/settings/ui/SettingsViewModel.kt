@@ -3,6 +3,7 @@ package dev.koga.deeplinklauncher.settings.ui
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dev.koga.deeplinklauncher.deeplink.api.usecase.LaunchDeepLink
+import dev.koga.deeplinklauncher.navigation.AppNavigator
 import dev.koga.deeplinklauncher.purchase.api.Product
 import dev.koga.deeplinklauncher.purchase.api.PurchaseApi
 import dev.koga.deeplinklauncher.purchase.api.PurchaseResult
@@ -13,7 +14,8 @@ import kotlinx.coroutines.launch
 class SettingsViewModel(
     private val launchDeepLink: LaunchDeepLink,
     private val purchaseApi: PurchaseApi,
-) : ViewModel() {
+    private val appNavigator: AppNavigator,
+) : ViewModel(), AppNavigator by appNavigator {
 
     private val messageDispatcher = Channel<String>(Channel.UNLIMITED)
     val messages = messageDispatcher.receiveAsFlow()

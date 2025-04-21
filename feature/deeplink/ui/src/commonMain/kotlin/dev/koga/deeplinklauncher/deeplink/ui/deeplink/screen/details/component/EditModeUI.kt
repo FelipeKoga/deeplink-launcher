@@ -15,7 +15,6 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.rounded.Check
 import androidx.compose.material3.AssistChip
 import androidx.compose.material3.AssistChipDefaults
 import androidx.compose.material3.FilterChip
@@ -36,19 +35,16 @@ import androidx.compose.ui.unit.dp
 import compose.icons.TablerIcons
 import compose.icons.tablericons.Check
 import compose.icons.tablericons.Plus
-import dev.koga.deeplinklauncher.deeplink.api.model.Folder
+import dev.koga.deeplinklauncher.deeplink.ui.deeplink.screen.details.Action
+import dev.koga.deeplinklauncher.deeplink.ui.deeplink.screen.details.EditAction
 import dev.koga.deeplinklauncher.deeplink.ui.deeplink.screen.details.state.DeepLinkDetailsUiState
 import dev.koga.deeplinklauncher.designsystem.DLLTextField
 
 @Composable
-fun EditModeUI(
+internal fun EditModeUI(
     modifier: Modifier,
-    uiState: DeepLinkDetailsUiState,
-    onNameChanged: (String) -> Unit,
-    onDescriptionChanged: (String) -> Unit,
-    onLinkChanged: (String) -> Unit,
-    onAddFolder: (String, String) -> Unit,
-    onToggleFolder: (Folder) -> Unit,
+    uiState: DeepLinkDetailsUiState.Edit,
+    onAction: (EditAction) -> Unit,
 ) {
     val deepLink = uiState.deepLink
 
@@ -60,7 +56,7 @@ fun EditModeUI(
         AddFolderBottomSheet(
             onDismiss = { showAddFolderBottomSheet = false },
             onAdd = { name, description ->
-                onAddFolder(name, description)
+                onAction(EditAction.AddFolder(name, description))
                 showAddFolderBottomSheet = false
             },
         )
@@ -74,7 +70,7 @@ fun EditModeUI(
         ) {
             DeepLinkDetailsTextField(
                 text = deepLink.name.orEmpty(),
-                onTextChange = onNameChanged,
+                onTextChange = { onAction(EditAction.OnNameChanged(it)) },
                 label = "Name",
             )
 
@@ -82,7 +78,7 @@ fun EditModeUI(
 
             DeepLinkDetailsTextField(
                 text = deepLink.description.orEmpty(),
-                onTextChange = onDescriptionChanged,
+                onTextChange = { onAction(EditAction.OnDescriptionChanged(it)) },
                 label = "Description",
             )
 
@@ -90,17 +86,17 @@ fun EditModeUI(
 
             DeepLinkDetailsTextField(
                 text = deepLink.link,
-                onTextChange = onLinkChanged,
+                onTextChange = { onAction(EditAction.OnLinkChanged(it)) },
                 label = "Link",
             )
 
             Spacer(modifier = Modifier.height(8.dp))
 
             AnimatedVisibility(
-                visible = uiState.deepLinkErrorMessage != null,
+                visible = uiState.errorMessage != null,
             ) {
                 Text(
-                    text = uiState.deepLinkErrorMessage.orEmpty(),
+                    text = uiState.errorMessage.orEmpty(),
                     style = MaterialTheme.typography.labelMedium.copy(
                         color = MaterialTheme.colorScheme.error,
                         fontWeight = FontWeight.Bold,
@@ -147,16 +143,13 @@ fun EditModeUI(
 
                 FilterChip(
                     selected = selected,
-                    onClick = {
-                        onToggleFolder(folder)
-                    },
+                    onClick = { onAction(EditAction.ToggleFolder(folder)) },
                     label = {
                         Text(
                             text = folder.name,
                             style = MaterialTheme.typography.labelSmall.copy(
                                 fontWeight = FontWeight.SemiBold,
                             ),
-
                         )
                     },
                     shape = CircleShape,
@@ -166,7 +159,7 @@ fun EditModeUI(
                         selectedLabelColor = MaterialTheme.colorScheme.onPrimary,
                         selectedTrailingIconColor = MaterialTheme.colorScheme.onPrimary,
 
-                    ),
+                        ),
                     border = BorderStroke(
                         1.dp,
                         color = MaterialTheme.colorScheme.surfaceContainerHighest,

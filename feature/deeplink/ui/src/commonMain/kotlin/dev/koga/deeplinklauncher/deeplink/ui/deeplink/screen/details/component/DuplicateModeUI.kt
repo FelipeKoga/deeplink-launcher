@@ -27,16 +27,17 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import dev.koga.deeplinklauncher.deeplink.api.model.DeepLink
+import dev.koga.deeplinklauncher.deeplink.ui.deeplink.screen.details.DuplicateAction
+import dev.koga.deeplinklauncher.deeplink.ui.deeplink.screen.details.state.DeepLinkDetailsUiState
 import dev.koga.deeplinklauncher.designsystem.DLLHorizontalDivider
 import dev.koga.deeplinklauncher.designsystem.DLLTextField
 
 @Composable
 fun DuplicateModeUI(
-    deepLink: DeepLink,
-    errorMessage: String? = null,
-    onDuplicate: (newLink: String, copyAllFields: Boolean) -> Unit,
+    uiState: DeepLinkDetailsUiState.Duplicate,
+    onAction: (DuplicateAction) -> Unit,
 ) {
-    var newLink by rememberSaveable { mutableStateOf(deepLink.link) }
+    var newLink by rememberSaveable { mutableStateOf(uiState.deepLink.link) }
     var copyAllFields by rememberSaveable { mutableStateOf(true) }
 
     Column {
@@ -55,10 +56,10 @@ fun DuplicateModeUI(
             )
 
             AnimatedVisibility(
-                visible = errorMessage != null,
+                visible = uiState.errorMessage != null,
             ) {
                 Text(
-                    text = errorMessage.orEmpty(),
+                    text = uiState.errorMessage.orEmpty(),
                     modifier = Modifier.padding(top = 8.dp),
                     style = MaterialTheme.typography.labelMedium.copy(
                         color = MaterialTheme.colorScheme.error,
@@ -108,7 +109,7 @@ fun DuplicateModeUI(
                 .align(Alignment.CenterHorizontally)
                 .fillMaxWidth(0.5f)
                 .padding(24.dp),
-            onClick = { onDuplicate(newLink, copyAllFields) },
+            onClick = { onAction(DuplicateAction.Duplicate(newLink, copyAllFields)) },
         ) {
             Text(
                 text = "Duplicate",

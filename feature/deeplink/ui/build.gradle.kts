@@ -17,13 +17,12 @@ kotlin {
             implementation(projects.core.navigation)
             implementation(projects.core.resources)
             implementation(projects.core.platform)
+            implementation(projects.core.coroutines)
 
             implementation(libs.kotlinx.coroutines.core)
             implementation(libs.koin.compose)
-            implementation(libs.voyager.screenmodel)
-            implementation(libs.voyager.navigator)
-            implementation(libs.voyager.koin)
-            implementation(libs.voyager.bottomSheet)
+            implementation(libs.koin.viewmodel)
+            implementation(libs.compose.navigation)
             implementation(libs.kotlinx.immutable)
             implementation(libs.material3.windowSizeClass)
 

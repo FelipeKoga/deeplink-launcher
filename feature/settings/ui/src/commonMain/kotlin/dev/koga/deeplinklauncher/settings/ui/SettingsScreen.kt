@@ -26,39 +26,39 @@ import compose.icons.tablericons.ExternalLink
 import dev.koga.deeplinklauncher.designsystem.DLLHorizontalDivider
 import dev.koga.deeplinklauncher.designsystem.DLLTopBar
 import dev.koga.deeplinklauncher.designsystem.DLLTopBarDefaults
+import dev.koga.deeplinklauncher.navigation.AppNavigationRoute
 import dev.koga.deeplinklauncher.platform.Platform
 import dev.koga.deeplinklauncher.platform.currentPlatform
-import dev.koga.deeplinklauncher.settings.ui.navigation.SettingsRoute
 
 @Composable
 fun SettingsScreen(
     viewmodel: SettingsViewModel,
-    navHostController: NavHostController,
 ) {
     SettingsUI(
         isPurchaseAvailable = viewmodel.isPurchaseAvailable,
-        onBack = navHostController::popBackStack,
         onNavigateToStore = viewmodel::navigateToStore,
         onNavigateToGithub = viewmodel::navigateToGithub,
+        onBack = {
+            viewmodel.navigate(AppNavigationRoute.Back)
+        },
         onNavigateToExport = {
-
+            viewmodel.navigate(AppNavigationRoute.ExportData)
         },
         onNavigateToImport = {
-
+            viewmodel.navigate(AppNavigationRoute.ImportData)
         },
         onShowDeleteDataBottomSheet = {
-            navHostController.navigate(SettingsRoute.DeleteDataBottomSheet)
+            viewmodel.navigate(AppNavigationRoute.Settings.DeleteDataBottomSheet)
         },
         onShowAppTheme = {
-            navHostController.navigate(SettingsRoute.AppThemeBottomSheet)
+            viewmodel.navigate(AppNavigationRoute.Settings.AppThemeBottomSheet)
         },
         onNavigateToOpenSourceLicenses = {
-            navHostController.navigate(SettingsRoute.OpenSourceLicenses)
+            viewmodel.navigate(AppNavigationRoute.Settings.OpenSourceLicenses)
         },
         onShowSuggestionsOption = {
-            navHostController.navigate(SettingsRoute.SuggestionsOptionBottomSheet)
+            viewmodel.navigate(AppNavigationRoute.Settings.SuggestionsOptionBottomSheet)
         },
-
         onShowProducts = { },
     )
 }

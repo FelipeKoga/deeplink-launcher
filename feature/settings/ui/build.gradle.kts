@@ -22,7 +22,6 @@ kotlin {
             implementation(projects.core.coroutines)
 
             implementation(libs.kotlinx.coroutines.core)
-            
             implementation(libs.koin.compose)
             implementation(libs.koin.viewmodel)
 

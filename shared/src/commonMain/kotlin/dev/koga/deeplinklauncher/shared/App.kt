@@ -1,35 +1,41 @@
 package dev.koga.deeplinklauncher.shared
 
-import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
-import dev.koga.deeplinklauncher.DLLNavigator
 import dev.koga.deeplinklauncher.designsystem.theme.DLLTheme
 import dev.koga.deeplinklauncher.designsystem.theme.Theme
-import dev.koga.deeplinklauncher.home.ui.navigation.homeNavGraph
-import dev.koga.deeplinklauncher.navigation.Route
+import dev.koga.deeplinklauncher.navigation.AppGraph
+import dev.koga.deeplinklauncher.navigation.AppNavigationRoute
+import dev.koga.deeplinklauncher.navigation.AppNavigator
 import dev.koga.deeplinklauncher.preferences.api.model.AppTheme
 import dev.koga.deeplinklauncher.preferences.api.repository.PreferencesRepository
 import org.koin.compose.koinInject
 
-@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun App(
     preferencesRepository: PreferencesRepository = koinInject(),
+
 ) {
-    val preferences by preferencesRepository.preferencesStream.collectAsState(
-        initial = preferencesRepository.preferences,
+    val preferences by preferencesRepository.preferencesStream.collectAsStateWithLifecycle(
+        preferencesRepository.preferences,
     )
 
     val navController = rememberNavController()
-    val navigator = koinInject<DLLNavigator>()
+    val     appNavigator: AppNavigator = koinInject()
+    val appGraph: AppGraph = koinInject()
 
     LaunchedEffect(Unit) {
-        navigator.destinationStream.collect(navController::navigate)
+        appNavigator.destination.collect {
+            when (it) {
+                AppNavigationRoute.Back -> navController.navigate(it)
+                else -> navController.popBackStack()
+            }
+        }
     }
 
     DLLTheme(
@@ -41,9 +47,9 @@ fun App(
     ) {
         NavHost(
             navController = navController,
-            startDestination = Route.Home
+            startDestination = AppNavigationRoute.Home
         ) {
-            homeNavGraph()
+            appGraph.appGraphBuilder(this)
         }
 
 //        Navigator(HomeScreen()) { navigator ->

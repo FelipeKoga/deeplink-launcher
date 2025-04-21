@@ -43,7 +43,6 @@ import kotlinx.coroutines.delay
 @Composable
 fun LaunchModeUI(
     modifier: Modifier,
-    showFolder: Boolean,
     uiState: DeepLinkDetailsUiState,
     onFolderClicked: () -> Unit = {},
 ) {
@@ -158,7 +157,7 @@ fun LaunchModeUI(
             }
         }
 
-        if (showFolder && uiState.deepLink.folder != null) {
+        if (uiState.deepLink.folder != null) {
             Spacer(modifier = Modifier.padding(top = 24.dp))
 
             DLLSmallChip(

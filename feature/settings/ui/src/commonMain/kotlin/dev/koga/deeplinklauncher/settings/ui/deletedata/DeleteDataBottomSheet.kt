@@ -17,8 +17,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import dev.koga.deeplinklauncher.designsystem.DLLModalBottomSheet
-import dev.koga.deeplinklauncher.settings.ui.suggestions.DeleteDataViewModel
-import dev.koga.deeplinklauncher.settings.ui.suggestions.DeletionType
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

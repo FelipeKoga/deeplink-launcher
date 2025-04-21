@@ -19,111 +19,93 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SnackbarDuration
-import androidx.compose.material3.SnackbarHost
-import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import cafe.adriel.voyager.core.screen.Screen
-import cafe.adriel.voyager.koin.getScreenModel
-import dev.koga.deeplinklauncher.LocalRootNavigator
 import dev.koga.deeplinklauncher.designsystem.DLLHorizontalDivider
 import dev.koga.deeplinklauncher.designsystem.DLLSingleChoiceSegmentedButtonRow
 import dev.koga.deeplinklauncher.designsystem.DLLTopBar
 import dev.koga.deeplinklauncher.designsystem.DLLTopBarDefaults
-import dev.koga.deeplinklauncher.file.StoragePermission
 import dev.koga.deeplinklauncher.file.model.FileType
 import dev.koga.deeplinklauncher.importdata.ui.component.JSONBoxViewer
 import dev.koga.deeplinklauncher.importdata.ui.utils.getByLabel
 import dev.koga.deeplinklauncher.importdata.ui.utils.label
+import dev.koga.deeplinklauncher.navigation.AppNavigationRoute
 import kotlinx.collections.immutable.toPersistentList
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.launch
-import org.koin.compose.koinInject
 
-class ExportScreen : Screen {
+@Composable
+fun ExportScreen(
+    viewModel: ExportViewModel,
+) {
+    var showPermissionRequest by remember { mutableStateOf(false) }
 
-    @OptIn(ExperimentalMaterial3Api::class)
-    @Composable
-    override fun Content() {
-        val navigator = LocalRootNavigator.current
-        val screenModel = getScreenModel<ExportScreenModel>()
-        val storagePermission = koinInject<StoragePermission>()
+    LaunchedEffect(showPermissionRequest) {
 
-        val scope = rememberCoroutineScope()
-        val snackBarHostState = remember { SnackbarHostState() }
-        var selectedExportType by remember { mutableStateOf(FileType.JSON) }
-        var showPermissionRequest by remember { mutableStateOf(false) }
-        val preview = screenModel.preview
+    }
 
-        LaunchedEffect(Unit) {
-            screenModel.messages.collectLatest { message ->
-                snackBarHostState.showSnackbar(
-                    message = message,
-                    duration = SnackbarDuration.Short,
-                )
-            }
-        }
+    ExportUI(
+        preview = viewModel.preview,
+        onExport = viewModel::export,
+        onBack = { viewModel.navigate(AppNavigationRoute.Back) },
+    )
+}
 
-        if (showPermissionRequest) {
-            storagePermission.request()
-            showPermissionRequest = false
-        }
 
-        Scaffold(
-            topBar = {
-                DLLTopBar(
-                    title = {
-                        DLLTopBarDefaults.title("Export DeepLinks")
-                    },
-                    navigationIcon = {
-                        DLLTopBarDefaults.navigationIcon(onClicked = navigator::pop)
-                    },
-                )
-            },
-            snackbarHost = { SnackbarHost(snackBarHostState) },
-        ) { contentPadding ->
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(contentPadding),
-            ) {
-                ExportContent(
-                    modifier = Modifier.weight(1f),
-                    preview = preview,
-                    selectedExportType = selectedExportType,
-                    onChangeExportType = {
-                        selectedExportType = it
-                    },
-                )
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun ExportUI(
+    preview: ExportData,
+    onExport: (FileType) -> Unit,
+    onBack: () -> Unit,
+) {
+    var selectedExportType by remember { mutableStateOf(FileType.JSON) }
+//    LaunchedEffect(Unit) {
+//        screenModel.messages.collectLatest { message ->
+//            snackBarHostState.showSnackbar(
+//                message = message,
+//                duration = SnackbarDuration.Short,
+//            )
+//        }
+//    }
 
-                ExportFooter(
-                    isPermissionGranted = storagePermission.isGranted(),
-                    export = {
-                        scope.launch {
-                            when (storagePermission.isGranted()) {
-                                true -> {
-                                    screenModel.export(selectedExportType)
-                                }
+    Scaffold(
+        topBar = {
+            DLLTopBar(
+                title = {
+                    DLLTopBarDefaults.title("Export DeepLinks")
+                },
+                navigationIcon = {
+                    DLLTopBarDefaults.navigationIcon(onClicked = onBack)
+                },
+            )
+        },
+    ) { contentPadding ->
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(contentPadding),
+        ) {
+            ExportContent(
+                modifier = Modifier.weight(1f),
+                preview = preview,
+                selectedExportType = selectedExportType,
+                onChangeExportType = {
+                    selectedExportType = it
+                },
+            )
 
-                                false -> {
-                                    showPermissionRequest = true
-                                }
-                            }
-                        }
-                    },
-                )
-            }
+            ExportFooter(
+                isPermissionGranted = true,
+                export = { onExport(selectedExportType) },
+            )
         }
     }
 }
@@ -177,10 +159,10 @@ fun ExportContent(
             transitionSpec = {
                 if (targetState > initialState) {
                     slideInHorizontally { width -> width } + fadeIn() togetherWith
-                        slideOutHorizontally { width -> -width } + fadeOut()
+                            slideOutHorizontally { width -> -width } + fadeOut()
                 } else {
                     slideInHorizontally { width -> -width } + fadeIn() togetherWith
-                        slideOutHorizontally { width -> width } + fadeOut()
+                            slideOutHorizontally { width -> width } + fadeOut()
                 }.using(
                     SizeTransform(clip = false),
                 )

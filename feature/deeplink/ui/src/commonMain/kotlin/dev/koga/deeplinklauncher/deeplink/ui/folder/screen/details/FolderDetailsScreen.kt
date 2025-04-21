@@ -22,8 +22,6 @@ import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSiz
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -31,92 +29,87 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import cafe.adriel.voyager.core.registry.ScreenRegistry
-import cafe.adriel.voyager.core.screen.Screen
-import cafe.adriel.voyager.koin.getScreenModel
-import cafe.adriel.voyager.navigator.bottomSheet.LocalBottomSheetNavigator
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import compose.icons.TablerIcons
 import compose.icons.tablericons.Trash
-import dev.koga.deeplinklauncher.LocalRootNavigator
-import dev.koga.deeplinklauncher.SharedScreen
 import dev.koga.deeplinklauncher.deeplink.api.model.DeepLink
 import dev.koga.deeplinklauncher.deeplink.ui.deeplink.component.DeepLinkCard
 import dev.koga.deeplinklauncher.deeplink.ui.folder.component.DeleteFolderBottomSheet
 import dev.koga.deeplinklauncher.deeplink.ui.folder.component.EditableText
 import dev.koga.deeplinklauncher.designsystem.DLLHorizontalDivider
 import dev.koga.deeplinklauncher.designsystem.DLLTopBar
-import dev.koga.deeplinklauncher.designsystem.DLLTopBarDefaults
 import dev.koga.deeplinklauncher.designsystem.button.DLLIconButton
 import dev.koga.deeplinklauncher.designsystem.theme.LocalDimensions
 import dev.koga.deeplinklauncher.designsystem.utils.fullLineItem
 import dev.koga.deeplinklauncher.designsystem.utils.spacer
-import kotlinx.coroutines.flow.collectLatest
-import org.koin.core.parameter.parametersOf
 
-class FolderDetailsScreen(private val folderId: String) : Screen {
+@Composable
+fun FolderDetailsScreen(
+    viewModel: FolderDetailsViewModel
+) {
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
-    @OptIn(ExperimentalMaterial3Api::class)
-    @Composable
-    override fun Content() {
-        val navigator = LocalRootNavigator.current
-        val bottomSheetNavigator = LocalBottomSheetNavigator.current
-        val screenModel = getScreenModel<FolderDetailsScreenModel>(
-            parameters = { parametersOf(folderId) },
-        )
+    FolderDetailsUI(
+        uiState = uiState,
+    )
+}
 
-        val state by screenModel.state.collectAsState()
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun FolderDetailsUI(
+    uiState: FolderDetailsUiState,
 
-        LaunchedEffect(Unit) {
-            screenModel.deletedEvent.collectLatest { navigator.pop() }
-        }
+) {
+//    LaunchedEffect(Unit) {
+//        screenModel.deletedEvent.collectLatest { navigator.pop() }
+//    }
 
-        var showDeleteDialog by remember { mutableStateOf(false) }
-        if (showDeleteDialog) {
-            DeleteFolderBottomSheet(
-                onDismissRequest = { showDeleteDialog = false },
-                onDelete = {
-                    showDeleteDialog = false
-                    screenModel.delete()
-                },
-            )
-        }
-
-        Scaffold(
-            topBar = {
-                DLLTopBar(
-                    title = {},
-                    navigationIcon = {
-                        DLLTopBarDefaults.navigationIcon(onClicked = navigator::pop)
-                    },
-                    actions = {
-                        DLLIconButton(
-                            onClick = { showDeleteDialog = true },
-                        ) {
-                            Icon(
-                                imageVector = TablerIcons.Trash,
-                                contentDescription = "Delete",
-                                modifier = Modifier.size(18.dp),
-                            )
-                        }
-                    },
-                )
+    var showDeleteDialog by remember { mutableStateOf(false) }
+    if (showDeleteDialog) {
+        DeleteFolderBottomSheet(
+            onDismissRequest = { showDeleteDialog = false },
+            onDelete = {
+                showDeleteDialog = false
+//                screenModel.delete()
             },
-        ) { contentPadding ->
+        )
+    }
 
-            FolderDetailsScreenContent(
-                modifier = Modifier.fillMaxSize().padding(contentPadding),
-                form = state,
-                onEditName = screenModel::updateName,
-                onEditDescription = screenModel::updateDescription,
-                onDeepLinkClick = { deepLink ->
-                    val screen = ScreenRegistry.get(
-                        SharedScreen.DeepLinkDetails(deepLink.id, false),
-                    )
-                    bottomSheetNavigator.show(screen)
+    Scaffold(
+        topBar = {
+            DLLTopBar(
+                title = {},
+                navigationIcon = {
+//                    DLLTopBarDefaults.navigationIcon(onClicked = navigator::pop)
                 },
-                onDeepLinkLaunch = screenModel::launch,
+                actions = {
+                    DLLIconButton(
+                        onClick = { showDeleteDialog = true },
+                    ) {
+                        Icon(
+                            imageVector = TablerIcons.Trash,
+                            contentDescription = "Delete",
+                            modifier = Modifier.size(18.dp),
+                        )
+                    }
+                },
             )
-        }
+        },
+    ) { contentPadding ->
+
+//        FolderDetailsScreenContent(
+//            modifier = Modifier.fillMaxSize().padding(contentPadding),
+//            form = uiState,
+//            onEditName = screenModel::updateName,
+//            onEditDescription = screenModel::updateDescription,
+//            onDeepLinkClick = { deepLink ->
+//                val screen = ScreenRegistry.get(
+//                    SharedScreen.DeepLinkDetails(deepLink.id, false),
+//                )
+//                bottomSheetNavigator.show(screen)
+//            },
+//            onDeepLinkLaunch = screenModel::launch,
+//        )
     }
 }
 
@@ -124,7 +117,7 @@ class FolderDetailsScreen(private val folderId: String) : Screen {
 @Composable
 fun FolderDetailsScreenContent(
     modifier: Modifier = Modifier,
-    form: FolderDetails,
+    form: FolderDetailsUiState,
     onEditName: (String) -> Unit,
     onEditDescription: (String) -> Unit,
     onDeepLinkClick: (DeepLink) -> Unit,
@@ -231,7 +224,7 @@ fun FolderDetailsScreenContent(
             DeepLinkCard(
                 modifier = Modifier
                     .padding(start = 12.dp, end = 12.dp, bottom = 12.dp)
-                    .animateItemPlacement(),
+                    .animateItem(),
                 deepLink = deepLink,
                 onClick = { onDeepLinkClick(deepLink) },
                 onLaunch = { onDeepLinkLaunch(deepLink) },

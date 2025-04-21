@@ -23,6 +23,8 @@ import compose.icons.TablerIcons
 import compose.icons.tablericons.ExternalLink
 import compose.icons.tablericons.Pencil
 import compose.icons.tablericons.Share
+import dev.koga.deeplinklauncher.deeplink.ui.deeplink.screen.details.Action
+import dev.koga.deeplinklauncher.deeplink.ui.deeplink.screen.details.LaunchAction
 import dev.koga.deeplinklauncher.designsystem.button.DLLIconButton
 import dev.koga.deeplinklauncher.platform.canShareContent
 import dev.koga.resources.Res
@@ -30,13 +32,9 @@ import dev.koga.resources.ic_duplicate_24dp
 import org.jetbrains.compose.resources.painterResource
 
 @Composable
-fun DeepLinkDetailsActions(
+internal fun DeepLinkDetailsActions(
     isFavorite: Boolean,
-    onShare: () -> Unit,
-    onFavorite: () -> Unit,
-    onLaunch: () -> Unit,
-    onDuplicate: () -> Unit,
-    onEdit: () -> Unit,
+    onAction: (LaunchAction) -> Unit,
 ) {
     Row(
         horizontalArrangement = Arrangement.SpaceAround,
@@ -44,7 +42,7 @@ fun DeepLinkDetailsActions(
             .fillMaxWidth()
             .padding(vertical = 24.dp, horizontal = 8.dp),
     ) {
-        DLLIconButton(onClick = onDuplicate) {
+        DLLIconButton(onClick = { onAction(LaunchAction.Duplicate) }) {
             Icon(
                 painterResource(Res.drawable.ic_duplicate_24dp),
                 contentDescription = "Duplicate",
@@ -53,7 +51,7 @@ fun DeepLinkDetailsActions(
         }
 
         if (canShareContent) {
-            DLLIconButton(onClick = onShare) {
+            DLLIconButton(onClick = { onAction(LaunchAction.Share) }) {
                 Icon(
                     imageVector = TablerIcons.Share,
                     contentDescription = "Share",
@@ -62,7 +60,7 @@ fun DeepLinkDetailsActions(
             }
         }
 
-        DLLIconButton(onClick = onFavorite) {
+        DLLIconButton(onClick = { onAction(LaunchAction.ToggleFavorite) }) {
             Icon(
                 imageVector = if (isFavorite) {
                     Icons.Rounded.Favorite
@@ -78,7 +76,7 @@ fun DeepLinkDetailsActions(
             )
         }
 
-        DLLIconButton(onClick = onEdit) {
+        DLLIconButton(onClick = { onAction(LaunchAction.Edit) }) {
             Icon(
                 imageVector = TablerIcons.Pencil,
                 contentDescription = "Edit",
@@ -88,7 +86,7 @@ fun DeepLinkDetailsActions(
 
         Spacer(modifier = Modifier.weight(1f))
 
-        Button(onClick = onLaunch) {
+        Button(onClick = { onAction(LaunchAction.Launch) }) {
             Text(
                 text = "Launch",
                 style = MaterialTheme.typography.bodyMedium.copy(

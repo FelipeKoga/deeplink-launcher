@@ -1,21 +1,25 @@
 package dev.koga.deeplinklauncher.importdata.ui.screen.export
 
-import cafe.adriel.voyager.core.model.ScreenModel
-import cafe.adriel.voyager.core.model.screenModelScope
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import dev.koga.deeplinklauncher.file.StoragePermission
 import dev.koga.deeplinklauncher.file.model.FileType
 import dev.koga.deeplinklauncher.importexport.usecase.ExportDeepLinks
 import dev.koga.deeplinklauncher.importexport.usecase.ExportDeepLinksResult
 import dev.koga.deeplinklauncher.importexport.usecase.GetDeepLinksJsonPreview
 import dev.koga.deeplinklauncher.importexport.usecase.GetDeepLinksPlainTextPreview
+import dev.koga.deeplinklauncher.navigation.AppNavigator
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 
-class ExportScreenModel(
+class ExportViewModel(
     getDeepLinksPlainTextPreview: GetDeepLinksPlainTextPreview,
     getDeepLinksJsonPreview: GetDeepLinksJsonPreview,
     private val exportDeepLinks: ExportDeepLinks,
-) : ScreenModel {
+    private val storagePermission: StoragePermission,
+    private val appNavigator: AppNavigator,
+) : ViewModel(), AppNavigator by appNavigator {
 
     private val plainTextPreview = getDeepLinksPlainTextPreview()
     private val jsonPreview = getDeepLinksJsonPreview()
@@ -29,7 +33,12 @@ class ExportScreenModel(
     )
 
     fun export(fileType: FileType) {
-        screenModelScope.launch {
+        if (!storagePermission.isGranted()) {
+            storagePermission.request()
+            return
+        }
+
+        viewModelScope.launch {
             when (val response = exportDeepLinks(fileType)) {
                 ExportDeepLinksResult.Empty -> messageDispatcher.send(
                     "No DeepLinks to export.",
@@ -41,7 +50,7 @@ class ExportScreenModel(
 
                 is ExportDeepLinksResult.Success -> messageDispatcher.send(
                     "DeepLinks exported successfully. " +
-                        "Check your downloads folder for a file named ${response.fileName}.",
+                            "Check your downloads folder for a file named ${response.fileName}.",
                 )
             }
         }

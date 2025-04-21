@@ -1,10 +1,12 @@
-package dev.koga.deeplinklauncher.navigation.di
+package dev.koga.deeplinklauncher.coroutines.di
 
-import dev.koga.deeplinklauncher.DLLNavigator
-import dev.koga.deeplinklauncher.DLLNavigatorImpl
-import kotlinx.coroutines.Dispatchers
+import dev.koga.deeplinklauncher.coroutines.AppCoroutineScope
+import kotlinx.coroutines.CoroutineScope
+import org.koin.core.module.dsl.factoryOf
+import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
 
-val navigationModule = module {
-    single<DLLNavigator> { DLLNavigatorImpl(Dispatchers.Main.immediate) }
+val coroutinesModule = module {
+    singleOf(::AppCoroutineScope)
+    factoryOf(::CoroutineScope)
 }

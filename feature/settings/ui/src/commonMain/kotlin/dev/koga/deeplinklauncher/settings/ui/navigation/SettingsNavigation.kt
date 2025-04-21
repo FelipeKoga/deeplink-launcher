@@ -1,74 +1,48 @@
 package dev.koga.deeplinklauncher.settings.ui.navigation
 
 import androidx.navigation.NavGraphBuilder
-import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.dialog
-import dev.koga.deeplinklauncher.navigation.FeatureNavigationApi
-import dev.koga.deeplinklauncher.navigation.Route
+import dev.koga.deeplinklauncher.navigation.AppNavigationRoute
+import dev.koga.deeplinklauncher.navigation.AppNavigator
+import dev.koga.deeplinklauncher.navigation.NavigationGraph
 import dev.koga.deeplinklauncher.settings.ui.SettingsScreen
 import dev.koga.deeplinklauncher.settings.ui.apptheme.AppThemeBottomSheet
 import dev.koga.deeplinklauncher.settings.ui.deletedata.DeleteDataBottomSheet
 import dev.koga.deeplinklauncher.settings.ui.opensource.OpenSourceLicensesScreen
 import dev.koga.deeplinklauncher.settings.ui.suggestions.SuggestionsOptionBottomSheet
-import kotlinx.serialization.Serializable
 import org.koin.compose.viewmodel.koinViewModel
 
-sealed interface SettingsRoute : Route {
-    @Serializable
-    data object Settings : SettingsRoute
-
-    @Serializable
-    data object OpenSourceLicenses : SettingsRoute
-
-    @Serializable
-    data object AppThemeBottomSheet : SettingsRoute
-
-    @Serializable
-    data object SuggestionsOptionBottomSheet : SettingsRoute
-
-    @Serializable
-    data object DeleteDataBottomSheet : SettingsRoute
-}
-
-
-class SettingsNavigation : FeatureNavigationApi {
-
-    override val rootRoute: Route = SettingsRoute.Settings
-
-    override fun registerGraph(
-        navHostController: NavHostController,
-        navGraphBuilder: NavGraphBuilder
-    ) = with(navGraphBuilder) {
-        composable<SettingsRoute.Settings> {
-            SettingsScreen(
-                viewmodel = koinViewModel(),
-                navHostController = navHostController
-            )
+class SettingsNavigation(
+    private val appNavigator: AppNavigator,
+) : NavigationGraph {
+    override fun register(navGraphBuilder: NavGraphBuilder) = with(navGraphBuilder) {
+        composable<AppNavigationRoute.Settings.Root> {
+            SettingsScreen(viewmodel = koinViewModel())
         }
 
-        composable<SettingsRoute.OpenSourceLicenses> {
-            OpenSourceLicensesScreen(onBack = navHostController::popBackStack)
+        composable<AppNavigationRoute.Settings.OpenSourceLicenses> {
+            OpenSourceLicensesScreen(onBack = { appNavigator.navigate(AppNavigationRoute.Back) })
         }
 
-        dialog<SettingsRoute.AppThemeBottomSheet> {
+        dialog<AppNavigationRoute.Settings.AppThemeBottomSheet> {
             AppThemeBottomSheet(
                 viewModel = koinViewModel(),
-                onDismissRequest = navHostController::popBackStack
+                onDismissRequest = { appNavigator.navigate(AppNavigationRoute.Back) }
             )
         }
 
-        dialog<SettingsRoute.SuggestionsOptionBottomSheet> {
+        dialog<AppNavigationRoute.Settings.SuggestionsOptionBottomSheet> {
             SuggestionsOptionBottomSheet(
                 viewModel = koinViewModel(),
-                onDismissRequest = navHostController::popBackStack
+                onDismissRequest = { appNavigator.navigate(AppNavigationRoute.Back) }
             )
         }
 
-        dialog<SettingsRoute.DeleteDataBottomSheet> {
+        dialog<AppNavigationRoute.Settings.DeleteDataBottomSheet> {
             DeleteDataBottomSheet(
                 viewModel = koinViewModel(),
-                onDismissRequest = navHostController::popBackStack
+                onDismissRequest = { appNavigator.navigate(AppNavigationRoute.Back) }
             )
         }
     }
