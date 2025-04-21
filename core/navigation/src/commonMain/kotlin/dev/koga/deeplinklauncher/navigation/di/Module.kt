@@ -10,5 +10,5 @@ import org.koin.dsl.module
 
 public val navigationModule: Module = module {
     singleOf(::AppNavigatorImpl) bind AppNavigator::class
-    singleOf(::AppGraph)
+    single { AppGraph(getAll()) }
 }

@@ -32,6 +32,7 @@ import androidx.compose.ui.input.pointer.onPointerEvent
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.koga.deeplinklauncher.designsystem.theme.typography
 import dev.koga.deeplinklauncher.home.ui.util.ext.hoverIndication
 import org.koin.compose.koinInject
@@ -42,7 +43,7 @@ fun DeepLinkTargetsDropDown(
     modifier: Modifier,
     manager: DeepLinkTargetsDropdownManager = koinInject(),
 ) {
-    val uiState by manager.uiState.collectAsState()
+    val uiState by manager.uiState.collectAsStateWithLifecycle()
     var expanded by remember { mutableStateOf(false) }
 
     ExposedDropdownMenuBox(
