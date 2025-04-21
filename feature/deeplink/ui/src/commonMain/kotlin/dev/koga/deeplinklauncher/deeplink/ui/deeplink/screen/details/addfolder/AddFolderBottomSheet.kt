@@ -1,21 +1,19 @@
-package dev.koga.deeplinklauncher.deeplink.ui.deeplink.screen.details.component
+package dev.koga.deeplinklauncher.deeplink.ui.deeplink.screen.details.addfolder
 
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
@@ -23,62 +21,52 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
-import compose.icons.TablerIcons
-import compose.icons.tablericons.ArrowLeft
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.koga.deeplinklauncher.designsystem.DLLModalBottomSheet
 import dev.koga.deeplinklauncher.designsystem.DLLTextField
-import dev.koga.deeplinklauncher.designsystem.button.DLLIconButton
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddFolderBottomSheet(
+    viewModel: AddFolderViewModel,
     onDismiss: () -> Unit,
-    onAdd: (name: String, description: String) -> Unit,
 ) {
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
     DLLModalBottomSheet(
         onDismiss = onDismiss,
     ) {
         AddFolderBottomSheetContent(
-            onAdd = onAdd,
-            showNavBack = false,
+            uiState = uiState,
+            onNameChanged = viewModel::onNameChanged,
+            onDescriptionChanged = viewModel::onDescriptionChanged,
+            onSubmit = viewModel::add
         )
     }
 }
 
 @Composable
 fun AddFolderBottomSheetContent(
-    onAdd: (name: String, description: String) -> Unit,
-    showNavBack: Boolean,
-    onBack: () -> Unit = {},
+    uiState: AddFolderUiState,
+    onNameChanged: (String) -> Unit,
+    onDescriptionChanged: (String) -> Unit,
+    onSubmit: () -> Unit,
 ) {
-    val (name, setName) = rememberSaveable { mutableStateOf("") }
-    val (description, setDescription) = rememberSaveable { mutableStateOf("") }
-
     Column(
         modifier = Modifier.padding(horizontal = 24.dp).padding(bottom = 24.dp),
     ) {
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            if (showNavBack) {
-                DLLIconButton(onClick = onBack) {
-                    Icon(TablerIcons.ArrowLeft, contentDescription = "Back")
-                }
-
-                Spacer(modifier = Modifier.width(12.dp))
-            }
-
-            Text(
-                text = "Add folder",
-                style = MaterialTheme.typography.titleLarge.copy(
-                    fontWeight = FontWeight.Bold,
-                ),
-            )
-        }
+        Text(
+            text = "Add folder",
+            style = MaterialTheme.typography.titleLarge.copy(
+                fontWeight = FontWeight.Bold,
+            ),
+        )
 
         Spacer(modifier = Modifier.height(24.dp))
 
         DLLTextField(
-            value = name,
-            onValueChange = setName,
+            value = uiState.name,
+            onValueChange = onNameChanged,
             label = "Name",
         )
 
@@ -86,22 +74,22 @@ fun AddFolderBottomSheetContent(
 
         DLLTextField(
             modifier = Modifier.defaultMinSize(minHeight = 120.dp),
-            value = description,
-            onValueChange = setDescription,
+            value = uiState.description,
+            onValueChange = onDescriptionChanged,
             label = "Description",
             keyboardOptions = KeyboardOptions.Default.copy(
                 imeAction = ImeAction.Done,
             ),
             keyboardActions = KeyboardActions(
-                onDone = { onAdd(name, description) },
+                onDone = { onSubmit() },
             ),
         )
 
         Spacer(modifier = Modifier.height(24.dp))
 
         Button(
-            onClick = { onAdd(name, description) },
-            enabled = name.isNotBlank(),
+            onClick = onSubmit,
+            enabled = uiState.isSubmitEnabled,
             modifier = Modifier
                 .align(Alignment.CenterHorizontally)
                 .fillMaxWidth(.6f),

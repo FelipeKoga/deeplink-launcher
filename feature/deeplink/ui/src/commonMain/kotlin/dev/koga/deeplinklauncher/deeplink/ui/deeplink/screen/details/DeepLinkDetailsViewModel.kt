@@ -122,7 +122,7 @@ class DeepLinkDetailsViewModel(
 
     private fun onEditAction(action: EditAction) {
         when (action) {
-            is EditAction.AddFolder -> insertFolder(action.name, action.description)
+            is EditAction.AddFolder -> appNavigator.navigate(AppNavigationRoute.AddFolder)
             is EditAction.OnDescriptionChanged -> updateDescription(action.text)
             is EditAction.OnLinkChanged -> updateLink(action.text)
             is EditAction.OnNameChanged -> updateName(action.text)

@@ -11,6 +11,10 @@ public interface AppNavigator {
     public fun navigate(route: AppNavigationRoute)
 }
 
+public fun AppNavigator.back() {
+    navigate(AppNavigationRoute.Back)
+}
+
 internal class AppNavigatorImpl(
     private val appCoroutineScope: AppCoroutineScope,
 ) : AppNavigator {

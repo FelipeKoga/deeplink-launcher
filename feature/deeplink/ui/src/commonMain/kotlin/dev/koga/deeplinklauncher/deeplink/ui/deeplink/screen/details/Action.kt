@@ -24,5 +24,5 @@ sealed interface EditAction : Action {
     data class OnDescriptionChanged(val text: String) : EditAction
     data class OnLinkChanged(val text: String) : EditAction
     data class ToggleFolder(val folder: Folder) : EditAction
-    data class AddFolder(val name: String, val description: String) : EditAction
+    data object AddFolder : EditAction
 }

@@ -2,8 +2,10 @@ package dev.koga.deeplinklauncher.home.ui
 
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
@@ -11,9 +13,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
@@ -23,16 +23,12 @@ import dev.chrisbanes.haze.hazeEffect
 import dev.chrisbanes.haze.hazeSource
 import dev.chrisbanes.haze.materials.ExperimentalHazeMaterialsApi
 import dev.chrisbanes.haze.materials.HazeMaterials
-import dev.koga.deeplinklauncher.deeplink.ui.deeplink.screen.details.component.AddFolderBottomSheet
 import dev.koga.deeplinklauncher.home.ui.component.DeepLinksLazyColumn
 import dev.koga.deeplinklauncher.home.ui.component.FoldersVerticalStaggeredGrid
 import dev.koga.deeplinklauncher.home.ui.component.HomeBottomBarUI
 import dev.koga.deeplinklauncher.home.ui.component.HomeTopBar
-import dev.koga.deeplinklauncher.home.ui.component.OnboardingBottomSheet
-import dev.koga.deeplinklauncher.home.ui.state.HomeEvent
 import dev.koga.deeplinklauncher.home.ui.state.HomeUiState
 import dev.koga.deeplinklauncher.navigation.AppNavigationRoute
-import kotlinx.coroutines.flow.Flow
 
 @Composable
 fun HomeScreen(
@@ -51,51 +47,20 @@ fun HomeScreen(
 internal fun HomeUI(
     uiState: HomeUiState,
     onAction: (HomeAction) -> Unit,
-) {
-    val hazeState = remember { HazeState() }
-
-    val historyListState = rememberLazyGridState()
-    val favoritesListState = rememberLazyGridState()
-    val pagerState = rememberPagerState(
+    hazeState: HazeState = remember { HazeState() },
+    historyListState: LazyGridState = rememberLazyGridState(),
+    favoritesListState: LazyGridState = rememberLazyGridState(),
+    pagerState: PagerState = rememberPagerState(
         initialPage = HomeTabPage.HISTORY.ordinal,
         pageCount = { HomeTabPage.entries.size },
     )
-
-    var showAddFolderBottomSheet by remember { mutableStateOf(false) }
-    if (showAddFolderBottomSheet) {
-        AddFolderBottomSheet(
-            onDismiss = { showAddFolderBottomSheet = false },
-            onAdd = { name, description ->
-                showAddFolderBottomSheet = false
-                onAction(HomeAction.AddFolder(name, description))
-            },
-        )
-    }
-
-    if (uiState.showOnboarding) {
-        OnboardingBottomSheet { onAction(HomeAction.OnOnboardingShown) }
-    }
-
+) {
     LaunchedEffect(uiState.searchInput) {
         if (uiState.deepLinks.isNotEmpty()) {
             historyListState.animateScrollToItem(index = 0)
             favoritesListState.animateScrollToItem(index = 0)
         }
     }
-
-//    HomeEventsHandler(
-//        events = screenModel.events,
-//        onDeepLinkLaunched = {
-//            scope.launch {
-//                delay(DELAY_TO_SCROLL_TO_THE_TOP)
-//                historyListState.animateScrollToItem(index = 0)
-//                favoritesListState.animateScrollToItem(index = 0)
-//            }
-//        },
-//        onShowOnboarding = {
-//            showOnboardingBottomSheet = true
-//        },
-//    )
 
     Scaffold(
         topBar = {
@@ -137,7 +102,7 @@ internal fun HomeUI(
             when (page) {
                 HomeTabPage.HISTORY.ordinal,
                 HomeTabPage.FAVORITES.ordinal,
-                -> DeepLinksLazyColumn(
+                    -> DeepLinksLazyColumn(
                     modifier = Modifier.hazeSource(hazeState),
                     listState = historyListState,
                     deepLinks = uiState.deepLinks,
@@ -172,27 +137,16 @@ internal fun HomeUI(
                             ),
                         )
                     },
-                    onAdd = { showAddFolderBottomSheet = true },
+                    onAdd = {
+                        onAction(
+                            HomeAction.Navigate(
+                                AppNavigationRoute.AddFolder
+                            ),
+                        )
+                    },
                 )
             }
         }
     }
 }
 
-private const val DELAY_TO_SCROLL_TO_THE_TOP = 350L
-
-@Composable
-private fun HomeEventsHandler(
-    events: Flow<HomeEvent>,
-    onDeepLinkLaunched: () -> Unit,
-    onShowOnboarding: () -> Unit,
-) {
-    LaunchedEffect(Unit) {
-        events.collect { event ->
-            when (event) {
-                is HomeEvent.DeepLinksLaunched -> onDeepLinkLaunched()
-                is HomeEvent.ShowOnboarding -> onShowOnboarding()
-            }
-        }
-    }
-}

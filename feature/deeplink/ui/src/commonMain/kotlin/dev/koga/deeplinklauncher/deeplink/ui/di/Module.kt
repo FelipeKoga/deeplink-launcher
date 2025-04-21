@@ -1,6 +1,7 @@
 package dev.koga.deeplinklauncher.deeplink.ui.di
 
 import dev.koga.deeplinklauncher.deeplink.ui.deeplink.screen.details.DeepLinkDetailsViewModel
+import dev.koga.deeplinklauncher.deeplink.ui.deeplink.screen.details.addfolder.AddFolderViewModel
 import dev.koga.deeplinklauncher.deeplink.ui.folder.screen.details.FolderDetailsViewModel
 import dev.koga.deeplinklauncher.deeplink.ui.navigation.DeepLinkNavigation
 import dev.koga.deeplinklauncher.navigation.NavigationGraph
@@ -12,5 +13,6 @@ import org.koin.dsl.module
 val deeplinkUiModule = module {
     viewModelOf(::DeepLinkDetailsViewModel)
     viewModelOf(::FolderDetailsViewModel)
+    viewModelOf(::AddFolderViewModel)
     singleOf(::DeepLinkNavigation) bind NavigationGraph::class
 }

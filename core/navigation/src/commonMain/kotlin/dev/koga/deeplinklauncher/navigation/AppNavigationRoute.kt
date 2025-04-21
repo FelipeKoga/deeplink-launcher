@@ -11,6 +11,12 @@ public sealed interface AppNavigationRoute {
     public data object Home : AppNavigationRoute
 
     @Serializable
+    public data object Onboarding : AppNavigationRoute
+
+    @Serializable
+    public data object AddFolder : AppNavigationRoute
+
+    @Serializable
     public data class DeepLinkDetails(val id: String, val showFolder: Boolean) : AppNavigationRoute
 
     @Serializable
