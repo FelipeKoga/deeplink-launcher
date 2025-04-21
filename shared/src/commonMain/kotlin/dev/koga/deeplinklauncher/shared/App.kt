@@ -1,9 +1,17 @@
 package dev.koga.deeplinklauncher.shared
 
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.scaleIn
+import androidx.compose.animation.scaleOut
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
@@ -26,14 +34,15 @@ fun App(
     )
 
     val navController = rememberNavController()
-    val     appNavigator: AppNavigator = koinInject()
+    val appNavigator: AppNavigator = koinInject()
     val appGraph: AppGraph = koinInject()
 
     LaunchedEffect(Unit) {
         appNavigator.destination.collect {
+            println("destination: $it")
             when (it) {
-                AppNavigationRoute.Back -> navController.navigate(it)
-                else -> navController.popBackStack()
+                AppNavigationRoute.Back -> navController.popBackStack()
+                else -> navController.navigate(it)
             }
         }
     }
@@ -45,39 +54,61 @@ fun App(
             AppTheme.AUTO -> Theme.AUTO
         },
     ) {
-        NavHost(
-            navController = navController,
-            startDestination = AppNavigationRoute.Home
+        Surface(
+            color = MaterialTheme.colors.background,
         ) {
-            appGraph.appGraphBuilder(this)
+            NavHost(
+                modifier = Modifier.fillMaxSize(),
+                navController = navController,
+                startDestination = AppNavigationRoute.Home,
+                enterTransition = { scaleInEnterTransition() },
+                popEnterTransition = { scaleInPopEnterTransition() },
+                exitTransition = { scaleOutExitTransition() },
+                popExitTransition = { scaleOutPopExitTransition() },
+            ) {
+                appGraph.appGraphBuilder(this)
+            }
         }
-
-//        Navigator(HomeScreen()) { navigator ->
-//            CompositionLocalProvider(LocalRootNavigator provides navigator) {
-//                BottomSheetNavigator(
-//                    modifier = Modifier
-//                        .fillMaxSize()
-//                        .imePadding(),
-//                    sheetBackgroundColor = MaterialTheme.colorScheme.surface,
-//                    sheetShape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp),
-//                ) { bottomSheetNavigator ->
-//                    bottomSheetNavigator.closeKeyboardOnBottomSheetDismiss()
-//
-//                    SlideTransition(navigator) {
-//                        it.Content()
-//                    }
-//                }
-//            }
-//        }
     }
 }
 
-//@Composable
-//private fun NavController.closeKeyboardOnBottomSheetDismiss() {
+private const val ANIM_DURATION_LONG = 500
+private const val ANIM_DURATION_SHORT = 300
+
+fun scaleInEnterTransition() = scaleIn(
+    initialScale = .9f,
+    animationSpec = tween(ANIM_DURATION_LONG),
+) + fadeIn(
+    animationSpec = tween(ANIM_DURATION_SHORT),
+)
+
+fun scaleOutExitTransition() = scaleOut(
+    targetScale = 1.1f,
+    animationSpec = tween(ANIM_DURATION_SHORT),
+) + fadeOut(
+    animationSpec = tween(ANIM_DURATION_SHORT),
+)
+
+fun scaleInPopEnterTransition() = scaleIn(
+    initialScale = 1.1f,
+    animationSpec = tween(ANIM_DURATION_LONG),
+) + fadeIn(
+    animationSpec = tween(ANIM_DURATION_SHORT),
+)
+
+fun scaleOutPopExitTransition() = scaleOut(
+    targetScale = .9f,
+    animationSpec = tween(ANIM_DURATION_SHORT),
+) + fadeOut(
+    animationSpec = tween(ANIM_DURATION_SHORT),
+)
+
+// @Composable
+// private fun NavController.closeKeyboardOnBottomSheetDismiss() {
 //    val keyboardController = LocalSoftwareKeyboardController.current
 //    LaunchedEffect(Unit) {
 //        snapshotFlow {currentDestination?. }
 //            .map { isVisible -> !isVisible }
 //            .collect { keyboardController?.hide() }
 //    }
-//}
+// }

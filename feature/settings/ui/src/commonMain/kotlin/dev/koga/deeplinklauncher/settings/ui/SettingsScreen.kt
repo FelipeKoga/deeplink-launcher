@@ -19,7 +19,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavHostController
 import compose.icons.TablerIcons
 import compose.icons.tablericons.ChevronRight
 import compose.icons.tablericons.ExternalLink

@@ -28,21 +28,21 @@ class SettingsNavigation(
         dialog<AppNavigationRoute.Settings.AppThemeBottomSheet> {
             AppThemeBottomSheet(
                 viewModel = koinViewModel(),
-                onDismissRequest = { appNavigator.navigate(AppNavigationRoute.Back) }
+                onDismissRequest = { appNavigator.navigate(AppNavigationRoute.Back) },
             )
         }
 
         dialog<AppNavigationRoute.Settings.SuggestionsOptionBottomSheet> {
             SuggestionsOptionBottomSheet(
                 viewModel = koinViewModel(),
-                onDismissRequest = { appNavigator.navigate(AppNavigationRoute.Back) }
+                onDismissRequest = { appNavigator.navigate(AppNavigationRoute.Back) },
             )
         }
 
         dialog<AppNavigationRoute.Settings.DeleteDataBottomSheet> {
             DeleteDataBottomSheet(
                 viewModel = koinViewModel(),
-                onDismissRequest = { appNavigator.navigate(AppNavigationRoute.Back) }
+                onDismissRequest = { appNavigator.navigate(AppNavigationRoute.Back) },
             )
         }
     }

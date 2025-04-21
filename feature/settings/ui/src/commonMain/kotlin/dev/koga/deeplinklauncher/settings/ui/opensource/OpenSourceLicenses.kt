@@ -25,7 +25,6 @@ fun OpenSourceLicensesScreen(
 
     val uriHandler = LocalUriHandler.current
 
-
     Scaffold(
         topBar = {
             DLLTopBar(

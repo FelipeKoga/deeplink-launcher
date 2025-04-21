@@ -9,7 +9,6 @@ import kotlinx.collections.immutable.persistentListOf
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.flow.MutableStateFlow
 
 class ProductsViewModel(
     private val purchaseApi: PurchaseApi,
@@ -18,7 +17,7 @@ class ProductsViewModel(
     val products = purchaseApi.getProducts().stateIn(
         scope = viewModelScope,
         initialValue = persistentListOf(),
-        started = SharingStarted.WhileSubscribed()
+        started = SharingStarted.WhileSubscribed(),
     )
 
     fun purchase(product: Product) {

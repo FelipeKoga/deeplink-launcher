@@ -5,6 +5,7 @@ package dev.koga.deeplinklauncher.deeplink.ui.deeplink.screen.details
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.navigation.toRoute
 import dev.koga.deeplinklauncher.coroutines.CoroutineDebouncer
 import dev.koga.deeplinklauncher.deeplink.api.model.DeepLink
 import dev.koga.deeplinklauncher.deeplink.api.model.Folder
@@ -16,8 +17,8 @@ import dev.koga.deeplinklauncher.deeplink.api.usecase.ShareDeepLink
 import dev.koga.deeplinklauncher.deeplink.api.usecase.ValidateDeepLink
 import dev.koga.deeplinklauncher.deeplink.ui.deeplink.screen.details.event.DeepLinkDetailsEvent
 import dev.koga.deeplinklauncher.deeplink.ui.deeplink.screen.details.state.DeepLinkDetailsUiState
+import dev.koga.deeplinklauncher.navigation.AppNavigationRoute
 import dev.koga.deeplinklauncher.navigation.AppNavigator
-import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -43,9 +44,8 @@ class DeepLinkDetailsViewModel(
     private val coroutineDebouncer: CoroutineDebouncer,
     private val appNavigator: AppNavigator,
 ) : ViewModel(), AppNavigator by appNavigator {
-    private val id = savedStateHandle.get<String>("deeplink_id").orEmpty()
-
-    private val deepLink = deepLinkRepository.getDeepLinkByIdStream(id)
+    private val route = savedStateHandle.toRoute<AppNavigationRoute.DeepLinkDetails>()
+    private val deepLink = deepLinkRepository.getDeepLinkByIdStream(route.id)
         .filterNotNull()
         .stateIn(
             scope = viewModelScope,
@@ -75,7 +75,7 @@ class DeepLinkDetailsViewModel(
             Mode.EDIT -> DeepLinkDetailsUiState.Edit(
                 deepLink = deepLink,
                 folders = folders.toPersistentList(),
-                errorMessage = deepLinkErrorMessage
+                errorMessage = deepLinkErrorMessage,
             )
 
             Mode.DUPLICATE -> DeepLinkDetailsUiState.Duplicate(
@@ -234,6 +234,6 @@ class DeepLinkDetailsViewModel(
     private enum class Mode {
         LAUNCH,
         EDIT,
-        DUPLICATE
+        DUPLICATE,
     }
 }

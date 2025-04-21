@@ -8,17 +8,17 @@ sealed interface DeepLinkDetailsUiState {
     val deepLink: DeepLink
 
     data class Launch(
-        override val deepLink: DeepLink
-    ): DeepLinkDetailsUiState
+        override val deepLink: DeepLink,
+    ) : DeepLinkDetailsUiState
 
     data class Edit(
         override val deepLink: DeepLink,
         val folders: ImmutableList<Folder>,
         val errorMessage: String? = null,
-    ): DeepLinkDetailsUiState
+    ) : DeepLinkDetailsUiState
 
     data class Duplicate(
         override val deepLink: DeepLink,
         val errorMessage: String? = null,
-    ): DeepLinkDetailsUiState
+    ) : DeepLinkDetailsUiState
 }

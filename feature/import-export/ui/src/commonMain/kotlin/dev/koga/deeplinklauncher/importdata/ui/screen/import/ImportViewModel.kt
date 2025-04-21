@@ -46,7 +46,7 @@ class ImportViewModel(
             is ImportDeepLinksResult.Error -> {
                 _messageDispatcher.send(
                     "Something went wrong. " +
-                            "Check the content structure and try again.",
+                        "Check the content structure and try again.",
                 )
             }
         }

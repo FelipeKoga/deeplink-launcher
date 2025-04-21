@@ -22,7 +22,7 @@ class SettingsViewModel(
 
     val isPurchaseAvailable = purchaseApi.isAvailable
 
-     fun navigateToStore() {
+    fun navigateToStore() {
         viewModelScope.launch {
             launchDeepLink.launch(ANDROID_PLAY_STORE_PATH)
         }

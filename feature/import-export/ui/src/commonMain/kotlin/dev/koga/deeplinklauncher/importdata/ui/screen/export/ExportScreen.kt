@@ -48,7 +48,6 @@ fun ExportScreen(
     var showPermissionRequest by remember { mutableStateOf(false) }
 
     LaunchedEffect(showPermissionRequest) {
-
     }
 
     ExportUI(
@@ -57,7 +56,6 @@ fun ExportScreen(
         onBack = { viewModel.navigate(AppNavigationRoute.Back) },
     )
 }
-
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -159,10 +157,10 @@ fun ExportContent(
             transitionSpec = {
                 if (targetState > initialState) {
                     slideInHorizontally { width -> width } + fadeIn() togetherWith
-                            slideOutHorizontally { width -> -width } + fadeOut()
+                        slideOutHorizontally { width -> -width } + fadeOut()
                 } else {
                     slideInHorizontally { width -> -width } + fadeIn() togetherWith
-                            slideOutHorizontally { width -> width } + fadeOut()
+                        slideOutHorizontally { width -> width } + fadeOut()
                 }.using(
                     SizeTransform(clip = false),
                 )

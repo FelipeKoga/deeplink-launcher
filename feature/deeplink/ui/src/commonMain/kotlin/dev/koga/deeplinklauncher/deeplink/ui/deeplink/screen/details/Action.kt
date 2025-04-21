@@ -26,6 +26,3 @@ sealed interface EditAction : Action {
     data class ToggleFolder(val folder: Folder) : EditAction
     data class AddFolder(val name: String, val description: String) : EditAction
 }
-
-
-

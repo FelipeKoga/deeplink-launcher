@@ -109,7 +109,7 @@ internal fun HomeUI(
                 modifier = Modifier.hazeEffect(
                     state = hazeState,
                     style = HazeMaterials.regular(
-                        containerColor = MaterialTheme.colorScheme.background
+                        containerColor = MaterialTheme.colorScheme.background,
                     ),
                 ),
             )
@@ -137,7 +137,7 @@ internal fun HomeUI(
             when (page) {
                 HomeTabPage.HISTORY.ordinal,
                 HomeTabPage.FAVORITES.ordinal,
-                    -> DeepLinksLazyColumn(
+                -> DeepLinksLazyColumn(
                     modifier = Modifier.hazeSource(hazeState),
                     listState = historyListState,
                     deepLinks = uiState.deepLinks,
@@ -145,8 +145,8 @@ internal fun HomeUI(
                     onClick = {
                         onAction(
                             HomeAction.Navigate(
-                                AppNavigationRoute.DeepLinkDetails(it.id, true)
-                            )
+                                AppNavigationRoute.DeepLinkDetails(it.id, true),
+                            ),
                         )
                     },
                     onLaunch = {
@@ -155,8 +155,8 @@ internal fun HomeUI(
                     onFolderClicked = {
                         onAction(
                             HomeAction.Navigate(
-                                AppNavigationRoute.FolderDetails(it.id)
-                            )
+                                AppNavigationRoute.FolderDetails(it.id),
+                            ),
                         )
                     },
                 )
@@ -168,8 +168,8 @@ internal fun HomeUI(
                     onClick = {
                         onAction(
                             HomeAction.Navigate(
-                                AppNavigationRoute.FolderDetails(it.id)
-                            )
+                                AppNavigationRoute.FolderDetails(it.id),
+                            ),
                         )
                     },
                     onAdd = { showAddFolderBottomSheet = true },

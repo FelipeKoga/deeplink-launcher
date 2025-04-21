@@ -7,7 +7,7 @@ import dev.koga.deeplinklauncher.deeplink.api.repository.FolderRepository
 enum class DeletionType {
     ALL,
     DEEP_LINKS,
-    FOLDERS
+    FOLDERS,
 }
 
 class DeleteDataViewModel(

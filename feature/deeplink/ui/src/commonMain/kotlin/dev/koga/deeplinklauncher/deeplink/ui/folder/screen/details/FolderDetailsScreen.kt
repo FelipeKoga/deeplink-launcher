@@ -1,6 +1,5 @@
 package dev.koga.deeplinklauncher.deeplink.ui.folder.screen.details
 
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -32,25 +31,30 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import compose.icons.TablerIcons
 import compose.icons.tablericons.Trash
-import dev.koga.deeplinklauncher.deeplink.api.model.DeepLink
 import dev.koga.deeplinklauncher.deeplink.ui.deeplink.component.DeepLinkCard
 import dev.koga.deeplinklauncher.deeplink.ui.folder.component.DeleteFolderBottomSheet
 import dev.koga.deeplinklauncher.deeplink.ui.folder.component.EditableText
 import dev.koga.deeplinklauncher.designsystem.DLLHorizontalDivider
 import dev.koga.deeplinklauncher.designsystem.DLLTopBar
+import dev.koga.deeplinklauncher.designsystem.DLLTopBarDefaults
 import dev.koga.deeplinklauncher.designsystem.button.DLLIconButton
 import dev.koga.deeplinklauncher.designsystem.theme.LocalDimensions
 import dev.koga.deeplinklauncher.designsystem.utils.fullLineItem
 import dev.koga.deeplinklauncher.designsystem.utils.spacer
+import dev.koga.deeplinklauncher.navigation.AppNavigationRoute
+import dev.koga.deeplinklauncher.navigation.AppNavigator
 
 @Composable
 fun FolderDetailsScreen(
-    viewModel: FolderDetailsViewModel
+    viewModel: FolderDetailsViewModel,
+    appNavigator: AppNavigator,
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     FolderDetailsUI(
         uiState = uiState,
+        onAction = viewModel::onAction,
+        onNavigate = appNavigator::navigate,
     )
 }
 
@@ -58,7 +62,8 @@ fun FolderDetailsScreen(
 @Composable
 fun FolderDetailsUI(
     uiState: FolderDetailsUiState,
-
+    onAction: (FolderDetailsAction) -> Unit,
+    onNavigate: (AppNavigationRoute) -> Unit,
 ) {
 //    LaunchedEffect(Unit) {
 //        screenModel.deletedEvent.collectLatest { navigator.pop() }
@@ -80,7 +85,9 @@ fun FolderDetailsUI(
             DLLTopBar(
                 title = {},
                 navigationIcon = {
-//                    DLLTopBarDefaults.navigationIcon(onClicked = navigator::pop)
+                    DLLTopBarDefaults.navigationIcon(
+                        onClicked = { onNavigate(AppNavigationRoute.Back) },
+                    )
                 },
                 actions = {
                     DLLIconButton(
@@ -96,32 +103,22 @@ fun FolderDetailsUI(
             )
         },
     ) { contentPadding ->
-
-//        FolderDetailsScreenContent(
-//            modifier = Modifier.fillMaxSize().padding(contentPadding),
-//            form = uiState,
-//            onEditName = screenModel::updateName,
-//            onEditDescription = screenModel::updateDescription,
-//            onDeepLinkClick = { deepLink ->
-//                val screen = ScreenRegistry.get(
-//                    SharedScreen.DeepLinkDetails(deepLink.id, false),
-//                )
-//                bottomSheetNavigator.show(screen)
-//            },
-//            onDeepLinkLaunch = screenModel::launch,
-//        )
+        FolderDetailsScreenContent(
+            modifier = Modifier.fillMaxSize().padding(contentPadding),
+            uiState = uiState,
+            onAction = onAction,
+            onNavigate = onNavigate,
+        )
     }
 }
 
-@OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3WindowSizeClassApi::class)
+@OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
 @Composable
 fun FolderDetailsScreenContent(
     modifier: Modifier = Modifier,
-    form: FolderDetailsUiState,
-    onEditName: (String) -> Unit,
-    onEditDescription: (String) -> Unit,
-    onDeepLinkClick: (DeepLink) -> Unit,
-    onDeepLinkLaunch: (DeepLink) -> Unit,
+    uiState: FolderDetailsUiState,
+    onAction: (FolderDetailsAction) -> Unit,
+    onNavigate: (AppNavigationRoute) -> Unit,
 ) {
     val dimensions = LocalDimensions.current
 
@@ -153,14 +150,14 @@ fun FolderDetailsScreenContent(
                 Spacer(modifier = Modifier.height(8.dp))
 
                 EditableText(
-                    value = form.name,
-                    onSave = onEditName,
+                    value = uiState.name,
+                    onSave = { onAction(FolderDetailsAction.UpdateName(it)) },
                     inputLabel = "Enter a name",
-                    editButtonEnabled = form.name.isNotBlank(),
+                    editButtonEnabled = uiState.name.isNotBlank(),
                     modifier = Modifier.fillMaxWidth(),
                 ) {
                     Text(
-                        text = form.name,
+                        text = uiState.name,
                         style = MaterialTheme.typography.headlineMedium.copy(
                             fontWeight = FontWeight.Bold,
                         ),
@@ -177,13 +174,13 @@ fun FolderDetailsScreenContent(
                 Spacer(modifier = Modifier.height(8.dp))
 
                 EditableText(
-                    value = form.description,
-                    onSave = onEditDescription,
+                    value = uiState.description,
+                    onSave = { onAction(FolderDetailsAction.UpdateDescription(it)) },
                     inputLabel = "Enter a description",
                     modifier = Modifier.fillMaxWidth(),
                 ) {
                     Text(
-                        text = form.description.ifEmpty { "--" },
+                        text = uiState.description.ifEmpty { "--" },
                         style = MaterialTheme.typography.bodyMedium.copy(
                             fontWeight = FontWeight.Normal,
                         ),
@@ -201,7 +198,7 @@ fun FolderDetailsScreenContent(
 
         fullLineItem {
             Text(
-                text = if (form.deepLinks.isNotEmpty()) {
+                text = if (uiState.deepLinks.isNotEmpty()) {
                     "Deeplinks"
                 } else {
                     "No Deeplinks vinculated to this folder"
@@ -216,18 +213,22 @@ fun FolderDetailsScreenContent(
         }
 
         items(
-            count = form.deepLinks.size,
-            key = { form.deepLinks[it].id },
+            count = uiState.deepLinks.size,
+            key = { uiState.deepLinks[it].id },
         ) { index ->
-            val deepLink = form.deepLinks[index]
+            val deepLink = uiState.deepLinks[index]
 
             DeepLinkCard(
                 modifier = Modifier
                     .padding(start = 12.dp, end = 12.dp, bottom = 12.dp)
                     .animateItem(),
                 deepLink = deepLink,
-                onClick = { onDeepLinkClick(deepLink) },
-                onLaunch = { onDeepLinkLaunch(deepLink) },
+                onClick = {
+                    onNavigate(
+                        AppNavigationRoute.DeepLinkDetails(id = deepLink.id, showFolder = false),
+                    )
+                },
+                onLaunch = { onAction(FolderDetailsAction.Launch(deepLink)) },
                 showFolder = false,
             )
         }

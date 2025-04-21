@@ -5,4 +5,3 @@ import androidx.navigation.NavGraphBuilder
 public interface NavigationGraph {
     public fun register(navGraphBuilder: NavGraphBuilder)
 }
-

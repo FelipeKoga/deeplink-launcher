@@ -38,9 +38,6 @@ kotlin {
             implementation(libs.koin.core)
             implementation(libs.kotlinx.coroutines.core)
             implementation(libs.koin.compose)
-            implementation(libs.voyager.bottomSheet)
-            implementation(libs.voyager.navigator)
-            implementation(libs.voyager.transitions)
             implementation(libs.compose.navigation)
 
             implementation(compose.runtime)

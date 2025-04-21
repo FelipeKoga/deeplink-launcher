@@ -8,7 +8,7 @@ import kotlinx.coroutines.launch
 
 class AppThemeViewModel(
     private val repository: PreferencesRepository,
-    private val appCoroutineScope: AppCoroutineScope
+    private val appCoroutineScope: AppCoroutineScope,
 ) : ViewModel() {
 
     val appTheme = repository.preferences.appTheme

@@ -6,11 +6,13 @@ import dev.koga.deeplinklauncher.navigation.NavigationGraph
 import org.koin.core.module.Module
 import org.koin.core.module.dsl.singleOf
 import org.koin.core.module.dsl.viewModelOf
+import org.koin.dsl.bind
 import org.koin.dsl.module
 
 val homeUiModule = module {
     viewModelOf(::HomeViewModel)
-    singleOf<NavigationGraph>(::HomeNavigation)
+    singleOf(::HomeNavigation) bind NavigationGraph::class
+
     includes(platformHomeUiModule)
 }
 

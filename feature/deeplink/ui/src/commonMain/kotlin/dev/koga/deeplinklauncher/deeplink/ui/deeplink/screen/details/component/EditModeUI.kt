@@ -35,7 +35,6 @@ import androidx.compose.ui.unit.dp
 import compose.icons.TablerIcons
 import compose.icons.tablericons.Check
 import compose.icons.tablericons.Plus
-import dev.koga.deeplinklauncher.deeplink.ui.deeplink.screen.details.Action
 import dev.koga.deeplinklauncher.deeplink.ui.deeplink.screen.details.EditAction
 import dev.koga.deeplinklauncher.deeplink.ui.deeplink.screen.details.state.DeepLinkDetailsUiState
 import dev.koga.deeplinklauncher.designsystem.DLLTextField
@@ -159,7 +158,7 @@ internal fun EditModeUI(
                         selectedLabelColor = MaterialTheme.colorScheme.onPrimary,
                         selectedTrailingIconColor = MaterialTheme.colorScheme.onPrimary,
 
-                        ),
+                    ),
                     border = BorderStroke(
                         1.dp,
                         color = MaterialTheme.colorScheme.surfaceContainerHighest,

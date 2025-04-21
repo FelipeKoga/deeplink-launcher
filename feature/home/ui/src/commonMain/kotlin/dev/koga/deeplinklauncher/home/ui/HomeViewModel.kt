@@ -52,7 +52,6 @@ class HomeViewModel(
     private val showOnboarding =
         preferencesRepository.preferencesStream.map { it.shouldShowOnboarding }
 
-
     val uiState = combine(
         searchInput,
         deepLinkInputState,

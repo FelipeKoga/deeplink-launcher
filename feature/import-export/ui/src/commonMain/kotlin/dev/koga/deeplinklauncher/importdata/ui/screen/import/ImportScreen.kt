@@ -50,14 +50,13 @@ import dev.koga.deeplinklauncher.importdata.ui.utils.label
 import dev.koga.deeplinklauncher.navigation.AppNavigationRoute
 import kotlinx.collections.immutable.toPersistentList
 
-
 @Composable
 fun ImportScreen(
     viewModel: ImportViewModel,
 ) {
     ImportUI(
         onImport = viewModel::import,
-        onBack = { viewModel.navigate(AppNavigationRoute.Back) }
+        onBack = { viewModel.navigate(AppNavigationRoute.Back) },
     )
 }
 
@@ -175,10 +174,10 @@ private fun ImportContent(modifier: Modifier = Modifier) {
             transitionSpec = {
                 if (targetState > initialState) {
                     slideInHorizontally { width -> width } + fadeIn() togetherWith
-                            slideOutHorizontally { width -> -width } + fadeOut()
+                        slideOutHorizontally { width -> -width } + fadeOut()
                 } else {
                     slideInHorizontally { width -> -width } + fadeIn() togetherWith
-                            slideOutHorizontally { width -> width } + fadeOut()
+                        slideOutHorizontally { width -> width } + fadeOut()
                 }.using(
                     SizeTransform(clip = false),
                 )
@@ -218,7 +217,7 @@ fun JSONTutorial() {
     ) {
         Text(
             text = "The most basic JSON format is an object that only " +
-                    "contains a link property.",
+                "contains a link property.",
             style = MaterialTheme.typography.titleSmall.copy(
                 fontWeight = FontWeight.Normal,
             ),
@@ -276,7 +275,7 @@ fun PlainTextTutorial() {
     Column {
         Text(
             text = "The plain text format is a simple list of deeplinks, " +
-                    "one per line.",
+                "one per line.",
             style = MaterialTheme.typography.titleSmall.copy(
                 fontWeight = FontWeight.Normal,
             ),

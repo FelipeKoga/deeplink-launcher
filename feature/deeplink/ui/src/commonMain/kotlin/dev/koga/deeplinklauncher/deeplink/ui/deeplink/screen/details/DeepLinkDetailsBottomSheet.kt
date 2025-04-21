@@ -61,7 +61,7 @@ fun DeepLinkDetailsBottomSheet(
         DeepLinkDetailsUI(
             uiState = uiState,
             onDelete = { showDeleteConfirmationSheet = true },
-            onAction = viewModel::onAction
+            onAction = viewModel::onAction,
         )
     }
 }
@@ -73,17 +73,16 @@ internal fun DeepLinkDetailsUI(
     onAction: (Action) -> Unit,
     onDelete: () -> Unit,
 ) {
-
 //    DetailsEvents(
 //        events = screenModel.events,
 //        onDeleted = bottomSheetNavigator::hide,
 //        onDuplicated = {
-////            bottomSheetNavigator.replace(
-////                item = DeepLinkDetailsBottomSheet(
-////                    deepLinkId = it.id,
-////                    showFolder = showFolder,
-////                ),
-////            )
+// //            bottomSheetNavigator.replace(
+// //                item = DeepLinkDetailsBottomSheet(
+// //                    deepLinkId = it.id,
+// //                    showFolder = showFolder,
+// //                ),
+// //            )
 //        },
 //    )
 
@@ -104,7 +103,7 @@ internal fun DeepLinkDetailsUI(
                     when (target) {
                         is DeepLinkDetailsUiState.Duplicate -> DuplicateModeUI(
                             uiState = target,
-                            onAction = onAction
+                            onAction = onAction,
                         )
 
                         is DeepLinkDetailsUiState.Edit -> EditModeUI(
