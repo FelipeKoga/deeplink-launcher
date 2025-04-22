@@ -170,7 +170,7 @@ fun FoldersVerticalStaggeredGrid(
             FolderCard(
                 folder = folders[index],
                 onClick = { onClick(it) },
-                modifier = Modifier.animateItem(fadeInSpec = null, fadeOutSpec = null),
+                modifier = Modifier.animateItem(),
             )
         }
     }
