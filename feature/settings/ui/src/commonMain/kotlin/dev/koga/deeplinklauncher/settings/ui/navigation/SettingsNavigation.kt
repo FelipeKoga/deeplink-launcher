@@ -6,6 +6,7 @@ import androidx.navigation.compose.dialog
 import dev.koga.deeplinklauncher.navigation.AppNavigationRoute
 import dev.koga.deeplinklauncher.navigation.AppNavigator
 import dev.koga.deeplinklauncher.navigation.NavigationGraph
+import dev.koga.deeplinklauncher.navigation.back
 import dev.koga.deeplinklauncher.settings.ui.SettingsScreen
 import dev.koga.deeplinklauncher.settings.ui.apptheme.AppThemeBottomSheet
 import dev.koga.deeplinklauncher.settings.ui.deletedata.DeleteDataBottomSheet
@@ -23,34 +24,36 @@ class SettingsNavigation(
         }
 
         composable<AppNavigationRoute.Settings.OpenSourceLicenses> {
-            OpenSourceLicensesScreen(onBack = { appNavigator.navigate(AppNavigationRoute.Back) })
+            OpenSourceLicensesScreen(
+                onBack = appNavigator::back,
+            )
         }
 
         dialog<AppNavigationRoute.Settings.AppThemeBottomSheet> {
             AppThemeBottomSheet(
                 viewModel = koinViewModel(),
-                onDismissRequest = { appNavigator.navigate(AppNavigationRoute.Back) },
+                onDismissRequest = appNavigator::back,
             )
         }
 
         dialog<AppNavigationRoute.Settings.SuggestionsOptionBottomSheet> {
             SuggestionsOptionBottomSheet(
                 viewModel = koinViewModel(),
-                onDismissRequest = { appNavigator.navigate(AppNavigationRoute.Back) },
+                onDismissRequest = appNavigator::back,
             )
         }
 
         dialog<AppNavigationRoute.Settings.DeleteDataBottomSheet> {
             DeleteDataBottomSheet(
                 viewModel = koinViewModel(),
-                onDismissRequest = { appNavigator.navigate(AppNavigationRoute.Back) },
+                onDismissRequest = appNavigator::back,
             )
         }
 
-        dialog<AppNavigationRoute.Settings.Products> {
+        dialog<AppNavigationRoute.Settings.ProductsBottomSheet> {
             ProductsBottomSheet(
                 viewModel = koinViewModel(),
-                onDismissRequest = { appNavigator.navigate(AppNavigationRoute.Back) },
+                onDismissRequest = appNavigator::back,
             )
         }
     }

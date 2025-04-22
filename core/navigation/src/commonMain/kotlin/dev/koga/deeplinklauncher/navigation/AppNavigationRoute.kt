@@ -48,6 +48,6 @@ public sealed interface AppNavigationRoute {
         public data object DeleteDataBottomSheet : Settings
 
         @Serializable
-        public data object Products : Settings
+        public data object ProductsBottomSheet : Settings
     }
 }

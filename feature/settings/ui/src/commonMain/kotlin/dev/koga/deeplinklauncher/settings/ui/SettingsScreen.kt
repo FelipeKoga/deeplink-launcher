@@ -59,7 +59,7 @@ fun SettingsScreen(
             viewmodel.navigate(AppNavigationRoute.Settings.SuggestionsOptionBottomSheet)
         },
         onShowProducts = {
-            viewmodel.navigate(AppNavigationRoute.Settings.SuggestionsOptionBottomSheet)
+            viewmodel.navigate(AppNavigationRoute.Settings.ProductsBottomSheet)
         },
     )
 }
