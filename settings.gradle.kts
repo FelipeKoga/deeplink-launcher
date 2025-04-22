@@ -46,6 +46,8 @@ include(
     ":core:designsystem",
     ":core:database",
     ":core:platform",
+    ":core:coroutines",
+    ":core:ui-event",
     ":shared",
     ":baselineprofile"
 )

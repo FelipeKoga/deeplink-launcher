@@ -5,6 +5,7 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -15,7 +16,6 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.rounded.Check
 import androidx.compose.material3.AssistChip
 import androidx.compose.material3.AssistChipDefaults
 import androidx.compose.material3.FilterChip
@@ -26,7 +26,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -34,47 +33,36 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import compose.icons.TablerIcons
+import compose.icons.tablericons.ArrowLeft
 import compose.icons.tablericons.Check
 import compose.icons.tablericons.Plus
-import dev.koga.deeplinklauncher.deeplink.api.model.Folder
+import compose.icons.tablericons.Trash
 import dev.koga.deeplinklauncher.deeplink.ui.deeplink.screen.details.state.DeepLinkDetailsUiState
+import dev.koga.deeplinklauncher.deeplink.ui.deeplink.screen.details.state.EditAction
 import dev.koga.deeplinklauncher.designsystem.DLLTextField
+import dev.koga.deeplinklauncher.designsystem.button.DLLIconButton
 
 @Composable
-fun EditModeUI(
+internal fun EditModeUI(
     modifier: Modifier,
-    uiState: DeepLinkDetailsUiState,
-    onNameChanged: (String) -> Unit,
-    onDescriptionChanged: (String) -> Unit,
-    onLinkChanged: (String) -> Unit,
-    onAddFolder: (String, String) -> Unit,
-    onToggleFolder: (Folder) -> Unit,
+    uiState: DeepLinkDetailsUiState.Edit,
+    onAction: (EditAction) -> Unit,
+    onShowDeleteConfirmation: () -> Unit,
 ) {
     val deepLink = uiState.deepLink
 
-    var showAddFolderBottomSheet by remember {
-        mutableStateOf(false)
-    }
-
-    if (showAddFolderBottomSheet) {
-        AddFolderBottomSheet(
-            onDismiss = { showAddFolderBottomSheet = false },
-            onAdd = { name, description ->
-                onAddFolder(name, description)
-                showAddFolderBottomSheet = false
-            },
+    Column(modifier = modifier) {
+        EditTopBar(
+            onBack = { onAction(EditAction.Back) },
+            onDelete = onShowDeleteConfirmation,
         )
-    }
 
-    Column(
-        modifier = modifier.verticalScroll(rememberScrollState()),
-    ) {
         Column(
-            modifier = Modifier.padding(horizontal = 24.dp),
+            modifier = Modifier.verticalScroll(rememberScrollState()).padding(horizontal = 24.dp),
         ) {
             DeepLinkDetailsTextField(
                 text = deepLink.name.orEmpty(),
-                onTextChange = onNameChanged,
+                onTextChange = { onAction(EditAction.OnNameChanged(it)) },
                 label = "Name",
             )
 
@@ -82,7 +70,7 @@ fun EditModeUI(
 
             DeepLinkDetailsTextField(
                 text = deepLink.description.orEmpty(),
-                onTextChange = onDescriptionChanged,
+                onTextChange = { onAction(EditAction.OnDescriptionChanged(it)) },
                 label = "Description",
             )
 
@@ -90,17 +78,17 @@ fun EditModeUI(
 
             DeepLinkDetailsTextField(
                 text = deepLink.link,
-                onTextChange = onLinkChanged,
+                onTextChange = { onAction(EditAction.OnLinkChanged(it)) },
                 label = "Link",
             )
 
             Spacer(modifier = Modifier.height(8.dp))
 
             AnimatedVisibility(
-                visible = uiState.deepLinkErrorMessage != null,
+                visible = uiState.errorMessage != null,
             ) {
                 Text(
-                    text = uiState.deepLinkErrorMessage.orEmpty(),
+                    text = uiState.errorMessage.orEmpty(),
                     style = MaterialTheme.typography.labelMedium.copy(
                         color = MaterialTheme.colorScheme.error,
                         fontWeight = FontWeight.Bold,
@@ -138,7 +126,7 @@ fun EditModeUI(
                         containerColor = MaterialTheme.colorScheme.surfaceContainerHighest,
                     ),
                     border = null,
-                    onClick = { showAddFolderBottomSheet = true },
+                    onClick = { onAction(EditAction.AddFolder) },
                 )
             }
 
@@ -147,16 +135,13 @@ fun EditModeUI(
 
                 FilterChip(
                     selected = selected,
-                    onClick = {
-                        onToggleFolder(folder)
-                    },
+                    onClick = { onAction(EditAction.ToggleFolder(folder)) },
                     label = {
                         Text(
                             text = folder.name,
                             style = MaterialTheme.typography.labelSmall.copy(
                                 fontWeight = FontWeight.SemiBold,
                             ),
-
                         )
                     },
                     shape = CircleShape,
@@ -165,7 +150,6 @@ fun EditModeUI(
                         selectedContainerColor = MaterialTheme.colorScheme.primary,
                         selectedLabelColor = MaterialTheme.colorScheme.onPrimary,
                         selectedTrailingIconColor = MaterialTheme.colorScheme.onPrimary,
-
                     ),
                     border = BorderStroke(
                         1.dp,
@@ -205,4 +189,37 @@ private fun DeepLinkDetailsTextField(
         label = label,
         modifier = Modifier.fillMaxWidth(),
     )
+}
+
+@Composable
+private fun EditTopBar(
+    modifier: Modifier = Modifier,
+    onBack: () -> Unit,
+    onDelete: () -> Unit,
+) {
+    Row(
+        modifier = modifier.fillMaxWidth().padding(horizontal = 12.dp, vertical = 8.dp),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        DLLIconButton(
+            onClick = onBack,
+        ) {
+            Icon(
+                imageVector = TablerIcons.ArrowLeft,
+                contentDescription = "Back",
+                tint = MaterialTheme.colorScheme.primary,
+            )
+        }
+
+        DLLIconButton(
+            onClick = onDelete,
+        ) {
+            Icon(
+                imageVector = TablerIcons.Trash,
+                contentDescription = "Delete deeplink",
+                tint = MaterialTheme.colorScheme.primary,
+            )
+        }
+    }
 }

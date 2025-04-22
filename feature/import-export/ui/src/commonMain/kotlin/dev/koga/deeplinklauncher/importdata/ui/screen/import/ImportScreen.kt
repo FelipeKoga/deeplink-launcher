@@ -22,12 +22,8 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SnackbarDuration
-import androidx.compose.material3.SnackbarHost
-import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -39,10 +35,7 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
-import cafe.adriel.voyager.core.screen.Screen
-import cafe.adriel.voyager.koin.getScreenModel
 import com.darkrockstudios.libraries.mpfilepicker.FilePicker
-import dev.koga.deeplinklauncher.LocalRootNavigator
 import dev.koga.deeplinklauncher.designsystem.DLLHorizontalDivider
 import dev.koga.deeplinklauncher.designsystem.DLLSingleChoiceSegmentedButtonRow
 import dev.koga.deeplinklauncher.designsystem.DLLTopBar
@@ -51,67 +44,59 @@ import dev.koga.deeplinklauncher.file.model.FileType
 import dev.koga.deeplinklauncher.importdata.ui.component.JSONBoxViewer
 import dev.koga.deeplinklauncher.importdata.ui.utils.getByLabel
 import dev.koga.deeplinklauncher.importdata.ui.utils.label
+import dev.koga.deeplinklauncher.navigation.AppNavigationRoute
 import kotlinx.collections.immutable.toPersistentList
-import kotlinx.coroutines.flow.collectLatest
 
-class ImportScreen : Screen {
+@Composable
+fun ImportScreen(
+    viewModel: ImportViewModel,
+) {
+    var showFilePicker by remember { mutableStateOf(false) }
 
-    @Composable
-    override fun Content() {
-        val navigator = LocalRootNavigator.current
-        val screenModel = getScreenModel<ImportScreenModel>()
+    FilePicker(
+        show = showFilePicker,
+        fileExtensions = FileType.extensions,
+    ) { platformFile ->
+        showFilePicker = false
+        viewModel.import(platformFile ?: return@FilePicker)
+    }
 
-        val snackBarHostState = remember { SnackbarHostState() }
-        var showFilePicker by remember { mutableStateOf(false) }
+    ImportUI(
+        onBack = { viewModel.navigate(AppNavigationRoute.Back) },
+        onBrowse = { showFilePicker = true },
+    )
+}
 
-        LaunchedEffect(Unit) {
-            screenModel.messages.collectLatest { message ->
-                snackBarHostState.showSnackbar(
-                    message = message,
-                    duration = SnackbarDuration.Short,
-                )
-            }
-        }
+@Composable
+private fun ImportUI(
+    onBrowse: () -> Unit,
+    onBack: () -> Unit,
+) {
+    Scaffold(
+        topBar = {
+            DLLTopBar(
+                title = {
+                    DLLTopBarDefaults.title("Import DeepLinks")
+                },
+                navigationIcon = {
+                    DLLTopBarDefaults.navigationIcon(onClicked = onBack)
+                },
+            )
+        },
+        containerColor = MaterialTheme.colorScheme.background,
+    ) { contentPadding ->
+        Column(modifier = Modifier.padding(contentPadding).fillMaxSize()) {
+            ImportContent(modifier = Modifier.weight(1f))
 
-        FilePicker(
-            show = showFilePicker,
-            fileExtensions = FileType.extensions,
-        ) { platformFile ->
-            showFilePicker = false
-            screenModel.import(platformFile ?: return@FilePicker)
-        }
-
-        Scaffold(
-            topBar = {
-                DLLTopBar(
-                    title = {
-                        DLLTopBarDefaults.title("Import DeepLinks")
-                    },
-                    navigationIcon = {
-                        DLLTopBarDefaults.navigationIcon(onClicked = navigator::pop)
-                    },
-                )
-            },
-            snackbarHost = {
-                SnackbarHost(snackBarHostState)
-            },
-            containerColor = MaterialTheme.colorScheme.background,
-        ) { contentPadding ->
-            Column(modifier = Modifier.padding(contentPadding).fillMaxSize()) {
-                ImportContent(
-                    modifier = Modifier.weight(1f),
-                )
-
-                ImportFooter {
-                    showFilePicker = true
-                }
-            }
+            ImportFooter(
+                onBrowse = onBrowse,
+            )
         }
     }
 }
 
 @Composable
-fun ImportContent(modifier: Modifier = Modifier) {
+private fun ImportContent(modifier: Modifier = Modifier) {
     var selectedType by remember { mutableStateOf(FileType.JSON) }
 
     Column(

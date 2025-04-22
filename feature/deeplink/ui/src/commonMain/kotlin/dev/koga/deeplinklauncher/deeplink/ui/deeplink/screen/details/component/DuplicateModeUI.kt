@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
+import androidx.compose.material3.Icon
 import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Switch
@@ -26,20 +27,25 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
-import dev.koga.deeplinklauncher.deeplink.api.model.DeepLink
+import compose.icons.TablerIcons
+import compose.icons.tablericons.ArrowLeft
+import dev.koga.deeplinklauncher.deeplink.ui.deeplink.screen.details.state.DeepLinkDetailsUiState
+import dev.koga.deeplinklauncher.deeplink.ui.deeplink.screen.details.state.DuplicateAction
 import dev.koga.deeplinklauncher.designsystem.DLLHorizontalDivider
 import dev.koga.deeplinklauncher.designsystem.DLLTextField
+import dev.koga.deeplinklauncher.designsystem.button.DLLIconButton
 
 @Composable
 fun DuplicateModeUI(
-    deepLink: DeepLink,
-    errorMessage: String? = null,
-    onDuplicate: (newLink: String, copyAllFields: Boolean) -> Unit,
+    uiState: DeepLinkDetailsUiState.Duplicate,
+    onAction: (DuplicateAction) -> Unit,
 ) {
-    var newLink by rememberSaveable { mutableStateOf(deepLink.link) }
+    var newLink by rememberSaveable { mutableStateOf(uiState.deepLink.link) }
     var copyAllFields by rememberSaveable { mutableStateOf(true) }
 
     Column {
+        TopBar(onBack = { onAction(DuplicateAction.Back) })
+
         Column(modifier = Modifier.padding(horizontal = 24.dp, vertical = 8.dp)) {
             DLLTextField(
                 label = "Enter new deeplink",
@@ -55,10 +61,10 @@ fun DuplicateModeUI(
             )
 
             AnimatedVisibility(
-                visible = errorMessage != null,
+                visible = uiState.errorMessage != null,
             ) {
                 Text(
-                    text = errorMessage.orEmpty(),
+                    text = uiState.errorMessage.orEmpty(),
                     modifier = Modifier.padding(top = 8.dp),
                     style = MaterialTheme.typography.labelMedium.copy(
                         color = MaterialTheme.colorScheme.error,
@@ -108,13 +114,35 @@ fun DuplicateModeUI(
                 .align(Alignment.CenterHorizontally)
                 .fillMaxWidth(0.5f)
                 .padding(24.dp),
-            onClick = { onDuplicate(newLink, copyAllFields) },
+            onClick = { onAction(DuplicateAction.Duplicate(newLink, copyAllFields)) },
         ) {
             Text(
                 text = "Duplicate",
                 style = MaterialTheme.typography.labelMedium.copy(
                     fontWeight = FontWeight.Bold,
                 ),
+            )
+        }
+    }
+}
+
+@Composable
+private fun TopBar(
+    modifier: Modifier = Modifier,
+    onBack: () -> Unit,
+) {
+    Row(
+        modifier = modifier.fillMaxWidth().padding(horizontal = 12.dp, vertical = 8.dp),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        DLLIconButton(
+            onClick = onBack,
+        ) {
+            Icon(
+                imageVector = TablerIcons.ArrowLeft,
+                contentDescription = "Back",
+                tint = MaterialTheme.colorScheme.primary,
             )
         }
     }

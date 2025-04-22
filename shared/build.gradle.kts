@@ -25,7 +25,6 @@ kotlin {
             implementation(projects.feature.preferences.impl)
             implementation(projects.feature.settings.ui)
             implementation(projects.feature.home.ui)
-            implementation(projects.feature.purchase.ui)
             api(projects.feature.purchase.api)
             implementation(projects.feature.purchase.impl)
 
@@ -34,18 +33,17 @@ kotlin {
             implementation(projects.core.database)
             implementation(projects.core.file)
             implementation(projects.core.date)
+            implementation(projects.core.coroutines)
+            implementation(projects.core.uiEvent)
 
             implementation(libs.koin.core)
             implementation(libs.kotlinx.coroutines.core)
             implementation(libs.koin.compose)
-            implementation(libs.voyager.bottomSheet)
-            implementation(libs.voyager.navigator)
-            implementation(libs.voyager.transitions)
+            implementation(libs.compose.navigation)
 
             implementation(compose.runtime)
             implementation(compose.foundation)
             implementation(compose.material3)
-            implementation(compose.material)
             implementation(compose.ui)
             implementation(compose.components.resources)
         }

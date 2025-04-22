@@ -1,73 +1,94 @@
 package dev.koga.deeplinklauncher.shared
 
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.imePadding
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.snapshotFlow
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalSoftwareKeyboardController
-import androidx.compose.ui.unit.dp
-import cafe.adriel.voyager.navigator.Navigator
-import cafe.adriel.voyager.navigator.bottomSheet.BottomSheetNavigator
-import cafe.adriel.voyager.transitions.SlideTransition
-import dev.koga.deeplinklauncher.LocalRootNavigator
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.rememberNavController
 import dev.koga.deeplinklauncher.designsystem.theme.DLLTheme
-import dev.koga.deeplinklauncher.designsystem.theme.Theme
-import dev.koga.deeplinklauncher.home.ui.screen.HomeScreen
+import dev.koga.deeplinklauncher.navigation.AppGraph
+import dev.koga.deeplinklauncher.navigation.AppNavigationRoute
+import dev.koga.deeplinklauncher.navigation.AppNavigator
 import dev.koga.deeplinklauncher.preferences.api.model.AppTheme
 import dev.koga.deeplinklauncher.preferences.api.repository.PreferencesRepository
-import kotlinx.coroutines.flow.map
+import dev.koga.deeplinklauncher.shared.anim.scaleInEnterTransition
+import dev.koga.deeplinklauncher.shared.anim.scaleInPopEnterTransition
+import dev.koga.deeplinklauncher.shared.anim.scaleOutExitTransition
+import dev.koga.deeplinklauncher.shared.anim.scaleOutPopExitTransition
+import dev.koga.deeplinklauncher.uievent.SnackBarDispatcher
 import org.koin.compose.koinInject
 
-@OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun App(
-    preferencesRepository: PreferencesRepository = koinInject(),
-) {
-    val preferences by preferencesRepository.preferencesStream.collectAsState(
-        initial = preferencesRepository.preferences,
-    )
+fun App() {
+    val navController = rememberNavController()
+    val appNavigator = koinInject<AppNavigator>()
+    val appGraph = koinInject<AppGraph>()
+    val snackBarDispatcher = koinInject<SnackBarDispatcher>()
+    val isDarkTheme = rememberAppDarkMode()
+    val snackBarHostState = remember { SnackbarHostState() }
+
+    LaunchedEffect(Unit) {
+        appNavigator.destination.collect { route ->
+            when (route) {
+                AppNavigationRoute.Back -> navController.popBackStack()
+                else -> navController.navigate(route) {
+                    launchSingleTop = true
+                }
+            }
+        }
+
+        snackBarDispatcher.messages.collect { snackBar ->
+            snackBarHostState.showSnackbar(
+                message = snackBar.message,
+            )
+        }
+    }
 
     DLLTheme(
-        theme = when (preferences.appTheme) {
-            AppTheme.DARK -> Theme.DARK
-            AppTheme.LIGHT -> Theme.LIGHT
-            AppTheme.AUTO -> Theme.AUTO
-        },
+        isDarkTheme = isDarkTheme,
     ) {
-        Navigator(HomeScreen()) { navigator ->
-            CompositionLocalProvider(LocalRootNavigator provides navigator) {
-                BottomSheetNavigator(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .imePadding(),
-                    sheetBackgroundColor = MaterialTheme.colorScheme.surface,
-                    sheetShape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp),
-                ) { bottomSheetNavigator ->
-                    bottomSheetNavigator.closeKeyboardOnBottomSheetDismiss()
-
-                    SlideTransition(navigator) {
-                        it.Content()
-                    }
-                }
+        Scaffold(
+            snackbarHost = {
+                SnackbarHost(snackBarHostState)
+            },
+        ) {
+            NavHost(
+                modifier = Modifier.fillMaxSize().imePadding(),
+                navController = navController,
+                startDestination = AppNavigationRoute.Home,
+                enterTransition = { scaleInEnterTransition() },
+                popEnterTransition = { scaleInPopEnterTransition() },
+                exitTransition = { scaleOutExitTransition() },
+                popExitTransition = { scaleOutPopExitTransition() },
+            ) {
+                appGraph.appGraphBuilder(this)
             }
         }
     }
 }
 
 @Composable
-private fun BottomSheetNavigator.closeKeyboardOnBottomSheetDismiss() {
-    val keyboardController = LocalSoftwareKeyboardController.current
-    LaunchedEffect(Unit) {
-        snapshotFlow { isVisible }
-            .map { isVisible -> !isVisible }
-            .collect { keyboardController?.hide() }
+private fun rememberAppDarkMode(
+    preferencesRepository: PreferencesRepository = koinInject(),
+): Boolean {
+    val isSystemDarkTheme = isSystemInDarkTheme()
+
+    val preferences by remember(preferencesRepository) {
+        preferencesRepository.preferencesStream
+    }.collectAsStateWithLifecycle(preferencesRepository.preferences)
+
+    return when (preferences.appTheme) {
+        AppTheme.LIGHT -> false
+        AppTheme.DARK -> true
+        AppTheme.AUTO -> isSystemDarkTheme
     }
 }

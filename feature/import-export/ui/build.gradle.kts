@@ -11,18 +11,18 @@ kotlin {
 
     sourceSets {
         commonMain.dependencies {
+            implementation(projects.feature.importExport.api)
             implementation(projects.core.designsystem)
             implementation(projects.core.navigation)
             implementation(projects.core.file)
             implementation(projects.core.date)
-            implementation(projects.feature.importExport.api)
+            implementation(projects.core.uiEvent)
 
             implementation(libs.kotlinx.coroutines.core)
             implementation(libs.kotlinx.immutable)
             implementation(libs.koin.compose)
-            implementation(libs.voyager.screenmodel)
-            implementation(libs.voyager.navigator)
-            implementation(libs.voyager.koin)
+            implementation(libs.koin.viewmodel)
+            implementation(libs.compose.navigation)
             implementation(libs.mpfilepicker)
 
             implementation(compose.runtime)

@@ -4,6 +4,7 @@ plugins {
     id("dev.koga.deeplinklauncher.multiplatform")
     alias(libs.plugins.jetbrainsCompose)
     alias(libs.plugins.compose.compiler)
+    alias(libs.plugins.kotlin.serialization)
 }
 
 kotlin {
@@ -17,10 +18,13 @@ kotlin {
             implementation(projects.core.designsystem)
             implementation(projects.core.navigation)
             implementation(projects.core.resources)
+            implementation(projects.core.coroutines)
+
+            implementation(libs.compose.navigation)
 
             implementation(libs.kotlinx.coroutines.core)
             implementation(libs.koin.compose)
-            implementation(libs.bundles.voyager)
+            implementation(libs.koin.viewmodel)
             implementation(libs.kotlinx.immutable)
             implementation(libs.material3.windowSizeClass)
 
