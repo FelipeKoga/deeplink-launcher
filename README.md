@@ -39,7 +39,6 @@
 | Technology | Description |
 |------------|-------------|
 | [**Compose Multiplatform**](https://github.com/JetBrains/compose-jb) | A modern UI toolkit for building native UIs across all platforms. |
-| [**Voyager**](https://github.com/adrielcafe/voyager) | A multiplatform navigation library. |
 | [**Koin**](https://insert-koin.io/) | A powerful dependency injection framework for Kotlin. |
 | [**SQLDelight**](https://cashapp.github.io/sqldelight/) | A multiplatform database library that generates type-safe Kotlin APIs. |
 | [**DataStore**](https://developer.android.com/jetpack/androidx/releases/datastore) | A modern data storage solution for key-value pairs or protocol buffers with Kotlin coroutines. |
