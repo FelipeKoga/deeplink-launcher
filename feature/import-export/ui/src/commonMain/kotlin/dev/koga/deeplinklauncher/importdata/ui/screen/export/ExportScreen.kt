@@ -148,10 +148,10 @@ fun ExportContent(
             transitionSpec = {
                 if (targetState > initialState) {
                     slideInHorizontally { width -> width } + fadeIn() togetherWith
-                            slideOutHorizontally { width -> -width } + fadeOut()
+                        slideOutHorizontally { width -> -width } + fadeOut()
                 } else {
                     slideInHorizontally { width -> -width } + fadeIn() togetherWith
-                            slideOutHorizontally { width -> width } + fadeOut()
+                        slideOutHorizontally { width -> width } + fadeOut()
                 }.using(
                     SizeTransform(clip = false),
                 )

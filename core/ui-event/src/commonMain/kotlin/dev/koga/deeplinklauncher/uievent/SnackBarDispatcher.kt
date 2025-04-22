@@ -19,13 +19,12 @@ data class SnackBar(
     enum class Variant {
         SUCCESS,
         ERROR,
-        INFO
+        INFO,
     }
 }
 
-
 internal class SnackBarDispatcherImpl(
-    private val appCoroutineScope: AppCoroutineScope
+    private val appCoroutineScope: AppCoroutineScope,
 ) : SnackBarDispatcher {
     private val _dispatcher = Channel<SnackBar>(Channel.UNLIMITED)
     override val messages: Flow<SnackBar> = _dispatcher.receiveAsFlow()

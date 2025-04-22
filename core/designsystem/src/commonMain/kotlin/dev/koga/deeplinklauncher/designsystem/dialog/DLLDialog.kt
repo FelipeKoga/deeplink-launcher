@@ -14,14 +14,13 @@ import androidx.compose.ui.unit.dp
 fun DLLDialog(
     modifier: Modifier = Modifier,
     onDismissRequest: () -> Unit,
-    content: @Composable ColumnScope.() -> Unit
+    content: @Composable ColumnScope.() -> Unit,
 ) {
     BasicAlertDialog(onDismissRequest, modifier = modifier) {
         Card(
             modifier = modifier,
             shape = RoundedCornerShape(12.dp),
-            content = content
+            content = content,
         )
     }
-
 }

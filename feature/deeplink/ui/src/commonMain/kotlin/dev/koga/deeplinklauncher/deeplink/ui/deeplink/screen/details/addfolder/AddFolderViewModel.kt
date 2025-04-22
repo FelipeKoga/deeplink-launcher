@@ -24,12 +24,12 @@ class AddFolderViewModel(
 
     val uiState = combine(
         name,
-        description
+        description,
     ) { name, description ->
         AddFolderUiState(
             name = name,
             description = description,
-            isSubmitEnabled = name.isNotBlank()
+            isSubmitEnabled = name.isNotBlank(),
         )
     }.stateIn(
         scope = viewModelScope,
@@ -38,7 +38,7 @@ class AddFolderViewModel(
             name = name.value,
             description = description.value,
             isSubmitEnabled = false,
-        )
+        ),
     )
 
     fun onNameChanged(text: String) {

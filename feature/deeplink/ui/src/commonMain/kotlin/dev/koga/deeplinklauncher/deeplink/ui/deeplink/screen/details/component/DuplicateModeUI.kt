@@ -29,8 +29,8 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import compose.icons.TablerIcons
 import compose.icons.tablericons.ArrowLeft
-import dev.koga.deeplinklauncher.deeplink.ui.deeplink.screen.details.state.DuplicateAction
 import dev.koga.deeplinklauncher.deeplink.ui.deeplink.screen.details.state.DeepLinkDetailsUiState
+import dev.koga.deeplinklauncher.deeplink.ui.deeplink.screen.details.state.DuplicateAction
 import dev.koga.deeplinklauncher.designsystem.DLLHorizontalDivider
 import dev.koga.deeplinklauncher.designsystem.DLLTextField
 import dev.koga.deeplinklauncher.designsystem.button.DLLIconButton

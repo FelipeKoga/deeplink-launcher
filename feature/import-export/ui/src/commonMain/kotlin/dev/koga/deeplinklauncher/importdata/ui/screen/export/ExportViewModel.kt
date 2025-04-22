@@ -10,8 +10,6 @@ import dev.koga.deeplinklauncher.importexport.usecase.GetDeepLinksJsonPreview
 import dev.koga.deeplinklauncher.importexport.usecase.GetDeepLinksPlainTextPreview
 import dev.koga.deeplinklauncher.navigation.AppNavigator
 import dev.koga.deeplinklauncher.uievent.SnackBarDispatcher
-import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 
 class ExportViewModel(

@@ -37,8 +37,8 @@ import compose.icons.tablericons.ArrowLeft
 import compose.icons.tablericons.Check
 import compose.icons.tablericons.Plus
 import compose.icons.tablericons.Trash
-import dev.koga.deeplinklauncher.deeplink.ui.deeplink.screen.details.state.EditAction
 import dev.koga.deeplinklauncher.deeplink.ui.deeplink.screen.details.state.DeepLinkDetailsUiState
+import dev.koga.deeplinklauncher.deeplink.ui.deeplink.screen.details.state.EditAction
 import dev.koga.deeplinklauncher.designsystem.DLLTextField
 import dev.koga.deeplinklauncher.designsystem.button.DLLIconButton
 
@@ -54,7 +54,7 @@ internal fun EditModeUI(
     Column(modifier = modifier) {
         EditTopBar(
             onBack = { onAction(EditAction.Back) },
-            onDelete = onShowDeleteConfirmation
+            onDelete = onShowDeleteConfirmation,
         )
 
         Column(

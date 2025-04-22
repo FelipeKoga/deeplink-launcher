@@ -32,7 +32,7 @@ fun DeepLinkDetailsBottomSheet(
     if (showDeleteConfirmation) {
         DeepLinkDeleteConfirmationDialog(
             onDismissRequest = { showDeleteConfirmation = false },
-            onDelete = { viewModel.onAction(EditAction.Delete) }
+            onDelete = { viewModel.onAction(EditAction.Delete) },
         )
     }
 
@@ -40,7 +40,7 @@ fun DeepLinkDetailsBottomSheet(
         DeepLinkDetailsUI(
             uiState = uiState,
             onAction = viewModel::onAction,
-            onShowDeleteConfirmation = { showDeleteConfirmation = true }
+            onShowDeleteConfirmation = { showDeleteConfirmation = true },
         )
     }
 }

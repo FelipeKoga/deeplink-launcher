@@ -1,25 +1,16 @@
 package dev.koga.deeplinklauncher.shared
 
-import androidx.compose.animation.core.tween
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.scaleIn
-import androidx.compose.animation.scaleOut
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Snackbar
-import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
-import androidx.compose.material3.SnackbarVisuals
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
@@ -68,7 +59,7 @@ fun App() {
         Scaffold(
             snackbarHost = {
                 SnackbarHost(snackBarHostState)
-            }
+            },
         ) {
             NavHost(
                 modifier = Modifier.fillMaxSize().imePadding(),
@@ -82,7 +73,6 @@ fun App() {
                 appGraph.appGraphBuilder(this)
             }
         }
-
     }
 }
 

@@ -22,7 +22,6 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.koga.deeplinklauncher.designsystem.DLLModalBottomSheet
 import dev.koga.deeplinklauncher.purchase.api.Product
 import kotlinx.collections.immutable.ImmutableList
-import kotlinx.collections.immutable.PersistentList
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -34,7 +33,7 @@ fun ProductsBottomSheet(
     DLLModalBottomSheet(onDismiss = onDismissRequest) {
         ProductsUI(
             products = products,
-            onClick = viewModel::purchase
+            onClick = viewModel::purchase,
         )
     }
 }
@@ -43,7 +42,7 @@ fun ProductsBottomSheet(
 fun ProductsUI(
     modifier: Modifier = Modifier,
     products: ImmutableList<Product>,
-    onClick: (Product) -> Unit
+    onClick: (Product) -> Unit,
 ) {
     Column(
         modifier = modifier.fillMaxWidth().padding(24.dp),

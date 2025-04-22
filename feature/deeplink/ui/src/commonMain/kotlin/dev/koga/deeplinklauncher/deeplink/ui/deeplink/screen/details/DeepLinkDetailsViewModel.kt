@@ -29,7 +29,6 @@ import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlin.uuid.ExperimentalUuidApi
 
 class DeepLinkDetailsViewModel(
     savedStateHandle: SavedStateHandle,
@@ -107,8 +106,8 @@ class DeepLinkDetailsViewModel(
             LaunchAction.ToggleFavorite -> toggleFavorite()
             LaunchAction.NavigateToFolder -> appNavigator.navigate(
                 AppNavigationRoute.FolderDetails(
-                    id = deepLink.value.folder?.id.orEmpty()
-                )
+                    id = deepLink.value.folder?.id.orEmpty(),
+                ),
             )
         }
     }
@@ -218,7 +217,7 @@ class DeepLinkDetailsViewModel(
                     appNavigator.navigate(
                         route = AppNavigationRoute.DeepLinkDetails(
                             id = response.deepLink.id,
-                            showFolder = true
+                            showFolder = true,
                         ),
                     )
                 }

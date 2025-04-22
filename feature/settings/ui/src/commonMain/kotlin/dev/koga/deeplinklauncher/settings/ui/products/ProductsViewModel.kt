@@ -33,8 +33,8 @@ class ProductsViewModel(
                     snackBarDispatcher.show(
                         SnackBar(
                             message = "Thank you for your support!",
-                            variant = SnackBar.Variant.SUCCESS
-                        )
+                            variant = SnackBar.Variant.SUCCESS,
+                        ),
                     )
 
                     appNavigator.back()
@@ -45,8 +45,8 @@ class ProductsViewModel(
                         snackBarDispatcher.show(
                             SnackBar(
                                 message = "Something went wrong, please try again",
-                                variant = SnackBar.Variant.ERROR
-                            )
+                                variant = SnackBar.Variant.ERROR,
+                            ),
                         )
                     }
                 }

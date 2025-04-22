@@ -61,7 +61,7 @@ internal fun HomeUI(
     pagerState: PagerState = rememberPagerState(
         initialPage = HomeTabPage.HISTORY.ordinal,
         pageCount = { HomeTabPage.entries.size },
-    )
+    ),
 ) {
     LaunchedEffect(uiState.searchInput) {
         if (uiState.deepLinks.isNotEmpty()) {
@@ -110,7 +110,7 @@ internal fun HomeUI(
             when (page) {
                 HomeTabPage.HISTORY.ordinal,
                 HomeTabPage.FAVORITES.ordinal,
-                    -> DeepLinksLazyColumn(
+                -> DeepLinksLazyColumn(
                     modifier = Modifier.hazeSource(hazeState),
                     listState = historyListState,
                     deepLinks = uiState.deepLinks,
@@ -141,4 +141,3 @@ internal fun HomeUI(
         }
     }
 }
-

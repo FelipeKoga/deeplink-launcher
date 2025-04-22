@@ -6,7 +6,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dev.koga.deeplinklauncher.date.currentLocalDateTime
 import dev.koga.deeplinklauncher.deeplink.api.model.DeepLink
-import dev.koga.deeplinklauncher.deeplink.api.model.Folder
 import dev.koga.deeplinklauncher.deeplink.api.repository.DeepLinkRepository
 import dev.koga.deeplinklauncher.deeplink.api.repository.FolderRepository
 import dev.koga.deeplinklauncher.deeplink.api.usecase.GetAutoSuggestionLinks
@@ -14,7 +13,6 @@ import dev.koga.deeplinklauncher.deeplink.api.usecase.GetDeepLinksAndFolderStrea
 import dev.koga.deeplinklauncher.deeplink.api.usecase.LaunchDeepLink
 import dev.koga.deeplinklauncher.home.ui.state.DeepLinkInputState
 import dev.koga.deeplinklauncher.home.ui.state.HomeUiState
-import dev.koga.deeplinklauncher.navigation.AppNavigationRoute
 import dev.koga.deeplinklauncher.navigation.AppNavigator
 import dev.koga.deeplinklauncher.preferences.api.repository.PreferencesRepository
 import kotlinx.collections.immutable.toPersistentList
@@ -25,8 +23,6 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapLatest
-import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch

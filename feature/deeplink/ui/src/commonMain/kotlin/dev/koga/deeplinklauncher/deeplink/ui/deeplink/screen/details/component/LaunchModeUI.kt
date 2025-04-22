@@ -73,7 +73,7 @@ fun LaunchModeUI(
 
     Column(
         modifier = modifier
-            .fillMaxWidth()
+            .fillMaxWidth(),
     ) {
         Column(
             modifier = Modifier

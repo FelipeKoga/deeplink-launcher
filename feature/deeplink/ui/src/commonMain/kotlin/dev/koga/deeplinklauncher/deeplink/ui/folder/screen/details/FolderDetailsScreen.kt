@@ -61,12 +61,11 @@ fun FolderDetailsScreen(
         )
     }
 
-
     FolderDetailsUI(
         uiState = uiState,
         onAction = viewModel::onAction,
         onNavigate = appNavigator::navigate,
-        onShowDeleteConfirmation = { showDeleteDialog = true }
+        onShowDeleteConfirmation = { showDeleteDialog = true },
     )
 }
 
