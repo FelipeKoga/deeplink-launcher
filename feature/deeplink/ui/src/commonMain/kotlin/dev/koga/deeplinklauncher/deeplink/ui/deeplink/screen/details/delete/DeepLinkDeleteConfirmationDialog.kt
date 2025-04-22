@@ -67,6 +67,7 @@ fun DeepLinkDeleteConfirmationDialog(
                     modifier = Modifier.padding(end = 12.dp),
                     colors = ButtonDefaults.buttonColors(
                         containerColor = MaterialTheme.colorScheme.errorContainer,
+                        contentColor = MaterialTheme.colorScheme.onErrorContainer,
                     ),
                 ) {
                     Text(text = "Delete")
