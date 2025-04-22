@@ -16,6 +16,7 @@ kotlin {
             implementation(projects.core.navigation)
             implementation(projects.core.file)
             implementation(projects.core.date)
+            implementation(projects.core.uiEvent)
 
             implementation(libs.kotlinx.coroutines.core)
             implementation(libs.kotlinx.immutable)

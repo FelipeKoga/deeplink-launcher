@@ -34,22 +34,6 @@ class SettingsViewModel(
         }
     }
 
-    private fun purchaseProduct(product: Product) {
-        viewModelScope.launch {
-            when (val response = purchaseApi.purchase(product)) {
-                PurchaseResult.Success -> {
-                    messageDispatcher.send("Thank you for your support!")
-                }
-
-                is PurchaseResult.Error -> {
-                    if (!response.userCancelled) {
-                        messageDispatcher.send("Something went wrong, please try again")
-                    }
-                }
-            }
-        }
-    }
-
     companion object {
         private const val ANDROID_PLAY_STORE_PATH =
             "https://play.google.com/store/apps/details?id=dev.koga.deeplinklauncher.android"

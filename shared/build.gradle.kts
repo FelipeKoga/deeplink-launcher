@@ -34,6 +34,7 @@ kotlin {
             implementation(projects.core.file)
             implementation(projects.core.date)
             implementation(projects.core.coroutines)
+            implementation(projects.core.uiEvent)
 
             implementation(libs.koin.core)
             implementation(libs.kotlinx.coroutines.core)

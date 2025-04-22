@@ -20,6 +20,7 @@ kotlin {
             implementation(projects.core.navigation)
             implementation(projects.core.platform)
             implementation(projects.core.coroutines)
+            implementation(projects.core.uiEvent)
 
             implementation(libs.kotlinx.coroutines.core)
             implementation(libs.koin.compose)

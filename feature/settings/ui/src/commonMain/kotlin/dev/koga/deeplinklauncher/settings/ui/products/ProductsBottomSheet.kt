@@ -13,51 +13,66 @@ import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.koga.deeplinklauncher.designsystem.DLLModalBottomSheet
 import dev.koga.deeplinklauncher.purchase.api.Product
+import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.PersistentList
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProductsBottomSheet(
-    products: PersistentList<Product>,
+    viewModel: ProductsViewModel,
     onDismissRequest: () -> Unit,
-    onSelectProduct: (Product) -> Unit,
 ) {
+    val products by viewModel.products.collectAsStateWithLifecycle()
     DLLModalBottomSheet(onDismiss = onDismissRequest) {
-        Column(
-            modifier = Modifier.fillMaxWidth().padding(24.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-        ) {
-            Text(
-                text = "Buy Me a Coffee",
-                style = MaterialTheme.typography.titleLarge.copy(
-                    fontWeight = FontWeight.Bold,
-                ),
-            )
+        ProductsUI(
+            products = products,
+            onClick = viewModel::purchase
+        )
+    }
+}
 
-            Spacer(modifier = Modifier.height(12.dp))
+@Composable
+fun ProductsUI(
+    modifier: Modifier = Modifier,
+    products: ImmutableList<Product>,
+    onClick: (Product) -> Unit
+) {
+    Column(
+        modifier = modifier.fillMaxWidth().padding(24.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+    ) {
+        Text(
+            text = "Buy Me a Coffee",
+            style = MaterialTheme.typography.titleLarge.copy(
+                fontWeight = FontWeight.Bold,
+            ),
+        )
 
-            Text(
-                text = "Support my work with a cup of coffee",
-                style = MaterialTheme.typography.bodyMedium.copy(
-                    fontWeight = FontWeight.Normal,
-                ),
-            )
+        Spacer(modifier = Modifier.height(12.dp))
 
-            Spacer(modifier = Modifier.height(24.dp))
+        Text(
+            text = "Support my work with a cup of coffee",
+            style = MaterialTheme.typography.bodyMedium.copy(
+                fontWeight = FontWeight.Normal,
+            ),
+        )
 
-            LazyColumn {
-                items(products) { product ->
-                    ProductCard(
-                        product = product,
-                        modifier = Modifier.clickable { onSelectProduct(product) },
-                    )
-                }
+        Spacer(modifier = Modifier.height(24.dp))
+
+        LazyColumn {
+            items(products) { product ->
+                ProductCard(
+                    product = product,
+                    modifier = Modifier.clickable { onClick(product) },
+                )
             }
         }
     }

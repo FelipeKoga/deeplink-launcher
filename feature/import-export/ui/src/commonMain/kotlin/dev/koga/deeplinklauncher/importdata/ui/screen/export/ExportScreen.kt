@@ -45,9 +45,8 @@ import kotlinx.collections.immutable.toPersistentList
 fun ExportScreen(
     viewModel: ExportViewModel,
 ) {
-    var showPermissionRequest by remember { mutableStateOf(false) }
-
-    LaunchedEffect(showPermissionRequest) {
+    LaunchedEffect(Unit) {
+        viewModel.requestPermission()
     }
 
     ExportUI(
@@ -65,14 +64,6 @@ fun ExportUI(
     onBack: () -> Unit,
 ) {
     var selectedExportType by remember { mutableStateOf(FileType.JSON) }
-//    LaunchedEffect(Unit) {
-//        screenModel.messages.collectLatest { message ->
-//            snackBarHostState.showSnackbar(
-//                message = message,
-//                duration = SnackbarDuration.Short,
-//            )
-//        }
-//    }
 
     Scaffold(
         topBar = {
@@ -157,10 +148,10 @@ fun ExportContent(
             transitionSpec = {
                 if (targetState > initialState) {
                     slideInHorizontally { width -> width } + fadeIn() togetherWith
-                        slideOutHorizontally { width -> -width } + fadeOut()
+                            slideOutHorizontally { width -> -width } + fadeOut()
                 } else {
                     slideInHorizontally { width -> -width } + fadeIn() togetherWith
-                        slideOutHorizontally { width -> width } + fadeOut()
+                            slideOutHorizontally { width -> width } + fadeOut()
                 }.using(
                     SizeTransform(clip = false),
                 )

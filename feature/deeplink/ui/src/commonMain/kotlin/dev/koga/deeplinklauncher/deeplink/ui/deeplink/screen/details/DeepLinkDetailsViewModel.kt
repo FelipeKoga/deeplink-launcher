@@ -1,5 +1,3 @@
-@file:OptIn(ExperimentalUuidApi::class)
-
 package dev.koga.deeplinklauncher.deeplink.ui.deeplink.screen.details
 
 import androidx.lifecycle.SavedStateHandle

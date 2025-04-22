@@ -54,37 +54,27 @@ import kotlinx.collections.immutable.toPersistentList
 fun ImportScreen(
     viewModel: ImportViewModel,
 ) {
-    ImportUI(
-        onImport = viewModel::import,
-        onBack = { viewModel.navigate(AppNavigationRoute.Back) },
-    )
-}
-
-@Composable
-private fun ImportUI(
-    onImport: (MPFile<Any>) -> Unit,
-    onBack: () -> Unit,
-) {
-    val snackBarHostState = remember { SnackbarHostState() }
     var showFilePicker by remember { mutableStateOf(false) }
-
-//    LaunchedEffect(Unit) {
-//        screenModel.messages.collectLatest { message ->
-//            snackBarHostState.showSnackbar(
-//                message = message,
-//                duration = SnackbarDuration.Short,
-//            )
-//        }
-//    }
 
     FilePicker(
         show = showFilePicker,
         fileExtensions = FileType.extensions,
     ) { platformFile ->
         showFilePicker = false
-        onImport(platformFile ?: return@FilePicker)
+        viewModel.import(platformFile ?: return@FilePicker)
     }
 
+    ImportUI(
+        onBack = { viewModel.navigate(AppNavigationRoute.Back) },
+        onBrowse = { showFilePicker = true }
+    )
+}
+
+@Composable
+private fun ImportUI(
+    onBrowse: () -> Unit,
+    onBack: () -> Unit,
+) {
     Scaffold(
         topBar = {
             DLLTopBar(
@@ -96,17 +86,14 @@ private fun ImportUI(
                 },
             )
         },
-        snackbarHost = {
-            SnackbarHost(snackBarHostState)
-        },
         containerColor = MaterialTheme.colorScheme.background,
     ) { contentPadding ->
         Column(modifier = Modifier.padding(contentPadding).fillMaxSize()) {
             ImportContent(modifier = Modifier.weight(1f))
 
-            ImportFooter {
-                showFilePicker = true
-            }
+            ImportFooter(
+                onBrowse = onBrowse
+            )
         }
     }
 }
@@ -174,10 +161,10 @@ private fun ImportContent(modifier: Modifier = Modifier) {
             transitionSpec = {
                 if (targetState > initialState) {
                     slideInHorizontally { width -> width } + fadeIn() togetherWith
-                        slideOutHorizontally { width -> -width } + fadeOut()
+                            slideOutHorizontally { width -> -width } + fadeOut()
                 } else {
                     slideInHorizontally { width -> -width } + fadeIn() togetherWith
-                        slideOutHorizontally { width -> width } + fadeOut()
+                            slideOutHorizontally { width -> width } + fadeOut()
                 }.using(
                     SizeTransform(clip = false),
                 )
@@ -217,7 +204,7 @@ fun JSONTutorial() {
     ) {
         Text(
             text = "The most basic JSON format is an object that only " +
-                "contains a link property.",
+                    "contains a link property.",
             style = MaterialTheme.typography.titleSmall.copy(
                 fontWeight = FontWeight.Normal,
             ),
@@ -275,7 +262,7 @@ fun PlainTextTutorial() {
     Column {
         Text(
             text = "The plain text format is a simple list of deeplinks, " +
-                "one per line.",
+                    "one per line.",
             style = MaterialTheme.typography.titleSmall.copy(
                 fontWeight = FontWeight.Normal,
             ),

@@ -8,6 +8,7 @@ import dev.koga.deeplinklauncher.file.model.FileType
 import dev.koga.deeplinklauncher.importexport.usecase.ImportDeepLinks
 import dev.koga.deeplinklauncher.importexport.usecase.ImportDeepLinksResult
 import dev.koga.deeplinklauncher.navigation.AppNavigator
+import dev.koga.deeplinklauncher.uievent.SnackBarDispatcher
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
@@ -16,10 +17,8 @@ class ImportViewModel(
     private val importDeepLinks: ImportDeepLinks,
     private val getFileRealPath: GetFileRealPath,
     private val appNavigator: AppNavigator,
+    private val snackBarDispatcher: SnackBarDispatcher,
 ) : ViewModel(), AppNavigator by appNavigator {
-
-    private val _messageDispatcher = Channel<String>(Channel.UNLIMITED)
-    val messages = _messageDispatcher.receiveAsFlow()
 
     fun import(platformFile: MPFile<Any>) = viewModelScope.launch {
         val path = getFileRealPath.get(platformFile.path)
@@ -28,7 +27,7 @@ class ImportViewModel(
             FileType.TXT.extension -> FileType.TXT
             FileType.JSON.extension -> FileType.JSON
             else -> {
-                _messageDispatcher.send("Unsupported file type")
+                snackBarDispatcher.show("Unsupported file type")
                 return@launch
             }
         }
@@ -40,11 +39,11 @@ class ImportViewModel(
 
         when (response) {
             is ImportDeepLinksResult.Success -> {
-                _messageDispatcher.send("DeepLinks imported successfully")
+                snackBarDispatcher.show("DeepLinks imported successfully")
             }
 
             is ImportDeepLinksResult.Error -> {
-                _messageDispatcher.send(
+                snackBarDispatcher.show(
                     "Something went wrong. " +
                         "Check the content structure and try again.",
                 )

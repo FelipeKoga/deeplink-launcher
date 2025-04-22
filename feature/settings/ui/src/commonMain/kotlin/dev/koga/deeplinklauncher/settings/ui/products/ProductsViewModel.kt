@@ -2,9 +2,13 @@ package dev.koga.deeplinklauncher.settings.ui.products
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import dev.koga.deeplinklauncher.navigation.AppNavigator
+import dev.koga.deeplinklauncher.navigation.back
 import dev.koga.deeplinklauncher.purchase.api.Product
 import dev.koga.deeplinklauncher.purchase.api.PurchaseApi
 import dev.koga.deeplinklauncher.purchase.api.PurchaseResult
+import dev.koga.deeplinklauncher.uievent.SnackBar
+import dev.koga.deeplinklauncher.uievent.SnackBarDispatcher
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.stateIn
@@ -12,6 +16,8 @@ import kotlinx.coroutines.launch
 
 class ProductsViewModel(
     private val purchaseApi: PurchaseApi,
+    private val appNavigator: AppNavigator,
+    private val snackBarDispatcher: SnackBarDispatcher,
 ) : ViewModel() {
 
     val products = purchaseApi.getProducts().stateIn(
@@ -24,12 +30,24 @@ class ProductsViewModel(
         viewModelScope.launch {
             when (val response = purchaseApi.purchase(product)) {
                 PurchaseResult.Success -> {
-//                    messageDispatcher.send("Thank you for your support!")
+                    snackBarDispatcher.show(
+                        SnackBar(
+                            message = "Thank you for your support!",
+                            variant = SnackBar.Variant.SUCCESS
+                        )
+                    )
+
+                    appNavigator.back()
                 }
 
                 is PurchaseResult.Error -> {
                     if (!response.userCancelled) {
-//                        messageDispatcher.send("Something went wrong, please try again")
+                        snackBarDispatcher.show(
+                            SnackBar(
+                                message = "Something went wrong, please try again",
+                                variant = SnackBar.Variant.ERROR
+                            )
+                        )
                     }
                 }
             }
