@@ -31,7 +31,7 @@ import dev.koga.resources.ic_duplicate_24dp
 import org.jetbrains.compose.resources.painterResource
 
 @Composable
-internal fun DeepLinkDetailsActions(
+internal fun DetailsBottomActions(
     isFavorite: Boolean,
     onAction: (LaunchAction) -> Unit,
 ) {

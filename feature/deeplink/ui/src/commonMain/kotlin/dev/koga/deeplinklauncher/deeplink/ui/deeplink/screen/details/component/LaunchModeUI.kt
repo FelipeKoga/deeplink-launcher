@@ -171,7 +171,7 @@ fun LaunchModeUI(
             }
         }
 
-        DeepLinkDetailsActions(
+        DetailsBottomActions(
             isFavorite = uiState.deepLink.isFavorite,
             onAction = onAction,
         )

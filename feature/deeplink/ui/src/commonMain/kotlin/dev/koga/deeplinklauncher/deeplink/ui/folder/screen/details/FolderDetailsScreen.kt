@@ -50,11 +50,23 @@ fun FolderDetailsScreen(
     appNavigator: AppNavigator,
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    var showDeleteDialog by remember { mutableStateOf(false) }
+    if (showDeleteDialog) {
+        DeleteFolderBottomSheet(
+            onDismissRequest = { showDeleteDialog = false },
+            onDelete = {
+                showDeleteDialog = false
+                viewModel.onAction(FolderDetailsAction.Delete)
+            },
+        )
+    }
+
 
     FolderDetailsUI(
         uiState = uiState,
         onAction = viewModel::onAction,
         onNavigate = appNavigator::navigate,
+        onShowDeleteConfirmation = { showDeleteDialog = true }
     )
 }
 
@@ -64,22 +76,8 @@ fun FolderDetailsUI(
     uiState: FolderDetailsUiState,
     onAction: (FolderDetailsAction) -> Unit,
     onNavigate: (AppNavigationRoute) -> Unit,
+    onShowDeleteConfirmation: () -> Unit,
 ) {
-//    LaunchedEffect(Unit) {
-//        screenModel.deletedEvent.collectLatest { navigator.pop() }
-//    }
-
-    var showDeleteDialog by remember { mutableStateOf(false) }
-    if (showDeleteDialog) {
-        DeleteFolderBottomSheet(
-            onDismissRequest = { showDeleteDialog = false },
-            onDelete = {
-                showDeleteDialog = false
-//                screenModel.delete()
-            },
-        )
-    }
-
     Scaffold(
         topBar = {
             DLLTopBar(
@@ -91,7 +89,7 @@ fun FolderDetailsUI(
                 },
                 actions = {
                     DLLIconButton(
-                        onClick = { showDeleteDialog = true },
+                        onClick = onShowDeleteConfirmation,
                     ) {
                         Icon(
                             imageVector = TablerIcons.Trash,

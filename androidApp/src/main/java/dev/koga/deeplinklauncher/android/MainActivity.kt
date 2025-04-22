@@ -13,7 +13,6 @@ import org.koin.core.component.KoinComponent
 class MainActivity : FragmentActivity(), KoinComponent {
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        installSplashScreen()
         enableEdgeToEdge(
             statusBarStyle = SystemBarStyle.auto(
                 Color.TRANSPARENT,

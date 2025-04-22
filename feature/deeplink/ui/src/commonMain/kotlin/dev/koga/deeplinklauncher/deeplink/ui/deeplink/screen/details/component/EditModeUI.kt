@@ -47,13 +47,14 @@ internal fun EditModeUI(
     modifier: Modifier,
     uiState: DeepLinkDetailsUiState.Edit,
     onAction: (EditAction) -> Unit,
+    onShowDeleteConfirmation: () -> Unit,
 ) {
     val deepLink = uiState.deepLink
 
     Column(modifier = modifier) {
         EditTopBar(
             onBack = { onAction(EditAction.Back) },
-            onDelete = { onAction(EditAction.Delete) }
+            onDelete = onShowDeleteConfirmation
         )
 
         Column(

@@ -55,9 +55,6 @@ class HomeViewModel(
     private val showOnboarding = preferencesRepository
         .preferencesStream
         .map { it.shouldShowOnboarding }
-        .onEach {
-            if (it) appNavigator.navigate(AppNavigationRoute.Onboarding)
-        }
 
     val uiState = combine(
         searchInput,
@@ -121,6 +118,7 @@ class HomeViewModel(
         }
     }
 
+    @OptIn(ExperimentalUuidApi::class)
     private fun insertDeepLink(link: String) {
         viewModelScope.launch {
             deepLinkRepository.upsertDeepLink(
@@ -140,17 +138,6 @@ class HomeViewModel(
     private fun onDeepLinkTextChanged(text: String) {
         errorMessage.update { null }
         launchInput.update { text }
-    }
-
-    private fun addFolder(name: String, description: String) {
-        folderRepository.upsertFolder(
-            Folder(
-                id = Uuid.random().toString(),
-                name = name,
-                description = description,
-                deepLinkCount = 0,
-            ),
-        )
     }
 
     private fun onboardingShown() {

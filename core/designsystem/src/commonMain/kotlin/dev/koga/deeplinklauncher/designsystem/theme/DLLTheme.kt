@@ -1,6 +1,5 @@
 package dev.koga.deeplinklauncher.designsystem.theme
 
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
@@ -20,6 +19,8 @@ private val lightScheme = lightColorScheme(
     onSurfaceVariant = Color(0xFF18181B),
     tertiaryContainer = Color(0xFFe3e3e3),
     surfaceContainerHighest = Color(0xFFe3e3e3),
+    errorContainer = Color(0xFFF44336),
+    onErrorContainer =  Color(0xFFFAFAFA)
 )
 
 private val darkScheme = darkColorScheme(
@@ -34,21 +35,17 @@ private val darkScheme = darkColorScheme(
     surfaceVariant = Color(0xFF27272A),
     onSurfaceVariant = Color(0xFFFAFAFA),
     surfaceContainerHighest = Color(0xFF171717),
+    errorContainer = Color(0xFFF44336),
+    onErrorContainer =  Color(0xFFFAFAFA)
 )
 
 @Composable
 fun DLLTheme(
-    theme: Theme,
+    isDarkTheme: Boolean,
     content: @Composable () -> Unit,
 ) {
-    val colorScheme = when (theme) {
-        Theme.LIGHT -> lightScheme
-        Theme.DARK -> darkScheme
-        Theme.AUTO -> if (isSystemInDarkTheme()) darkScheme else lightScheme
-    }
-
     MaterialTheme(
-        colorScheme = colorScheme,
+        colorScheme = if (isDarkTheme) darkScheme else lightScheme,
         typography = typography,
         shapes = shapes,
         content = content,

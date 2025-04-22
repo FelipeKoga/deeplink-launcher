@@ -9,6 +9,7 @@ import dev.koga.deeplinklauncher.deeplink.api.repository.FolderRepository
 import dev.koga.deeplinklauncher.deeplink.api.usecase.LaunchDeepLink
 import dev.koga.deeplinklauncher.navigation.AppNavigationRoute
 import dev.koga.deeplinklauncher.navigation.AppNavigator
+import dev.koga.deeplinklauncher.navigation.back
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.channels.Channel
@@ -61,9 +62,6 @@ class FolderDetailsViewModel(
         initialValue = form.value,
     )
 
-    private val deleteDispatcher = Channel<Unit>()
-    val deletedEvent = deleteDispatcher.receiveAsFlow()
-
     init {
         form.onEach {
             repository.upsertFolder(
@@ -86,7 +84,7 @@ class FolderDetailsViewModel(
 
     private fun delete() {
         repository.deleteFolder(folderId)
-        viewModelScope.launch { deleteDispatcher.send(Unit) }
+        appNavigator.back()
     }
 
     private fun updateName(value: String) {

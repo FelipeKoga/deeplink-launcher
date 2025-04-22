@@ -44,6 +44,7 @@ class DeepLinkDetailsViewModel(
     private val coroutineDebouncer: CoroutineDebouncer,
     private val appNavigator: AppNavigator,
 ) : ViewModel(), AppNavigator by appNavigator {
+
     private val route = savedStateHandle.toRoute<AppNavigationRoute.DeepLinkDetails>()
     private val deepLink = deepLinkRepository.getDeepLinkByIdStream(route.id)
         .filterNotNull()

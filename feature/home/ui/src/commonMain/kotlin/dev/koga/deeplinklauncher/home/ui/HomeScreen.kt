@@ -29,12 +29,20 @@ import dev.koga.deeplinklauncher.home.ui.component.HomeBottomBarUI
 import dev.koga.deeplinklauncher.home.ui.component.HomeTopBar
 import dev.koga.deeplinklauncher.home.ui.state.HomeUiState
 import dev.koga.deeplinklauncher.navigation.AppNavigationRoute
+import dev.koga.deeplinklauncher.navigation.AppNavigator
 
 @Composable
 fun HomeScreen(
     viewModel: HomeViewModel,
+    appNavigator: AppNavigator,
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
+    LaunchedEffect(uiState.showOnboarding) {
+        if (uiState.showOnboarding) {
+            appNavigator.navigate(AppNavigationRoute.Onboarding)
+        }
+    }
 
     HomeUI(
         uiState = uiState,
@@ -109,20 +117,14 @@ internal fun HomeUI(
                     contentPadding = it,
                     onClick = {
                         onAction(
-                            HomeAction.Navigate(
-                                AppNavigationRoute.DeepLinkDetails(it.id, true),
-                            ),
+                            HomeAction.Navigate(AppNavigationRoute.DeepLinkDetails(it.id, true)),
                         )
                     },
                     onLaunch = {
                         onAction(HomeAction.LaunchDeepLink(it))
                     },
                     onFolderClicked = {
-                        onAction(
-                            HomeAction.Navigate(
-                                AppNavigationRoute.FolderDetails(it.id),
-                            ),
-                        )
+                        onAction(HomeAction.Navigate(AppNavigationRoute.FolderDetails(it.id)))
                     },
                 )
 
@@ -131,19 +133,9 @@ internal fun HomeUI(
                     contentPadding = it,
                     folders = uiState.folders,
                     onClick = {
-                        onAction(
-                            HomeAction.Navigate(
-                                AppNavigationRoute.FolderDetails(it.id),
-                            ),
-                        )
+                        onAction(HomeAction.Navigate(AppNavigationRoute.FolderDetails(it.id)))
                     },
-                    onAdd = {
-                        onAction(
-                            HomeAction.Navigate(
-                                AppNavigationRoute.AddFolder
-                            ),
-                        )
-                    },
+                    onAdd = { onAction(HomeAction.Navigate(AppNavigationRoute.AddFolder)) },
                 )
             }
         }

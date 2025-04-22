@@ -18,6 +18,7 @@ kotlin {
             implementation(projects.core.designsystem)
             implementation(projects.core.navigation)
             implementation(projects.core.resources)
+            implementation(projects.core.coroutines)
 
             implementation(libs.compose.navigation)
 
