@@ -5,7 +5,7 @@ import org.koin.core.module.Module
 import org.koin.dsl.module
 
 val databaseModule = module {
-    single { DatabaseProvider(get()).getInstance() }
+    single { DatabaseProvider(get()).create() }
     includes(platformDatabaseModule)
 }
 
