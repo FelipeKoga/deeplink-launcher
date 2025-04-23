@@ -8,6 +8,14 @@ import dev.koga.deeplinklauncher.deeplink.api.usecase.GetDeepLinksAndFolderStrea
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 
+/**
+ * :deeplink:ui
+ * :deeplink:common
+ *
+ * :folder:ui
+ * :folder:common
+ */
+
 class GetDeepLinksAndFolderStreamImpl(
     private val repository: DeepLinkRepository,
     private val folderRepository: FolderRepository,

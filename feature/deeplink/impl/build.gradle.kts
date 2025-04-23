@@ -10,7 +10,7 @@ kotlin {
     sourceSets {
         commonMain.dependencies {
             implementation(projects.feature.deeplink.api)
-            implementation(projects.feature.preferences.api)
+            implementation(projects.core.preferences)
 
             implementation(projects.core.date)
             implementation(projects.core.database)

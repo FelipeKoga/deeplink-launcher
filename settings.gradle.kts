@@ -30,8 +30,6 @@ include(
     ":feature:import-export:ui",
     ":feature:import-export:api",
     ":feature:import-export:impl",
-    ":feature:preferences:api",
-    ":feature:preferences:impl",
     ":feature:settings:ui",
     ":feature:home:ui",
     ":feature:device-bridge:api",
@@ -47,6 +45,7 @@ include(
     ":core:database",
     ":core:platform",
     ":core:coroutines",
+    ":core:preferences",
     ":core:ui-event",
     ":shared",
     ":baselineprofile"
