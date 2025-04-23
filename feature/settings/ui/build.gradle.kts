@@ -12,7 +12,7 @@ kotlin {
 
     sourceSets {
         commonMain.dependencies {
-            implementation(projects.feature.deeplink.api)
+            implementation(projects.feature.deeplink.common)
             implementation(projects.feature.purchase.api)
 
             implementation(projects.core.preferences)

@@ -33,8 +33,8 @@ import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import compose.icons.TablerIcons
 import compose.icons.tablericons.Plus
-import dev.koga.deeplinklauncher.deeplink.api.model.DeepLink
-import dev.koga.deeplinklauncher.deeplink.api.model.Folder
+import dev.koga.deeplinklauncher.deeplink.common.model.DeepLink
+import dev.koga.deeplinklauncher.deeplink.common.model.Folder
 import dev.koga.deeplinklauncher.deeplink.ui.deeplink.component.DeepLinkCard
 import dev.koga.deeplinklauncher.deeplink.ui.folder.component.FolderCard
 import kotlinx.collections.immutable.ImmutableList

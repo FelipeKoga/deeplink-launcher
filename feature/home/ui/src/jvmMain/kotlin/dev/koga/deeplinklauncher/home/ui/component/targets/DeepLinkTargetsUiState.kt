@@ -5,7 +5,7 @@ import compose.icons.TablerIcons
 import compose.icons.tablericons.BrandAndroid
 import compose.icons.tablericons.BrandApple
 import compose.icons.tablericons.DeviceDesktop
-import dev.koga.deeplinklauncher.deeplink.api.model.DeepLinkTarget
+import dev.koga.deeplinklauncher.deeplink.common.model.DeepLinkTarget
 import dev.koga.deeplinklauncher.devicebridge.api.DeviceBridge
 
 data class DeepLinkTargetsUiState(

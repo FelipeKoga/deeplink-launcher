@@ -45,7 +45,7 @@ import compose.icons.TablerIcons
 import compose.icons.tablericons.ArrowUp
 import compose.icons.tablericons.ExternalLink
 import compose.icons.tablericons.X
-import dev.koga.deeplinklauncher.deeplink.api.model.Suggestion
+import dev.koga.deeplinklauncher.deeplink.common.model.Suggestion
 import dev.koga.deeplinklauncher.designsystem.DLLHorizontalDivider
 import dev.koga.deeplinklauncher.designsystem.DLLTextField
 import dev.koga.deeplinklauncher.designsystem.button.DLLIconButton

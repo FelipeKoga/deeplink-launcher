@@ -10,7 +10,7 @@ kotlin {
 
     sourceSets {
         commonMain.dependencies {
-            implementation(projects.feature.deeplink.api)
+            implementation(projects.feature.deeplink.common)
             implementation(projects.core.file)
 
             implementation(libs.kotlinx.coroutines.core)

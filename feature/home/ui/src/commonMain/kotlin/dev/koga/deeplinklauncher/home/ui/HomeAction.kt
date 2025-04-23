@@ -1,7 +1,7 @@
 package dev.koga.deeplinklauncher.home.ui
 
-import dev.koga.deeplinklauncher.deeplink.api.model.DeepLink
-import dev.koga.deeplinklauncher.deeplink.api.model.Suggestion
+import dev.koga.deeplinklauncher.deeplink.common.model.DeepLink
+import dev.koga.deeplinklauncher.deeplink.common.model.Suggestion
 import dev.koga.deeplinklauncher.navigation.AppNavigationRoute
 
 sealed interface HomeAction {

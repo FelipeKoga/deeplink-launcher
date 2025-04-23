@@ -24,9 +24,8 @@ dependencyResolutionManagement {
 include(
     ":androidApp",
     ":desktopApp",
-    ":feature:deeplink:ui",
-    ":feature:deeplink:api",
-    ":feature:deeplink:impl",
+    ":feature:deeplink:common-ui",
+    ":feature:deeplink:common",
     ":feature:import-export:ui",
     ":feature:import-export:api",
     ":feature:import-export:impl",

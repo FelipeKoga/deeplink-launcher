@@ -15,9 +15,8 @@ kotlin {
 
     sourceSets {
         commonMain.dependencies {
-            implementation(projects.feature.deeplink.ui)
-            implementation(projects.feature.deeplink.api)
-            implementation(projects.feature.deeplink.impl)
+            implementation(projects.feature.deeplink.commonUi)
+            implementation(projects.feature.deeplink.common)
             implementation(projects.feature.importExport.ui)
             implementation(projects.feature.importExport.api)
             implementation(projects.feature.importExport.impl)

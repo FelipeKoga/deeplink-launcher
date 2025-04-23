@@ -10,7 +10,7 @@ import dev.koga.deeplinklauncher.navigation.AppNavigationRoute
 import dev.koga.deeplinklauncher.navigation.AppNavigator
 import dev.koga.deeplinklauncher.navigation.NavigationGraph
 import dev.koga.deeplinklauncher.navigation.back
-import dev.koga.deeplinklauncher.preferences.api.repository.PreferencesRepository
+import dev.koga.deeplinklauncher.preferences.repository.PreferencesRepository
 import kotlinx.coroutines.launch
 import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel

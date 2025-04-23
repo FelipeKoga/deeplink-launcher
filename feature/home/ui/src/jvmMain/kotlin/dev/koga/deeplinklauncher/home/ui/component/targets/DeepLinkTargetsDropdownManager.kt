@@ -1,7 +1,7 @@
 package dev.koga.deeplinklauncher.home.ui.component.targets
 
-import dev.koga.deeplinklauncher.deeplink.api.DeepLinkTargetStateManager
-import dev.koga.deeplinklauncher.deeplink.api.model.DeepLinkTarget
+import dev.koga.deeplinklauncher.deeplink.common.manager.DeepLinkTargetStateManager
+import dev.koga.deeplinklauncher.deeplink.common.model.DeepLinkTarget
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
