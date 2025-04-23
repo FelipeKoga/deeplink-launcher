@@ -9,7 +9,7 @@ import dev.koga.deeplinklauncher.home.ui.di.homeUiModule
 import dev.koga.deeplinklauncher.importdata.ui.di.importExportUiModule
 import dev.koga.deeplinklauncher.importexport.impl.di.importExportImplModule
 import dev.koga.deeplinklauncher.navigation.di.navigationModule
-import dev.koga.deeplinklauncher.preferences.di.preferencesImplModule
+import dev.koga.deeplinklauncher.preferences.di.preferencesModule
 import dev.koga.deeplinklauncher.purchase.impl.di.purchaseImplModule
 import dev.koga.deeplinklauncher.settings.ui.di.settingsUiModule
 import dev.koga.deeplinklauncher.uievent.di.uiEventModule
@@ -27,7 +27,7 @@ fun initKoin(appModule: Module) {
             appModule,
             deeplinkUiModule,
             deeplinkImplModule,
-            preferencesImplModule,
+            preferencesModule,
             purchaseImplModule,
             importExportUiModule,
             importExportImplModule,

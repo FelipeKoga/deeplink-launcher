@@ -5,17 +5,17 @@ import dev.koga.deeplinklauncher.deeplink.api.model.Suggestion
 import dev.koga.deeplinklauncher.deeplink.api.repository.DeepLinkRepository
 import dev.koga.deeplinklauncher.deeplink.api.usecase.GetAutoSuggestionLinks
 import dev.koga.deeplinklauncher.deeplink.api.usecase.GetDeepLinkMetadata
-import dev.koga.deeplinklauncher.preferences.repository.PreferencesRepository
+import dev.koga.deeplinklauncher.preferences.repository.PreferencesDataSource
 
 class GetAutoSuggestionLinksImpl(
     private val repository: DeepLinkRepository,
     private val getDeepLinkMetadata: GetDeepLinkMetadata,
-    private val preferencesRepository: PreferencesRepository,
+    private val preferencesDataSource: PreferencesDataSource,
     private val getDeepLinkFromClipboard: GetDeepLinkFromClipboard,
 ) : GetAutoSuggestionLinks {
 
     override operator fun invoke(link: String): List<Suggestion> {
-        if (preferencesRepository.preferences.shouldDisableDeepLinkSuggestions) {
+        if (preferencesDataSource.preferences.shouldDisableDeepLinkSuggestions) {
             return listOf()
         }
 

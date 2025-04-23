@@ -3,11 +3,11 @@ package dev.koga.deeplinklauncher.settings.ui.apptheme
 import androidx.lifecycle.ViewModel
 import dev.koga.deeplinklauncher.coroutines.AppCoroutineScope
 import dev.koga.deeplinklauncher.preferences.model.AppTheme
-import dev.koga.deeplinklauncher.preferences.repository.PreferencesRepository
+import dev.koga.deeplinklauncher.preferences.repository.PreferencesDataSource
 import kotlinx.coroutines.launch
 
 class AppThemeViewModel(
-    private val repository: PreferencesRepository,
+    private val repository: PreferencesDataSource,
     private val appCoroutineScope: AppCoroutineScope,
 ) : ViewModel() {
 

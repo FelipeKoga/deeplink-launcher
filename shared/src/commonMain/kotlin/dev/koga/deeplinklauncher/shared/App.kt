@@ -19,7 +19,7 @@ import dev.koga.deeplinklauncher.navigation.AppGraph
 import dev.koga.deeplinklauncher.navigation.AppNavigationRoute
 import dev.koga.deeplinklauncher.navigation.AppNavigator
 import dev.koga.deeplinklauncher.preferences.model.AppTheme
-import dev.koga.deeplinklauncher.preferences.repository.PreferencesRepository
+import dev.koga.deeplinklauncher.preferences.repository.PreferencesDataSource
 import dev.koga.deeplinklauncher.shared.anim.scaleInEnterTransition
 import dev.koga.deeplinklauncher.shared.anim.scaleInPopEnterTransition
 import dev.koga.deeplinklauncher.shared.anim.scaleOutExitTransition
@@ -78,13 +78,13 @@ fun App() {
 
 @Composable
 private fun rememberAppDarkMode(
-    preferencesRepository: PreferencesRepository = koinInject(),
+    preferencesDataSource: PreferencesDataSource = koinInject(),
 ): Boolean {
     val isSystemDarkTheme = isSystemInDarkTheme()
 
-    val preferences by remember(preferencesRepository) {
-        preferencesRepository.preferencesStream
-    }.collectAsStateWithLifecycle(preferencesRepository.preferences)
+    val preferences by remember(preferencesDataSource) {
+        preferencesDataSource.preferencesStream
+    }.collectAsStateWithLifecycle(preferencesDataSource.preferences)
 
     return when (preferences.appTheme) {
         AppTheme.LIGHT -> false

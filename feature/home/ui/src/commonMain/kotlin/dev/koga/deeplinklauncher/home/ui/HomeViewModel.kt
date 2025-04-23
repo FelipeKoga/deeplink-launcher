@@ -13,7 +13,7 @@ import dev.koga.deeplinklauncher.deeplink.api.usecase.LaunchDeepLink
 import dev.koga.deeplinklauncher.home.ui.state.DeepLinkInputState
 import dev.koga.deeplinklauncher.home.ui.state.HomeUiState
 import dev.koga.deeplinklauncher.navigation.AppNavigator
-import dev.koga.deeplinklauncher.preferences.repository.PreferencesRepository
+import dev.koga.deeplinklauncher.preferences.repository.PreferencesDataSource
 import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -33,7 +33,7 @@ class HomeViewModel(
     private val getAutoSuggestionLinks: GetAutoSuggestionLinks,
     private val deepLinkRepository: DeepLinkRepository,
     private val launchDeepLink: LaunchDeepLink,
-    private val preferencesRepository: PreferencesRepository,
+    private val preferencesDataSource: PreferencesDataSource,
     private val appNavigator: AppNavigator,
 ) : ViewModel() {
 
@@ -46,7 +46,7 @@ class HomeViewModel(
     private val deepLinkInputState =
         combine(launchInput, errorMessage, suggestions, ::DeepLinkInputState)
 
-    private val showOnboarding = preferencesRepository
+    private val showOnboarding = preferencesDataSource
         .preferencesStream
         .map { it.shouldShowOnboarding }
 
@@ -136,7 +136,7 @@ class HomeViewModel(
 
     private fun onboardingShown() {
         viewModelScope.launch {
-            preferencesRepository.setShouldHideOnboarding(true)
+            preferencesDataSource.setShouldHideOnboarding(true)
         }
     }
 }
