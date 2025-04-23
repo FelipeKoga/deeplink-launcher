@@ -12,7 +12,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.runBlocking
 import androidx.datastore.preferences.core.Preferences as StoragePreferences
 
-interface PreferencesRepository {
+interface PreferencesDataSource {
     val preferencesStream: Flow<Preferences>
     val preferences: Preferences
 
@@ -21,9 +21,9 @@ interface PreferencesRepository {
     suspend fun setShouldDisableDeepLinkSuggestions(shouldDisableDeepLinkSuggestions: Boolean)
 }
 
-internal class DefaultPreferencesRepository(
+internal class PreferencesDataStore(
     private val dataStore: DataStore<StoragePreferences>,
-) : PreferencesRepository {
+) : PreferencesDataSource {
 
     private val themeKey = stringPreferencesKey("theme")
     private val shouldShowOnboarding = booleanPreferencesKey("should_show_onboarding")
