@@ -18,7 +18,7 @@ import androidx.compose.ui.unit.dp
 import compose.icons.TablerIcons
 import compose.icons.tablericons.Check
 import dev.koga.deeplinklauncher.designsystem.DLLModalBottomSheet
-import dev.koga.deeplinklauncher.preferences.api.model.AppTheme
+import dev.koga.deeplinklauncher.preferences.model.AppTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

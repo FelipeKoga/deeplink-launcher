@@ -18,8 +18,8 @@ import dev.koga.deeplinklauncher.designsystem.theme.DLLTheme
 import dev.koga.deeplinklauncher.navigation.AppGraph
 import dev.koga.deeplinklauncher.navigation.AppNavigationRoute
 import dev.koga.deeplinklauncher.navigation.AppNavigator
-import dev.koga.deeplinklauncher.preferences.api.model.AppTheme
-import dev.koga.deeplinklauncher.preferences.api.repository.PreferencesRepository
+import dev.koga.deeplinklauncher.preferences.model.AppTheme
+import dev.koga.deeplinklauncher.preferences.repository.PreferencesRepository
 import dev.koga.deeplinklauncher.shared.anim.scaleInEnterTransition
 import dev.koga.deeplinklauncher.shared.anim.scaleInPopEnterTransition
 import dev.koga.deeplinklauncher.shared.anim.scaleOutExitTransition

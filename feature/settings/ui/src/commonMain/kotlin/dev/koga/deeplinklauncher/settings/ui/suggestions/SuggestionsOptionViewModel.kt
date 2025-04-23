@@ -2,7 +2,7 @@ package dev.koga.deeplinklauncher.settings.ui.suggestions
 
 import androidx.lifecycle.ViewModel
 import dev.koga.deeplinklauncher.coroutines.AppCoroutineScope
-import dev.koga.deeplinklauncher.preferences.api.repository.PreferencesRepository
+import dev.koga.deeplinklauncher.preferences.repository.PreferencesRepository
 import kotlinx.coroutines.launch
 
 class SuggestionsOptionViewModel(
