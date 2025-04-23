@@ -7,14 +7,13 @@ import androidx.lifecycle.viewModelScope
 import dev.koga.deeplinklauncher.date.currentLocalDateTime
 import dev.koga.deeplinklauncher.deeplink.api.model.DeepLink
 import dev.koga.deeplinklauncher.deeplink.api.repository.DeepLinkRepository
-import dev.koga.deeplinklauncher.deeplink.api.repository.FolderRepository
 import dev.koga.deeplinklauncher.deeplink.api.usecase.GetAutoSuggestionLinks
 import dev.koga.deeplinklauncher.deeplink.api.usecase.GetDeepLinksAndFolderStream
 import dev.koga.deeplinklauncher.deeplink.api.usecase.LaunchDeepLink
 import dev.koga.deeplinklauncher.home.ui.state.DeepLinkInputState
 import dev.koga.deeplinklauncher.home.ui.state.HomeUiState
 import dev.koga.deeplinklauncher.navigation.AppNavigator
-import dev.koga.deeplinklauncher.preferences.api.repository.PreferencesRepository
+import dev.koga.deeplinklauncher.preferences.repository.PreferencesRepository
 import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -33,7 +32,6 @@ class HomeViewModel(
     getDeepLinksAndFolderStream: GetDeepLinksAndFolderStream,
     private val getAutoSuggestionLinks: GetAutoSuggestionLinks,
     private val deepLinkRepository: DeepLinkRepository,
-    private val folderRepository: FolderRepository,
     private val launchDeepLink: LaunchDeepLink,
     private val preferencesRepository: PreferencesRepository,
     private val appNavigator: AppNavigator,
