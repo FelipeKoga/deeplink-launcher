@@ -2,8 +2,6 @@ package dev.koga.deeplinklauncher.preferences.datastore
 
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
-import dev.koga.deeplinklauncher.preferences.datastore.createDataStore
-import dev.koga.deeplinklauncher.preferences.datastore.dataStoreFileName
 import kotlinx.cinterop.ExperimentalForeignApi
 import platform.Foundation.NSDocumentDirectory
 import platform.Foundation.NSFileManager
