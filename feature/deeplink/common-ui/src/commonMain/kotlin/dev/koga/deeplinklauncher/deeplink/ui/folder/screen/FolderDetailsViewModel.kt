@@ -1,4 +1,4 @@
-package dev.koga.deeplinklauncher.deeplink.ui.folder.details
+package dev.koga.deeplinklauncher.deeplink.ui.folder.screen
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel

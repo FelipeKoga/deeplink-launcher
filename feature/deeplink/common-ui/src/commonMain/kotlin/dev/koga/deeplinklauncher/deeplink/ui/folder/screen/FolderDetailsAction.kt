@@ -1,4 +1,4 @@
-package dev.koga.deeplinklauncher.deeplink.ui.folder.details
+package dev.koga.deeplinklauncher.deeplink.ui.folder.screen
 
 import dev.koga.deeplinklauncher.deeplink.common.model.DeepLink
 
