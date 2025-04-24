@@ -11,10 +11,12 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.koga.deeplinklauncher.designsystem.DLLModalBottomSheet
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -23,7 +25,7 @@ fun SuggestionsOptionBottomSheet(
     viewModel: SuggestionsOptionViewModel,
     onDismissRequest: () -> Unit,
 ) {
-    val enabled = viewModel.enabled
+    val enabled by viewModel.enabled.collectAsStateWithLifecycle()
 
     DLLModalBottomSheet(onDismiss = onDismissRequest) {
         Column(
@@ -41,7 +43,7 @@ fun SuggestionsOptionBottomSheet(
 
             Text(
                 text = "When you are typing a deeplink, suggestions will be shown below the input" +
-                        " based on the deeplinks you already launched.",
+                    " based on the deeplinks you already launched.",
                 style = MaterialTheme.typography.bodyMedium.copy(
                     fontWeight = FontWeight.Normal,
                 ),

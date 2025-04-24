@@ -5,6 +5,7 @@ import dev.koga.deeplinklauncher.settings.ui.SettingsViewModel
 import dev.koga.deeplinklauncher.settings.ui.apptheme.AppThemeViewModel
 import dev.koga.deeplinklauncher.settings.ui.deletedata.DeleteDataViewModel
 import dev.koga.deeplinklauncher.settings.ui.navigation.SettingsNavigation
+import dev.koga.deeplinklauncher.settings.ui.products.ProductsViewModel
 import dev.koga.deeplinklauncher.settings.ui.suggestions.SuggestionsOptionViewModel
 import org.koin.core.module.dsl.singleOf
 import org.koin.core.module.dsl.viewModelOf
@@ -16,6 +17,7 @@ val settingsUiModule = module {
     viewModelOf(::AppThemeViewModel)
     viewModelOf(::SuggestionsOptionViewModel)
     viewModelOf(::DeleteDataViewModel)
+    viewModelOf(::ProductsViewModel)
 
     singleOf(::SettingsNavigation) bind NavigationGraph::class
 }
