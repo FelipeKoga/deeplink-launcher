@@ -45,7 +45,9 @@ fun App() {
                 }
             }
         }
+    }
 
+    LaunchedEffect(Unit) {
         snackBarDispatcher.messages.collect { snackBar ->
             snackBarHostState.showSnackbar(
                 message = snackBar.message,

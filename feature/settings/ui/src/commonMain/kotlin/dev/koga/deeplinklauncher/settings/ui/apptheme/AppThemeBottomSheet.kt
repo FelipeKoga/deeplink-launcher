@@ -11,10 +11,12 @@ import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import compose.icons.TablerIcons
 import compose.icons.tablericons.Check
 import dev.koga.deeplinklauncher.designsystem.DLLModalBottomSheet
@@ -26,7 +28,7 @@ fun AppThemeBottomSheet(
     viewModel: AppThemeViewModel,
     onDismissRequest: () -> Unit,
 ) {
-    val appTheme = viewModel.appTheme
+    val appTheme by viewModel.appTheme.collectAsStateWithLifecycle()
 
     DLLModalBottomSheet(onDismiss = onDismissRequest) {
         Column(
@@ -61,7 +63,6 @@ fun AppThemeBottomSheet(
                     selected = appTheme == it,
                     onClick = {
                         viewModel.update(it)
-                        onDismissRequest()
                     },
                 )
 
