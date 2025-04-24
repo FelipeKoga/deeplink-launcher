@@ -41,7 +41,7 @@ fun SuggestionsOptionBottomSheet(
 
             Text(
                 text = "When you are typing a deeplink, suggestions will be shown below the input" +
-                    " based on the deeplinks you already launched.",
+                        " based on the deeplinks you already launched.",
                 style = MaterialTheme.typography.bodyMedium.copy(
                     fontWeight = FontWeight.Normal,
                 ),
@@ -65,10 +65,7 @@ fun SuggestionsOptionBottomSheet(
 
                 Switch(
                     checked = enabled,
-                    onCheckedChange = {
-                        viewModel.update(enabled)
-                        onDismissRequest()
-                    },
+                    onCheckedChange = viewModel::update,
                 )
             }
         }
