@@ -39,8 +39,7 @@ compose.desktop {
         }
 
         nativeDistributions {
-            modules("java.sql")
-            modules("jdk.unsupported")
+            includeAllModules = true
 
             packageVersion = DesktopAppConfiguration.VERSION_NAME
             packageName = "DeepLink Launcher"
