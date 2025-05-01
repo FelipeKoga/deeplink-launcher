@@ -9,7 +9,7 @@ import org.jetbrains.compose.resources.ExperimentalResourceApi
 @OptIn(ExperimentalResourceApi::class)
 @Composable
 actual fun rememberLibraries(): State<Libs?> {
-   return com.mikepenz.aboutlibraries.ui.compose.rememberLibraries {
+    return com.mikepenz.aboutlibraries.ui.compose.rememberLibraries {
         Res.readBytes("files/mobile.aboutlibraries.json").decodeToString()
     }
 }
