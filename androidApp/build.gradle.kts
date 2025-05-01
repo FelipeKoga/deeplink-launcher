@@ -9,6 +9,7 @@ plugins {
     alias(libs.plugins.firebase.perf)
     alias(libs.plugins.compose.compiler)
     alias(libs.plugins.baselineprofile)
+    alias(libs.plugins.aboutlibraries.plugin)
 }
 
 val keystoreProperties = Properties()

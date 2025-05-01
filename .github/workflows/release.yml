@@ -135,7 +135,7 @@ jobs:
         with:
           name: desktop-ubuntu-deb
           path: |
-            ./desktopApp/build/compose/binaries/main/deb
+            ./desktopApp/build/compose/binaries/main-release/deb
 
   build-exe:
     needs: create-tag
@@ -168,7 +168,7 @@ jobs:
         with:
           name: desktop-windows-exe
           path: |
-            ./desktopApp/build/compose/binaries/main/exe/*.exe
+            ./desktopApp/build/compose/binaries/main-release/exe/*.exe
 
   build-dmg:
     needs: create-tag
@@ -198,7 +198,7 @@ jobs:
         with:
           name: desktop-macos-dmg
           path: |
-            ./desktopApp/build/compose/binaries/main/dmg/*.dmg
+            ./desktopApp/build/compose/binaries/main-release/dmg/*.dmg
 
   create-release:
     needs: [build-apk, build-deb, build-exe, build-dmg]

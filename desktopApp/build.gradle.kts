@@ -5,6 +5,7 @@ plugins {
     id("dev.koga.deeplinklauncher.code-analysis")
     alias(libs.plugins.jetbrainsCompose)
     alias(libs.plugins.compose.compiler)
+    alias(libs.plugins.aboutlibraries.plugin)
 }
 
 kotlin {
