@@ -21,9 +21,9 @@
 ![screenshot](./docs/screenshot.png)
 
 ## Platforms
-- Android – Download on [Play Store](http://play.google.com/store/apps/details?id=dev.koga.deeplinklauncher.android)
-- iOS – *App Store release coming soon*
-- Linux, macOS, Windows (JVM) – Get the [latest release](https://github.com/FelipeKoga/deeplink-launcher/releases/latest)
+- **Android** – Download on [Play Store](http://play.google.com/store/apps/details?id=dev.koga.deeplinklauncher.android)
+- **iOS** – *App Store release coming soon*
+- **Desktop - Windows, macOS, Ubuntu and Fedora** – Get the [latest release](https://github.com/FelipeKoga/deeplink-launcher/releases/latest)
 
 ## Features
 
