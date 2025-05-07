@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="androidApp/src/main/res/mipmap-xxxhdpi/ic_launcher_round.webp" alt="DeepLink Launcher Logo" />
+  <img src="./androidApp/src/main/res/mipmap-xxxhdpi/ic_launcher_round.webp" alt="DeepLink Launcher Logo" />
 </p>
 
 <h1 align="center">DeepLink Launcher</h1>
@@ -19,6 +19,11 @@
 
 ## Screenshot
 ![screenshot](./docs/screenshot.png)
+
+## Platforms
+- Android – Download on [Play Store](http://play.google.com/store/apps/details?id=dev.koga.deeplinklauncher.android)
+- iOS – *App Store release coming soon*
+- Linux, macOS, Windows (JVM) – Get the [latest release](https://github.com/FelipeKoga/deeplink-launcher/releases/latest)
 
 ## Features
 
