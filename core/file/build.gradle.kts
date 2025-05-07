@@ -9,7 +9,7 @@ kotlin {
     setupBinariesFramework("file")
     sourceSets {
         androidMain.dependencies {
-            implementation(libs.androidx.core)
+            implementation(libs.androidx.core.ktx)
         }
         commonMain.dependencies {
             api(libs.kotlinx.datetime)

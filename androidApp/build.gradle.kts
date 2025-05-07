@@ -1,3 +1,4 @@
+import kotlinx.datetime.Clock
 import java.util.Properties
 
 plugins {
@@ -9,7 +10,7 @@ plugins {
     alias(libs.plugins.firebase.perf)
     alias(libs.plugins.compose.compiler)
     alias(libs.plugins.baselineprofile)
-    alias(libs.plugins.aboutlibraries.plugin)
+    alias(libs.plugins.aboutlibraries)
 }
 
 val keystoreProperties = Properties()
@@ -20,13 +21,13 @@ if (rootDir.resolve("keystore.properties").exists()) {
 android {
     namespace = "dev.koga.deeplinklauncher.android"
 
-    defaultConfig.targetSdk = AndroidAppConfiguration.TARGET_SDK
+    defaultConfig.targetSdk = libs.versions.androidApp.targetSdk.get().toInt()
     defaultConfig {
-        compileSdk = AndroidAppConfiguration.COMPILE_SDK
-        minSdk = AndroidAppConfiguration.MIN_SDK
+        compileSdk = libs.versions.androidApp.compileSdk.get().toInt()
+        minSdk = libs.versions.androidApp.minSdk.get().toInt()
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-        versionName = AndroidAppConfiguration.VERSION_NAME
-        versionCode = AndroidAppConfiguration.versionCode
+        versionName = getVersionName()
+        versionCode = getVersionCode()
     }
 
     buildFeatures {
@@ -73,7 +74,6 @@ kotlin {
 dependencies {
     implementation(projects.shared)
 
-    implementation(libs.splashscreen)
     implementation(libs.androidx.activity.compose)
     implementation(libs.koin.compose)
     implementation(libs.koin.core)
@@ -87,6 +87,21 @@ dependencies {
     implementation(libs.androidx.profileinstaller)
 
     baselineProfile(projects.baselineprofile)
+}
+
+fun getVersionCode(): Int {
+    val major = libs.versions.app.major.get().toInt()
+    val minor = libs.versions.app.minor.get().toInt()
+    val patch = libs.versions.app.patch.get().toInt()
+
+    return (major * 10000) +
+            (minor * 100) +
+            patch +
+            Clock.System.now().epochSeconds.toInt()
+}
+
+fun getVersionName(): String {
+    return "${libs.versions.app.major.get()}.${libs.versions.app.minor.get()}.${libs.versions.app.patch.get()}"
 }
 
 fun getSigningKey(secretKey: String, fallbackProps: Properties): String =

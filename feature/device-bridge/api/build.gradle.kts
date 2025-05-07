@@ -1,7 +1,7 @@
 plugins {
     id("kotlin")
     id("dev.koga.deeplinklauncher.code-analysis")
-    alias(libs.plugins.org.jetbrains.kotlin.jvm)
+    alias(libs.plugins.kotlin.jvm)
     alias(libs.plugins.kotlin.serialization)
 }
 

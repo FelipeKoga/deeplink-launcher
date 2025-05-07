@@ -9,9 +9,8 @@ repositories {
 }
 
 dependencies {
-
-    implementation(libs.android.gradle.plugin)
-    implementation(libs.kotlin.gradle.plugin)
+    implementation(libs.agp)
+    implementation(libs.kotlin.gradlePlugin)
     implementation(libs.kotlinx.datetime)
     implementation(libs.detekt)
 }

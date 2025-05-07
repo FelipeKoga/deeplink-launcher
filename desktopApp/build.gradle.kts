@@ -3,9 +3,9 @@ import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 plugins {
     kotlin("multiplatform")
     id("dev.koga.deeplinklauncher.code-analysis")
-    alias(libs.plugins.jetbrainsCompose)
+    alias(libs.plugins.compose)
     alias(libs.plugins.compose.compiler)
-    alias(libs.plugins.aboutlibraries.plugin)
+    alias(libs.plugins.aboutlibraries)
 }
 
 kotlin {
