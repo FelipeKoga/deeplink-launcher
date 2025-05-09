@@ -60,7 +60,7 @@
 ## Getting Started
 
 - **JDK**: 17
-- **Android Studio**: **Ladybug (AI-243)** or newer
+- **Android Studio**: **Ladybug** or newer
 - **Xcode**: Optional, only needed to run the iOS app locally. We recommend using the latest **stable** version
 
 *If you encounter issues running the app locally, feel free to open an issue or check the [Kotlin Multiplatform setup guide](https://www.jetbrains.com/help/kotlin-multiplatform-dev/multiplatform-setup.html).*
