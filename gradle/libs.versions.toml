@@ -1,7 +1,7 @@
 [versions]
 billing = "7.1.1"
 datastorePreferencesCore = "1.1.7"
-haze = "1.5.4"
+haze = "1.6.2"
 kotlinxSerializationJson = "1.8.1"
 androidGradlePlugin = "8.7.2"
 jetbrains-kotlinxDatetime = "0.6.2"
