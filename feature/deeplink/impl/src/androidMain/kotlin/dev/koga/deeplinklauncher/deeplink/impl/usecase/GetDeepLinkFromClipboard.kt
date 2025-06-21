@@ -4,7 +4,7 @@ import android.content.ClipboardManager
 import android.content.Context
 import dev.koga.deeplinklauncher.deeplink.api.usecase.ValidateDeepLink
 
-actual class GetDeepLinkFromClipboard(
+internal actual class GetDeepLinkFromClipboard(
     private val context: Context,
     private val validateDeepLink: ValidateDeepLink,
 ) {

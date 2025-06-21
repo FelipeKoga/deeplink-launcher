@@ -5,7 +5,7 @@ import kotlinx.datetime.LocalDateTime
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class DeepLink(
+public data class DeepLink(
     val id: String,
     val link: String,
     val name: String?,
@@ -15,8 +15,8 @@ data class DeepLink(
     val lastLaunchedAt: LocalDateTime? = null,
     val folder: Folder? = null,
 ) {
-    companion object {
-        val empty = DeepLink(
+    public companion object {
+        public val empty: DeepLink = DeepLink(
             id = "",
             link = "",
             name = "",

@@ -6,21 +6,21 @@ import dev.koga.deeplinklauncher.database.SelectFoldersWithDeeplinkCount
 import dev.koga.deeplinklauncher.deeplink.api.model.DeepLink
 import dev.koga.deeplinklauncher.deeplink.api.model.Folder
 
-fun SelectFoldersWithDeeplinkCount.toDomain() = Folder(
+internal fun SelectFoldersWithDeeplinkCount.toDomain() = Folder(
     id = id,
     name = name,
     description = description,
     deepLinkCount = deeplinkCount.toInt(),
 )
 
-fun GetFolderById.toDomain() = Folder(
+internal fun GetFolderById.toDomain() = Folder(
     id = id,
     name = name,
     description = description,
     deepLinkCount = deeplinkCount.toInt(),
 )
 
-fun GetFolderDeepLinks.toDomain() = DeepLink(
+internal fun GetFolderDeepLinks.toDomain() = DeepLink(
     id = id,
     link = link,
     name = name,

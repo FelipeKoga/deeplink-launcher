@@ -2,8 +2,7 @@ package dev.koga.deeplinklauncher.shared
 
 import dev.koga.deeplinklauncher.coroutines.di.coroutinesModule
 import dev.koga.deeplinklauncher.database.di.databaseModule
-import dev.koga.deeplinklauncher.deeplink.impl.di.deeplinkImplModule
-import dev.koga.deeplinklauncher.deeplink.ui.di.deeplinkUiModule
+import dev.koga.deeplinklauncher.deeplink.impl.di.deepLinkModule
 import dev.koga.deeplinklauncher.file.di.fileModule
 import dev.koga.deeplinklauncher.home.ui.di.homeUiModule
 import dev.koga.deeplinklauncher.importdata.ui.di.importExportUiModule
@@ -25,8 +24,7 @@ fun initKoin(appModule: Module) {
     startKoin {
         modules(
             appModule,
-            deeplinkUiModule,
-            deeplinkImplModule,
+            deepLinkModule,
             preferencesModule,
             purchaseImplModule,
             importExportUiModule,

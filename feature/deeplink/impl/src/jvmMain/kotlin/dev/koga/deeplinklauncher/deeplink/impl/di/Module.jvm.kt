@@ -17,7 +17,7 @@ import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.bind
 import org.koin.dsl.module
 
-actual val platformModule: Module = module {
+internal actual val platformModule: Module = module {
     singleOf(::GetDeepLinkMetadataImpl) bind GetDeepLinkMetadata::class
     singleOf(::LaunchDeepLinkImpl) bind LaunchDeepLink::class
     singleOf(::ValidateDeepLinkImpl) bind ValidateDeepLink::class

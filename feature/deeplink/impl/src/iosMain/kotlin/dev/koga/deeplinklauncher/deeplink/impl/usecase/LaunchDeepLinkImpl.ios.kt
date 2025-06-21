@@ -7,13 +7,13 @@ import dev.koga.deeplinklauncher.deeplink.api.usecase.LaunchDeepLink
 import platform.Foundation.NSURL
 import platform.UIKit.UIApplication
 
-actual class LaunchDeepLinkImpl(
+internal class LaunchDeepLinkImpl(
     private val repository: DeepLinkRepository,
 ) : LaunchDeepLink {
 
     private val application = UIApplication.sharedApplication
 
-    actual override suspend fun launch(url: String): LaunchDeepLink.Result {
+    override suspend fun launch(url: String): LaunchDeepLink.Result {
         val nsurl = NSURL(string = url)
 
         return if (application.canOpenURL(nsurl)) {
@@ -24,7 +24,7 @@ actual class LaunchDeepLinkImpl(
         }
     }
 
-    actual override suspend fun launch(deepLink: DeepLink): LaunchDeepLink.Result {
+    override suspend fun launch(deepLink: DeepLink): LaunchDeepLink.Result {
         repository.upsertDeepLink(deepLink.copy(lastLaunchedAt = currentLocalDateTime))
         return launch(deepLink.link)
     }

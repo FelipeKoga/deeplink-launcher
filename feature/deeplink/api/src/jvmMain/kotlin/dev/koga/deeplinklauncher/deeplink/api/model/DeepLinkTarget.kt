@@ -6,14 +6,14 @@ import dev.koga.deeplinklauncher.devicebridge.api.DeviceBridge
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 
-sealed interface DeepLinkTarget {
-    val id: String
+public sealed interface DeepLinkTarget {
+    public val id: String
 
-    data object Desktop : DeepLinkTarget {
+    public data object Desktop : DeepLinkTarget {
         override val id: String = Uuid.random().toString()
     }
 
-    data class Device(
+    public data class Device(
         override val id: String,
         val name: String,
         val platform: DeviceBridge.Platform,

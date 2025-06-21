@@ -5,8 +5,8 @@ import dev.koga.deeplinklauncher.deeplink.api.usecase.ShareDeepLink
 import platform.UIKit.UIActivityViewController
 import platform.UIKit.UIApplication
 
-actual class ShareDeepLinkImpl : ShareDeepLink {
-    actual override fun invoke(deepLink: DeepLink) {
+internal class ShareDeepLinkImpl : ShareDeepLink {
+    override fun invoke(deepLink: DeepLink) {
         val activityViewController = UIActivityViewController(
             activityItems = listOf(deepLink.link),
             applicationActivities = null,

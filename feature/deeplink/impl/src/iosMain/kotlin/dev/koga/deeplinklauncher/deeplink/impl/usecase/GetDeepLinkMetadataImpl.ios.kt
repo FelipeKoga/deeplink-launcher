@@ -5,9 +5,9 @@ import dev.koga.deeplinklauncher.deeplink.api.usecase.GetDeepLinkMetadata
 import platform.Foundation.NSURL
 import platform.Foundation.NSURLComponents
 
-actual class GetDeepLinkMetadataImpl : GetDeepLinkMetadata {
+internal class GetDeepLinkMetadataImpl : GetDeepLinkMetadata {
 
-    actual override fun invoke(link: String): DeepLinkMetadata {
+    override fun invoke(link: String): DeepLinkMetadata {
         val nsurl = NSURL(string = link)
 
         val components = NSURLComponents.componentsWithURL(

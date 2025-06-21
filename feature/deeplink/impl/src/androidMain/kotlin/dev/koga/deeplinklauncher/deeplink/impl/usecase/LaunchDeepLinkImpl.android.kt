@@ -8,12 +8,12 @@ import dev.koga.deeplinklauncher.deeplink.api.model.DeepLink
 import dev.koga.deeplinklauncher.deeplink.api.repository.DeepLinkRepository
 import dev.koga.deeplinklauncher.deeplink.api.usecase.LaunchDeepLink
 
-actual class LaunchDeepLinkImpl(
+internal class LaunchDeepLinkImpl(
     private val context: Context,
     private val repository: DeepLinkRepository,
 ) : LaunchDeepLink {
 
-    actual override suspend fun launch(url: String): LaunchDeepLink.Result {
+    override suspend fun launch(url: String): LaunchDeepLink.Result {
         return try {
             val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url)).apply {
                 addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
@@ -25,7 +25,7 @@ actual class LaunchDeepLinkImpl(
         }
     }
 
-    actual override suspend fun launch(deepLink: DeepLink): LaunchDeepLink.Result {
+    override suspend fun launch(deepLink: DeepLink): LaunchDeepLink.Result {
         repository.upsertDeepLink(deepLink.copy(lastLaunchedAt = currentLocalDateTime))
 
         return launch(deepLink.link)

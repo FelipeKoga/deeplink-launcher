@@ -10,7 +10,7 @@ import kotlinx.coroutines.flow.first
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 
-class DuplicateDeepLinkImpl(
+internal class DuplicateDeepLinkImpl(
     private val repository: DeepLinkRepository,
     private val validateDeepLink: ValidateDeepLink,
 ) : DuplicateDeepLink {

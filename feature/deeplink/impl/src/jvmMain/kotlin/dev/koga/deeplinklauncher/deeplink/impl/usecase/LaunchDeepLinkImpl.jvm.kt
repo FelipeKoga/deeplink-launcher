@@ -10,12 +10,12 @@ import dev.koga.deeplinklauncher.devicebridge.api.DeviceBridge
 import java.awt.Desktop
 import java.net.URI
 
-actual class LaunchDeepLinkImpl(
+internal class LaunchDeepLinkImpl(
     private val repository: DeepLinkRepository,
     private val deviceBridge: DeviceBridge,
     private val deepLinkTargetStateManager: DeepLinkTargetStateManager,
 ) : LaunchDeepLink {
-    actual override suspend fun launch(url: String): LaunchDeepLink.Result {
+    override suspend fun launch(url: String): LaunchDeepLink.Result {
         return when (val target = deepLinkTargetStateManager.current.value) {
             is DeepLinkTarget.Desktop -> launchDesktop(url)
             is DeepLinkTarget.Device -> launch(url, target)
@@ -59,7 +59,7 @@ actual class LaunchDeepLinkImpl(
         }
     }
 
-    actual override suspend fun launch(deepLink: DeepLink): LaunchDeepLink.Result {
+    override suspend fun launch(deepLink: DeepLink): LaunchDeepLink.Result {
         repository.upsertDeepLink(deepLink.copy(lastLaunchedAt = currentLocalDateTime))
 
         return launch(deepLink.link)

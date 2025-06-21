@@ -2,6 +2,12 @@ package dev.koga.deeplinklauncher.navigation
 
 import kotlinx.serialization.Serializable
 
+public interface AppRoute {
+    @Serializable
+    public data object PopBackStack : AppRoute
+}
+
+
 public sealed interface AppNavigationRoute {
 
     @Serializable
@@ -21,9 +27,6 @@ public sealed interface AppNavigationRoute {
 
     @Serializable
     public data class DeepLinkDetails(val id: String, val showFolder: Boolean) : AppNavigationRoute
-
-    @Serializable
-    public data class FolderDetails(val id: String) : AppNavigationRoute
 
     @Serializable
     public data object ImportData : AppNavigationRoute

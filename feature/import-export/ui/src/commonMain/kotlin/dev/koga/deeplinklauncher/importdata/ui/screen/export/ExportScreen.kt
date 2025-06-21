@@ -39,6 +39,7 @@ import dev.koga.deeplinklauncher.importdata.ui.component.JSONBoxViewer
 import dev.koga.deeplinklauncher.importdata.ui.utils.getByLabel
 import dev.koga.deeplinklauncher.importdata.ui.utils.label
 import dev.koga.deeplinklauncher.navigation.AppNavigationRoute
+import dev.koga.deeplinklauncher.navigation.popBackStack
 import kotlinx.collections.immutable.toPersistentList
 
 @Composable
@@ -52,7 +53,7 @@ fun ExportScreen(
     ExportUI(
         preview = viewModel.preview,
         onExport = viewModel::export,
-        onBack = { viewModel.navigate(AppNavigationRoute.Back) },
+        onBack = { viewModel.popBackStack() },
     )
 }
 

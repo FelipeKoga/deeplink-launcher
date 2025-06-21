@@ -7,7 +7,7 @@ import dev.koga.deeplinklauncher.deeplink.api.usecase.GetAutoSuggestionLinks
 import dev.koga.deeplinklauncher.deeplink.api.usecase.GetDeepLinkMetadata
 import dev.koga.deeplinklauncher.preferences.repository.PreferencesDataSource
 
-class GetAutoSuggestionLinksImpl(
+internal class GetAutoSuggestionLinksImpl(
     private val repository: DeepLinkRepository,
     private val getDeepLinkMetadata: GetDeepLinkMetadata,
     private val preferencesDataSource: PreferencesDataSource,

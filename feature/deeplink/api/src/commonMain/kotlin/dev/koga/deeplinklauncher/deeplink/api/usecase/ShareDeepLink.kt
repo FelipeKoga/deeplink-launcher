@@ -2,6 +2,6 @@ package dev.koga.deeplinklauncher.deeplink.api.usecase
 
 import dev.koga.deeplinklauncher.deeplink.api.model.DeepLink
 
-interface ShareDeepLink {
-    operator fun invoke(deepLink: DeepLink)
+public interface ShareDeepLink {
+    public operator fun invoke(deepLink: DeepLink)
 }
