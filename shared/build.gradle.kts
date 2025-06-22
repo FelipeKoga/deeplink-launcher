@@ -23,8 +23,8 @@ kotlin {
             implementation(projects.feature.deeplink.impl)
             implementation(projects.feature.dataTransfer.impl)
             implementation(projects.feature.settings.impl)
-            implementation(projects.feature.purchase.api)
-            implementation(projects.feature.purchase.impl)
+            implementation(projects.library.purchase.api)
+            implementation(projects.library.purchase.impl)
 
             implementation(projects.core.designsystem)
             implementation(projects.core.navigation)
@@ -42,7 +42,7 @@ kotlin {
         }
 
         jvmMain.dependencies {
-            implementation(projects.feature.deviceBridge.impl)
+            implementation(projects.library.deviceBridge.impl)
         }
     }
 }

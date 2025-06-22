@@ -8,7 +8,7 @@ kotlin {
     jvmToolchain(17)
 
     dependencies {
-        implementation(projects.feature.deviceBridge.api)
+        implementation(projects.library.deviceBridge.api)
         implementation(libs.kotlinx.coroutines.core)
         implementation(libs.kotlinx.serialization.json)
         implementation(libs.koin.core)

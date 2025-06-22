@@ -20,7 +20,7 @@ kotlin {
         }
 
         jvmMain.dependencies {
-            implementation(projects.feature.deviceBridge.api)
+            implementation(projects.library.deviceBridge.api)
         }
     }
 }

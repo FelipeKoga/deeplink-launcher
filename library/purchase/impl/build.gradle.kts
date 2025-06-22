@@ -20,7 +20,7 @@ kotlin {
         iosMain.get().dependsOn(noOpMain)
 
         commonMain.dependencies {
-            implementation(projects.feature.purchase.api)
+            implementation(projects.library.purchase.api)
 
             implementation(libs.kotlinx.immutable)
             implementation(libs.kotlinx.coroutines.core)
