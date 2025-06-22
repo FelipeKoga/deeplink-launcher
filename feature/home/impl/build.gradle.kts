@@ -8,10 +8,11 @@ plugins {
 }
 
 kotlin {
-    setupBinariesFramework("home")
+    setupBinariesFramework("home.impl")
 
     sourceSets {
         commonMain.dependencies {
+            implementation(projects.feature.home.api)
             implementation(projects.feature.deeplink.api)
             implementation(projects.feature.deeplink.uiComponent)
             implementation(projects.feature.settings.api)
@@ -50,5 +51,5 @@ kotlin {
 }
 
 android {
-    namespace = "dev.koga.deeplinklauncher"
+    namespace = "dev.koga.deeplinklauncher.home.impl"
 }

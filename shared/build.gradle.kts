@@ -15,7 +15,7 @@ kotlin {
 
     sourceSets {
         commonMain.dependencies {
-            implementation(projects.feature.home)
+            implementation(projects.feature.home.impl)
             implementation(projects.feature.deeplink.impl)
             implementation(projects.feature.dataTransfer.impl)
             implementation(projects.feature.settings.impl)
