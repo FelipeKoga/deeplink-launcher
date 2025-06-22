@@ -20,7 +20,7 @@ internal class CompositeDeviceBridge internal constructor(
     override fun track(): Flow<List<DeviceBridge.Device>> {
         return combine(
             adb.track(),
-            xcrun.track()
+            xcrun.track(),
         ) { adb, xcrun -> adb + xcrun }
     }
 

@@ -81,7 +81,7 @@ internal class Xcrun private constructor(
         fun build(dispatcher: CoroutineDispatcher): Xcrun {
             return when {
                 "xcrun".installed() -> Xcrun("xcrun", dispatcher)
-                Os.get() == Os.MAC ->  Xcrun("/usr/bin/xcrun", dispatcher)
+                Os.get() == Os.MAC -> Xcrun("/usr/bin/xcrun", dispatcher)
                 else -> Xcrun(path = "", dispatcher)
             }
         }

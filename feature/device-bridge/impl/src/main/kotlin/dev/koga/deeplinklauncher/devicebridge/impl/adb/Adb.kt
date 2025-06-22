@@ -159,7 +159,7 @@ internal class Adb private constructor(
             return when {
                 "adb".installed() -> Adb(
                     path = "adb",
-                    dispatcher = dispatcher
+                    dispatcher = dispatcher,
                 )
 
                 System.getenv("ANDROID_HOME") != null -> Adb(
@@ -176,7 +176,6 @@ internal class Adb private constructor(
                     path = "$userHome/AppData/Local/Android/Sdk/platform-tools/adb",
                     dispatcher = dispatcher,
                 )
-
 
                 Os.get() == Os.MAC -> Adb(
                     path = "$userHome/Library/Android/sdk/platform-tools/adb",
