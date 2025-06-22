@@ -12,7 +12,7 @@ internal object AdbParser {
         return inputStream.bufferedReader()
             .process(regex = Regex(pattern = """(device)\s*(\{[^}]+})""")) {
                 val (_, data) = it.destructured
-                val contentRegex = Regex(pattern = """([^{\\s]+)\\s*:\\s*"?([^"\\s}]+)""")
+                val contentRegex = Regex(pattern = """([^{\s]+)\s*:\s*"?([^"\s}]+)""")
 
                 val contentData = mutableMapOf<String, String>()
                 contentRegex.findAll(data).forEach { match ->
