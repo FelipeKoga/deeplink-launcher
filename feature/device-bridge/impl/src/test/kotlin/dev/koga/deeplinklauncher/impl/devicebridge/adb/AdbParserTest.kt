@@ -11,16 +11,16 @@ class AdbParserTest {
     @Test
     fun `should parse adb devices correctly`() = runTest {
         val input = """
-                device {
-                    serial: "ZF523HKK7K"
-                    state: DEVICE
-                    connection_type: USB
-                }
-                device {
-                    serial: "emulator-5554"
-                    state: DEVICE
-                    connection_type: SOCKET
-                }
+            device {
+                serial: "ZF523HKK7K"
+                state: DEVICE
+                connection_type: USB
+            }
+            device {
+                serial: "emulator-5554"
+                state: DEVICE
+                connection_type: SOCKET
+            }
         """.trimIndent()
 
         val inputStream = input.byteInputStream()

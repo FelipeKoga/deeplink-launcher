@@ -46,7 +46,7 @@ fun HomeScreen(
         }
     }
 
-    HomeUI(
+    homeUI(
         uiState = uiState,
         onAction = viewModel::onAction,
     )
@@ -54,7 +54,7 @@ fun HomeScreen(
 
 @OptIn(ExperimentalHazeMaterialsApi::class)
 @Composable
-internal fun HomeUI(
+internal fun homeUI(
     uiState: HomeUiState,
     onAction: (HomeAction) -> Unit,
     hazeState: HazeState = remember { HazeState() },

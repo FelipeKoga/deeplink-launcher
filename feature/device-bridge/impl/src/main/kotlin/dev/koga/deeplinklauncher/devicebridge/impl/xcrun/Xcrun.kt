@@ -34,8 +34,8 @@ internal class Xcrun private constructor(
                 "openurl",
                 id,
                 link,
-            ).start().also {
-                it.waitFor()
+            ).start().apply {
+                waitFor()
             }
         }
     }
@@ -55,8 +55,8 @@ internal class Xcrun private constructor(
                 "--json",
                 "devices",
                 "available",
-            ).start().also {
-                it.waitFor()
+            ).start().apply {
+                waitFor()
             }.inputStream
 
             val devices = XcrunParser.parse(inputStream).map {
@@ -79,18 +79,10 @@ internal class Xcrun private constructor(
         private const val XCRUN_TRACK_DEVICES_DELAY = 5000L
 
         fun build(dispatcher: CoroutineDispatcher): Xcrun {
-            if ("xcrun".installed()) {
-                return Xcrun("xcrun", dispatcher)
-            }
-
-            return when (Os.get()) {
-                Os.MAC -> {
-                    Xcrun("/usr/bin/xcrun", dispatcher)
-                }
-
-                else -> {
-                    Xcrun(path = "", dispatcher)
-                }
+            return when {
+                "xcrun".installed() -> Xcrun("xcrun", dispatcher)
+                Os.get() == Os.MAC ->  Xcrun("/usr/bin/xcrun", dispatcher)
+                else -> Xcrun(path = "", dispatcher)
             }
         }
     }

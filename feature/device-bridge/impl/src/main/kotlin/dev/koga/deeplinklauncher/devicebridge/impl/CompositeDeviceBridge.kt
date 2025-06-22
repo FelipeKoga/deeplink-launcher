@@ -18,7 +18,10 @@ internal class CompositeDeviceBridge internal constructor(
         get() = adb.devices + xcrun.devices
 
     override fun track(): Flow<List<DeviceBridge.Device>> {
-        return combine(adb.track(), xcrun.track()) { adb, xcrun -> adb + xcrun }
+        return combine(
+            adb.track(),
+            xcrun.track()
+        ) { adb, xcrun -> adb + xcrun }
     }
 
     override suspend fun launch(id: String, link: String): Process {

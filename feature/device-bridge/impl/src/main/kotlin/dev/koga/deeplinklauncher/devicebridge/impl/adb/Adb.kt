@@ -35,8 +35,8 @@ internal class Adb private constructor(
                 "am", "start",
                 "-a", "android.intent.action.VIEW",
                 "-d", link,
-            ).start().also {
-                it.waitFor()
+            ).start().apply {
+                waitFor()
             }
         }
     }
@@ -55,8 +55,8 @@ internal class Adb private constructor(
         ).start()
 
         AdbParser.parse(process.inputStream) { adbDevice ->
-            val device = when (adbDevice.connectionType) {
-                "SOCKET" -> DeviceBridge.Device(
+            val device = if (adbDevice.connectionType == "SOCKET") {
+                DeviceBridge.Device(
                     id = adbDevice.serial,
                     name = getEmulatorName(
                         serial = adbDevice.serial,
@@ -67,8 +67,8 @@ internal class Adb private constructor(
                     isEmulator = true,
                     active = adbDevice.state == "DEVICE",
                 )
-
-                else -> DeviceBridge.Device(
+            } else {
+                DeviceBridge.Device(
                     id = adbDevice.serial,
                     name = getDeviceName(
                         serial = adbDevice.serial,
@@ -98,8 +98,8 @@ internal class Adb private constructor(
                 "shell",
                 "getprop",
                 key,
-            ).start().also {
-                it.waitFor()
+            ).start().apply {
+                waitFor()
             }
         }
 
@@ -121,8 +121,8 @@ internal class Adb private constructor(
                 "get",
                 "global",
                 "device_name",
-            ).start().also {
-                it.waitFor()
+            ).start().apply {
+                waitFor()
             }
         }
 
@@ -154,40 +154,34 @@ internal class Adb private constructor(
 
     companion object {
         fun build(dispatcher: CoroutineDispatcher): Adb {
-            if ("adb".installed()) {
-                return Adb(path = "adb", dispatcher = dispatcher)
-            }
-
-            System.getenv("ANDROID_HOME")?.let {
-                return Adb(
-                    path = "$it/platform-tools/adb",
-                    dispatcher = dispatcher,
-                )
-            }
-
             val userHome = System.getProperty("user.home")
 
-            return when (Os.get()) {
-                Os.LINUX -> {
-                    Adb(
-                        path = "$userHome/Android/Sdk/platform-tools/adb",
-                        dispatcher = dispatcher,
-                    )
-                }
+            return when {
+                "adb".installed() -> Adb(
+                    path = "adb",
+                    dispatcher = dispatcher
+                )
 
-                Os.WINDOWS -> {
-                    Adb(
-                        path = "$userHome/AppData/Local/Android/Sdk/platform-tools/adb",
-                        dispatcher = dispatcher,
-                    )
-                }
+                System.getenv("ANDROID_HOME") != null -> Adb(
+                    path = "${System.getenv("ANDROID_HOME")}/platform-tools/adb",
+                    dispatcher = dispatcher,
+                )
 
-                Os.MAC -> {
-                    Adb(
-                        path = "$userHome/Library/Android/sdk/platform-tools/adb",
-                        dispatcher = dispatcher,
-                    )
-                }
+                Os.get() == Os.LINUX -> Adb(
+                    path = "$userHome/Android/Sdk/platform-tools/adb",
+                    dispatcher = dispatcher,
+                )
+
+                Os.get() == Os.WINDOWS -> Adb(
+                    path = "$userHome/AppData/Local/Android/Sdk/platform-tools/adb",
+                    dispatcher = dispatcher,
+                )
+
+
+                Os.get() == Os.MAC -> Adb(
+                    path = "$userHome/Library/Android/sdk/platform-tools/adb",
+                    dispatcher = dispatcher,
+                )
             }
         }
     }
