@@ -6,14 +6,15 @@ interface ImportDeepLinks {
     suspend operator fun invoke(
         filePath: String,
         fileType: FileType,
-    ): ImportDeepLinksResult
-}
+    ): Result
 
-interface ImportDeepLinksResult {
-    data object Success : ImportDeepLinksResult
+    sealed interface Result {
+        data object Success : Result
 
-    sealed interface Error : ImportDeepLinksResult {
-        data class InvalidDeepLinksFound(val invalidDeepLinks: List<String>) : Error
-        data object Unknown : Error
+        sealed interface Error : Result {
+            data class InvalidDeepLinksFound(val invalidDeepLinks: List<String>) : Error
+            data object Unknown : Error
+        }
     }
 }
+

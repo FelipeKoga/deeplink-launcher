@@ -8,7 +8,6 @@ import dev.koga.deeplinklauncher.file.ShareFile
 import dev.koga.deeplinklauncher.file.model.FileType
 import dev.koga.deeplinklauncher.datatransfer.impl.domain.dto.dateFormat
 import dev.koga.deeplinklauncher.datatransfer.domain.usecase.ExportDeepLinks
-import dev.koga.deeplinklauncher.datatransfer.domain.usecase.ExportDeepLinksResult
 import dev.koga.deeplinklauncher.datatransfer.impl.domain.dto.Payload
 import dev.koga.deeplinklauncher.platform.canShareContent
 import kotlinx.serialization.json.Json
@@ -18,9 +17,9 @@ internal class ExportDeepLinksImpl(
     private val saveFile: SaveFile,
     private val shareFile: ShareFile,
 ) : ExportDeepLinks {
-    override fun invoke(type: FileType): ExportDeepLinksResult {
+    override fun invoke(type: FileType): ExportDeepLinks.Result {
         val deepLinks = repository.getDeepLinks().ifEmpty {
-            return ExportDeepLinksResult.Empty
+            return ExportDeepLinks.Result.Empty
         }
 
         val serializedData = when (type) {
@@ -68,7 +67,7 @@ internal class ExportDeepLinksImpl(
             fileName = fileName,
             fileContent = serializedData,
             type = type,
-        ) ?: return ExportDeepLinksResult.Error(Exception("Failed to save file"))
+        ) ?: return ExportDeepLinks.Result.Error(Exception("Failed to save file"))
 
         if (canShareContent) {
             shareFile(
@@ -77,6 +76,6 @@ internal class ExportDeepLinksImpl(
             )
         }
 
-        return ExportDeepLinksResult.Success(fileName = fileName)
+        return ExportDeepLinks.Result.Success(fileName = fileName)
     }
 }

@@ -5,7 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
 import dev.koga.deeplinklauncher.deeplink.api.model.DeepLink
-import dev.koga.deeplinklauncher.deeplink.api.ui.navigation.DeepLinkRoute
+import dev.koga.deeplinklauncher.deeplink.api.ui.navigation.DeepLinkRouteEntryPoint
 import dev.koga.deeplinklauncher.deeplink.api.repository.FolderRepository
 import dev.koga.deeplinklauncher.deeplink.api.usecase.LaunchDeepLink
 import dev.koga.deeplinklauncher.navigation.AppNavigator
@@ -27,7 +27,7 @@ internal class FolderDetailsViewModel(
     private val launchDeepLink: LaunchDeepLink,
     private val appNavigator: AppNavigator,
 ) : ViewModel() {
-    private val folderId = savedStateHandle.toRoute<DeepLinkRoute.FolderDetails>().id
+    private val folderId = savedStateHandle.toRoute<DeepLinkRouteEntryPoint.FolderDetails>().id
 
     private val folder = repository.getFolderById(folderId)!!
 

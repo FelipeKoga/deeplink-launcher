@@ -31,7 +31,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import compose.icons.TablerIcons
 import compose.icons.tablericons.Trash
-import dev.koga.deeplinklauncher.deeplink.api.ui.navigation.DeepLinkRoute
+import dev.koga.deeplinklauncher.deeplink.api.ui.navigation.DeepLinkRouteEntryPoint
 import dev.koga.deeplinklauncher.deeplink.impl.ui.folderdetails.component.DeleteFolderBottomSheet
 import dev.koga.deeplinklauncher.deeplink.impl.ui.folderdetails.component.EditableText
 import dev.koga.deeplinklauncher.deeplink.uicomponent.DeepLinkCard
@@ -116,7 +116,7 @@ internal fun FolderDetailsScreenContent(
     modifier: Modifier = Modifier,
     uiState: FolderDetailsUiState,
     onAction: (FolderDetailsAction) -> Unit,
-    onNavigate: (DeepLinkRoute) -> Unit,
+    onNavigate: (DeepLinkRouteEntryPoint) -> Unit,
 ) {
     val dimensions = LocalDimensions.current
 
@@ -223,7 +223,7 @@ internal fun FolderDetailsScreenContent(
                 deepLink = deepLink,
                 onClick = {
                     onNavigate(
-                        DeepLinkRoute.DeepLinkDetails(id = deepLink.id, showFolder = false),
+                        DeepLinkRouteEntryPoint.DeepLinkDetails(id = deepLink.id, showFolder = false),
                     )
                 },
                 onLaunch = { onAction(FolderDetailsAction.Launch(deepLink)) },

@@ -6,7 +6,7 @@ import androidx.navigation.compose.dialog
 import dev.koga.deeplinklauncher.navigation.AppNavigator
 import dev.koga.deeplinklauncher.navigation.NavigationGraph
 import dev.koga.deeplinklauncher.navigation.popBackStack
-import dev.koga.deeplinklauncher.settings.api.SettingsEntryPoint
+import dev.koga.deeplinklauncher.settings.api.SettingsRouteEntryPoint
 import dev.koga.deeplinklauncher.settings.impl.SettingsScreen
 import dev.koga.deeplinklauncher.settings.impl.apptheme.AppThemeBottomSheet
 import dev.koga.deeplinklauncher.settings.impl.deletedata.DeleteDataBottomSheet
@@ -19,7 +19,7 @@ internal class SettingsNavigationGraph(
     private val appNavigator: AppNavigator,
 ) : NavigationGraph {
     override fun register(navGraphBuilder: NavGraphBuilder) = with(navGraphBuilder) {
-        composable<SettingsEntryPoint> {
+        composable<SettingsRouteEntryPoint> {
             SettingsScreen(viewmodel = koinViewModel())
         }
 

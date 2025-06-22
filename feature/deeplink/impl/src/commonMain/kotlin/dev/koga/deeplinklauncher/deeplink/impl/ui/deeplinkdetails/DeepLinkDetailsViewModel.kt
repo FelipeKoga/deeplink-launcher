@@ -7,7 +7,7 @@ import androidx.navigation.toRoute
 import dev.koga.deeplinklauncher.coroutines.CoroutineDebouncer
 import dev.koga.deeplinklauncher.deeplink.api.model.DeepLink
 import dev.koga.deeplinklauncher.deeplink.api.model.Folder
-import dev.koga.deeplinklauncher.deeplink.api.ui.navigation.DeepLinkRoute
+import dev.koga.deeplinklauncher.deeplink.api.ui.navigation.DeepLinkRouteEntryPoint
 import dev.koga.deeplinklauncher.deeplink.api.repository.DeepLinkRepository
 import dev.koga.deeplinklauncher.deeplink.api.repository.FolderRepository
 import dev.koga.deeplinklauncher.deeplink.api.usecase.DuplicateDeepLink
@@ -42,7 +42,7 @@ internal class DeepLinkDetailsViewModel(
     private val appNavigator: AppNavigator,
 ) : ViewModel(), AppNavigator by appNavigator {
 
-    private val route = savedStateHandle.toRoute<DeepLinkRoute.DeepLinkDetails>()
+    private val route = savedStateHandle.toRoute<DeepLinkRouteEntryPoint.DeepLinkDetails>()
     private val deepLink = deepLinkRepository.getDeepLinkByIdStream(route.id)
         .filterNotNull()
         .stateIn(
@@ -105,7 +105,7 @@ internal class DeepLinkDetailsViewModel(
             LaunchAction.Share -> share()
             LaunchAction.ToggleFavorite -> toggleFavorite()
             LaunchAction.NavigateToFolder -> appNavigator.navigate(
-                DeepLinkRoute.FolderDetails(
+                DeepLinkRouteEntryPoint.FolderDetails(
                     id = deepLink.value.folder?.id.orEmpty(),
                 ),
             )
@@ -121,7 +121,7 @@ internal class DeepLinkDetailsViewModel(
 
     private fun onEditAction(action: EditAction) {
         when (action) {
-            is EditAction.AddFolder -> appNavigator.navigate(DeepLinkRoute.AddFolder)
+            is EditAction.AddFolder -> appNavigator.navigate(DeepLinkRouteEntryPoint.AddFolder)
             is EditAction.OnDescriptionChanged -> updateDescription(action.text)
             is EditAction.OnLinkChanged -> updateLink(action.text)
             is EditAction.OnNameChanged -> updateName(action.text)
@@ -215,7 +215,7 @@ internal class DeepLinkDetailsViewModel(
                 is DuplicateDeepLink.Result.Success -> {
                     appNavigator.popBackStack()
                     appNavigator.navigate(
-                        route = DeepLinkRoute.DeepLinkDetails(
+                        route = DeepLinkRouteEntryPoint.DeepLinkDetails(
                             id = response.deepLink.id,
                             showFolder = true,
                         ),

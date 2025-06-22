@@ -5,7 +5,6 @@ import androidx.lifecycle.viewModelScope
 import dev.koga.deeplinklauncher.file.StoragePermission
 import dev.koga.deeplinklauncher.file.model.FileType
 import dev.koga.deeplinklauncher.datatransfer.domain.usecase.ExportDeepLinks
-import dev.koga.deeplinklauncher.datatransfer.domain.usecase.ExportDeepLinksResult
 import dev.koga.deeplinklauncher.datatransfer.domain.usecase.GetDeepLinksJsonPreview
 import dev.koga.deeplinklauncher.datatransfer.domain.usecase.GetDeepLinksPlainTextPreview
 import dev.koga.deeplinklauncher.navigation.AppNavigator
@@ -37,15 +36,15 @@ class ExportViewModel(
 
         viewModelScope.launch {
             when (val response = exportDeepLinks(fileType)) {
-                ExportDeepLinksResult.Empty -> snackBarDispatcher.show(
+                ExportDeepLinks.Result.Empty -> snackBarDispatcher.show(
                     "No DeepLinks to export.",
                 )
 
-                is ExportDeepLinksResult.Error -> snackBarDispatcher.show(
+                is ExportDeepLinks.Result.Error -> snackBarDispatcher.show(
                     "An error occurred while exporting DeepLinks.",
                 )
 
-                is ExportDeepLinksResult.Success -> snackBarDispatcher.show(
+                is ExportDeepLinks.Result.Success -> snackBarDispatcher.show(
                     "DeepLinks exported successfully. " +
                         "Check your downloads folder for a file named ${response.fileName}.",
                 )

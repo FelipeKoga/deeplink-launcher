@@ -6,7 +6,6 @@ import com.darkrockstudios.libraries.mpfilepicker.MPFile
 import dev.koga.deeplinklauncher.file.GetFileRealPath
 import dev.koga.deeplinklauncher.file.model.FileType
 import dev.koga.deeplinklauncher.datatransfer.domain.usecase.ImportDeepLinks
-import dev.koga.deeplinklauncher.datatransfer.domain.usecase.ImportDeepLinksResult
 import dev.koga.deeplinklauncher.navigation.AppNavigator
 import dev.koga.deeplinklauncher.uievent.SnackBarDispatcher
 import kotlinx.coroutines.launch
@@ -36,11 +35,11 @@ class ImportViewModel(
         )
 
         when (response) {
-            is ImportDeepLinksResult.Success -> {
+            is ImportDeepLinks.Result.Success -> {
                 snackBarDispatcher.show("DeepLinks imported successfully")
             }
 
-            is ImportDeepLinksResult.Error -> {
+            is ImportDeepLinks.Result.Error -> {
                 snackBarDispatcher.show(
                     "Something went wrong. " +
                         "Check the content structure and try again.",

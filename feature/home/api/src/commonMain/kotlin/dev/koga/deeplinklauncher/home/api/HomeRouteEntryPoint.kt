@@ -1,7 +1,7 @@
-package dev.koga.deeplinklauncher.settings.api
+package dev.koga.deeplinklauncher.home.api
 
 import dev.koga.deeplinklauncher.navigation.AppRoute
 import kotlinx.serialization.Serializable
 
 @Serializable
-public data object SettingsEntryPoint : AppRoute
+public data object HomeRouteEntryPoint : AppRoute

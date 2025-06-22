@@ -23,7 +23,7 @@ import dev.chrisbanes.haze.hazeEffect
 import dev.chrisbanes.haze.hazeSource
 import dev.chrisbanes.haze.materials.ExperimentalHazeMaterialsApi
 import dev.chrisbanes.haze.materials.HazeMaterials
-import dev.koga.deeplinklauncher.deeplink.api.ui.navigation.DeepLinkRoute
+import dev.koga.deeplinklauncher.deeplink.api.ui.navigation.DeepLinkRouteEntryPoint
 import dev.koga.deeplinklauncher.home.component.DeepLinksLazyColumn
 import dev.koga.deeplinklauncher.home.component.FoldersVerticalStaggeredGrid
 import dev.koga.deeplinklauncher.home.component.HomeBottomBarUI
@@ -31,7 +31,7 @@ import dev.koga.deeplinklauncher.home.component.HomeTopBar
 import dev.koga.deeplinklauncher.home.navigation.HomeRoute
 import dev.koga.deeplinklauncher.home.state.HomeUiState
 import dev.koga.deeplinklauncher.navigation.AppNavigator
-import dev.koga.deeplinklauncher.settings.api.SettingsEntryPoint
+import dev.koga.deeplinklauncher.settings.api.SettingsRouteEntryPoint
 
 @Composable
 fun HomeScreen(
@@ -77,7 +77,7 @@ internal fun HomeUI(
             HomeTopBar(
                 search = uiState.searchInput,
                 onSettingsScreen = {
-                    onAction(HomeAction.Navigate(SettingsEntryPoint))
+                    onAction(HomeAction.Navigate(SettingsRouteEntryPoint))
                 },
                 onSearch = { onAction(HomeAction.Search(it)) },
                 pagerState = pagerState,
@@ -119,14 +119,14 @@ internal fun HomeUI(
                     contentPadding = it,
                     onClick = {
                         onAction(
-                            HomeAction.Navigate(DeepLinkRoute.DeepLinkDetails(it.id, true)),
+                            HomeAction.Navigate(DeepLinkRouteEntryPoint.DeepLinkDetails(it.id, true)),
                         )
                     },
                     onLaunch = {
                         onAction(HomeAction.LaunchDeepLink(it))
                     },
                     onFolderClicked = {
-                        onAction(HomeAction.Navigate(DeepLinkRoute.FolderDetails(it.id)))
+                        onAction(HomeAction.Navigate(DeepLinkRouteEntryPoint.FolderDetails(it.id)))
                     },
                 )
 
@@ -135,9 +135,9 @@ internal fun HomeUI(
                     contentPadding = it,
                     folders = uiState.folders,
                     onClick = {
-                        onAction(HomeAction.Navigate(DeepLinkRoute.FolderDetails(it.id)))
+                        onAction(HomeAction.Navigate(DeepLinkRouteEntryPoint.FolderDetails(it.id)))
                     },
-                    onAdd = { onAction(HomeAction.Navigate(DeepLinkRoute.AddFolder)) },
+                    onAdd = { onAction(HomeAction.Navigate(DeepLinkRouteEntryPoint.AddFolder)) },
                 )
             }
         }

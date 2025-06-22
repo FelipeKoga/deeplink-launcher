@@ -9,7 +9,6 @@ import dev.koga.deeplinklauncher.file.GetFileContent
 import dev.koga.deeplinklauncher.file.model.FileType
 import dev.koga.deeplinklauncher.datatransfer.impl.domain.dto.toModel
 import dev.koga.deeplinklauncher.datatransfer.domain.usecase.ImportDeepLinks
-import dev.koga.deeplinklauncher.datatransfer.domain.usecase.ImportDeepLinksResult
 import dev.koga.deeplinklauncher.datatransfer.impl.domain.dto.Payload
 import kotlinx.datetime.LocalDateTime
 import kotlinx.serialization.ExperimentalSerializationApi
@@ -28,7 +27,7 @@ internal class ImportDeepLinksImpl(
     override suspend operator fun invoke(
         filePath: String,
         fileType: FileType,
-    ): ImportDeepLinksResult {
+    ): ImportDeepLinks.Result {
         return try {
             val fileContents = getFileContent(filePath)
             when (fileType) {
@@ -47,7 +46,7 @@ internal class ImportDeepLinksImpl(
                     }
 
                     if (invalidDeepLinks.isNotEmpty()) {
-                        return ImportDeepLinksResult.Error.InvalidDeepLinksFound(
+                        return ImportDeepLinks.Result.Error.InvalidDeepLinksFound(
                             invalidDeepLinks.map { it.link },
                         )
                     }
@@ -109,33 +108,35 @@ internal class ImportDeepLinksImpl(
                     }
 
                     if (invalidDeepLinks.isNotEmpty()) {
-                        return ImportDeepLinksResult.Error.InvalidDeepLinksFound(
+                        return ImportDeepLinks.Result.Error.InvalidDeepLinksFound(
                             invalidDeepLinks,
                         )
                     }
 
-                    newDeepLinksTexts.map(String::toDeepLink).forEach {
-                        deepLinkRepository.upsertDeepLink(it)
-                    }
+                    newDeepLinksTexts
+                        .map { text -> text.toDeepLink() }
+                        .forEach { deepLinkRepository.upsertDeepLink(it) }
                 }
             }
 
-            ImportDeepLinksResult.Success
+            ImportDeepLinks.Result.Success
         } catch (e: Exception) {
-            ImportDeepLinksResult.Error.Unknown
+            ImportDeepLinks.Result.Error.Unknown
         }
+    }
+
+    @OptIn(ExperimentalUuidApi::class)
+    internal fun String.toDeepLink(): DeepLink {
+        return DeepLink(
+            id = Uuid.random().toString(),
+            createdAt = currentLocalDateTime,
+            link = this,
+            name = null,
+            description = null,
+            isFavorite = false,
+            folder = null,
+        )
     }
 }
 
-@OptIn(ExperimentalUuidApi::class)
-internal fun String.toDeepLink(): DeepLink {
-    return DeepLink(
-        id = Uuid.random().toString(),
-        createdAt = currentLocalDateTime,
-        link = this,
-        name = null,
-        description = null,
-        isFavorite = false,
-        folder = null,
-    )
-}
+
