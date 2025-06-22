@@ -1,16 +1,14 @@
 package codeanalysis
 
-import extension.getLibrary
 import org.gradle.kotlin.dsl.creating
 import org.gradle.kotlin.dsl.dependencies
-import org.gradle.kotlin.dsl.getByType
 import org.gradle.kotlin.dsl.register
+import extension.libs
 
 val ktlint: Configuration by configurations.creating
-val libs: VersionCatalog = extensions.getByType<VersionCatalogsExtension>().named("libs")
 
 dependencies {
-    ktlint(libs.getLibrary("ktlint"))
+    ktlint(libs.ktlint)
 }
 
 tasks {

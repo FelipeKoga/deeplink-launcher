@@ -3,13 +3,20 @@ import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
 
 plugins {
-    id("dev.koga.deeplinklauncher.multiplatform")
-    alias(libs.plugins.jetbrainsCompose)
-    alias(libs.plugins.compose.compiler)
+    alias(libs.plugins.deeplinkLauncher.composeMultiplatform)
 }
 
 kotlin {
-    setupBinariesFramework(name = "shared", isStatic = true)
+    listOf(
+        iosX64(),
+        iosArm64(),
+        iosSimulatorArm64(),
+    ).forEach {
+        it.binaries.framework {
+            this.baseName = "shared"
+            this.isStatic = false
+        }
+    }
 
     task("testClasses")
 
@@ -49,9 +56,9 @@ kotlin {
     }
 }
 
-android {
-    namespace = "dev.koga.deeplinklauncher.shared"
-}
+//android {
+//    namespace = "dev.koga.deeplinklauncher.shared"
+//}
 
 project.extensions.findByType(KotlinMultiplatformExtension::class.java)?.apply {
     targets

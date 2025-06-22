@@ -1,10 +1,8 @@
 import extension.setupBinariesFramework
 
 plugins {
-    id("dev.koga.deeplinklauncher.multiplatform")
-    alias(libs.plugins.jetbrainsCompose)
-    alias(libs.plugins.compose.compiler)
-    alias(libs.plugins.kotlin.serialization)
+    alias(libs.plugins.deeplinkLauncher.composeMultiplatform)
+    alias(libs.plugins.kotlinSerialization)
 }
 
 kotlin {
@@ -35,13 +33,6 @@ kotlin {
 
             implementation(libs.haze)
             implementation(libs.haze.materials)
-
-            implementation(compose.runtime)
-            implementation(compose.foundation)
-            implementation(compose.material3)
-            implementation(compose.ui)
-            implementation(compose.components.resources)
-            implementation(compose.materialIconsExtended)
         }
 
         jvmMain.dependencies {

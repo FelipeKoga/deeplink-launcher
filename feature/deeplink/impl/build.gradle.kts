@@ -1,9 +1,7 @@
 import extension.setupBinariesFramework
 
 plugins {
-    id("dev.koga.deeplinklauncher.multiplatform")
-    alias(libs.plugins.jetbrainsCompose)
-    alias(libs.plugins.compose.compiler)
+    alias(libs.plugins.deeplinkLauncher.composeMultiplatform)
 }
 
 kotlin {
@@ -31,12 +29,6 @@ kotlin {
 
             implementation(libs.compose.navigation)
             implementation(libs.material3.windowSizeClass)
-            implementation(compose.runtime)
-            implementation(compose.foundation)
-            implementation(compose.material3)
-            implementation(compose.ui)
-            implementation(compose.components.resources)
-            implementation(compose.materialIconsExtended)
         }
 
         jvmMain.dependencies {

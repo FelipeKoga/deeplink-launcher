@@ -2,8 +2,8 @@ import extension.envProperties
 import extension.setupBinariesFramework
 
 plugins {
-    id("dev.koga.deeplinklauncher.multiplatform")
-    alias(libs.plugins.kotlin.serialization)
+    alias(libs.plugins.deeplinkLauncher.multiplatform)
+    alias(libs.plugins.kotlinSerialization)
 }
 
 val envProperties = rootProject.envProperties()
