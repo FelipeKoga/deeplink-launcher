@@ -19,7 +19,7 @@ import org.koin.dsl.module
 object AppInitializer {
 
     fun init() {
-        init(appModule = module {  })
+        init(appModule = module { })
     }
 
     fun init(appModule: Module) {

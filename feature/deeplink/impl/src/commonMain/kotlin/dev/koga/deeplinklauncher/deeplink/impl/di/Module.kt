@@ -7,13 +7,13 @@ import dev.koga.deeplinklauncher.deeplink.api.usecase.GetAutoSuggestionLinks
 import dev.koga.deeplinklauncher.deeplink.api.usecase.GetDeepLinksAndFolderStream
 import dev.koga.deeplinklauncher.deeplink.impl.repository.DeepLinkRepositoryImpl
 import dev.koga.deeplinklauncher.deeplink.impl.repository.FolderRepositoryImpl
-import dev.koga.deeplinklauncher.deeplink.impl.ui.deeplinkdetails.DeepLinkDetailsViewModel
 import dev.koga.deeplinklauncher.deeplink.impl.ui.addfolder.AddFolderViewModel
+import dev.koga.deeplinklauncher.deeplink.impl.ui.deeplinkdetails.DeepLinkDetailsViewModel
+import dev.koga.deeplinklauncher.deeplink.impl.ui.folderdetails.FolderDetailsViewModel
 import dev.koga.deeplinklauncher.deeplink.impl.ui.navigation.DeepLinkNavigationGraph
 import dev.koga.deeplinklauncher.deeplink.impl.usecase.DuplicateDeepLinkImpl
 import dev.koga.deeplinklauncher.deeplink.impl.usecase.GetAutoSuggestionLinksImpl
 import dev.koga.deeplinklauncher.deeplink.impl.usecase.GetDeepLinksAndFolderStreamImpl
-import dev.koga.deeplinklauncher.deeplink.impl.ui.folderdetails.FolderDetailsViewModel
 import dev.koga.deeplinklauncher.navigation.NavigationGraph
 import org.koin.core.module.Module
 import org.koin.core.module.dsl.singleOf

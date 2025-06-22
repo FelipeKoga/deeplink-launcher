@@ -10,7 +10,6 @@ enum class FileType(val mimeType: String, val extension: String) {
     }
 }
 
-
 val FileType.label
     get() = when (this) {
         FileType.JSON -> "JSON (.json)"

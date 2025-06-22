@@ -13,7 +13,7 @@ class App : Application() {
         AppInitializer.init(
             appModule = module {
                 single<Context> { this@App }
-            }
+            },
         )
     }
 }

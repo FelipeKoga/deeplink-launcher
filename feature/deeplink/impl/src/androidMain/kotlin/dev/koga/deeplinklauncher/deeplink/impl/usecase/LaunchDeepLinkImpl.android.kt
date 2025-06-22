@@ -3,7 +3,6 @@ package dev.koga.deeplinklauncher.deeplink.impl.usecase
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
-import androidx.compose.ui.platform.ClipEntry
 import dev.koga.deeplinklauncher.date.currentLocalDateTime
 import dev.koga.deeplinklauncher.deeplink.api.model.DeepLink
 import dev.koga.deeplinklauncher.deeplink.api.repository.DeepLinkRepository

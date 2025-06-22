@@ -11,4 +11,3 @@ interface ExportDeepLinks {
         data class Error(val throwable: Throwable) : Result
     }
 }
-

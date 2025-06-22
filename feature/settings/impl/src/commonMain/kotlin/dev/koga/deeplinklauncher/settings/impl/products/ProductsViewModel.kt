@@ -3,7 +3,6 @@ package dev.koga.deeplinklauncher.settings.impl.products
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dev.koga.deeplinklauncher.navigation.AppNavigator
-import dev.koga.deeplinklauncher.navigation.popBackStack
 import dev.koga.deeplinklauncher.purchase.api.Product
 import dev.koga.deeplinklauncher.purchase.api.PurchaseApi
 import dev.koga.deeplinklauncher.purchase.api.PurchaseResult

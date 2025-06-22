@@ -6,9 +6,9 @@ import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
+import dev.koga.deeplinklauncher.datatransfer.impl.domain.dto.dateFormat
 import dev.koga.deeplinklauncher.date.currentLocalDateTime
 import dev.koga.deeplinklauncher.date.format
-import dev.koga.deeplinklauncher.datatransfer.impl.domain.dto.dateFormat
 
 val generalPropertiesHint: AnnotatedString
     @Composable get() {

@@ -9,7 +9,6 @@ import dev.koga.deeplinklauncher.deeplink.impl.ui.deeplinkdetails.DeepLinkDetail
 import dev.koga.deeplinklauncher.deeplink.impl.ui.folderdetails.FolderDetailsScreen
 import dev.koga.deeplinklauncher.navigation.AppNavigator
 import dev.koga.deeplinklauncher.navigation.NavigationGraph
-import dev.koga.deeplinklauncher.navigation.popBackStack
 import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
 

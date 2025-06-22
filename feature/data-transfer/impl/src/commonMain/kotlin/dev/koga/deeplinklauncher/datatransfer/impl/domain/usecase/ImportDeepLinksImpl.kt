@@ -1,5 +1,8 @@
 package dev.koga.deeplinklauncher.datatransfer.impl.domain.usecase
 
+import dev.koga.deeplinklauncher.datatransfer.domain.usecase.ImportDeepLinks
+import dev.koga.deeplinklauncher.datatransfer.impl.domain.dto.Payload
+import dev.koga.deeplinklauncher.datatransfer.impl.domain.dto.toModel
 import dev.koga.deeplinklauncher.date.currentLocalDateTime
 import dev.koga.deeplinklauncher.deeplink.api.model.DeepLink
 import dev.koga.deeplinklauncher.deeplink.api.repository.DeepLinkRepository
@@ -7,9 +10,6 @@ import dev.koga.deeplinklauncher.deeplink.api.repository.FolderRepository
 import dev.koga.deeplinklauncher.deeplink.api.usecase.ValidateDeepLink
 import dev.koga.deeplinklauncher.file.GetFileContent
 import dev.koga.deeplinklauncher.file.model.FileType
-import dev.koga.deeplinklauncher.datatransfer.impl.domain.dto.toModel
-import dev.koga.deeplinklauncher.datatransfer.domain.usecase.ImportDeepLinks
-import dev.koga.deeplinklauncher.datatransfer.impl.domain.dto.Payload
 import kotlinx.datetime.LocalDateTime
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
@@ -138,5 +138,3 @@ internal class ImportDeepLinksImpl(
         )
     }
 }
-
-

@@ -112,7 +112,7 @@ internal fun HomeUI(
             when (page) {
                 HomeTabPage.HISTORY.ordinal,
                 HomeTabPage.FAVORITES.ordinal,
-                    -> DeepLinksLazyColumn(
+                -> DeepLinksLazyColumn(
                     modifier = Modifier.hazeSource(hazeState),
                     listState = historyListState,
                     deepLinks = uiState.deepLinks,

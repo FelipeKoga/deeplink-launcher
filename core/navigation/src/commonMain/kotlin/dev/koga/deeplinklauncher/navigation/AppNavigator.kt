@@ -9,10 +9,10 @@ import kotlinx.coroutines.launch
 public interface AppNavigator {
     public val destination: Flow<AppRoute>
     public fun navigate(route: AppRoute)
-}
 
-public fun AppNavigator.popBackStack() {
-    navigate(AppRoute.PopBackStack)
+    public fun popBackStack() {
+        navigate(AppRoute.PopBackStack)
+    }
 }
 
 internal class AppNavigatorImpl(

@@ -8,7 +8,6 @@ import dev.koga.deeplinklauncher.home.HomeScreen
 import dev.koga.deeplinklauncher.home.onboarding.OnboardingBottomSheet
 import dev.koga.deeplinklauncher.navigation.AppNavigator
 import dev.koga.deeplinklauncher.navigation.NavigationGraph
-import dev.koga.deeplinklauncher.navigation.popBackStack
 import dev.koga.deeplinklauncher.preferences.repository.PreferencesDataSource
 import kotlinx.coroutines.launch
 import org.koin.compose.koinInject

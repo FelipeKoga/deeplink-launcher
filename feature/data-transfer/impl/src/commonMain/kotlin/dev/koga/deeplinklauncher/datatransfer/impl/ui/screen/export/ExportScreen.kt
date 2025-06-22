@@ -30,15 +30,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import dev.koga.deeplinklauncher.datatransfer.impl.ui.component.JSONBoxViewer
 import dev.koga.deeplinklauncher.designsystem.DLLHorizontalDivider
 import dev.koga.deeplinklauncher.designsystem.DLLSingleChoiceSegmentedButtonRow
 import dev.koga.deeplinklauncher.designsystem.DLLTopBar
 import dev.koga.deeplinklauncher.designsystem.DLLTopBarDefaults
 import dev.koga.deeplinklauncher.file.model.FileType
-import dev.koga.deeplinklauncher.datatransfer.impl.ui.component.JSONBoxViewer
 import dev.koga.deeplinklauncher.file.model.getByLabel
 import dev.koga.deeplinklauncher.file.model.label
-import dev.koga.deeplinklauncher.navigation.popBackStack
 import kotlinx.collections.immutable.toPersistentList
 
 @Composable
