@@ -167,11 +167,6 @@ internal class Adb private constructor(
                     dispatcher = dispatcher,
                 )
 
-                Os.get() == Os.LINUX -> Adb(
-                    path = "$userHome/Android/Sdk/platform-tools/adb",
-                    dispatcher = dispatcher,
-                )
-
                 Os.get() == Os.WINDOWS -> Adb(
                     path = "$userHome/AppData/Local/Android/Sdk/platform-tools/adb",
                     dispatcher = dispatcher,
@@ -179,6 +174,11 @@ internal class Adb private constructor(
 
                 Os.get() == Os.MAC -> Adb(
                     path = "$userHome/Library/Android/sdk/platform-tools/adb",
+                    dispatcher = dispatcher,
+                )
+
+                else -> Adb(
+                    path = "$userHome/Android/Sdk/platform-tools/adb",
                     dispatcher = dispatcher,
                 )
             }
