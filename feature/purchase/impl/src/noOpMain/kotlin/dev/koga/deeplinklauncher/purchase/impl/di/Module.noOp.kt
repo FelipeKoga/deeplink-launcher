@@ -5,6 +5,6 @@ import dev.koga.deeplinklauncher.purchase.impl.NoOpPurchaseApi
 import org.koin.core.module.Module
 import org.koin.dsl.module
 
-actual val purchaseImplModule: Module = module {
+actual val purchaseModule: Module = module {
     single<PurchaseApi> { NoOpPurchaseApi() }
 }

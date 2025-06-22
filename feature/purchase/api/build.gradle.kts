@@ -1,16 +1,12 @@
 import extension.envProperties
-import extension.setupBinariesFramework
+
 
 plugins {
-    id("dev.koga.deeplinklauncher.multiplatform")
-    alias(libs.plugins.kotlin.serialization)
+    alias(libs.plugins.deeplinkLauncher.multiplatform)
+    alias(libs.plugins.kotlinSerialization)
 }
 
-val envProperties = rootProject.envProperties()
-
 kotlin {
-    setupBinariesFramework("purchase.api")
-
     sourceSets {
         commonMain.dependencies {
             implementation(projects.core.navigation)
@@ -19,8 +15,4 @@ kotlin {
             implementation(libs.koin.core)
         }
     }
-}
-
-android {
-    namespace = "dev.koga.deeplinklauncher.purchase.api"
 }

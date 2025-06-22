@@ -1,12 +1,12 @@
 package dev.koga.deeplinklauncher.deeplink.impl.usecase
 
-import android.net.Uri
+import androidx.core.net.toUri
 import dev.koga.deeplinklauncher.deeplink.api.model.DeepLinkMetadata
 import dev.koga.deeplinklauncher.deeplink.api.usecase.GetDeepLinkMetadata
 
-actual class GetDeepLinkMetadataImpl : GetDeepLinkMetadata {
-    actual override fun invoke(link: String): DeepLinkMetadata {
-        val uri = Uri.parse(link)
+internal class GetDeepLinkMetadataImpl : GetDeepLinkMetadata {
+    override fun invoke(link: String): DeepLinkMetadata {
+        val uri = link.toUri()
 
         return DeepLinkMetadata(
             link = link,

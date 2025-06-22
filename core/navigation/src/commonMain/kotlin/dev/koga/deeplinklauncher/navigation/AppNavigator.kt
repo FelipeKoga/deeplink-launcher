@@ -7,22 +7,22 @@ import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 
 public interface AppNavigator {
-    public val destination: Flow<AppNavigationRoute>
-    public fun navigate(route: AppNavigationRoute)
-}
+    public val destination: Flow<AppRoute>
+    public fun navigate(route: AppRoute)
 
-public fun AppNavigator.back() {
-    navigate(AppNavigationRoute.Back)
+    public fun popBackStack() {
+        navigate(AppRoute.PopBackStack)
+    }
 }
 
 internal class AppNavigatorImpl(
     private val appCoroutineScope: AppCoroutineScope,
 ) : AppNavigator {
-    private val dispatcher = Channel<AppNavigationRoute>(Channel.UNLIMITED)
-    override val destination: Flow<AppNavigationRoute> =
+    private val dispatcher = Channel<AppRoute>(Channel.UNLIMITED)
+    override val destination: Flow<AppRoute> =
         dispatcher.receiveAsFlow()
 
-    override fun navigate(route: AppNavigationRoute) {
+    override fun navigate(route: AppRoute) {
         appCoroutineScope.launch {
             dispatcher.send(route)
         }

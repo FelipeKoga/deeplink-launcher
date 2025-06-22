@@ -1,15 +1,13 @@
 package codeanalysis
 
-import extension.getLibrary
+import extension.libs
 import io.gitlab.arturbosch.detekt.DetektPlugin
 import io.gitlab.arturbosch.detekt.extensions.DetektExtension
-
-val libs: VersionCatalog = extensions.getByType<VersionCatalogsExtension>().named("libs")
 
 apply<DetektPlugin>()
 
 dependencies {
-    "detektPlugins"(libs.getLibrary("composerules"))
+    "detektPlugins"(libs.composerules)
 }
 
 configure<DetektExtension> {

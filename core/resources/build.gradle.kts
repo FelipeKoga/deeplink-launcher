@@ -1,24 +1,7 @@
-import extension.setupBinariesFramework
+
 
 plugins {
-    id("dev.koga.deeplinklauncher.multiplatform")
-    alias(libs.plugins.jetbrainsCompose)
-    alias(libs.plugins.compose.compiler)
-}
-
-kotlin {
-    setupBinariesFramework("resources")
-
-    sourceSets {
-        commonMain.dependencies {
-            implementation(compose.runtime)
-            implementation(compose.components.resources)
-        }
-    }
-}
-
-android {
-    namespace = "dev.koga.resources"
+    alias(libs.plugins.deeplinkLauncher.composeMultiplatform)
 }
 
 compose.resources {

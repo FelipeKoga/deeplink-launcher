@@ -1,5 +1,4 @@
-import extension.getLibrary
-import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
+import extension.libs
 
 plugins {
     kotlin("multiplatform")
@@ -7,13 +6,14 @@ plugins {
     id("dev.koga.deeplinklauncher.code-analysis")
 }
 
-val libs: VersionCatalog = extensions.getByType<VersionCatalogsExtension>().named("libs")
-
 kotlin {
     applyDefaultHierarchyTemplate()
     jvmToolchain(17)
     jvm()
     androidTarget()
+    iosX64()
+    iosArm64()
+    iosSimulatorArm64()
 
     sourceSets {
         val mobileMain by creating {
@@ -22,10 +22,6 @@ kotlin {
 
         androidMain.get().dependsOn(mobileMain)
         iosMain.get().dependsOn(mobileMain)
-
-        iosMain.dependencies {
-            implementation(libs.getLibrary("stately"))
-        }
     }
 
     compilerOptions {
@@ -34,6 +30,11 @@ kotlin {
 }
 
 android {
+    namespace = "dev.koga.deeplinklauncher.android" +
+            project.name
+                .replace(":", ".")
+                .replace("-", ".")
+
     compileSdk = AndroidAppConfiguration.COMPILE_SDK
     defaultConfig {
         minSdk = AndroidAppConfiguration.MIN_SDK

@@ -1,15 +1,15 @@
 import java.util.Properties
 
 plugins {
-    id("com.android.application")
-    id("kotlin-android")
-    id("dev.koga.deeplinklauncher.code-analysis")
-    alias(libs.plugins.google.services)
-    alias(libs.plugins.firebase.crashlytics)
-    alias(libs.plugins.firebase.perf)
-    alias(libs.plugins.compose.compiler)
-    alias(libs.plugins.baselineprofile)
-    alias(libs.plugins.aboutlibraries.plugin)
+    alias(libs.plugins.androidApplication)
+    alias(libs.plugins.kotlinAndroid)
+    alias(libs.plugins.deeplinkLauncher.codeAnalysis)
+    alias(libs.plugins.googleServices)
+    alias(libs.plugins.firebaseCrashlytics)
+    alias(libs.plugins.firebasePerf)
+    alias(libs.plugins.composeCompiler)
+    alias(libs.plugins.baselineProfile)
+    alias(libs.plugins.aboutLibraries)
 }
 
 val keystoreProperties = Properties()

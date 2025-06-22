@@ -4,10 +4,10 @@ import androidx.compose.ui.window.WindowPlacement
 import androidx.compose.ui.window.application
 import androidx.compose.ui.window.rememberWindowState
 import dev.koga.deeplinklauncher.shared.App
-import dev.koga.deeplinklauncher.shared.initKoin
+import dev.koga.deeplinklauncher.shared.AppInitializer
 
 fun main() = application {
-    initKoin()
+    AppInitializer.init()
 
     val windowState = rememberWindowState(
         placement = WindowPlacement.Floating,

@@ -1,6 +1,6 @@
 package dev.koga.deeplinklauncher.deeplink.api.model
 
-data class DeepLinkMetadata(
+public data class DeepLinkMetadata(
     val link: String,
     val scheme: String?,
     val host: String?,

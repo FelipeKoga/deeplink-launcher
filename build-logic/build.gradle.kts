@@ -14,4 +14,8 @@ dependencies {
     implementation(libs.kotlin.gradle.plugin)
     implementation(libs.kotlinx.datetime)
     implementation(libs.detekt)
+    implementation(libs.compose.compiler.plugin)
+    implementation(libs.compose.gradlePlugin)
+
+    implementation(files(libs::class.java.superclass.protectionDomain.codeSource.location))
 }

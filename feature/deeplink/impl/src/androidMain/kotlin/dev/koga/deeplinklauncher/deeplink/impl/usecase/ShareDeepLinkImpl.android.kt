@@ -5,10 +5,10 @@ import android.content.Intent
 import dev.koga.deeplinklauncher.deeplink.api.model.DeepLink
 import dev.koga.deeplinklauncher.deeplink.api.usecase.ShareDeepLink
 
-actual class ShareDeepLinkImpl(
+internal class ShareDeepLinkImpl(
     private val context: Context,
 ) : ShareDeepLink {
-    actual override fun invoke(deepLink: DeepLink) {
+    override fun invoke(deepLink: DeepLink) {
         val sendIntent: Intent = Intent().apply {
             action = Intent.ACTION_SEND
             putExtra(Intent.EXTRA_TEXT, deepLink.link)

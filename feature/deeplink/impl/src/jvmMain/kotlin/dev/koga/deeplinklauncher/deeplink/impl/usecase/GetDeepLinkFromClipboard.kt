@@ -5,7 +5,7 @@ import java.awt.Toolkit
 import java.awt.datatransfer.Clipboard
 import java.awt.datatransfer.DataFlavor
 
-actual class GetDeepLinkFromClipboard(
+internal actual class GetDeepLinkFromClipboard(
     private val validateDeepLink: ValidateDeepLink,
 ) {
     private val clipboard: Clipboard = Toolkit.getDefaultToolkit().systemClipboard

@@ -2,10 +2,9 @@ import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 
 plugins {
     kotlin("multiplatform")
-    id("dev.koga.deeplinklauncher.code-analysis")
-    alias(libs.plugins.jetbrainsCompose)
-    alias(libs.plugins.compose.compiler)
-    alias(libs.plugins.aboutlibraries.plugin)
+    alias(libs.plugins.composeMultiplatform)
+    alias(libs.plugins.composeCompiler)
+    alias(libs.plugins.aboutLibraries)
 }
 
 kotlin {
@@ -15,18 +14,10 @@ kotlin {
     sourceSets {
         jvmMain.dependencies {
             implementation(projects.shared)
-
             implementation(libs.koin.core)
             implementation(libs.koin.compose)
-
             implementation(libs.kotlinx.coroutines.swing)
-
             implementation(compose.desktop.currentOs)
-            implementation(compose.runtime)
-            implementation(compose.foundation)
-            implementation(compose.material3)
-            implementation(compose.ui)
-            implementation(compose.components.resources)
         }
     }
 }
@@ -42,7 +33,7 @@ compose.desktop {
         nativeDistributions {
             includeAllModules = true
 
-            packageVersion = DesktopAppConfiguration.VERSION_NAME
+            packageVersion = "1.11.0"
             packageName = "DeepLink Launcher"
             description = "Manage & Launch deeplinks easily"
             appResourcesRootDir.set(project.layout.projectDirectory.dir("resources"))

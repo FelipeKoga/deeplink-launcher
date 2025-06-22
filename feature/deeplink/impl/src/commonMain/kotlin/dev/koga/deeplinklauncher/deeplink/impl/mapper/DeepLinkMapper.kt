@@ -7,7 +7,7 @@ import dev.koga.deeplinklauncher.deeplink.api.model.DeepLink
 import dev.koga.deeplinklauncher.deeplink.api.model.Folder
 import dev.koga.deeplinklauncher.database.Deeplink as DatabaseDeepLink
 
-fun DatabaseDeepLink.toDomain() = DeepLink(
+internal fun DatabaseDeepLink.toDomain() = DeepLink(
     id = id,
     createdAt = createdAt,
     link = link,
@@ -17,7 +17,7 @@ fun DatabaseDeepLink.toDomain() = DeepLink(
     lastLaunchedAt = lastLaunchedAt,
 )
 
-fun SelectAllDeeplinks.toDomain() = DeepLink(
+internal fun SelectAllDeeplinks.toDomain() = DeepLink(
     id = id,
     createdAt = createdAt,
     link = link,
@@ -34,7 +34,7 @@ fun SelectAllDeeplinks.toDomain() = DeepLink(
     },
 )
 
-fun GetDeepLinkById.toDomain() = DeepLink(
+internal fun GetDeepLinkById.toDomain() = DeepLink(
     id = id,
     link = link,
     name = name,
@@ -51,7 +51,7 @@ fun GetDeepLinkById.toDomain() = DeepLink(
     },
 )
 
-fun GetDeepLinkByLink.toDomain() = DeepLink(
+internal fun GetDeepLinkByLink.toDomain() = DeepLink(
     id = id,
     link = link,
     name = name,

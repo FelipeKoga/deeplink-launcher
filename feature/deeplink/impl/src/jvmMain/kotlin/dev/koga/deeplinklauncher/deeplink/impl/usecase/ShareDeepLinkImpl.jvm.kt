@@ -5,8 +5,8 @@ import dev.koga.deeplinklauncher.deeplink.api.usecase.ShareDeepLink
 import java.awt.Toolkit
 import java.awt.datatransfer.StringSelection
 
-actual class ShareDeepLinkImpl : ShareDeepLink {
-    actual override operator fun invoke(deepLink: DeepLink) {
+internal class ShareDeepLinkImpl : ShareDeepLink {
+    override operator fun invoke(deepLink: DeepLink) {
         val stringSelection = StringSelection(deepLink.link)
         val clipboard = Toolkit.getDefaultToolkit().systemClipboard
         clipboard.setContents(stringSelection, null)
