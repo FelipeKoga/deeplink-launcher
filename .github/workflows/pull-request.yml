@@ -76,8 +76,5 @@ jobs:
         with:
           REVENUECAT_API_KEY: ${{ secrets.REVENUECAT_API_KEY }}
 
-      - name: Run Klint
-        run: ./gradlew ktlint
-
-      - name: Run Detekt
-        run: ./gradlew detekt
+      - name: Run code analysis
+        run: ./gradlew check
