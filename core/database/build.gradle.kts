@@ -1,4 +1,4 @@
-import extension.setupBinariesFramework
+
 
 plugins {
     alias(libs.plugins.deeplinkLauncher.multiplatform)
@@ -7,8 +7,6 @@ plugins {
 }
 
 kotlin {
-    setupBinariesFramework("database")
-
     sourceSets {
         commonMain.dependencies {
             implementation(libs.kotlinx.coroutines.core)
@@ -31,10 +29,6 @@ kotlin {
             implementation(libs.stately)
         }
     }
-}
-
-android {
-    namespace = "dev.koga.database"
 }
 
 sqldelight {

@@ -1,4 +1,4 @@
-import extension.setupBinariesFramework
+
 
 plugins {
     alias(libs.plugins.deeplinkLauncher.multiplatform)
@@ -6,8 +6,6 @@ plugins {
 }
 
 kotlin {
-    setupBinariesFramework("preferences")
-
     sourceSets {
         commonMain.dependencies {
             implementation(libs.androidx.datastore.preferences.core)
@@ -16,8 +14,4 @@ kotlin {
             implementation(libs.kotlinx.coroutines.core)
         }
     }
-}
-
-android {
-    namespace = "dev.koga.deeplinklauncher.preferences"
 }

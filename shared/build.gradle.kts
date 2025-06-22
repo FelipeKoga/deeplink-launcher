@@ -1,4 +1,3 @@
-import extension.setupBinariesFramework
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
 
@@ -18,8 +17,6 @@ kotlin {
         }
     }
 
-    task("testClasses")
-
     sourceSets {
         commonMain.dependencies {
             implementation(projects.feature.home.impl)
@@ -36,18 +33,12 @@ kotlin {
             implementation(projects.core.date)
             implementation(projects.core.coroutines)
             implementation(projects.core.uiEvent)
-            api(projects.core.preferences)
+            implementation(projects.core.preferences)
 
             implementation(libs.koin.core)
             implementation(libs.kotlinx.coroutines.core)
             implementation(libs.koin.compose)
             implementation(libs.compose.navigation)
-
-            implementation(compose.runtime)
-            implementation(compose.foundation)
-            implementation(compose.material3)
-            implementation(compose.ui)
-            implementation(compose.components.resources)
         }
 
         jvmMain.dependencies {
@@ -55,10 +46,6 @@ kotlin {
         }
     }
 }
-
-//android {
-//    namespace = "dev.koga.deeplinklauncher.shared"
-//}
 
 project.extensions.findByType(KotlinMultiplatformExtension::class.java)?.apply {
     targets

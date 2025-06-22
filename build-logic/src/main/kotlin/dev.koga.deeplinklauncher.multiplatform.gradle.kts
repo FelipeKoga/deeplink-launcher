@@ -22,10 +22,6 @@ kotlin {
 
         androidMain.get().dependsOn(mobileMain)
         iosMain.get().dependsOn(mobileMain)
-
-        iosMain.dependencies {
-            implementation(libs.stately)
-        }
     }
 
     compilerOptions {
@@ -34,6 +30,11 @@ kotlin {
 }
 
 android {
+    namespace = "dev.koga.deeplinklauncher.android" +
+            project.name
+                .replace(":", ".")
+                .replace("-", ".")
+
     compileSdk = AndroidAppConfiguration.COMPILE_SDK
     defaultConfig {
         minSdk = AndroidAppConfiguration.MIN_SDK

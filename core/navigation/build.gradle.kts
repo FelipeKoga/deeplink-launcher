@@ -1,5 +1,5 @@
 
-import extension.setupBinariesFramework
+
 
 plugins {
     alias(libs.plugins.deeplinkLauncher.multiplatform)
@@ -8,8 +8,6 @@ plugins {
 
 kotlin {
     explicitApi()
-    setupBinariesFramework("navigation")
-
     sourceSets {
         commonMain.dependencies {
             implementation(libs.koin.core)
@@ -18,8 +16,4 @@ kotlin {
             implementation(libs.kotlinx.serialization.json)
         }
     }
-}
-
-android {
-    namespace = "dev.koga.deeplinklauncher.navigation"
 }

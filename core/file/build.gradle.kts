@@ -1,4 +1,4 @@
-import extension.setupBinariesFramework
+
 
 plugins {
     alias(libs.plugins.deeplinkLauncher.multiplatform)
@@ -6,7 +6,6 @@ plugins {
 }
 
 kotlin {
-    setupBinariesFramework("file")
     sourceSets {
         androidMain.dependencies {
             implementation(libs.androidx.core)
@@ -19,8 +18,4 @@ kotlin {
             implementation(libs.koin.core)
         }
     }
-}
-
-android {
-    namespace = "dev.koga.deeplinklauncher.file"
 }

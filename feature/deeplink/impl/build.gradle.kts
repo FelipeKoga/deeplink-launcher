@@ -1,4 +1,4 @@
-import extension.setupBinariesFramework
+
 
 plugins {
     alias(libs.plugins.deeplinkLauncher.composeMultiplatform)
@@ -6,8 +6,6 @@ plugins {
 
 kotlin {
     explicitApi()
-
-    setupBinariesFramework("deeplink.impl")
 
     sourceSets {
         commonMain.dependencies {
@@ -35,8 +33,4 @@ kotlin {
             implementation(projects.feature.deviceBridge.api)
         }
     }
-}
-
-android {
-    namespace = "dev.koga.deeplinklauncher.deeplink.impl"
 }

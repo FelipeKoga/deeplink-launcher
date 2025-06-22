@@ -1,12 +1,10 @@
-import extension.setupBinariesFramework
+
 
 plugins {
     alias(libs.plugins.deeplinkLauncher.composeMultiplatform)
 }
 
 kotlin {
-    setupBinariesFramework("deeplink.uicomponent")
-
     sourceSets {
         commonMain.dependencies {
             implementation(projects.feature.deeplink.api)
@@ -15,8 +13,4 @@ kotlin {
             implementation(libs.composeIcons.tablerIcons)
         }
     }
-}
-
-android {
-    namespace = "dev.koga.deeplink.uicomponent"
 }

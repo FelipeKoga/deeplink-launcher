@@ -1,6 +1,6 @@
 import com.codingfeline.buildkonfig.compiler.FieldSpec.Type.STRING
 import extension.envProperties
-import extension.setupBinariesFramework
+
 
 plugins {
     alias(libs.plugins.deeplinkLauncher.multiplatform)
@@ -11,8 +11,6 @@ plugins {
 val envProperties = rootProject.envProperties()
 
 kotlin {
-    setupBinariesFramework("purchase.impl")
-
     sourceSets {
         val noOpMain by creating {
             dependsOn(commonMain.get())
@@ -45,8 +43,4 @@ buildkonfig {
             envProperties.getProperty("REVENUECAT_API_KEY")
         )
     }
-}
-
-android {
-    namespace = "dev.koga.deeplinklauncher.purchase.impl"
 }

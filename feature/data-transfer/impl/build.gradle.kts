@@ -1,4 +1,4 @@
-import extension.setupBinariesFramework
+
 
 plugins {
     alias(libs.plugins.deeplinkLauncher.composeMultiplatform)
@@ -6,7 +6,6 @@ plugins {
 }
 
 kotlin {
-    setupBinariesFramework("datatransfer.impl")
 
     sourceSets {
         commonMain.dependencies {
@@ -32,8 +31,4 @@ kotlin {
             implementation(libs.compose.navigation)
         }
     }
-}
-
-android {
-    namespace = "dev.koga.deeplinklauncher.datatransfer.impl"
 }

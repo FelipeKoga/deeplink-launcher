@@ -1,12 +1,10 @@
-import extension.setupBinariesFramework
+
 
 plugins {
     alias(libs.plugins.deeplinkLauncher.composeMultiplatform)
 }
 
 kotlin {
-    setupBinariesFramework("designsystem")
-
     sourceSets {
         commonMain.dependencies {
             api(projects.core.resources)
@@ -14,8 +12,4 @@ kotlin {
             implementation(libs.kotlinx.immutable)
         }
     }
-}
-
-android {
-    namespace = "dev.koga.designsystem"
 }

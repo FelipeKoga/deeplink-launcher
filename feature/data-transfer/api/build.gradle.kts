@@ -1,4 +1,4 @@
-import extension.setupBinariesFramework
+
 
 plugins {
     alias(libs.plugins.deeplinkLauncher.multiplatform)
@@ -6,8 +6,6 @@ plugins {
 }
 
 kotlin {
-    setupBinariesFramework("datatransfer.api")
-
     sourceSets {
         commonMain.dependencies {
             implementation(projects.feature.deeplink.api)
@@ -21,8 +19,4 @@ kotlin {
             implementation(libs.koin.core)
         }
     }
-}
-
-android {
-    namespace = "dev.koga.deeplinklauncher.datatransfer.api"
 }
