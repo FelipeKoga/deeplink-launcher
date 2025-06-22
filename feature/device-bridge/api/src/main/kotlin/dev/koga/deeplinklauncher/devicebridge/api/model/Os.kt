@@ -17,7 +17,7 @@ enum class Os {
                     it.contains("linux") -> LINUX
                     it.contains("windows") -> WINDOWS
                     it.contains("mac") -> MAC
-                    else -> throw IllegalStateException("Unsupported OS: $it")
+                    else -> error("Unsupported OS: $it")
                 }
             }
         }

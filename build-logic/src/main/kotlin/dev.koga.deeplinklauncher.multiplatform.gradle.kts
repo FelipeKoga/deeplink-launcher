@@ -31,9 +31,11 @@ kotlin {
 
 android {
     namespace = "dev.koga.deeplinklauncher.android" +
-            project.name
+            project.displayName
+                .replace("project ", "")
                 .replace(":", ".")
                 .replace("-", ".")
+                .replace("'", "")
 
     compileSdk = AndroidAppConfiguration.COMPILE_SDK
     defaultConfig {

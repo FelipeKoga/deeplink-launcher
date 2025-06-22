@@ -42,7 +42,7 @@ jobs:
       - name: Run Unit tests
         run: ./gradlew test
 
-  run-lint:
+  run-code-analysis:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -76,5 +76,5 @@ jobs:
         with:
           REVENUECAT_API_KEY: ${{ secrets.REVENUECAT_API_KEY }}
 
-      - name: Run Klint
-        run: ./gradlew ktlint
+      - name: Run code analysis
+        run: ./gradlew check

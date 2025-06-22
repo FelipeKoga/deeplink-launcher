@@ -26,6 +26,7 @@ import dev.koga.deeplinklauncher.datatransfer.ui.navigation.DataTransferRoute
 import dev.koga.deeplinklauncher.designsystem.DLLHorizontalDivider
 import dev.koga.deeplinklauncher.designsystem.DLLTopBar
 import dev.koga.deeplinklauncher.designsystem.DLLTopBarDefaults
+import dev.koga.deeplinklauncher.platform.Platform
 import dev.koga.deeplinklauncher.platform.currentPlatform
 import dev.koga.deeplinklauncher.settings.impl.navigation.SettingsRoute
 

@@ -1,3 +1,17 @@
 comments:
   UndocumentedPublicClass:
     active: false
+  UndocumentedPublicProperty:
+    active: false
+  UndocumentedPublicFunction:
+    active: false
+
+complexity:
+  StringLiteralDuplication:
+    active: false
+  LabeledExpression:
+    active: false
+
+naming:
+  FunctionMaxLength:
+    excludes: [ '**/test/**','**/androidTest/**','**/android-test/**' ]
