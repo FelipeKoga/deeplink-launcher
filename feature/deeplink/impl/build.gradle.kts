@@ -14,6 +14,7 @@ kotlin {
     sourceSets {
         commonMain.dependencies {
             implementation(projects.feature.deeplink.api)
+            implementation(projects.feature.deeplink.uiComponent)
             implementation(projects.core.preferences)
             implementation(projects.core.date)
             implementation(projects.core.database)

@@ -15,9 +15,10 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
 import dev.koga.deeplinklauncher.designsystem.theme.DLLTheme
+import dev.koga.deeplinklauncher.home.navigation.HomeRoute
 import dev.koga.deeplinklauncher.navigation.AppGraph
-import dev.koga.deeplinklauncher.navigation.AppNavigationRoute
 import dev.koga.deeplinklauncher.navigation.AppNavigator
+import dev.koga.deeplinklauncher.navigation.AppRoute
 import dev.koga.deeplinklauncher.preferences.model.AppTheme
 import dev.koga.deeplinklauncher.preferences.repository.PreferencesDataSource
 import dev.koga.deeplinklauncher.shared.anim.scaleInEnterTransition
@@ -39,7 +40,7 @@ fun App() {
     LaunchedEffect(Unit) {
         appNavigator.destination.collect { route ->
             when (route) {
-                AppNavigationRoute.Back -> navController.popBackStack()
+                AppRoute.PopBackStack -> navController.popBackStack()
                 else -> navController.navigate(route) {
                     launchSingleTop = true
                 }
@@ -66,7 +67,7 @@ fun App() {
             NavHost(
                 modifier = Modifier.fillMaxSize().imePadding(),
                 navController = navController,
-                startDestination = AppNavigationRoute.Home,
+                startDestination = HomeRoute.Home,
                 enterTransition = { scaleInEnterTransition() },
                 popEnterTransition = { scaleInPopEnterTransition() },
                 exitTransition = { scaleOutExitTransition() },

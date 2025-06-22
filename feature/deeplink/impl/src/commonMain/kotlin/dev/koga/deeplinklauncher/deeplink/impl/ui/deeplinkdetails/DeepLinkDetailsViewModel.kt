@@ -7,7 +7,7 @@ import androidx.navigation.toRoute
 import dev.koga.deeplinklauncher.coroutines.CoroutineDebouncer
 import dev.koga.deeplinklauncher.deeplink.api.model.DeepLink
 import dev.koga.deeplinklauncher.deeplink.api.model.Folder
-import dev.koga.deeplinklauncher.deeplink.api.navigation.DeepLinkRoute
+import dev.koga.deeplinklauncher.deeplink.api.ui.navigation.DeepLinkRoute
 import dev.koga.deeplinklauncher.deeplink.api.repository.DeepLinkRepository
 import dev.koga.deeplinklauncher.deeplink.api.repository.FolderRepository
 import dev.koga.deeplinklauncher.deeplink.api.usecase.DuplicateDeepLink
@@ -19,7 +19,6 @@ import dev.koga.deeplinklauncher.deeplink.impl.ui.deeplinkdetails.state.DeepLink
 import dev.koga.deeplinklauncher.deeplink.impl.ui.deeplinkdetails.state.DuplicateAction
 import dev.koga.deeplinklauncher.deeplink.impl.ui.deeplinkdetails.state.EditAction
 import dev.koga.deeplinklauncher.deeplink.impl.ui.deeplinkdetails.state.LaunchAction
-import dev.koga.deeplinklauncher.navigation.AppNavigationRoute
 import dev.koga.deeplinklauncher.navigation.AppNavigator
 import dev.koga.deeplinklauncher.navigation.popBackStack
 import kotlinx.collections.immutable.toPersistentList
@@ -43,7 +42,7 @@ internal class DeepLinkDetailsViewModel(
     private val appNavigator: AppNavigator,
 ) : ViewModel(), AppNavigator by appNavigator {
 
-    private val route = savedStateHandle.toRoute<AppNavigationRoute.DeepLinkDetails>()
+    private val route = savedStateHandle.toRoute<DeepLinkRoute.DeepLinkDetails>()
     private val deepLink = deepLinkRepository.getDeepLinkByIdStream(route.id)
         .filterNotNull()
         .stateIn(

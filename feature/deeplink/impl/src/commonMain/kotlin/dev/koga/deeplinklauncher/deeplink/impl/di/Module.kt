@@ -9,7 +9,7 @@ import dev.koga.deeplinklauncher.deeplink.impl.repository.DeepLinkRepositoryImpl
 import dev.koga.deeplinklauncher.deeplink.impl.repository.FolderRepositoryImpl
 import dev.koga.deeplinklauncher.deeplink.impl.ui.deeplinkdetails.DeepLinkDetailsViewModel
 import dev.koga.deeplinklauncher.deeplink.impl.ui.addfolder.AddFolderViewModel
-import dev.koga.deeplinklauncher.deeplink.impl.ui.navigation.DeepLinkNavigation
+import dev.koga.deeplinklauncher.deeplink.impl.ui.navigation.DeepLinkNavigationGraph
 import dev.koga.deeplinklauncher.deeplink.impl.usecase.DuplicateDeepLinkImpl
 import dev.koga.deeplinklauncher.deeplink.impl.usecase.GetAutoSuggestionLinksImpl
 import dev.koga.deeplinklauncher.deeplink.impl.usecase.GetDeepLinksAndFolderStreamImpl
@@ -31,7 +31,7 @@ public val deepLinkModule: Module = module {
     viewModelOf(::DeepLinkDetailsViewModel)
     viewModelOf(::FolderDetailsViewModel)
     viewModelOf(::AddFolderViewModel)
-    singleOf(::DeepLinkNavigation) bind NavigationGraph::class
+    singleOf(::DeepLinkNavigationGraph) bind NavigationGraph::class
 
     includes(platformModule)
 }

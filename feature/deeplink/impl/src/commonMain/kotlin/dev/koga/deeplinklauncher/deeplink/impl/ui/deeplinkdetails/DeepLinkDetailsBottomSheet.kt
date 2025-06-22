@@ -19,7 +19,6 @@ import dev.koga.deeplinklauncher.deeplink.impl.ui.deeplinkdetails.state.DeepLink
 import dev.koga.deeplinklauncher.deeplink.impl.ui.deeplinkdetails.state.DeepLinkDetailsUiState
 import dev.koga.deeplinklauncher.deeplink.impl.ui.deeplinkdetails.state.EditAction
 import dev.koga.deeplinklauncher.designsystem.DLLModalBottomSheet
-import dev.koga.deeplinklauncher.navigation.AppNavigationRoute
 import dev.koga.deeplinklauncher.navigation.popBackStack
 
 @OptIn(ExperimentalMaterial3Api::class)

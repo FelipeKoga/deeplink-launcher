@@ -31,10 +31,10 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import compose.icons.TablerIcons
 import compose.icons.tablericons.Trash
-import dev.koga.deeplinklauncher.deeplink.api.navigation.DeepLinkRoute
-import dev.koga.deeplinklauncher.deeplink.impl.ui.component.DeepLinkCard
+import dev.koga.deeplinklauncher.deeplink.api.ui.navigation.DeepLinkRoute
 import dev.koga.deeplinklauncher.deeplink.impl.ui.folderdetails.component.DeleteFolderBottomSheet
 import dev.koga.deeplinklauncher.deeplink.impl.ui.folderdetails.component.EditableText
+import dev.koga.deeplinklauncher.deeplink.uicomponent.DeepLinkCard
 import dev.koga.deeplinklauncher.designsystem.DLLHorizontalDivider
 import dev.koga.deeplinklauncher.designsystem.DLLTopBar
 import dev.koga.deeplinklauncher.designsystem.DLLTopBarDefaults
