@@ -37,9 +37,9 @@ android {
                 .replace("-", ".")
                 .replace("'", "")
 
-    compileSdk = AndroidAppConfiguration.COMPILE_SDK
+    compileSdk = libs.versions.android.compileSdk.get().toInt()
     defaultConfig {
-        minSdk = AndroidAppConfiguration.MIN_SDK
+        minSdk = libs.versions.android.minSdk.get().toInt()
     }
 }
 
