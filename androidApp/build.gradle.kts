@@ -1,3 +1,5 @@
+import extension.getAndroidVersionCode
+import extension.getVersionName
 import java.util.Properties
 
 plugins {
@@ -17,16 +19,18 @@ if (rootDir.resolve("keystore.properties").exists()) {
     keystoreProperties.load(File(rootDir, "keystore.properties").inputStream())
 }
 
+
+
 android {
     namespace = "dev.koga.deeplinklauncher.android"
 
-    defaultConfig.targetSdk = AndroidAppConfiguration.TARGET_SDK
+    defaultConfig.targetSdk = libs.versions.android.targetSdk.get().toInt()
     defaultConfig {
-        compileSdk = AndroidAppConfiguration.COMPILE_SDK
-        minSdk = AndroidAppConfiguration.MIN_SDK
+        compileSdk = libs.versions.android.compileSdk.get().toInt()
+        minSdk = libs.versions.android.minSdk.get().toInt()
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-        versionName = AndroidAppConfiguration.VERSION_NAME
-        versionCode = AndroidAppConfiguration.versionCode
+        versionName = getVersionName()
+        versionCode = getAndroidVersionCode()
     }
 
     buildFeatures {
