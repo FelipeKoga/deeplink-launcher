@@ -44,7 +44,7 @@ splashcreen = "1.0.1"
 sqlDelight = "2.1.0"
 stately = "2.1.0"
 uiautomator = "2.3.0"
-jetbrains-kotlinxDatetime = "0.6.2"
+jetbrains-kotlinxDatetime = "0.7.0-0.6.x-compat"
 
 [libraries]
 aboutlibraries_compose = { module = "com.mikepenz:aboutlibraries-compose-m3", version.ref = "aboutlibraries" }
