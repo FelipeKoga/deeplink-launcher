@@ -24,7 +24,6 @@ import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Text
 import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
-import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -37,6 +36,7 @@ import dev.koga.deeplinklauncher.deeplink.api.model.DeepLink
 import dev.koga.deeplinklauncher.deeplink.api.model.Folder
 import dev.koga.deeplinklauncher.deeplink.uicomponent.DeepLinkCard
 import dev.koga.deeplinklauncher.deeplink.uicomponent.FolderCard
+import dev.koga.deeplinklauncher.ui.calculateWindowSizeSharedClass
 import kotlinx.collections.immutable.ImmutableList
 
 @Composable
@@ -86,7 +86,7 @@ fun HomeVerticalGridList(
     contentPadding: PaddingValues,
     content: LazyGridScope.() -> Unit,
 ) {
-    val windowSizeClass = calculateWindowSizeClass()
+    val windowSizeClass = calculateWindowSizeSharedClass()
 
     val numberOfColumns = when (windowSizeClass.widthSizeClass) {
         WindowWidthSizeClass.Medium -> 2
@@ -122,7 +122,7 @@ fun FoldersVerticalStaggeredGrid(
         bottom = contentPadding.calculateBottomPadding() + 12.dp,
     )
 
-    val windowSizeClass = calculateWindowSizeClass()
+    val windowSizeClass = calculateWindowSizeSharedClass()
     val numberOfColumns = when (windowSizeClass.widthSizeClass) {
         WindowWidthSizeClass.Expanded -> 3
         else -> 2

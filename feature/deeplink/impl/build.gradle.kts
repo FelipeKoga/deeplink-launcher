@@ -18,6 +18,7 @@ kotlin {
             implementation(projects.core.navigation)
             implementation(projects.core.platform)
             implementation(projects.core.coroutines)
+            implementation(projects.core.ui)
 
             implementation(libs.koin.core)
             implementation(libs.koin.viewmodel)

@@ -1,5 +1,8 @@
 @file:Suppress("UnstableApiUsage")
 
+include(":core:ui")
+
+
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 pluginManagement {
     includeBuild("build-logic")
@@ -46,6 +49,7 @@ include(
     ":core:preferences",
     ":core:platform",
     ":core:coroutines",
+    ":core:ui",
     ":core:ui-event",
     ":shared",
     ":baselineprofile"
