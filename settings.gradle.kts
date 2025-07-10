@@ -46,6 +46,7 @@ include(
     ":core:preferences",
     ":core:platform",
     ":core:coroutines",
+    ":core:ui",
     ":core:ui-event",
     ":shared",
     ":baselineprofile"

@@ -34,7 +34,7 @@ kotlinx-immutable = "0.4.0"
 kotlinxCoroutinesCore = "1.10.2"
 kotlinxSerializationJson = "1.8.1"
 ktlint = "0.50.0"
-material3WindowSizeClass = "0.5.0"
+material3WindowSizeClass = "1.8.2"
 mpfilepicker = "3.1.0"
 nativeDriver = "2.1.0"
 org-jetbrains-kotlin-jvm = "2.1.21"
@@ -87,7 +87,7 @@ kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.
 kotlinx-immutable = { module = "org.jetbrains.kotlinx:kotlinx-collections-immutable", version.ref = "kotlinx-immutable" }
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinxSerializationJson" }
 ktlint = { module = "com.pinterest:ktlint", version.ref = "ktlint" }
-material3-windowSizeClass = { module = "dev.chrisbanes.material3:material3-window-size-class-multiplatform", version.ref = "material3WindowSizeClass" }
+material3-windowSizeClass = { module = "org.jetbrains.compose.material3:material3-window-size-class", version.ref = "material3WindowSizeClass" }
 mpfilepicker = { module = "com.darkrockstudios:mpfilepicker", version.ref = "mpfilepicker" }
 native-driver = { module = "app.cash.sqldelight:native-driver", version.ref = "nativeDriver" }
 revenuecat-core = { module = "com.revenuecat.purchases:purchases-kmp-core", version.ref = "purchases-kmp" }
