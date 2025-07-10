@@ -19,7 +19,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
-import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -44,6 +43,7 @@ import dev.koga.deeplinklauncher.designsystem.utils.fullLineItem
 import dev.koga.deeplinklauncher.designsystem.utils.spacer
 import dev.koga.deeplinklauncher.navigation.AppNavigator
 import dev.koga.deeplinklauncher.navigation.AppRoute
+import dev.koga.deeplinklauncher.ui.calculateWindowSizeSharedClass
 
 @Composable
 internal fun FolderDetailsScreen(
@@ -120,7 +120,7 @@ internal fun FolderDetailsScreenContent(
 ) {
     val dimensions = LocalDimensions.current
 
-    val windowSizeClass = calculateWindowSizeClass()
+    val windowSizeClass = calculateWindowSizeSharedClass()
 
     val numberOfColumns = when (windowSizeClass.widthSizeClass) {
         WindowWidthSizeClass.Medium -> 2
