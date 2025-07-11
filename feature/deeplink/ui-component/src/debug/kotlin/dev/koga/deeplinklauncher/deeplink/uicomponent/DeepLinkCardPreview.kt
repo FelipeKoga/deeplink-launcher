@@ -15,13 +15,7 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 fun DeepLinkCardPreview() {
     DLLPreviewTheme {
         DeepLinkCard(
-            deepLink = DeepLink(
-                id = "1",
-                link = "https://www.google.com",
-                name = "Google",
-                description = "Search engine",
-                isFavorite = false,
-            ),
+            deepLink = DeepLink.previewNotFavorite,
             onClick = {},
             onLaunch = {},
             onFolderClicked = {},
@@ -37,19 +31,7 @@ fun DeepLinkCardPreview() {
 fun DeepLinkCardShowFolderPreview() {
     DLLPreviewTheme {
         DeepLinkCard(
-            deepLink = DeepLink(
-                id = "1",
-                link = "https://www.google.com",
-                name = "Google",
-                description = "Search engine",
-                isFavorite = false,
-                folder = Folder(
-                    id = "1",
-                    name = "Folder 1",
-                    description = "Folder 1 description",
-                    deepLinkCount = 1
-                )
-            ),
+            deepLink = DeepLink.previewFavorite,
             onClick = {},
             onLaunch = {},
             onFolderClicked = {},

@@ -36,12 +36,8 @@ internal fun DeepLinkDetailsUIFavoritePreview() {
             uiState = DeepLinkDetailsUiState.Edit(
                 deepLink = previewFavorite,
                 folders = persistentListOf(
-                    Folder(
-                        id = "1",
-                        name = "Folder 1",
-                        description = "Folder 1 description",
-                        deepLinkCount = 1
-                    )
+                    Folder.preview,
+                    Folder.previewOneDeepLinkCount
                 ),
             ),
             onAction = {},
@@ -60,13 +56,26 @@ internal fun DeepLinkDetailsUINotFavoritePreview() {
             uiState = DeepLinkDetailsUiState.Edit(
                 deepLink = previewNotFavorite,
                 folders = persistentListOf(
-                    Folder(
-                        id = "1",
-                        name = "Folder 1",
-                        description = "Folder 1 description",
-                        deepLinkCount = 1
-                    )
+                    Folder.preview,
+                    Folder.previewOneDeepLinkCount
                 ),
+            ),
+            onAction = {},
+            onShowDeleteConfirmation = {}
+        )
+    }
+}
+
+@Preview
+@PreviewScreenSizes
+@PreviewLightDark
+@Composable
+internal fun DeepLinkDetailsUIEmptyPreview() {
+    DLLPreviewTheme {
+        DeepLinkDetailsUI(
+            uiState = DeepLinkDetailsUiState.Edit(
+                deepLink = previewFavorite,
+                folders = persistentListOf(),
             ),
             onAction = {},
             onShowDeleteConfirmation = {}

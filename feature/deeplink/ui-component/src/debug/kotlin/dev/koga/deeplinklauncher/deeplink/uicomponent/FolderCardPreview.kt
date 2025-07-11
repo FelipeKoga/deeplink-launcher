@@ -12,12 +12,7 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 @Composable
 fun FolderCardNoDeepLinkPreview() {
     FolderCard(
-        folder = Folder(
-            id = "1",
-            name = "Folder Name",
-            description = "Folder Description",
-            deepLinkCount = 0
-        ),
+        folder = Folder.preview,
         onClick = {}
     )
 }
@@ -28,12 +23,7 @@ fun FolderCardNoDeepLinkPreview() {
 @Composable
 fun FolderCardWithDeepLinkPreview() {
     FolderCard(
-        folder = Folder(
-            id = "1",
-            name = "Folder Name",
-            description = "Folder Description",
-            deepLinkCount = 1
-        ),
+        folder = Folder.preview,
         onClick = {}
     )
 }

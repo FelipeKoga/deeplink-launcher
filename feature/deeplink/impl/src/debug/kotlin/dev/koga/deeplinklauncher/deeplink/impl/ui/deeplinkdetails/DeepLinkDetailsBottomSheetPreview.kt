@@ -20,12 +20,8 @@ internal fun DeepLinkDetailsUIPreview() {
             uiState = DeepLinkDetailsUiState.Edit(
                 deepLink = previewFavorite,
                 folders = persistentListOf(
-                    Folder(
-                        id = "1",
-                        name = "Folder 1",
-                        description = "Folder 1 description",
-                        deepLinkCount = 1
-                    )
+                    Folder.preview,
+                    Folder.previewOneDeepLinkCount
                 ),
             ),
             onAction = {},
