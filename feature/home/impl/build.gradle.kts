@@ -31,10 +31,16 @@ kotlin {
 
             implementation(libs.haze)
             implementation(libs.haze.materials)
+
+            implementation(compose.components.uiToolingPreview)
         }
 
         jvmMain.dependencies {
             implementation(projects.library.deviceBridge.api)
         }
     }
+}
+
+dependencies {
+    debugImplementation(libs.androidx.ui.tooling)
 }
