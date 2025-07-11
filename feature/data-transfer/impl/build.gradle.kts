@@ -29,6 +29,12 @@ kotlin {
 
             implementation(libs.mpfilepicker)
             implementation(libs.compose.navigation)
+
+            implementation(compose.components.uiToolingPreview)
         }
     }
+}
+
+dependencies {
+    debugImplementation(libs.androidx.ui.tooling)
 }

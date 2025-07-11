@@ -25,7 +25,7 @@ import org.jetbrains.compose.resources.pluralStringResource
 
 @Composable
 fun FolderCard(
-    modifier: Modifier,
+    modifier: Modifier = Modifier,
     folder: Folder,
     onClick: (Folder) -> Unit,
 ) {

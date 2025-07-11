@@ -27,10 +27,15 @@ kotlin {
 
             implementation(libs.compose.navigation)
             implementation(libs.material3.windowSizeClass)
+            implementation(compose.components.uiToolingPreview)
         }
 
         jvmMain.dependencies {
             implementation(projects.library.deviceBridge.api)
         }
     }
+}
+
+dependencies {
+    debugImplementation(libs.androidx.ui.tooling)
 }

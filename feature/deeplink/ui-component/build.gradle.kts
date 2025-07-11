@@ -11,6 +11,13 @@ kotlin {
             implementation(projects.core.resources)
             implementation(projects.core.designsystem)
             implementation(libs.composeIcons.tablerIcons)
+
+            implementation(compose.components.uiToolingPreview)
         }
     }
+}
+
+dependencies {
+    debugImplementation(libs.androidx.ui.tooling)
+    debugImplementation(libs.kotlinx.datetime)
 }

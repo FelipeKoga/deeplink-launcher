@@ -33,7 +33,7 @@ fun DeleteDataBottomSheet(
 }
 
 @Composable
-private fun DeleteDataBottomSheetContent(
+internal fun DeleteDataBottomSheetContent(
     onDelete: (DeletionType) -> Unit,
 ) {
     Column(

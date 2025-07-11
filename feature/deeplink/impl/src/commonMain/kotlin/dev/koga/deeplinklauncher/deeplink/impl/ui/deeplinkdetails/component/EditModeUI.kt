@@ -44,7 +44,7 @@ import dev.koga.deeplinklauncher.designsystem.button.DLLIconButton
 
 @Composable
 internal fun EditModeUI(
-    modifier: Modifier,
+    modifier: Modifier = Modifier,
     uiState: DeepLinkDetailsUiState.Edit,
     onAction: (EditAction) -> Unit,
     onShowDeleteConfirmation: () -> Unit,
@@ -173,7 +173,7 @@ internal fun EditModeUI(
 }
 
 @Composable
-private fun DeepLinkDetailsTextField(
+internal fun DeepLinkDetailsTextField(
     text: String,
     onTextChange: (String) -> Unit,
     label: String,
@@ -192,7 +192,7 @@ private fun DeepLinkDetailsTextField(
 }
 
 @Composable
-private fun EditTopBar(
+internal fun EditTopBar(
     modifier: Modifier = Modifier,
     onBack: () -> Unit,
     onDelete: () -> Unit,

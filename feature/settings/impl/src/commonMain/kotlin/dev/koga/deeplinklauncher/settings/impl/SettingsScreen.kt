@@ -269,7 +269,7 @@ internal fun SettingsUI(
 }
 
 @Composable
-private fun SettingsListItem(
+internal fun SettingsListItem(
     title: String,
     description: String,
     trailingContent: @Composable () -> Unit,

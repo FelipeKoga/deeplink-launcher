@@ -51,6 +51,7 @@ fun ImportScreen(
     viewModel: ImportViewModel,
 ) {
     var showFilePicker by remember { mutableStateOf(false) }
+    var selectedType by remember { mutableStateOf(FileType.JSON) }
 
     FilePicker(
         show = showFilePicker,
@@ -61,15 +62,19 @@ fun ImportScreen(
     }
 
     ImportUI(
+        selectedType = selectedType,
         onBack = { viewModel.popBackStack() },
         onBrowse = { showFilePicker = true },
+        onOptionSelected = { selectedType = it },
     )
 }
 
 @Composable
-private fun ImportUI(
+internal fun ImportUI(
+    selectedType: FileType,
     onBrowse: () -> Unit,
     onBack: () -> Unit,
+    onOptionSelected: (FileType) -> Unit,
 ) {
     Scaffold(
         topBar = {
@@ -85,7 +90,11 @@ private fun ImportUI(
         containerColor = MaterialTheme.colorScheme.background,
     ) { contentPadding ->
         Column(modifier = Modifier.padding(contentPadding).fillMaxSize()) {
-            ImportContent(modifier = Modifier.weight(1f))
+            ImportContent(
+                modifier = Modifier.weight(1f),
+                selectedType = selectedType,
+                onOptionSelected = onOptionSelected,
+            )
 
             ImportFooter(
                 onBrowse = onBrowse,
@@ -95,9 +104,11 @@ private fun ImportUI(
 }
 
 @Composable
-private fun ImportContent(modifier: Modifier = Modifier) {
-    var selectedType by remember { mutableStateOf(FileType.JSON) }
-
+internal fun ImportContent(
+    modifier: Modifier = Modifier,
+    selectedType: FileType,
+    onOptionSelected: (FileType) -> Unit,
+) {
     Column(
         modifier = modifier
             .padding(horizontal = 24.dp)
@@ -147,7 +158,7 @@ private fun ImportContent(modifier: Modifier = Modifier) {
                 .align(Alignment.CenterHorizontally),
             options = FileType.entries.map { it.label }.toPersistentList(),
             selectedOption = selectedType.label,
-            onOptionSelected = { selectedType = FileType.getByLabel(it) },
+            onOptionSelected = { onOptionSelected(FileType.getByLabel(it)) },
         )
 
         Spacer(modifier = Modifier.height(12.dp))
@@ -157,10 +168,10 @@ private fun ImportContent(modifier: Modifier = Modifier) {
             transitionSpec = {
                 if (targetState > initialState) {
                     slideInHorizontally { width -> width } + fadeIn() togetherWith
-                        slideOutHorizontally { width -> -width } + fadeOut()
+                            slideOutHorizontally { width -> -width } + fadeOut()
                 } else {
                     slideInHorizontally { width -> -width } + fadeIn() togetherWith
-                        slideOutHorizontally { width -> width } + fadeOut()
+                            slideOutHorizontally { width -> width } + fadeOut()
                 }.using(
                     SizeTransform(clip = false),
                 )
@@ -200,7 +211,7 @@ fun JSONTutorial() {
     ) {
         Text(
             text = "The most basic JSON format is an object that only " +
-                "contains a link property.",
+                    "contains a link property.",
             style = MaterialTheme.typography.titleSmall.copy(
                 fontWeight = FontWeight.Normal,
             ),
@@ -258,7 +269,7 @@ fun PlainTextTutorial() {
     Column {
         Text(
             text = "The plain text format is a simple list of deeplinks, " +
-                "one per line.",
+                    "one per line.",
             style = MaterialTheme.typography.titleSmall.copy(
                 fontWeight = FontWeight.Normal,
             ),

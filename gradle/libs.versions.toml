@@ -45,11 +45,13 @@ sqlDelight = "2.1.0"
 stately = "2.1.0"
 uiautomator = "2.3.0"
 jetbrains-kotlinxDatetime = "0.6.2"
+uitoolingandroid = "1.8.3"
 
 [libraries]
 aboutlibraries_compose = { module = "com.mikepenz:aboutlibraries-compose-m3", version.ref = "aboutlibraries" }
 android-gradle-plugin = { module = "com.android.tools.build:gradle", version.ref = "androidGradlePlugin" }
 androidx-activity = { module = "androidx.activity:activity", version = "androidx-activity" }
+androidx-ui-tooling = { module = "androidx.compose.ui:ui-tooling", version.ref = "uitoolingandroid" }
 androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "androidx-activity" }
 androidx-benchmark-macro-junit4 = { group = "androidx.benchmark", name = "benchmark-macro-junit4", version.ref = "baselineprofile" }
 androidx-core = { module = "androidx.core:core-ktx", version.ref = "androidx-core" }

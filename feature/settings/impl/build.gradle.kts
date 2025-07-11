@@ -28,6 +28,12 @@ kotlin {
             implementation(libs.aboutlibraries.compose)
 
             implementation(libs.compose.navigation)
+
+            implementation(compose.components.uiToolingPreview)
         }
     }
+}
+
+dependencies {
+    debugImplementation(libs.androidx.ui.tooling)
 }
