@@ -43,7 +43,7 @@ import kotlinx.coroutines.delay
 
 @Composable
 internal fun LaunchModeUI(
-    modifier: Modifier,
+    modifier: Modifier = Modifier,
     uiState: DeepLinkDetailsUiState,
     onAction: (LaunchAction) -> Unit,
 ) {
