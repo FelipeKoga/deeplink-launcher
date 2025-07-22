@@ -69,6 +69,8 @@ internal fun HomeBottomBarUI(
         derivedStateOf { isFocused && state.suggestions.isNotEmpty() }
     }
 
+    var visible by remember { mutableStateOf(false) }
+
     Column(
         modifier = modifier
             .fillMaxWidth()
@@ -181,6 +183,8 @@ internal fun HomeBottomBarUI(
                                 onSuggestionClicked(suggestion)
                             },
                         suggestion = suggestion,
+                        visible = visible,
+                        onVisibleChanged = { visible = it },
                     )
                 }
             }
@@ -189,16 +193,17 @@ internal fun HomeBottomBarUI(
 }
 
 @Composable
-private fun SuggestionListItem(
+internal fun SuggestionListItem(
     modifier: Modifier = Modifier,
+    visible: Boolean,
     suggestion: Suggestion,
     animationDelay: Long = 0,
+    onVisibleChanged: (Boolean) -> Unit = {},
 ) {
-    var visible by remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
         delay(animationDelay)
-        visible = true
+        onVisibleChanged(true)
     }
 
     AnimatedVisibility(

@@ -44,26 +44,30 @@ import kotlinx.collections.immutable.toPersistentList
 fun ExportScreen(
     viewModel: ExportViewModel,
 ) {
+    var selectedExportType by remember { mutableStateOf(FileType.JSON) }
+
     LaunchedEffect(Unit) {
         viewModel.requestPermission()
     }
 
     ExportUI(
+        selectedExportType = selectedExportType,
         preview = viewModel.preview,
         onExport = viewModel::export,
         onBack = { viewModel.popBackStack() },
+        onChangeExportType = { selectedExportType = it },
     )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ExportUI(
+    selectedExportType: FileType,
     preview: ExportData,
     onExport: (FileType) -> Unit,
     onBack: () -> Unit,
+    onChangeExportType: (FileType) -> Unit,
 ) {
-    var selectedExportType by remember { mutableStateOf(FileType.JSON) }
-
     Scaffold(
         topBar = {
             DLLTopBar(
@@ -85,9 +89,7 @@ fun ExportUI(
                 modifier = Modifier.weight(1f),
                 preview = preview,
                 selectedExportType = selectedExportType,
-                onChangeExportType = {
-                    selectedExportType = it
-                },
+                onChangeExportType = onChangeExportType,
             )
 
             ExportFooter(

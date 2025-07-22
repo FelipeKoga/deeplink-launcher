@@ -127,7 +127,7 @@ internal fun DuplicateModeUI(
 }
 
 @Composable
-private fun TopBar(
+internal fun TopBar(
     modifier: Modifier = Modifier,
     onBack: () -> Unit,
 ) {

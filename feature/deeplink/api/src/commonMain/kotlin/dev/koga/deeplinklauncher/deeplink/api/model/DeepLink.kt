@@ -23,5 +23,21 @@ public data class DeepLink(
             description = "",
             isFavorite = false,
         )
+
+        public val previewFavorite: DeepLink = DeepLink(
+            id = "1",
+            link = "https://example.com",
+            name = "Example",
+            description = "Example description",
+            isFavorite = true,
+        )
+
+        public val previewNotFavorite: DeepLink = DeepLink(
+            id = "2",
+            link = "https://example.com",
+            name = "Example",
+            description = "Example description",
+            isFavorite = false,
+        )
     }
 }

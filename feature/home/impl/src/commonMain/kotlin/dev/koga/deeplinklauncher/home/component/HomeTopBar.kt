@@ -133,7 +133,7 @@ internal fun HomeTopBar(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun HomeSearchBar(
+internal fun HomeSearchBar(
     modifier: Modifier = Modifier,
     value: String,
     onSearch: (String) -> Unit,

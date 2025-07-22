@@ -30,7 +30,7 @@ import dev.koga.deeplinklauncher.designsystem.theme.LocalDimensions
 
 @Composable
 internal fun EditableText(
-    modifier: Modifier,
+    modifier: Modifier = Modifier,
     value: String,
     onSave: (String) -> Unit,
     inputLabel: String,
