@@ -21,11 +21,11 @@ internal fun DeepLinkDetailsUIPreview() {
                 deepLink = previewFavorite,
                 folders = persistentListOf(
                     Folder.preview,
-                    Folder.previewOneDeepLinkCount
+                    Folder.previewOneDeepLinkCount,
                 ),
             ),
             onAction = {},
-            onShowDeleteConfirmation = {}
+            onShowDeleteConfirmation = {},
         )
     }
 }

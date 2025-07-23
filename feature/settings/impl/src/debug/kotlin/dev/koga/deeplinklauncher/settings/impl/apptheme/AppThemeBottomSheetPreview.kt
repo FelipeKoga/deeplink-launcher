@@ -15,7 +15,7 @@ internal fun AppThemeBottomSheetPreview() {
     DLLPreviewTheme {
         AppThemeBottomSheet(
             viewModel = koinViewModel(),
-            onDismissRequest = {}
+            onDismissRequest = {},
         )
     }
 }
@@ -29,7 +29,7 @@ internal fun AppThemeListItemSelectedPreview() {
         AppThemeListItem(
             label = "Label",
             selected = true,
-            onClick = {}
+            onClick = {},
         )
     }
 }
@@ -43,7 +43,7 @@ internal fun AppThemeListItemNotSelectedPreview() {
         AppThemeListItem(
             label = "Label",
             selected = false,
-            onClick = {}
+            onClick = {},
         )
     }
 }

@@ -24,12 +24,12 @@ internal fun DeepLinksLazyColumnPreview() {
             deepLinks = listOf(
                 previewFavorite,
                 previewNotFavorite,
-                previewNotFavorite
+                previewNotFavorite,
             ),
             contentPadding = PaddingValues(0.dp),
             onClick = {},
             onLaunch = {},
-            onFolderClicked = {}
+            onFolderClicked = {},
         )
     }
 }
@@ -46,7 +46,7 @@ internal fun DeepLinksLazyColumnEmptyPreview() {
             contentPadding = PaddingValues(0.dp),
             onClick = {},
             onLaunch = {},
-            onFolderClicked = {}
+            onFolderClicked = {},
         )
     }
 }
@@ -61,11 +61,11 @@ internal fun FoldersVerticalStaggeredGridPreview() {
             folders = persistentListOf(
                 Folder.preview,
                 Folder.preview,
-                Folder.preview
+                Folder.preview,
             ),
             contentPadding = PaddingValues(0.dp),
             onAdd = {},
-            onClick = {}
+            onClick = {},
         )
     }
 }
@@ -80,7 +80,7 @@ internal fun FoldersVerticalStaggeredGridEmptyPreview() {
             folders = persistentListOf(),
             contentPadding = PaddingValues(0.dp),
             onAdd = {},
-            onClick = {}
+            onClick = {},
         )
     }
 }

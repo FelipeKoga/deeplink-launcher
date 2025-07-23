@@ -14,7 +14,7 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 fun JSONBoxViewerPreview() {
     DLLPreviewTheme {
         JSONBoxViewer(
-            text = jsonStructurePreview
+            text = jsonStructurePreview,
         )
     }
 }

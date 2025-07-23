@@ -31,7 +31,7 @@ internal fun HomeTopBarPreview() {
             pagerState = rememberPagerState(
                 initialPage = HomeTabPage.HISTORY.ordinal,
                 pageCount = { HomeTabPage.entries.size },
-            )
+            ),
         )
     }
 }
@@ -45,7 +45,7 @@ internal fun HomeSearchBarPreview() {
         HomeSearchBar(
             value = "Search",
             onSearch = {},
-            onClose = {}
+            onClose = {},
         )
     }
 }

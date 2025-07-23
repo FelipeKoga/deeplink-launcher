@@ -16,11 +16,11 @@ internal fun AddFolderBottomSheetContentPreview() {
             uiState = AddFolderUiState(
                 name = "Folder Name",
                 description = "Folder Description",
-                isSubmitEnabled = false
+                isSubmitEnabled = false,
             ),
             onNameChanged = {},
             onDescriptionChanged = {},
-            onSubmit = {}
+            onSubmit = {},
         )
     }
 }

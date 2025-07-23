@@ -15,7 +15,7 @@ internal fun SuggestionsOptionBottomSheetPreview() {
     DLLPreviewTheme {
         SuggestionsOptionBottomSheet(
             viewModel = koinViewModel(),
-            onDismissRequest = {}
+            onDismissRequest = {},
         )
     }
 }

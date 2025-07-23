@@ -13,7 +13,7 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 fun FolderCardNoDeepLinkPreview() {
     FolderCard(
         folder = Folder.preview,
-        onClick = {}
+        onClick = {},
     )
 }
 
@@ -24,6 +24,6 @@ fun FolderCardNoDeepLinkPreview() {
 fun FolderCardWithDeepLinkPreview() {
     FolderCard(
         folder = Folder.preview,
-        onClick = {}
+        onClick = {},
     )
 }

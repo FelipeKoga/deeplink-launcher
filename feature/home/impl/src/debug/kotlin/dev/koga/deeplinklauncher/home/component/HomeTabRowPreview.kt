@@ -18,7 +18,7 @@ internal fun HomeTabRowPreview() {
             pagerState = rememberPagerState(
                 initialPage = HomeTabPage.HISTORY.ordinal,
                 pageCount = { HomeTabPage.entries.size },
-            )
+            ),
         )
     }
 }

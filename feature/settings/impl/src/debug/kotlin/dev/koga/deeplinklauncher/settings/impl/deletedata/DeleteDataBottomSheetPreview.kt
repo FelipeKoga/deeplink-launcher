@@ -15,7 +15,7 @@ internal fun DeleteDataBottomSheetPreview() {
     DLLPreviewTheme {
         DeleteDataBottomSheet(
             viewModel = koinViewModel(),
-            onDismissRequest = {}
+            onDismissRequest = {},
         )
     }
 }
@@ -27,7 +27,7 @@ internal fun DeleteDataBottomSheetPreview() {
 internal fun DeleteDataBottomSheetContentPreview() {
     DLLPreviewTheme {
         DeleteDataBottomSheetContent(
-            onDelete = {}
+            onDelete = {},
         )
     }
 }

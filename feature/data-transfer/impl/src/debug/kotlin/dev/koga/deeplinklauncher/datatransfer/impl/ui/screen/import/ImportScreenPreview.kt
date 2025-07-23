@@ -17,7 +17,7 @@ fun ImportUIJsonFileTypePreview() {
             selectedType = FileType.JSON,
             onBrowse = {},
             onBack = {},
-            onOptionSelected = {}
+            onOptionSelected = {},
         )
     }
 }
@@ -32,7 +32,7 @@ fun ImportUITxtFileTypePreview() {
             selectedType = FileType.TXT,
             onBrowse = {},
             onBack = {},
-            onOptionSelected = {}
+            onOptionSelected = {},
         )
     }
 }
@@ -45,7 +45,7 @@ fun ImportContentJsonFileTypePreview() {
     DLLPreviewTheme {
         ImportContent(
             selectedType = FileType.JSON,
-            onOptionSelected = {}
+            onOptionSelected = {},
         )
     }
 }
@@ -58,7 +58,7 @@ fun ImportContentTxtFileTypePreview() {
     DLLPreviewTheme {
         ImportContent(
             selectedType = FileType.TXT,
-            onOptionSelected = {}
+            onOptionSelected = {},
         )
     }
 }
@@ -70,7 +70,7 @@ fun ImportContentTxtFileTypePreview() {
 fun ImportFooterPreview() {
     DLLPreviewTheme {
         ImportFooter(
-            onBrowse = {}
+            onBrowse = {},
         )
     }
 }

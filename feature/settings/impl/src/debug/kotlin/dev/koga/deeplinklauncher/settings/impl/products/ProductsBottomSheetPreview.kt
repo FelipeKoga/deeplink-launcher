@@ -17,7 +17,7 @@ internal fun ProductsBottomSheetPreview() {
     DLLPreviewTheme {
         ProductsBottomSheet(
             viewModel = koinViewModel(),
-            onDismissRequest = {}
+            onDismissRequest = {},
         )
     }
 }
@@ -31,9 +31,9 @@ internal fun ProductsUIPreview() {
         ProductsUI(
             products = persistentListOf(
                 Product.preview,
-                Product.preview
+                Product.preview,
             ),
-            onClick = {}
+            onClick = {},
         )
     }
 }
@@ -46,7 +46,7 @@ internal fun ProductsUIEmptyPreview() {
     DLLPreviewTheme {
         ProductsUI(
             products = persistentListOf(),
-            onClick = {}
+            onClick = {},
         )
     }
 }
@@ -58,7 +58,7 @@ internal fun ProductsUIEmptyPreview() {
 internal fun ProductCardPreview() {
     DLLPreviewTheme {
         ProductCard(
-            product = Product.preview
+            product = Product.preview,
         )
     }
 }

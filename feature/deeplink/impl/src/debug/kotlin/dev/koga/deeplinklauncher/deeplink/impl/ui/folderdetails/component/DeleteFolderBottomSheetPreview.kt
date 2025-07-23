@@ -22,7 +22,7 @@ internal fun DeleteFolderBottomSheetPreview(
 ) {
     DeleteFolderBottomSheet(
         onDismissRequest = {},
-        onDelete = {}
+        onDelete = {},
     )
 }
 
@@ -37,11 +37,11 @@ internal fun DeepLinkDetailsUIFavoritePreview() {
                 deepLink = previewFavorite,
                 folders = persistentListOf(
                     Folder.preview,
-                    Folder.previewOneDeepLinkCount
+                    Folder.previewOneDeepLinkCount,
                 ),
             ),
             onAction = {},
-            onShowDeleteConfirmation = {}
+            onShowDeleteConfirmation = {},
         )
     }
 }
@@ -57,11 +57,11 @@ internal fun DeepLinkDetailsUINotFavoritePreview() {
                 deepLink = previewNotFavorite,
                 folders = persistentListOf(
                     Folder.preview,
-                    Folder.previewOneDeepLinkCount
+                    Folder.previewOneDeepLinkCount,
                 ),
             ),
             onAction = {},
-            onShowDeleteConfirmation = {}
+            onShowDeleteConfirmation = {},
         )
     }
 }
@@ -78,7 +78,7 @@ internal fun DeepLinkDetailsUIEmptyPreview() {
                 folders = persistentListOf(),
             ),
             onAction = {},
-            onShowDeleteConfirmation = {}
+            onShowDeleteConfirmation = {},
         )
     }
 }

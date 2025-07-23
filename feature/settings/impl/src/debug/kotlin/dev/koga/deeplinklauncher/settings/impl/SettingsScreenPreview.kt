@@ -15,7 +15,7 @@ import org.koin.compose.viewmodel.koinViewModel
 internal fun SettingsScreenPreview() {
     DLLPreviewTheme {
         SettingsScreen(
-            viewmodel = koinViewModel()
+            viewmodel = koinViewModel(),
         )
     }
 }
@@ -37,7 +37,7 @@ internal fun SettingsUIPurchaseAvailablePreview() {
             onShowDeleteDataBottomSheet = {},
             onShowAppTheme = {},
             onShowSuggestionsOption = {},
-            onShowProducts = {}
+            onShowProducts = {},
         )
     }
 }
@@ -59,7 +59,7 @@ internal fun SettingsUIPurchaseNotAvailablePreview() {
             onShowDeleteDataBottomSheet = {},
             onShowAppTheme = {},
             onShowSuggestionsOption = {},
-            onShowProducts = {}
+            onShowProducts = {},
         )
     }
 }
@@ -76,7 +76,7 @@ internal fun SettingsListItemPreview() {
             trailingContent = {
                 Text("Trailing Content")
             },
-            onClick = {}
+            onClick = {},
         )
     }
 }

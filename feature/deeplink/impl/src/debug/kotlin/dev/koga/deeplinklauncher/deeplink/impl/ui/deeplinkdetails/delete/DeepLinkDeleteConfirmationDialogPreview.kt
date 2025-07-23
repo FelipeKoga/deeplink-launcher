@@ -12,6 +12,6 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 internal fun DeepLinkDeleteConfirmationDialogPreview() {
     DeepLinkDeleteConfirmationDialog(
         onDismissRequest = {},
-        onDelete = {}
+        onDelete = {},
     )
 }

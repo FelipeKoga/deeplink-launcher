@@ -20,7 +20,7 @@ internal fun DuplicateModeUIFavoritePreview() {
             uiState = DeepLinkDetailsUiState.Duplicate(
                 deepLink = previewFavorite,
             ),
-            onAction = {}
+            onAction = {},
         )
     }
 }
@@ -35,7 +35,7 @@ internal fun DuplicateModeUINotFavoritePreview() {
             uiState = DeepLinkDetailsUiState.Duplicate(
                 deepLink = previewNotFavorite,
             ),
-            onAction = {}
+            onAction = {},
         )
     }
 }
@@ -49,9 +49,9 @@ internal fun DuplicateModeUIErrorPreview() {
         DuplicateModeUI(
             uiState = DeepLinkDetailsUiState.Duplicate(
                 deepLink = DeepLink.empty,
-                errorMessage = "Something went wrong"
+                errorMessage = "Something went wrong",
             ),
-            onAction = {}
+            onAction = {},
         )
     }
 }
@@ -63,7 +63,7 @@ internal fun DuplicateModeUIErrorPreview() {
 internal fun TopBarPreview() {
     DLLPreviewTheme {
         TopBar(
-            onBack = {}
+            onBack = {},
         )
     }
 }

@@ -39,7 +39,7 @@ internal fun HomeUIPreview() {
                     text = "https://example.com",
                 ),
                 searchInput = "Search",
-                showOnboarding = true
+                showOnboarding = true,
             ),
             onAction = {},
         )
@@ -61,7 +61,7 @@ internal fun HomeUIEmptyItemsPreview() {
                     text = "https://example.com",
                 ),
                 searchInput = "Search",
-                showOnboarding = false
+                showOnboarding = false,
             ),
             onAction = {},
         )
@@ -81,10 +81,10 @@ internal fun HomeUIEmptyDeepLinkInputErrorPreview() {
                 folders = persistentListOf(),
                 deepLinkInputState = DeepLinkInputState(
                     text = "https://example.com",
-                    errorMessage = "Something went wrong"
+                    errorMessage = "Something went wrong",
                 ),
                 searchInput = "Search",
-                showOnboarding = true
+                showOnboarding = true,
             ),
             onAction = {},
         )
@@ -110,10 +110,10 @@ internal fun HomeUIEmptyDeepLinkInputSuggestionsPreview() {
                         Suggestion.Clipboard("Clipboard 2"),
                         Suggestion.History("History 1"),
                         Suggestion.History("History 2"),
-                    )
+                    ),
                 ),
                 searchInput = "Search",
-                showOnboarding = true
+                showOnboarding = true,
             ),
             onAction = {},
         )

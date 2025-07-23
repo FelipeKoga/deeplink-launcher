@@ -21,7 +21,7 @@ internal fun HomeBottomBarUIPreview() {
             ),
             onValueChange = {},
             launch = {},
-            onSuggestionClicked = {}
+            onSuggestionClicked = {},
         )
     }
 }
@@ -35,11 +35,11 @@ internal fun HomeBottomBarUIErrorPreview() {
         HomeBottomBarUI(
             state = DeepLinkInputState(
                 text = "Text",
-                errorMessage = "Something went wrong"
+                errorMessage = "Something went wrong",
             ),
             onValueChange = {},
             launch = {},
-            onSuggestionClicked = {}
+            onSuggestionClicked = {},
         )
     }
 }
@@ -58,11 +58,11 @@ internal fun HomeBottomBarUIWithSuggestionsPreview() {
                     Suggestion.Clipboard("Clipboard 2"),
                     Suggestion.History("History 1"),
                     Suggestion.History("History 2"),
-                )
+                ),
             ),
             onValueChange = {},
             launch = {},
-            onSuggestionClicked = {}
+            onSuggestionClicked = {},
         )
     }
 }

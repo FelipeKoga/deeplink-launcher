@@ -23,7 +23,7 @@ internal fun EditModeUIFavoritePreview() {
                 folders = persistentListOf(),
             ),
             onAction = {},
-            onShowDeleteConfirmation = {}
+            onShowDeleteConfirmation = {},
         )
     }
 }
@@ -40,7 +40,7 @@ internal fun EditModeUINotFavoritePreview() {
                 folders = persistentListOf(),
             ),
             onAction = {},
-            onShowDeleteConfirmation = {}
+            onShowDeleteConfirmation = {},
         )
     }
 }
@@ -55,10 +55,10 @@ internal fun EditModeUIErrorPreview() {
             uiState = DeepLinkDetailsUiState.Edit(
                 deepLink = DeepLink.empty,
                 folders = persistentListOf(),
-                errorMessage = "Something went wrong"
+                errorMessage = "Something went wrong",
             ),
             onAction = {},
-            onShowDeleteConfirmation = {}
+            onShowDeleteConfirmation = {},
         )
     }
 }
@@ -72,7 +72,7 @@ internal fun DeepLinkDetailsTextFieldPreview() {
         DeepLinkDetailsTextField(
             text = "Sample Text",
             onTextChange = {},
-            label = "Label"
+            label = "Label",
         )
     }
 }
@@ -85,7 +85,7 @@ internal fun EditTopBarPreview() {
     DLLPreviewTheme {
         EditTopBar(
             onBack = {},
-            onDelete = {}
+            onDelete = {},
         )
     }
 }

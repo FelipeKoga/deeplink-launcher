@@ -19,11 +19,11 @@ fun ExportUIJsonFileTypePreview() {
             selectedExportType = FileType.JSON,
             preview = ExportData(
                 jsonFormat = jsonStructurePreview,
-                plainTextFormat = plainTextPreview
+                plainTextFormat = plainTextPreview,
             ),
             onExport = {},
             onBack = {},
-            onChangeExportType = {}
+            onChangeExportType = {},
         )
     }
 }
@@ -38,11 +38,11 @@ fun ExportUITTxtFileTypePreview() {
             selectedExportType = FileType.TXT,
             preview = ExportData(
                 jsonFormat = jsonStructurePreview,
-                plainTextFormat = plainTextPreview
+                plainTextFormat = plainTextPreview,
             ),
             onExport = {},
             onBack = {},
-            onChangeExportType = {}
+            onChangeExportType = {},
         )
     }
 }
@@ -57,9 +57,9 @@ fun ExportContentJsonFileTypePreview() {
             selectedExportType = FileType.JSON,
             preview = ExportData(
                 jsonFormat = jsonStructurePreview,
-                plainTextFormat = plainTextPreview
+                plainTextFormat = plainTextPreview,
             ),
-            onChangeExportType = {}
+            onChangeExportType = {},
         )
     }
 }
@@ -74,9 +74,9 @@ fun ExportContentTxtFileTypePreview() {
             selectedExportType = FileType.TXT,
             preview = ExportData(
                 jsonFormat = jsonStructurePreview,
-                plainTextFormat = plainTextPreview
+                plainTextFormat = plainTextPreview,
             ),
-            onChangeExportType = {}
+            onChangeExportType = {},
         )
     }
 }
@@ -88,7 +88,7 @@ fun ExportContentTxtFileTypePreview() {
 fun ExportFooterPermissionGrantedPreview() {
     ExportFooter(
         isPermissionGranted = true,
-        export = {}
+        export = {},
     )
 }
 
@@ -99,6 +99,6 @@ fun ExportFooterPermissionGrantedPreview() {
 fun ExportFooterPermissionNotGrantedPreview() {
     ExportFooter(
         isPermissionGranted = false,
-        export = {}
+        export = {},
     )
 }

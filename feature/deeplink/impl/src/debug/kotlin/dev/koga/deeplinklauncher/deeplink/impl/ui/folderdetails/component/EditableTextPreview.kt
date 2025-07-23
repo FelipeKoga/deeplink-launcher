@@ -18,7 +18,7 @@ internal fun EditableTextEnabledPreview() {
         editButtonEnabled = true,
         textContent = {
             Text("Text Content")
-        }
+        },
     )
 }
 
@@ -34,6 +34,6 @@ internal fun EditableTextDisabledPreview() {
         editButtonEnabled = false,
         textContent = {
             Text("Text Content")
-        }
+        },
     )
 }

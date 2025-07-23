@@ -21,12 +21,12 @@ internal fun FolderDetailsUIPreview() {
                 description = "Folder Description",
                 deepLinks = persistentListOf(
                     previewFavorite,
-                    previewNotFavorite
+                    previewNotFavorite,
                 ),
             ),
             onAction = {},
             onNavigate = {},
-            onShowDeleteConfirmation = {}
+            onShowDeleteConfirmation = {},
         )
     }
 }
@@ -45,7 +45,7 @@ internal fun FolderDetailsUIEmptyPreview() {
             ),
             onAction = {},
             onNavigate = {},
-            onShowDeleteConfirmation = {}
+            onShowDeleteConfirmation = {},
         )
     }
 }
@@ -62,11 +62,11 @@ internal fun FolderDetailsScreenContentPreview() {
                 description = "Folder Description",
                 deepLinks = persistentListOf(
                     previewFavorite,
-                    previewNotFavorite
+                    previewNotFavorite,
                 ),
             ),
             onAction = {},
-            onNavigate = {}
+            onNavigate = {},
         )
     }
 }
@@ -83,11 +83,11 @@ internal fun FolderDetailsScreenContentEmptyPreview() {
                 description = "Folder Description",
                 deepLinks = persistentListOf(
                     previewFavorite,
-                    previewNotFavorite
+                    previewNotFavorite,
                 ),
             ),
             onAction = {},
-            onNavigate = {}
+            onNavigate = {},
         )
     }
 }

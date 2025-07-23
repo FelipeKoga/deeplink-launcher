@@ -13,7 +13,7 @@ data class Product(
             description = "Description",
             formattedAmount = "$1.00",
             amountMicros = 0L,
-            packageId = "packageId"
+            packageId = "packageId",
         )
     }
 }

@@ -13,7 +13,7 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 internal fun OnboardingBottomSheetPreview() {
     DLLPreviewTheme {
         OnboardingBottomSheet(
-            onDismiss = {}
+            onDismiss = {},
         )
     }
 }
