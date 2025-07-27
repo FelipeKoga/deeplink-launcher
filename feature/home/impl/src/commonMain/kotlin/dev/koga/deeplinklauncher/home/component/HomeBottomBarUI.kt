@@ -200,7 +200,6 @@ internal fun SuggestionListItem(
     animationDelay: Long = 0,
     onVisibleChanged: (Boolean) -> Unit = {},
 ) {
-
     LaunchedEffect(Unit) {
         delay(animationDelay)
         onVisibleChanged(true)

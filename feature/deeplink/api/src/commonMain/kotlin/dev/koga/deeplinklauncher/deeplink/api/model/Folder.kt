@@ -10,7 +10,7 @@ public data class Folder(
     val name: String,
     val description: String?,
     val deepLinkCount: Int = 0,
-){
+) {
     public companion object {
         @OptIn(ExperimentalUuidApi::class)
         public val preview: Folder = Folder(
@@ -24,8 +24,7 @@ public data class Folder(
             id = Uuid.random().toString(),
             name = "Folder name",
             description = "Folder description",
-            deepLinkCount = 1
+            deepLinkCount = 1,
         )
     }
 }
-
