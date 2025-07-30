@@ -4,7 +4,7 @@ import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSiz
 import androidx.compose.material3.windowsizeclass.WindowSizeClass
 import androidx.compose.runtime.Composable
 
-expect class CalculateWindowSizeSharedClass{
+expect class CalculateWindowSizeSharedClass {
     @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
     @Composable
     fun invoke(): WindowSizeClass
