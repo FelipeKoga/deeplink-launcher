@@ -208,25 +208,25 @@ jobs:
 
     steps:
       - name: Download desktop windows exe artifact
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v5
         with:
           name: desktop-windows-exe
           path: ${{ env.DOWNLOADS_PATH }}
 
       - name: Download desktop ubuntu deb artifact
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v5
         with:
           name: desktop-ubuntu-deb
           path: ${{ env.DOWNLOADS_PATH }}
 
       - name: Download desktop macos dmg artifact
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v5
         with:
           name: desktop-macos-dmg
           path: ${{ env.DOWNLOADS_PATH }}
 
       - name: Download android APK artifact
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v5
         with:
           name: android-apk
           path: ${{ env.DOWNLOADS_PATH }}
