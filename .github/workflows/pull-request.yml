@@ -8,7 +8,7 @@ jobs:
   run-tests:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - name: Cache Gradle dependencies
         uses: actions/cache@v4
@@ -45,7 +45,7 @@ jobs:
   run-code-analysis:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - name: Cache Gradle dependencies
         uses: actions/cache@v4
