@@ -6,22 +6,23 @@ android-patchVersion = "0"
 android-minorVersion = "11"
 android-majorVersion = "1"
 
-aboutlibraries = "12.1.2"
-androidGradlePlugin = "8.7.2"
-androidx-activity = "1.10.1"
-androidx-core = "1.16.0"
+aboutlibraries = "12.2.4"
+androidGradlePlugin = "8.12.3"
+androidx-activity = "1.11.0"
+androidx-core = "1.17.0"
+androidx-lifecycle = "2.9.1"
 baselineprofile = "1.4.1"
 billing = "8.0.0"
 buildkonfig = "0.17.1"
 composerules = "0.0.26"
-compose-navigation = "2.8.0-alpha13"
+compose-navigation = "2.9.0"
 compose-multiplatform = "1.9.0"
 compose-runtime = "1.9.1"
 composeIcons = "1.1.1"
 datastorePreferencesCore = "1.1.7"
 detekt = "1.23.8"
 espressoCore = "3.7.0"
-firebase-bom = "34.2.0"
+firebase-bom = "34.3.0"
 firebase-crashlytics-plugin = "3.0.6"
 firebase-perf-plugin = "2.0.1"
 google-services = "4.4.3"
@@ -68,6 +69,8 @@ compose-navigation = { module = "org.jetbrains.androidx.navigation:navigation-co
 compose-runtime = { module = "androidx.compose.runtime:runtime", version.ref = "compose-runtime" }
 composeIcons-tablerIcons = { module = "br.com.devsrsouza.compose.icons:tabler-icons", version.ref = "composeIcons" }
 composerules = { module = "com.twitter.compose.rules:detekt", version.ref = "composerules" }
+androidx-lifecycle-runtime-compose = { module = "org.jetbrains.androidx.lifecycle:lifecycle-runtime-compose", version.ref = "androidx-lifecycle" }
+androidx-lifecycle-viewmodel-compose = { module = "org.jetbrains.androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "androidx-lifecycle" }
 detekt = { module = "io.gitlab.arturbosch.detekt:detekt-gradle-plugin", version.ref = "detekt" }
 firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebase-bom" }
 firebase-crashlytics = { module = "com.google.firebase:firebase-crashlytics" }
