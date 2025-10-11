@@ -46,7 +46,7 @@ sqlDelight = "2.1.0"
 stately = "2.1.0"
 uiautomator = "2.3.0"
 jetbrains-kotlinxDatetime = "0.6.2"
-uitoolingandroid = "1.9.1"
+uitoolingandroid = "1.9.3"
 
 [libraries]
 aboutlibraries_compose = { module = "com.mikepenz:aboutlibraries-compose-m3", version.ref = "aboutlibraries" }
