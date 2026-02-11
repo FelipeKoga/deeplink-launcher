@@ -8,7 +8,7 @@ android-majorVersion = "1"
 
 aboutlibraries = "12.2.4"
 androidGradlePlugin = "8.13.2"
-androidx-activity = "1.12.2"
+androidx-activity = "1.12.4"
 androidx-core = "1.17.0"
 androidx-lifecycle = "2.9.6"
 baselineprofile = "1.4.1"
