@@ -54,7 +54,6 @@
 | [**Detekt**](https://github.com/detekt/detekt) | Static code analysis for Kotlin. |
 | [**Ktlint**](https://github.com/pinterest/ktlint) | Kotlin linter for code formatting. |
 | [**MPFilePicker**](https://github.com/Wavesonics/compose-multiplatform-file-picker) | File picker for Compose Multiplatform. |
-| [**Material 3 Window Size Class**](https://github.com/chrisbanes/material3-windowsizeclass-multiplatform) | Cross-platform window size detection. |
 | [**RevenueCat**](https://www.revenuecat.com/) | Subscription and in-app purchase management. |
 
 ## Getting Started
