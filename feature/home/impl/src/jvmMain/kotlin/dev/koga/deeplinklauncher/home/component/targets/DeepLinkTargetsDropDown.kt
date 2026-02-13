@@ -107,7 +107,7 @@ fun DeepLinkTargetsDropDown(
             expanded = expanded,
             onDismissRequest = { expanded = false },
             modifier = Modifier.exposedDropdownSize(
-                matchTextFieldWidth = false,
+                matchAnchorWidth = false,
             ),
         ) {
             uiState.targets.forEach { target ->

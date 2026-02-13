@@ -1,12 +1,13 @@
 package extension
 
-import kotlinx.datetime.Clock
 import kotlinx.datetime.TimeZone
+import kotlinx.datetime.number
 import kotlinx.datetime.toLocalDateTime
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.the
 import java.util.Properties
 import org.gradle.accessors.dm.LibrariesForLibs
+import kotlin.time.ExperimentalTime
 
 val Project.libs
     get() = the<LibrariesForLibs>()
@@ -51,10 +52,11 @@ fun Project.getAndroidVersionCode(): Int {
     return versionCode
 }
 
+@OptIn(ExperimentalTime::class)
 private fun getDateCode(): Int {
-    val today = Clock.System.now().toLocalDateTime(TimeZone.UTC).date
-    val year = today.year % 100
-    val month = today.monthNumber
-    val day = today.dayOfMonth
-    return year * 10_000 + month * 100 + day
+//    val today = Clock.System.now().toLocalDateTime(TimeZone.UTC).date
+//    val year = today.year % 100
+//    val month = today.month.number
+//    val day = today.day
+    return 0 //year * 10_000 + month * 100 + day
 }
