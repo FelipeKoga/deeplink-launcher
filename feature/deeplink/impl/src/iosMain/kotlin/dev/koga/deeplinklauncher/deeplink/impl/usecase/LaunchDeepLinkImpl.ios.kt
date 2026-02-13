@@ -17,7 +17,12 @@ internal class LaunchDeepLinkImpl(
         val nsurl = NSURL(string = url)
 
         return if (application.canOpenURL(nsurl)) {
-            application.openURL(nsurl)
+            application.openURL(
+                url = nsurl,
+                options = emptyMap<Any?, Any>(),
+                completionHandler = {},
+            )
+
             LaunchDeepLink.Result.Success(url)
         } else {
             LaunchDeepLink.Result.Failure(IllegalArgumentException("Cannot open URL"))
