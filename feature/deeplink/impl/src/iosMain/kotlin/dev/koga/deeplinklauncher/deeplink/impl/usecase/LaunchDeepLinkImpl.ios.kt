@@ -20,7 +20,7 @@ internal class LaunchDeepLinkImpl(
             application.openURL(
                 url = nsurl,
                 options = emptyMap<Any?, Any>(),
-                completionHandler = {}
+                completionHandler = {},
             )
 
             LaunchDeepLink.Result.Success(url)
