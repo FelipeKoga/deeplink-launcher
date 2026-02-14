@@ -2,9 +2,10 @@
 android-targetSdk = "36"
 android-compileSdk = "36"
 android-minSdk = "26"
-android-patchVersion = "0"
-android-minorVersion = "11"
+
 android-majorVersion = "1"
+android-minorVersion = "12"
+android-patchVersion = "0"
 
 aboutlibraries = "13.2.1"
 androidGradlePlugin = "8.13.2"

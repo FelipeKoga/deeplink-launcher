@@ -33,7 +33,7 @@ compose.desktop {
         nativeDistributions {
             includeAllModules = true
 
-            packageVersion = "1.11.0"
+            packageVersion = "1.12.0"
             packageName = "DeepLink Launcher"
             description = "Manage & Launch deeplinks easily"
             appResourcesRootDir.set(project.layout.projectDirectory.dir("resources"))
