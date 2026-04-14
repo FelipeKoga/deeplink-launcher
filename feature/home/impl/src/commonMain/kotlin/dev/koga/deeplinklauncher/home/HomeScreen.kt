@@ -110,12 +110,28 @@ internal fun HomeUI(
             modifier = Modifier.fillMaxSize(),
         ) { page ->
             when (page) {
-                HomeTabPage.HISTORY.ordinal,
-                HomeTabPage.FAVORITES.ordinal,
-                -> DeepLinksLazyColumn(
+                HomeTabPage.HISTORY.ordinal -> DeepLinksLazyColumn(
                     modifier = Modifier.hazeSource(hazeState),
                     listState = historyListState,
                     deepLinks = uiState.deepLinks,
+                    contentPadding = it,
+                    onClick = {
+                        onAction(
+                            HomeAction.Navigate(DeepLinkRouteEntryPoint.DeepLinkDetails(it.id, true)),
+                        )
+                    },
+                    onLaunch = {
+                        onAction(HomeAction.LaunchDeepLink(it))
+                    },
+                    onFolderClicked = {
+                        onAction(HomeAction.Navigate(DeepLinkRouteEntryPoint.FolderDetails(it.id)))
+                    },
+                )
+
+                HomeTabPage.FAVORITES.ordinal -> DeepLinksLazyColumn(
+                    modifier = Modifier.hazeSource(hazeState),
+                    listState = favoritesListState,
+                    deepLinks = uiState.favorites,
                     contentPadding = it,
                     onClick = {
                         onAction(
