@@ -7,7 +7,6 @@ import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.semantics.semantics
 import dev.koga.deeplinklauncher.designsystem.utils.testTagAsResourceId
 
 private val lightScheme = lightColorScheme(
@@ -49,7 +48,7 @@ fun DLLTheme(
     content: @Composable () -> Unit,
 ) {
     Box(
-        modifier = Modifier.testTagAsResourceId()
+        modifier = Modifier.testTagAsResourceId(),
     ) {
         MaterialTheme(
             colorScheme = if (isDarkTheme) darkScheme else lightScheme,

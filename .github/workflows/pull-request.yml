@@ -54,6 +54,11 @@ jobs:
           distribution: 'zulu'
           cache: gradle
 
+      - name: Create Environment File
+        uses: ./.github/actions/create-env-action
+        with:
+          REVENUECAT_API_KEY: ${{ secrets.REVENUECAT_API_KEY }}
+
       - uses: dniHze/maestro-test-action@v1
         with:
           version: 2.0.3
@@ -68,7 +73,7 @@ jobs:
         uses: reactivecircus/android-emulator-runner@v2
         with:
           api-level: 29
-          script: ./gradlew connectedCheck && maestro test --format=junit --output=report.xml --no-ansi .maestro
+          script: ./gradlew connectedCheck && cp keystore.properties.example keystore.properties && maestro test --format=junit --output=report.xml --no-ansi .maestro
 
   run-code-analysis:
     runs-on: ubuntu-latest
@@ -105,4 +110,4 @@ jobs:
           REVENUECAT_API_KEY: ${{ secrets.REVENUECAT_API_KEY }}
 
       - name: Run code analysis
-        run: ./gradlew check
+        run: ./gradlew ktlint

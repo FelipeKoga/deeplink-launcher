@@ -68,7 +68,7 @@ internal fun DetailsBottomActions(
         }
 
         DLLIconButton(
-            modifier = Modifier.semantics {testTag = "btn_favorite" },
+            modifier = Modifier.semantics { testTag = "btn_favorite" },
             onClick = { onAction(LaunchAction.ToggleFavorite) },
         ) {
             Icon(
