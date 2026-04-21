@@ -1,4 +1,4 @@
-/appId: dev.koga.deeplinklauncher.android
+appId: dev.koga.deeplinklauncher.android
 name: "Configurações — deletar dados"
 ---
 - runFlow: setup.yaml
