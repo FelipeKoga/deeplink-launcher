@@ -73,7 +73,7 @@ jobs:
         uses: reactivecircus/android-emulator-runner@v2
         with:
           api-level: 29
-          script: ./gradlew connectedCheck && cp keystore.properties.example keystore.properties && maestro test --format=junit --output=report.xml --no-ansi .maestro
+          script: cp keystore.properties.example keystore.properties && ./gradlew connectedDebugAndroidTest && maestro test --format=junit --output=report.xml --no-ansi .maestro
 
   run-code-analysis:
     runs-on: ubuntu-latest
