@@ -21,9 +21,9 @@ fun Project.envProperties(): Properties {
 }
 
 fun Project.getVersionName(): String {
-    val patchVersion = libs.versions.android.patchVersion
-    val minorVersion = libs.versions.android.minorVersion
-    val majorVersion = libs.versions.android.majorVersion
+    val patchVersion = libs.versions.android.patchVersion.get().toInt()
+    val minorVersion = libs.versions.android.minorVersion.get().toInt()
+    val majorVersion = libs.versions.android.majorVersion.get().toInt()
 
     return "$majorVersion.$minorVersion.$patchVersion"
 }
