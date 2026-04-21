@@ -1,0 +1,38 @@
+appId: dev.koga.deeplinklauncher.android
+name: "Duplicar deeplink"
+---
+- runFlow: setup.yaml
+
+# Cria o deeplink original
+- tapOn: "Type your deeplink here..."
+- inputText: "https://www.original.com"
+- tapOn: "Launch"
+- back
+
+# Abre os detalhes — aguarda o bottom sheet animar
+- tapOn: "https://www.original.com"
+- waitForAnimationToEnd
+
+# Entra no modo duplicar
+- tapOn:
+    id: "btn_duplicate"
+- waitForAnimationToEnd
+
+# Verifica o campo pré-preenchido com o link original
+- assertVisible: "Enter new deeplink"
+
+# Limpa e digita o novo link
+- tapOn: "Enter new deeplink"
+- eraseText
+- inputText: "https://www.duplicated.com"
+
+# Confirma — o VM fecha este bottom sheet e abre os detalhes do novo deeplink
+- tapOn: "Duplicate"
+- waitForAnimationToEnd
+
+# Fecha o bottom sheet do deeplink duplicado
+- back
+
+# Verifica que ambos os deeplinks estão no histórico
+- assertVisible: "https://www.original.com"
+- assertVisible: "https://www.duplicated.com"

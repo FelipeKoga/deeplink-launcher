@@ -1,0 +1,47 @@
+/appId: dev.koga.deeplinklauncher.android
+name: "Configurações — deletar dados"
+---
+- runFlow: setup.yaml
+
+# Cria deeplinks para testar a deleção
+- tapOn: "Type your deeplink here..."
+- inputText: "https://www.delete-test-1.com"
+- tapOn: "Launch"
+- back
+
+- tapOn: "Type your deeplink here..."
+- inputText: "https://www.delete-test-2.com"
+- tapOn: "Launch"
+- back
+
+# Verifica que existem deeplinks no histórico
+- assertVisible: "https://www.delete-test-1.com"
+
+# Abre as configurações (index: 1 = ícone de settings)
+- tapOn:
+    text: "settings"
+    index: 1
+- waitForAnimationToEnd
+
+# Abre "Delete data"
+- tapOn: "Delete data"
+- waitForAnimationToEnd
+
+# Verifica o bottom sheet de deleção
+- assertVisible: "Delete data"
+- assertVisible: "This action cannot be undone"
+- assertVisible: "Delete deeplinks only"
+- assertVisible: "Delete folders only"
+- assertVisible: "Delete all"
+
+# Deleta apenas os deeplinks
+- tapOn: "Delete deeplinks only"
+- waitForAnimationToEnd
+
+# Volta para a home (o bottom sheet fecha automaticamente)
+- back
+
+# Volta para History e verifica que está vazio
+- tapOn: "History"
+- assertNotVisible: "https://www.delete-test-1.com"
+- assertNotVisible: "https://www.delete-test-2.com"

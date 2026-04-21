@@ -1,0 +1,48 @@
+appId: dev.koga.deeplinklauncher.android
+name: "Atribuir deeplink a uma pasta"
+---
+- runFlow: setup.yaml
+
+# Primeiro cria uma pasta
+- tapOn: "Folders"
+- tapOn: "Create new folder"
+- waitForAnimationToEnd
+- tapOn: "Name"
+- inputText: "Pasta QA"
+- tapOn: "Save"
+- waitForAnimationToEnd
+
+# Volta para a aba History e cria um deeplink
+- tapOn: "History"
+- tapOn: "Type your deeplink here..."
+- inputText: "https://www.example-folder.com"
+- tapOn: "Launch"
+- back
+
+# Abre os detalhes — aguarda o bottom sheet animar
+- tapOn: "https://www.example-folder.com"
+- waitForAnimationToEnd
+
+# Entra no modo de edição
+- tapOn:
+    id: "btn_edit"
+- waitForAnimationToEnd
+
+# Seleciona a pasta "Pasta QA" na lista de chips
+- tapOn: "Pasta QA"
+- waitForAnimationToEnd
+
+# Salva voltando ao modo launch
+- tapOn:
+    id: "btn_back_edit"
+- waitForAnimationToEnd
+
+# Verifica que o chip da pasta aparece nos detalhes
+- assertVisible: "Pasta QA"
+
+# Fecha o bottom sheet
+- back
+
+# Navega para Folders e verifica que a pasta tem 1 deeplink
+- tapOn: "Folders"
+- assertVisible: "Pasta QA"

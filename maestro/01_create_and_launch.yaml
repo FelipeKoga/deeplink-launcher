@@ -1,0 +1,25 @@
+appId: dev.koga.deeplinklauncher.android
+name: "Criar e lançar deeplink"
+---
+- clearState
+- launchApp
+
+---
+- runFlow: setup.yaml
+
+# --- Criar via barra inferior ---
+- tapOn: "Type your deeplink here..."
+- inputText: "https://www.google.com"
+
+# Lança pelo ícone de launch na barra inferior
+- tapOn: "Launch"
+- back
+
+# Verifica que aparece no histórico
+- assertVisible: "https://www.google.com"
+
+# --- Lança pelo botão dentro dos detalhes ---
+- tapOn: "https://www.google.com"
+- assertVisible: "Launch"
+- tapOn: "Launch"
+- back

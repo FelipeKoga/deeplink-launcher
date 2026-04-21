@@ -1,0 +1,5 @@
+appId: dev.koga.deeplinklauncher.android
+---
+- clearState
+- launchApp
+- tapOn: "Got it!"

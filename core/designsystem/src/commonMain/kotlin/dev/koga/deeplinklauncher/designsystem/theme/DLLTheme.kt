@@ -1,10 +1,14 @@
 package dev.koga.deeplinklauncher.designsystem.theme
 
+import androidx.compose.foundation.layout.Box
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.semantics.semantics
+import dev.koga.deeplinklauncher.designsystem.utils.testTagAsResourceId
 
 private val lightScheme = lightColorScheme(
     primary = Color(0xFF18181B),
@@ -44,10 +48,14 @@ fun DLLTheme(
     isDarkTheme: Boolean,
     content: @Composable () -> Unit,
 ) {
-    MaterialTheme(
-        colorScheme = if (isDarkTheme) darkScheme else lightScheme,
-        typography = typography,
-        shapes = shapes,
-        content = content,
-    )
+    Box(
+        modifier = Modifier.testTagAsResourceId()
+    ) {
+        MaterialTheme(
+            colorScheme = if (isDarkTheme) darkScheme else lightScheme,
+            typography = typography,
+            shapes = shapes,
+            content = content,
+        )
+    }
 }

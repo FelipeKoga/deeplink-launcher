@@ -1,0 +1,31 @@
+appId: dev.koga.deeplinklauncher.android
+name: "Criar pasta e verificar na aba Folders"
+---
+- runFlow: setup.yaml
+
+# Navega para a aba de pastas
+- tapOn: "Folders"
+- waitForAnimationToEnd
+
+# Abre o bottom sheet de criação de pasta
+- tapOn: "Create new folder"
+- waitForAnimationToEnd
+
+# Verifica o título do bottom sheet
+- assertVisible: "Add folder"
+
+# Preenche o nome (obrigatório)
+- tapOn: "Name"
+- inputText: "Minha Pasta"
+
+# Preenche a descrição (opcional)
+- tapOn: "Description"
+- inputText: "Pasta para deeplinks de teste"
+
+# Salva
+- tapOn: "Save"
+- waitForAnimationToEnd
+
+# Verifica que a pasta aparece na aba Folders
+- assertVisible: "Minha Pasta"
+- assertVisible: "No deeplinks"

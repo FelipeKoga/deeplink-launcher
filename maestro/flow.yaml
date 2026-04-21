@@ -1,12 +1,24 @@
 appId: dev.koga.deeplinklauncher.android
+name: "Smoke test — criar e lançar deeplink"
 ---
 - clearState
 - launchApp
+
+# Onboarding
 - tapOn: "Got it!"
-- tapOn: "Enter your deeplink here"
+
+# Digita zum deeplink e lança pelo ícone da barra inferior
+- tapOn: "Type your deeplink here..."
 - inputText: "https://www.google.com"
 - tapOn: "Launch"
 - back
-- tapOn: "Clear"
+
+# Verifica que o deeplink aparece no histórico
 - scrollUntilVisible:
     element: "https://www.google.com"
+
+# Abre os detalhes e lança pelo botão interno
+- tapOn: "https://www.google.com"
+- assertVisible: "Launch"
+- tapOn: "Launch"
+- back

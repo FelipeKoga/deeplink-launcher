@@ -17,6 +17,8 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.testTag
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import compose.icons.TablerIcons
@@ -41,7 +43,10 @@ internal fun DetailsBottomActions(
             .fillMaxWidth()
             .padding(vertical = 24.dp, horizontal = 8.dp),
     ) {
-        DLLIconButton(onClick = { onAction(LaunchAction.Duplicate) }) {
+        DLLIconButton(
+            modifier = Modifier.semantics { testTag = "btn_duplicate" },
+            onClick = { onAction(LaunchAction.Duplicate) },
+        ) {
             Icon(
                 painterResource(Res.drawable.ic_duplicate_24dp),
                 contentDescription = "Duplicate",
@@ -50,7 +55,10 @@ internal fun DetailsBottomActions(
         }
 
         if (canShareContent) {
-            DLLIconButton(onClick = { onAction(LaunchAction.Share) }) {
+            DLLIconButton(
+                modifier = Modifier.semantics { testTag = "btn_share" },
+                onClick = { onAction(LaunchAction.Share) },
+            ) {
                 Icon(
                     imageVector = TablerIcons.Share,
                     contentDescription = "Share",
@@ -59,7 +67,10 @@ internal fun DetailsBottomActions(
             }
         }
 
-        DLLIconButton(onClick = { onAction(LaunchAction.ToggleFavorite) }) {
+        DLLIconButton(
+            modifier = Modifier.semantics {testTag = "btn_favorite" },
+            onClick = { onAction(LaunchAction.ToggleFavorite) },
+        ) {
             Icon(
                 imageVector = if (isFavorite) {
                     Icons.Rounded.Favorite
@@ -75,7 +86,10 @@ internal fun DetailsBottomActions(
             )
         }
 
-        DLLIconButton(onClick = { onAction(LaunchAction.Edit) }) {
+        DLLIconButton(
+            modifier = Modifier.semantics { testTag = "btn_edit" },
+            onClick = { onAction(LaunchAction.Edit) },
+        ) {
             Icon(
                 imageVector = TablerIcons.Pencil,
                 contentDescription = "Edit",
