@@ -38,10 +38,10 @@ class MainActivity : FragmentActivity(), KoinComponent {
         setContent {
             App()
 
-            val isSystemInDarkTheme = isAppThemeInDarkTheme()
-            LaunchedEffect(isSystemInDarkTheme) {
-                windowInsetsController.isAppearanceLightStatusBars = !isSystemInDarkTheme
-                windowInsetsController.isAppearanceLightNavigationBars = !isSystemInDarkTheme
+            val isDarkTheme = isAppThemeInDarkTheme()
+            LaunchedEffect(isDarkTheme) {
+                windowInsetsController.isAppearanceLightStatusBars = !isDarkTheme
+                windowInsetsController.isAppearanceLightNavigationBars = !isDarkTheme
             }
 
         }
