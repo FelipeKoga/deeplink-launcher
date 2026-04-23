@@ -34,7 +34,7 @@ fun App() {
     val appNavigator = koinInject<AppNavigator>()
     val appGraph = koinInject<AppGraph>()
     val snackBarDispatcher = koinInject<SnackBarDispatcher>()
-    val isDarkTheme = rememberAppDarkMode()
+    val isDarkTheme = isAppThemeInDarkTheme()
     val snackBarHostState = remember { SnackbarHostState() }
 
     LaunchedEffect(Unit) {
@@ -80,14 +80,12 @@ fun App() {
 }
 
 @Composable
-private fun rememberAppDarkMode(
+fun isAppThemeInDarkTheme(
     preferencesDataSource: PreferencesDataSource = koinInject(),
 ): Boolean {
     val isSystemDarkTheme = isSystemInDarkTheme()
 
-    val preferences by remember(preferencesDataSource) {
-        preferencesDataSource.preferencesStream
-    }.collectAsStateWithLifecycle(preferencesDataSource.preferences)
+    val preferences by preferencesDataSource.preferencesStream.collectAsStateWithLifecycle(preferencesDataSource.preferences)
 
     return when (preferences.appTheme) {
         AppTheme.LIGHT -> false
