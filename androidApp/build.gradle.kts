@@ -76,6 +76,7 @@ kotlin {
 
 dependencies {
     implementation(projects.shared)
+    implementation(projects.core.preferences)
 
     implementation(libs.splashscreen)
     implementation(libs.androidx.activity.compose)

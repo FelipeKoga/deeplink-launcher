@@ -92,7 +92,7 @@ internal fun HomeUI(
         bottomBar = {
             HomeBottomBarUI(
                 modifier = Modifier
-                    .clip(RoundedCornerShape(12.dp))
+                    .clip(RoundedCornerShape(topStart = 12.dp, topEnd = 12.dp))
                     .hazeEffect(
                         state = hazeState,
                         style = HazeMaterials.thick(),
