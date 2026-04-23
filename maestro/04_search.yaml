@@ -1,0 +1,48 @@
+appId: dev.koga.deeplinklauncher.android
+name: "Pesquisar deeplinks"
+---
+- runFlow: setup.yaml
+
+# Cria dois deeplinks distintos
+- tapOn: "Type your deeplink here..."
+- inputText: "https://www.google.com"
+- tapOn: "Launch"
+- back
+
+- tapOn: "Type your deeplink here..."
+- inputText: "https://www.github.com"
+- tapOn: "Launch"
+- back
+
+# Abre a barra de pesquisa
+# Ambos os ícones têm text/contentDescription "settings"
+# index: 0 = ícone de pesquisa (primeiro na top bar)
+- tapOn:
+    text: "settings"
+    index: 0
+- waitForAnimationToEnd
+
+# Pesquisa por "github"
+- tapOn: "Search for deeplinks and folders"
+- inputText: "github"
+
+# Aguarda o StateFlow processar o filtro e a UI recompor
+- extendedWaitUntil:
+    visible:
+      text: "https://www.github.com"
+    timeout: 5000
+
+# Verifica que apenas o github aparece
+- assertVisible: "https://www.github.com"
+- assertNotVisible: "https://www.google.com"
+
+# Limpa a pesquisa
+- tapOn: "Clear"
+- waitForAnimationToEnd
+
+# Ambos devem aparecer novamente
+- assertVisible: "https://www.github.com"
+- assertVisible: "https://www.google.com"
+
+# Fecha a barra de pesquisa
+- tapOn: "Back"

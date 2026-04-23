@@ -30,6 +30,8 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.testTag
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import compose.icons.TablerIcons
@@ -203,6 +205,7 @@ internal fun EditTopBar(
         verticalAlignment = Alignment.CenterVertically,
     ) {
         DLLIconButton(
+            modifier = Modifier.semantics { testTag = "btn_back_edit" },
             onClick = onBack,
         ) {
             Icon(
@@ -213,6 +216,7 @@ internal fun EditTopBar(
         }
 
         DLLIconButton(
+            modifier = Modifier.semantics { testTag = "btn_delete_deeplink" },
             onClick = onDelete,
         ) {
             Icon(

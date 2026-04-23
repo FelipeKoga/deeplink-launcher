@@ -1,0 +1,44 @@
+appId: dev.koga.deeplinklauncher.android
+name: "Deletar deeplink individualmente"
+---
+- runFlow: setup.yaml
+
+# Cria o deeplink a ser deletado
+- tapOn: "Type your deeplink here..."
+- inputText: "https://www.to-delete.com"
+- tapOn: "Launch"
+- back
+
+# Cria um segundo deeplink que deve permanecer
+- tapOn: "Type your deeplink here..."
+- inputText: "https://www.to-keep.com"
+- tapOn: "Launch"
+- back
+
+# Abre os detalhes — aguarda o bottom sheet animar
+- tapOn: "https://www.to-delete.com"
+- waitForAnimationToEnd
+
+# Entra no modo de edição
+- tapOn:
+    id: "btn_edit"
+- waitForAnimationToEnd
+
+# Toca no ícone de deletar
+- tapOn:
+    id: "btn_delete_deeplink"
+- waitForAnimationToEnd
+
+# Confirma o dialog de exclusão
+- assertVisible: "Delete DeepLink"
+- assertVisible: "Are you sure you want to delete this deeplink?"
+- tapOn: "Delete"
+
+# O VM chama popBackStack() após deletar — aguarda o bottom sheet fechar e a lista atualizar
+- extendedWaitUntil:
+    notVisible:
+      text: "https://www.to-delete.com"
+    timeout: 5000
+
+# Verifica que o outro deeplink permanece
+- assertVisible: "https://www.to-keep.com"

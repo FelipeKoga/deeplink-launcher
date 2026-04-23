@@ -1,0 +1,32 @@
+appId: dev.koga.deeplinklauncher.android
+name: "Deletar pasta"
+---
+- runFlow: setup.yaml
+
+# Cria a pasta
+- tapOn: "Folders"
+- tapOn: "Create new folder"
+- waitForAnimationToEnd
+- tapOn: "Name"
+- inputText: "Pasta Temporaria"
+- tapOn: "Save"
+- waitForAnimationToEnd
+
+# Verifica que a pasta foi criada
+- assertVisible: "Pasta Temporaria"
+
+# Abre os detalhes da pasta — aguarda a navegação
+- tapOn: "Pasta Temporaria"
+- waitForAnimationToEnd
+
+# Toca no ícone de deletar (contentDescription = "Delete")
+- tapOn: "Delete"
+- waitForAnimationToEnd
+
+# Confirma o bottom sheet de exclusão
+- assertVisible: "Delete folder"
+- tapOn: "Delete"
+- waitForAnimationToEnd
+
+# Verifica que a pasta foi removida da aba Folders
+- assertNotVisible: "Pasta Temporaria"
