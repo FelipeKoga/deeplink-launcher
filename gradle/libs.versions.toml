@@ -4,7 +4,7 @@ android-compileSdk = "36"
 android-minSdk = "26"
 
 android-majorVersion = "1"
-android-minorVersion = "13"
+android-minorVersion = "14"
 android-patchVersion = "0"
 
 aboutlibraries = "13.2.1"
