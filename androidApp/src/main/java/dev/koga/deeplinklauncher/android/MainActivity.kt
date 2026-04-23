@@ -1,22 +1,14 @@
 package dev.koga.deeplinklauncher.android
 
-import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
-import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
 import androidx.core.view.WindowCompat
 import androidx.fragment.app.FragmentActivity
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import dev.koga.deeplinklauncher.preferences.model.AppTheme
-import dev.koga.deeplinklauncher.preferences.repository.PreferencesDataSource
 import dev.koga.deeplinklauncher.shared.App
-import org.koin.compose.koinInject
+import dev.koga.deeplinklauncher.shared.isAppThemeInDarkTheme
 import org.koin.core.component.KoinComponent
 
 class MainActivity : FragmentActivity(), KoinComponent {
@@ -45,20 +37,5 @@ class MainActivity : FragmentActivity(), KoinComponent {
             }
 
         }
-    }
-}
-
-@Composable
-private fun isAppThemeInDarkTheme(
-    preferencesDataSource: PreferencesDataSource = koinInject(),
-): Boolean {
-    val isSystemDarkTheme = isSystemInDarkTheme()
-
-    val preferences by preferencesDataSource.preferencesStream.collectAsStateWithLifecycle(preferencesDataSource.preferences)
-
-    return when (preferences.appTheme) {
-        AppTheme.LIGHT -> false
-        AppTheme.DARK -> true
-        AppTheme.AUTO -> isSystemDarkTheme
     }
 }

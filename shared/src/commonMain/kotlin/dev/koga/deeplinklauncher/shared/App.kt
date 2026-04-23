@@ -80,7 +80,7 @@ fun App() {
 }
 
 @Composable
-private fun isAppThemeInDarkTheme(
+fun isAppThemeInDarkTheme(
     preferencesDataSource: PreferencesDataSource = koinInject(),
 ): Boolean {
     val isSystemDarkTheme = isSystemInDarkTheme()
