@@ -37,7 +37,6 @@ class MainActivity : FragmentActivity(), KoinComponent {
                 windowInsetsController.isAppearanceLightStatusBars = !isDarkTheme
                 windowInsetsController.isAppearanceLightNavigationBars = !isDarkTheme
             }
-
         }
     }
 }
