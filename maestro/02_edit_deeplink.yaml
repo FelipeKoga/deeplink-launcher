@@ -1,0 +1,38 @@
+appId: dev.koga.deeplinklauncher.android
+name: "Editar deeplink — nome e descrição"
+---
+- runFlow: setup.yaml
+
+# Cria um deeplink
+- tapOn: "Type your deeplink here..."
+- inputText: "https://www.example.com"
+- tapOn: "Launch"
+- back
+
+# Abre os detalhes — aguarda o bottom sheet animar
+- tapOn: "https://www.example.com"
+- waitForAnimationToEnd
+
+# Entra no modo de edição
+- tapOn:
+    id: "btn_edit"
+- waitForAnimationToEnd
+
+# Edita o nome
+- tapOn: "Name"
+- inputText: "Meu Site"
+
+# Edita a descrição
+- tapOn: "Description"
+- inputText: "Site de exemplo para testes"
+
+# Salva voltando para o modo launch
+- tapOn:
+    id: "btn_back_edit"
+- waitForAnimationToEnd
+
+# Verifica que o nome aparece no painel de detalhes
+- assertVisible: "Meu Site"
+
+# Fecha o bottom sheet
+- back

@@ -1,0 +1,42 @@
+appId: dev.koga.deeplinklauncher.android
+name: "Favoritar deeplink e verificar na aba Favorites"
+---
+- runFlow: setup.yaml
+
+# Cria um deeplink
+- tapOn: "Type your deeplink here..."
+- inputText: "https://www.favorite-test.com"
+- tapOn: "Launch"
+- back
+
+# Abre os detalhes — aguarda o bottom sheet animar
+- tapOn: "https://www.favorite-test.com"
+- waitForAnimationToEnd
+
+# Adiciona aos favoritos
+- tapOn:
+    id: "btn_favorite"
+- waitForAnimationToEnd
+
+# Fecha o bottom sheet
+- back
+
+# Navega para a aba Favorites
+- tapOn: "Favorites"
+- waitForAnimationToEnd
+
+# Verifica que o deeplink está na aba de favoritos
+- assertVisible: "https://www.favorite-test.com"
+
+# Abre os detalhes novamente — aguarda o bottom sheet
+- tapOn: "https://www.favorite-test.com"
+- waitForAnimationToEnd
+
+# Remove dos favoritos
+- tapOn:
+    id: "btn_favorite"
+- waitForAnimationToEnd
+- back
+
+# Verifica que a aba Favorites está vazia
+- assertNotVisible: "https://www.favorite-test.com"

@@ -1,0 +1,46 @@
+appId: dev.koga.deeplinklauncher.android
+name: "Configurações — alterar tema"
+---
+- runFlow: setup.yaml
+
+# Abre as configurações
+# Ambos os ícones têm text/contentDescription "settings" — index: 1 é o de configurações
+- tapOn:
+    text: "settings"
+    index: 1
+- waitForAnimationToEnd
+
+# Verifica que a tela de configurações está aberta
+- assertVisible: "Settings"
+- assertVisible: "Theme"
+- assertVisible: "Suggestions"
+- assertVisible: "Export"
+- assertVisible: "Import"
+- assertVisible: "Delete data"
+
+# Abre o seletor de tema
+- tapOn: "Theme"
+- waitForAnimationToEnd
+
+# Verifica as opções disponíveis
+- assertVisible: "Light"
+- assertVisible: "Dark"
+- assertVisible: "Auto"
+
+# Seleciona o tema Dark
+- tapOn: "Dark"
+- waitForAnimationToEnd
+
+# Fecha o bottom sheet
+- back
+
+# Reabre para verificar que Dark está selecionado (checkmark aparece)
+- tapOn: "Theme"
+- waitForAnimationToEnd
+- assertVisible: "Dark"
+- back
+
+# Volta ao tema Auto
+- tapOn: "Theme"
+- tapOn: "Auto"
+- back

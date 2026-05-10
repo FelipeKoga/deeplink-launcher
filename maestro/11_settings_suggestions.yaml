@@ -1,0 +1,34 @@
+appId: dev.koga.deeplinklauncher.android
+name: "Configurações — ativar/desativar sugestões"
+---
+- runFlow: setup.yaml
+
+# Abre as configurações (index: 1 = ícone de settings)
+- tapOn:
+    text: "settings"
+    index: 1
+- waitForAnimationToEnd
+
+# Abre o painel de sugestões
+- tapOn: "Suggestions"
+- waitForAnimationToEnd
+
+# Verifica o conteúdo do bottom sheet
+- assertVisible: "Suggestions"
+- assertVisible: "Enable suggestions"
+
+# Desativa sugestões
+- tapOn: "Enable suggestions"
+- waitForAnimationToEnd
+
+# Fecha o bottom sheet
+- back
+
+# Reabre para verificar que o estado foi salvo
+- tapOn: "Suggestions"
+- waitForAnimationToEnd
+- assertVisible: "Enable suggestions"
+
+# Reativa sugestões
+- tapOn: "Enable suggestions"
+- back
