@@ -6,6 +6,7 @@ internal sealed interface DeepLinkDetailsAction
 
 internal sealed interface LaunchAction : DeepLinkDetailsAction {
     data object Share : LaunchAction
+    data object PinToHomeScreen : LaunchAction
     data object Launch : LaunchAction
     data object ToggleFavorite : LaunchAction
     data object Duplicate : LaunchAction

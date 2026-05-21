@@ -21,11 +21,14 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import compose.icons.TablerIcons
 import compose.icons.tablericons.ExternalLink
+import compose.icons.tablericons.Home
 import compose.icons.tablericons.Pencil
 import compose.icons.tablericons.Share
 import dev.koga.deeplinklauncher.deeplink.impl.ui.deeplinkdetails.state.LaunchAction
 import dev.koga.deeplinklauncher.designsystem.button.DLLIconButton
+import dev.koga.deeplinklauncher.platform.Platform
 import dev.koga.deeplinklauncher.platform.canShareContent
+import dev.koga.deeplinklauncher.platform.currentPlatform
 import dev.koga.resources.Res
 import dev.koga.resources.ic_duplicate_24dp
 import org.jetbrains.compose.resources.painterResource
@@ -54,6 +57,16 @@ internal fun DetailsBottomActions(
                 Icon(
                     imageVector = TablerIcons.Share,
                     contentDescription = "Share",
+                    tint = MaterialTheme.colorScheme.onSurface,
+                )
+            }
+        }
+
+        if (currentPlatform == Platform.ANDROID) {
+            DLLIconButton(onClick = { onAction(LaunchAction.PinToHomeScreen) }) {
+                Icon(
+                    imageVector = TablerIcons.Home,
+                    contentDescription = "Add to home screen",
                     tint = MaterialTheme.colorScheme.onSurface,
                 )
             }

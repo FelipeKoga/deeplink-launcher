@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.tooling.preview.PreviewScreenSizes
 import dev.koga.deeplinklauncher.deeplink.api.model.DeepLink
+import dev.koga.deeplinklauncher.deeplink.api.model.DeepLinkListItem
 import dev.koga.deeplinklauncher.designsystem.theme.DLLPreviewTheme
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
@@ -14,7 +15,7 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 fun DeepLinkCardPreview() {
     DLLPreviewTheme {
         DeepLinkCard(
-            deepLink = DeepLink.previewNotFavorite,
+            item = DeepLinkListItem(deepLink = DeepLink.previewNotFavorite),
             onClick = {},
             onLaunch = {},
             onFolderClicked = {},
@@ -30,7 +31,7 @@ fun DeepLinkCardPreview() {
 fun DeepLinkCardShowFolderPreview() {
     DLLPreviewTheme {
         DeepLinkCard(
-            deepLink = DeepLink.previewFavorite,
+            item = DeepLinkListItem(deepLink = DeepLink.previewFavorite),
             onClick = {},
             onLaunch = {},
             onFolderClicked = {},

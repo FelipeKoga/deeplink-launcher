@@ -1,3 +1,5 @@
+@file:OptIn(ExperimentalCoroutinesApi::class)
+
 package dev.koga.deeplinklauncher.deeplink.impl.ui.folderdetails
 
 import androidx.lifecycle.SavedStateHandle
@@ -5,15 +7,20 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
 import dev.koga.deeplinklauncher.deeplink.api.model.DeepLink
+import dev.koga.deeplinklauncher.deeplink.api.model.toListItems
 import dev.koga.deeplinklauncher.deeplink.api.repository.FolderRepository
 import dev.koga.deeplinklauncher.deeplink.api.ui.navigation.DeepLinkRouteEntryPoint
+import dev.koga.deeplinklauncher.deeplink.api.usecase.GetDeepLinkHandlerIcon
 import dev.koga.deeplinklauncher.deeplink.api.usecase.LaunchDeepLink
 import dev.koga.deeplinklauncher.navigation.AppNavigator
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toPersistentList
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
@@ -23,6 +30,7 @@ import kotlinx.coroutines.launch
 internal class FolderDetailsViewModel(
     savedStateHandle: SavedStateHandle,
     private val repository: FolderRepository,
+    private val getDeepLinkHandlerIcon: GetDeepLinkHandlerIcon,
     private val launchDeepLink: LaunchDeepLink,
     private val appNavigator: AppNavigator,
 ) : ViewModel() {
@@ -40,11 +48,17 @@ internal class FolderDetailsViewModel(
         },
     )
 
-    private val deepLinks = repository.getFolderDeepLinksStream(folderId).stateIn(
-        scope = viewModelScope,
-        started = SharingStarted.WhileSubscribed(),
-        initialValue = emptyList(),
-    )
+    private val deepLinks = repository.getFolderDeepLinksStream(folderId)
+        .flatMapLatest { links ->
+            flow {
+                emit(links.toListItems(getDeepLinkHandlerIcon))
+            }
+        }
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(),
+            initialValue = emptyList(),
+        )
 
     val uiState = combine(
         form,

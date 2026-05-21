@@ -212,15 +212,16 @@ internal fun FolderDetailsScreenContent(
 
         items(
             count = uiState.deepLinks.size,
-            key = { uiState.deepLinks[it].id },
+            key = { uiState.deepLinks[it].deepLink.id },
         ) { index ->
-            val deepLink = uiState.deepLinks[index]
+            val item = uiState.deepLinks[index]
+            val deepLink = item.deepLink
 
             DeepLinkCard(
                 modifier = Modifier
                     .padding(start = 12.dp, end = 12.dp, bottom = 12.dp)
                     .animateItem(),
-                deepLink = deepLink,
+                item = item,
                 onClick = {
                     onNavigate(
                         DeepLinkRouteEntryPoint.DeepLinkDetails(id = deepLink.id, showFolder = false),

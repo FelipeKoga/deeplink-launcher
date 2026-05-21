@@ -33,6 +33,7 @@ import androidx.compose.ui.unit.dp
 import compose.icons.TablerIcons
 import compose.icons.tablericons.Plus
 import dev.koga.deeplinklauncher.deeplink.api.model.DeepLink
+import dev.koga.deeplinklauncher.deeplink.api.model.DeepLinkListItem
 import dev.koga.deeplinklauncher.deeplink.api.model.Folder
 import dev.koga.deeplinklauncher.deeplink.uicomponent.DeepLinkCard
 import dev.koga.deeplinklauncher.deeplink.uicomponent.FolderCard
@@ -43,7 +44,7 @@ import kotlinx.collections.immutable.ImmutableList
 fun DeepLinksLazyColumn(
     modifier: Modifier = Modifier,
     listState: LazyGridState,
-    deepLinks: List<DeepLink>,
+    deepLinks: List<DeepLinkListItem>,
     contentPadding: PaddingValues,
     onClick: (DeepLink) -> Unit,
     onLaunch: (DeepLink) -> Unit,
@@ -63,13 +64,14 @@ fun DeepLinksLazyColumn(
     ) {
         items(
             count = deepLinks.size,
-            key = { deepLinks[it].id },
+            key = { deepLinks[it].deepLink.id },
         ) { index ->
-            val deepLink = deepLinks[index]
+            val item = deepLinks[index]
+            val deepLink = item.deepLink
 
             DeepLinkCard(
                 modifier = Modifier.animateItem(),
-                deepLink = deepLink,
+                item = item,
                 onClick = { onClick(deepLink) },
                 onLaunch = { onLaunch(deepLink) },
                 onFolderClicked = { onFolderClicked(deepLink.folder!!) },

@@ -6,8 +6,12 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dev.koga.deeplinklauncher.date.currentLocalDateTime
 import dev.koga.deeplinklauncher.deeplink.api.model.DeepLink
+import dev.koga.deeplinklauncher.deeplink.api.model.DeepLinkListItem
+import dev.koga.deeplinklauncher.deeplink.api.model.Folder
+import dev.koga.deeplinklauncher.deeplink.api.model.toListItems
 import dev.koga.deeplinklauncher.deeplink.api.repository.DeepLinkRepository
 import dev.koga.deeplinklauncher.deeplink.api.usecase.GetAutoSuggestionLinks
+import dev.koga.deeplinklauncher.deeplink.api.usecase.GetDeepLinkHandlerIcon
 import dev.koga.deeplinklauncher.deeplink.api.usecase.GetDeepLinksAndFolderStream
 import dev.koga.deeplinklauncher.deeplink.api.usecase.LaunchDeepLink
 import dev.koga.deeplinklauncher.home.state.DeepLinkInputState
@@ -20,6 +24,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.stateIn
@@ -30,6 +35,7 @@ import kotlin.uuid.Uuid
 
 class HomeViewModel(
     getDeepLinksAndFolderStream: GetDeepLinksAndFolderStream,
+    private val getDeepLinkHandlerIcon: GetDeepLinkHandlerIcon,
     private val getAutoSuggestionLinks: GetAutoSuggestionLinks,
     private val deepLinkRepository: DeepLinkRepository,
     private val launchDeepLink: LaunchDeepLink,
@@ -43,6 +49,18 @@ class HomeViewModel(
     private val suggestions = launchInput.mapLatest { getAutoSuggestionLinks(it) }
     private val dataStream = searchInput.flatMapLatest { getDeepLinksAndFolderStream(it) }
 
+    private val enrichedDataStream = dataStream.flatMapLatest { data ->
+        flow {
+            emit(
+                EnrichedData(
+                    deepLinks = data.deepLinks.toListItems(getDeepLinkHandlerIcon),
+                    favorites = data.favorites.toListItems(getDeepLinkHandlerIcon),
+                    folders = data.folders,
+                ),
+            )
+        }
+    }
+
     private val deepLinkInputState =
         combine(launchInput, errorMessage, suggestions, ::DeepLinkInputState)
 
@@ -53,15 +71,15 @@ class HomeViewModel(
     val uiState = combine(
         searchInput,
         deepLinkInputState,
-        dataStream,
+        enrichedDataStream,
         showOnboarding,
-    ) { searchInput, deepLinkInputState, dataStream, showOnboarding ->
+    ) { searchInput, deepLinkInputState, enrichedData, showOnboarding ->
         HomeUiState(
             deepLinkInputState = deepLinkInputState,
             searchInput = searchInput,
-            deepLinks = dataStream.deepLinks.toPersistentList(),
-            favorites = dataStream.favorites.toPersistentList(),
-            folders = dataStream.folders.toPersistentList(),
+            deepLinks = enrichedData.deepLinks.toPersistentList(),
+            favorites = enrichedData.favorites.toPersistentList(),
+            folders = enrichedData.folders.toPersistentList(),
             showOnboarding = showOnboarding,
         )
     }.stateIn(
@@ -139,4 +157,10 @@ class HomeViewModel(
             preferencesDataSource.setShouldHideOnboarding(true)
         }
     }
+
+    private data class EnrichedData(
+        val deepLinks: List<DeepLinkListItem>,
+        val favorites: List<DeepLinkListItem>,
+        val folders: List<Folder>,
+    )
 }

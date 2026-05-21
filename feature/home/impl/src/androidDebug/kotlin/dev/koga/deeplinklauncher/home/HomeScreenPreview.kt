@@ -3,8 +3,6 @@ package dev.koga.deeplinklauncher.home
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.tooling.preview.PreviewScreenSizes
-import dev.koga.deeplinklauncher.deeplink.api.model.DeepLink
-import dev.koga.deeplinklauncher.deeplink.api.model.Folder
 import dev.koga.deeplinklauncher.deeplink.api.model.Suggestion
 import dev.koga.deeplinklauncher.designsystem.theme.DLLPreviewTheme
 import dev.koga.deeplinklauncher.home.state.DeepLinkInputState
@@ -17,33 +15,33 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 @PreviewLightDark
 @Composable
 internal fun HomeUIPreview() {
-    DLLPreviewTheme {
-        HomeUI(
-            uiState = HomeUiState(
-                deepLinks = persistentListOf(
-                    DeepLink.previewFavorite,
-                    DeepLink.previewNotFavorite,
-                    DeepLink.previewNotFavorite,
-                ),
-                favorites = persistentListOf(
-                    DeepLink.previewFavorite,
-                    DeepLink.previewNotFavorite,
-                    DeepLink.previewNotFavorite,
-                ),
-                folders = persistentListOf(
-                    Folder.preview,
-                    Folder.previewOneDeepLinkCount,
-                    Folder.previewOneDeepLinkCount,
-                ),
-                deepLinkInputState = DeepLinkInputState(
-                    text = "https://example.com",
-                ),
-                searchInput = "Search",
-                showOnboarding = true,
-            ),
-            onAction = {},
-        )
-    }
+//    DLLPreviewTheme {
+//        HomeUI(
+//            uiState = HomeUiState(
+//                deepLinks = persistentListOf(
+//                    DeepLink.previewFavorite,
+//                    DeepLink.previewNotFavorite,
+//                    DeepLink.previewNotFavorite,
+//                ),
+//                favorites = persistentListOf(
+//                    DeepLink.previewFavorite,
+//                    DeepLink.previewNotFavorite,
+//                    DeepLink.previewNotFavorite,
+//                ),
+//                folders = persistentListOf(
+//                    Folder.preview,
+//                    Folder.previewOneDeepLinkCount,
+//                    Folder.previewOneDeepLinkCount,
+//                ),
+//                deepLinkInputState = DeepLinkInputState(
+//                    text = "https://example.com",
+//                ),
+//                searchInput = "Search",
+//                showOnboarding = true,
+//            ),
+//            onAction = {},
+//        )
+//    }
 }
 
 @Preview

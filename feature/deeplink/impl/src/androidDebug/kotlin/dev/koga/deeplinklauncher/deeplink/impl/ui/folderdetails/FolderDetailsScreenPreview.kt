@@ -5,6 +5,7 @@ import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.tooling.preview.PreviewScreenSizes
 import dev.koga.deeplinklauncher.deeplink.api.model.DeepLink.Companion.previewFavorite
 import dev.koga.deeplinklauncher.deeplink.api.model.DeepLink.Companion.previewNotFavorite
+import dev.koga.deeplinklauncher.deeplink.api.model.DeepLinkListItem
 import dev.koga.deeplinklauncher.designsystem.theme.DLLPreviewTheme
 import kotlinx.collections.immutable.persistentListOf
 import org.jetbrains.compose.ui.tooling.preview.Preview
@@ -20,8 +21,8 @@ internal fun FolderDetailsUIPreview() {
                 name = "Folder Name",
                 description = "Folder Description",
                 deepLinks = persistentListOf(
-                    previewFavorite,
-                    previewNotFavorite,
+                    DeepLinkListItem(previewFavorite),
+                    DeepLinkListItem(previewNotFavorite),
                 ),
             ),
             onAction = {},
@@ -61,8 +62,8 @@ internal fun FolderDetailsScreenContentPreview() {
                 name = "Folder Name",
                 description = "Folder Description",
                 deepLinks = persistentListOf(
-                    previewFavorite,
-                    previewNotFavorite,
+                    DeepLinkListItem(previewFavorite),
+                    DeepLinkListItem(previewNotFavorite),
                 ),
             ),
             onAction = {},
@@ -82,8 +83,8 @@ internal fun FolderDetailsScreenContentEmptyPreview() {
                 name = "Folder Name",
                 description = "Folder Description",
                 deepLinks = persistentListOf(
-                    previewFavorite,
-                    previewNotFavorite,
+                    DeepLinkListItem(previewFavorite),
+                    DeepLinkListItem(previewNotFavorite),
                 ),
             ),
             onAction = {},

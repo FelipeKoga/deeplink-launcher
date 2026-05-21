@@ -19,6 +19,7 @@ kotlin {
             implementation(projects.core.platform)
             implementation(projects.core.coroutines)
             implementation(projects.core.ui)
+            implementation(projects.core.uiEvent)
 
             implementation(libs.koin.core)
             implementation(libs.koin.viewmodel)

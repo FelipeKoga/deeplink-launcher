@@ -12,6 +12,7 @@ import dev.koga.deeplinklauncher.deeplink.api.repository.FolderRepository
 import dev.koga.deeplinklauncher.deeplink.api.ui.navigation.DeepLinkRouteEntryPoint
 import dev.koga.deeplinklauncher.deeplink.api.usecase.DuplicateDeepLink
 import dev.koga.deeplinklauncher.deeplink.api.usecase.LaunchDeepLink
+import dev.koga.deeplinklauncher.deeplink.api.usecase.PinDeepLinkToHomeScreen
 import dev.koga.deeplinklauncher.deeplink.api.usecase.ShareDeepLink
 import dev.koga.deeplinklauncher.deeplink.api.usecase.ValidateDeepLink
 import dev.koga.deeplinklauncher.deeplink.impl.ui.deeplinkdetails.state.DeepLinkDetailsAction
@@ -20,6 +21,7 @@ import dev.koga.deeplinklauncher.deeplink.impl.ui.deeplinkdetails.state.Duplicat
 import dev.koga.deeplinklauncher.deeplink.impl.ui.deeplinkdetails.state.EditAction
 import dev.koga.deeplinklauncher.deeplink.impl.ui.deeplinkdetails.state.LaunchAction
 import dev.koga.deeplinklauncher.navigation.AppNavigator
+import dev.koga.deeplinklauncher.uievent.SnackBarDispatcher
 import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -35,6 +37,8 @@ internal class DeepLinkDetailsViewModel(
     private val deepLinkRepository: DeepLinkRepository,
     private val launchDeepLink: LaunchDeepLink,
     private val shareDeepLink: ShareDeepLink,
+    private val pinDeepLinkToHomeScreen: PinDeepLinkToHomeScreen,
+    private val snackBarDispatcher: SnackBarDispatcher,
     private val duplicateDeepLink: DuplicateDeepLink,
     private val validateDeepLink: ValidateDeepLink,
     private val coroutineDebouncer: CoroutineDebouncer,
@@ -102,6 +106,7 @@ internal class DeepLinkDetailsViewModel(
             LaunchAction.Edit -> mode.update { Mode.EDIT }
             LaunchAction.Launch -> launch()
             LaunchAction.Share -> share()
+            LaunchAction.PinToHomeScreen -> pinToHomeScreen()
             LaunchAction.ToggleFavorite -> toggleFavorite()
             LaunchAction.NavigateToFolder -> appNavigator.navigate(
                 DeepLinkRouteEntryPoint.FolderDetails(
@@ -175,6 +180,15 @@ internal class DeepLinkDetailsViewModel(
 
     private fun share() {
         shareDeepLink(deepLink.value)
+    }
+
+    private fun pinToHomeScreen() {
+        when (pinDeepLinkToHomeScreen(deepLink.value)) {
+            PinDeepLinkToHomeScreen.Result.Requested -> Unit
+            PinDeepLinkToHomeScreen.Result.NotSupported -> {
+                snackBarDispatcher.show("Pinning shortcuts is not supported on this device")
+            }
+        }
     }
 
     private fun toggleFolder(folder: Folder) {

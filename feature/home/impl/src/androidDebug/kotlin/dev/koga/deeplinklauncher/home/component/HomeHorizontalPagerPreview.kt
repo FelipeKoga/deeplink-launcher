@@ -6,8 +6,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.tooling.preview.PreviewScreenSizes
 import androidx.compose.ui.unit.dp
-import dev.koga.deeplinklauncher.deeplink.api.model.DeepLink.Companion.previewFavorite
-import dev.koga.deeplinklauncher.deeplink.api.model.DeepLink.Companion.previewNotFavorite
 import dev.koga.deeplinklauncher.deeplink.api.model.Folder
 import dev.koga.deeplinklauncher.designsystem.theme.DLLPreviewTheme
 import kotlinx.collections.immutable.persistentListOf
@@ -18,20 +16,20 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 @PreviewLightDark
 @Composable
 internal fun DeepLinksLazyColumnPreview() {
-    DLLPreviewTheme {
-        DeepLinksLazyColumn(
-            listState = rememberLazyGridState(),
-            deepLinks = listOf(
-                previewFavorite,
-                previewNotFavorite,
-                previewNotFavorite,
-            ),
-            contentPadding = PaddingValues(0.dp),
-            onClick = {},
-            onLaunch = {},
-            onFolderClicked = {},
-        )
-    }
+//    DLLPreviewTheme {
+//        DeepLinksLazyColumn(
+//            listState = rememberLazyGridState(),
+//            deepLinks = listOf(
+//                previewFavorite,
+//                previewNotFavorite,
+//                previewNotFavorite,
+//            ),
+//            contentPadding = PaddingValues(0.dp),
+//            onClick = {},
+//            onLaunch = {},
+//            onFolderClicked = {},
+//        )
+//    }
 }
 
 @Preview
