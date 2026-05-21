@@ -14,6 +14,23 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 @PreviewScreenSizes
 @PreviewLightDark
 @Composable
+internal fun DeepLinkDetailsLaunchUIPreview() {
+    DLLPreviewTheme {
+        DeepLinkDetailsUI(
+            uiState = DeepLinkDetailsUiState.Launch(
+                deepLink = previewFavorite,
+                iconPng = null,
+            ),
+            onAction = {},
+            onShowDeleteConfirmation = {},
+        )
+    }
+}
+
+@Preview
+@PreviewScreenSizes
+@PreviewLightDark
+@Composable
 internal fun DeepLinkDetailsUIPreview() {
     DLLPreviewTheme {
         DeepLinkDetailsUI(

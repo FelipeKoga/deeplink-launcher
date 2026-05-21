@@ -73,7 +73,7 @@ internal fun DeepLinkDetailsUI(
 
                         is DeepLinkDetailsUiState.Launch -> LaunchModeUI(
                             modifier = Modifier,
-                            uiState = uiState,
+                            uiState = target,
                             onAction = onAction,
                         )
                     }

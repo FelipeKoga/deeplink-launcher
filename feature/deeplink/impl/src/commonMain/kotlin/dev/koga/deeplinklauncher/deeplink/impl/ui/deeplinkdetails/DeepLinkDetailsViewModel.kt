@@ -1,3 +1,5 @@
+@file:OptIn(ExperimentalCoroutinesApi::class)
+
 package dev.koga.deeplinklauncher.deeplink.impl.ui.deeplinkdetails
 
 import androidx.lifecycle.SavedStateHandle
@@ -11,6 +13,7 @@ import dev.koga.deeplinklauncher.deeplink.api.repository.DeepLinkRepository
 import dev.koga.deeplinklauncher.deeplink.api.repository.FolderRepository
 import dev.koga.deeplinklauncher.deeplink.api.ui.navigation.DeepLinkRouteEntryPoint
 import dev.koga.deeplinklauncher.deeplink.api.usecase.DuplicateDeepLink
+import dev.koga.deeplinklauncher.deeplink.api.usecase.GetDeepLinkHandlerIcon
 import dev.koga.deeplinklauncher.deeplink.api.usecase.LaunchDeepLink
 import dev.koga.deeplinklauncher.deeplink.api.usecase.PinDeepLinkToHomeScreen
 import dev.koga.deeplinklauncher.deeplink.api.usecase.ShareDeepLink
@@ -23,10 +26,13 @@ import dev.koga.deeplinklauncher.deeplink.impl.ui.deeplinkdetails.state.LaunchAc
 import dev.koga.deeplinklauncher.navigation.AppNavigator
 import dev.koga.deeplinklauncher.uievent.SnackBarDispatcher
 import kotlinx.collections.immutable.toPersistentList
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -35,6 +41,7 @@ internal class DeepLinkDetailsViewModel(
     savedStateHandle: SavedStateHandle,
     folderRepository: FolderRepository,
     private val deepLinkRepository: DeepLinkRepository,
+    private val getDeepLinkHandlerIcon: GetDeepLinkHandlerIcon,
     private val launchDeepLink: LaunchDeepLink,
     private val shareDeepLink: ShareDeepLink,
     private val pinDeepLinkToHomeScreen: PinDeepLinkToHomeScreen,
@@ -70,9 +77,12 @@ internal class DeepLinkDetailsViewModel(
         duplicateErrorMessage,
         deepLinkErrorMessage,
         mode,
-    ) { folders, deepLink, duplicateErrorMessage, deepLinkErrorMessage, mode ->
+    ) { folders, deepLink,duplicateErrorMessage, deepLinkErrorMessage, mode ->
         when (mode) {
-            Mode.LAUNCH -> DeepLinkDetailsUiState.Launch(deepLink)
+            Mode.LAUNCH -> DeepLinkDetailsUiState.Launch(
+                deepLink = deepLink,
+                iconPng = getDeepLinkHandlerIcon(deepLink.link),
+            )
             Mode.EDIT -> DeepLinkDetailsUiState.Edit(
                 deepLink = deepLink,
                 folders = folders.toPersistentList(),

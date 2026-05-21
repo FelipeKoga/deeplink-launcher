@@ -1,9 +1,7 @@
 package dev.koga.deeplinklauncher.deeplink.uicomponent
 
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -19,18 +17,14 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.decodeToImageBitmap
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import compose.icons.TablerIcons
 import compose.icons.tablericons.ExternalLink
-import compose.icons.tablericons.World
 import dev.koga.deeplinklauncher.deeplink.api.model.DeepLinkListItem
 import dev.koga.deeplinklauncher.designsystem.DLLSmallChip
 import dev.koga.deeplinklauncher.designsystem.button.DLLIconButton
@@ -65,7 +59,7 @@ fun DeepLinkCard(
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 DeepLinkHandlerIcon(
-                    icon = { item.iconPng },
+                    iconPng = item.iconPng,
                     modifier = Modifier.size(40.dp),
                 )
 
@@ -114,36 +108,6 @@ fun DeepLinkCard(
                     )
                 }
             }
-        }
-    }
-}
-
-@Composable
-private fun DeepLinkHandlerIcon(
-    icon: () -> ByteArray?,
-    modifier: Modifier = Modifier,
-) {
-    val icon = icon()
-    Box(
-        modifier = modifier.clip(RoundedCornerShape(8.dp)),
-//        color = MaterialTheme.colorScheme.surfaceVariant,
-    ) {
-        if (icon != null) {
-            val imageBitmap = remember(icon()) { icon.decodeToImageBitmap() }
-            Image(
-                bitmap = imageBitmap,
-                contentDescription = null,
-                modifier = Modifier.fillMaxSize(),
-            )
-        } else {
-            Icon(
-                imageVector = TablerIcons.World,
-                contentDescription = null,
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(10.dp),
-                tint = MaterialTheme.colorScheme.onSurfaceVariant,
-            )
         }
     }
 }

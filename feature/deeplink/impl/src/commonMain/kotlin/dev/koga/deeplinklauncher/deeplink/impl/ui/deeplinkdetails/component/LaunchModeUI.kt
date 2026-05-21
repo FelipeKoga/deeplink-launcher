@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -37,6 +38,7 @@ import compose.icons.TablerIcons
 import compose.icons.tablericons.Copy
 import dev.koga.deeplinklauncher.deeplink.impl.ui.deeplinkdetails.state.DeepLinkDetailsUiState
 import dev.koga.deeplinklauncher.deeplink.impl.ui.deeplinkdetails.state.LaunchAction
+import dev.koga.deeplinklauncher.deeplink.uicomponent.DeepLinkHandlerIcon
 import dev.koga.deeplinklauncher.designsystem.DLLSmallChip
 import dev.koga.deeplinklauncher.designsystem.button.DLLIconButton
 import kotlinx.coroutines.delay
@@ -44,7 +46,7 @@ import kotlinx.coroutines.delay
 @Composable
 internal fun LaunchModeUI(
     modifier: Modifier = Modifier,
-    uiState: DeepLinkDetailsUiState,
+    uiState: DeepLinkDetailsUiState.Launch,
     onAction: (LaunchAction) -> Unit,
 ) {
     val clipboardManager = LocalClipboardManager.current
@@ -80,26 +82,39 @@ internal fun LaunchModeUI(
                 .padding(16.dp)
                 .verticalScroll(rememberScrollState()),
         ) {
-            if (!uiState.deepLink.name.isNullOrBlank()) {
-                Text(
-                    text = uiState.deepLink.name.orEmpty(),
-                    style = MaterialTheme.typography.titleLarge.copy(
-                        color = MaterialTheme.colorScheme.secondary,
-                        fontWeight = FontWeight.SemiBold,
-                    ),
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                DeepLinkHandlerIcon(
+                    iconPng = uiState.iconPng,
+                    modifier = Modifier.size(48.dp),
                 )
-            }
 
-            if (!uiState.deepLink.description.isNullOrBlank()) {
-                Spacer(modifier = Modifier.padding(top = 2.dp))
+                Spacer(modifier = Modifier.width(12.dp))
 
-                Text(
-                    text = uiState.deepLink.description.orEmpty(),
-                    style = MaterialTheme.typography.bodySmall.copy(
-                        fontWeight = FontWeight.Normal,
-                        color = MaterialTheme.colorScheme.onBackground,
-                    ),
-                )
+                Column(modifier = Modifier.weight(1f)) {
+                    if (!uiState.deepLink.name.isNullOrBlank()) {
+                        Text(
+                            text = uiState.deepLink.name.orEmpty(),
+                            style = MaterialTheme.typography.titleLarge.copy(
+                                color = MaterialTheme.colorScheme.secondary,
+                                fontWeight = FontWeight.SemiBold,
+                            ),
+                        )
+                    }
+
+                    if (!uiState.deepLink.description.isNullOrBlank()) {
+                        Spacer(modifier = Modifier.padding(top = 2.dp))
+
+                        Text(
+                            text = uiState.deepLink.description.orEmpty(),
+                            style = MaterialTheme.typography.bodySmall.copy(
+                                fontWeight = FontWeight.Normal,
+                                color = MaterialTheme.colorScheme.onBackground,
+                            ),
+                        )
+                    }
+                }
             }
 
             Spacer(modifier = Modifier.padding(top = 12.dp))

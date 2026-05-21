@@ -9,6 +9,7 @@ internal sealed interface DeepLinkDetailsUiState {
 
     data class Launch(
         override val deepLink: DeepLink,
+        val iconPng: ByteArray? = null,
     ) : DeepLinkDetailsUiState
 
     data class Edit(
