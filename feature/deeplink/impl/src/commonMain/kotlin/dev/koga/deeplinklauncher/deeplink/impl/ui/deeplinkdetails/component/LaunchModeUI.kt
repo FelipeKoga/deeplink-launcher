@@ -47,7 +47,7 @@ internal fun LaunchModeUI(
     ) {
         DetailsHeader(
             deepLink = deepLink,
-            iconPng = uiState.iconPng,
+            icon = uiState.icon,
             metadataHost = uiState.metadata.host,
             createdAt = deepLink.createdAt,
         )
@@ -58,7 +58,7 @@ internal fun LaunchModeUI(
             link = deepLink.link,
             metadata = uiState.metadata,
             handlerInfo = uiState.handlerInfo,
-            iconPng = uiState.iconPng,
+            icon = uiState.icon,
             description = deepLink.description,
             folder = deepLink.folder,
             folders = uiState.folders,

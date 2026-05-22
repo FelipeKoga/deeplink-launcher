@@ -3,10 +3,10 @@ package dev.koga.deeplinklauncher.deeplink.impl.ui.deeplinkdetails
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.tooling.preview.PreviewScreenSizes
-import dev.koga.deeplinklauncher.deeplink.api.model.DeepLink.Companion.previewFavorite
-import dev.koga.deeplinklauncher.deeplink.api.model.DeepLinkHandlerInfo
-import dev.koga.deeplinklauncher.deeplink.api.model.DeepLinkMetadata
-import dev.koga.deeplinklauncher.deeplink.api.model.Folder
+import dev.koga.deeplinklauncher.deeplink.api.domain.model.DeepLink.Companion.previewFavorite
+import dev.koga.deeplinklauncher.deeplink.api.domain.model.DeepLinkHandlerInfo
+import dev.koga.deeplinklauncher.deeplink.api.domain.model.DeepLinkMetadata
+import dev.koga.deeplinklauncher.deeplink.api.domain.model.Folder
 import dev.koga.deeplinklauncher.deeplink.impl.ui.deeplinkdetails.state.DeepLinkDetailsUiState
 import dev.koga.deeplinklauncher.designsystem.theme.DLLPreviewTheme
 import kotlinx.collections.immutable.persistentListOf
@@ -34,7 +34,7 @@ internal fun DeepLinkDetailsLaunchUIPreview() {
         DeepLinkDetailsUI(
             uiState = DeepLinkDetailsUiState.Launch(
                 deepLink = previewFavorite,
-                iconPng = null,
+                icon = null,
                 metadata = previewMetadata,
                 handlerInfo = previewHandlerInfo,
             ),

@@ -12,6 +12,7 @@ kotlin {
             implementation(libs.kotlinx.immutable)
 
             implementation(compose.components.uiToolingPreview)
+            implementation(compose.preview)
         }
     }
 }

@@ -5,7 +5,7 @@ import dev.koga.deeplinklauncher.database.di.databaseModule
 import dev.koga.deeplinklauncher.datatransfer.impl.di.dataTransferModule
 import dev.koga.deeplinklauncher.deeplink.impl.di.deepLinkModule
 import dev.koga.deeplinklauncher.file.di.fileModule
-import dev.koga.deeplinklauncher.home.di.homeModule
+import dev.koga.deeplinklauncher.home.impl.di.homeModule
 import dev.koga.deeplinklauncher.navigation.di.navigationModule
 import dev.koga.deeplinklauncher.preferences.di.preferencesModule
 import dev.koga.deeplinklauncher.purchase.api.PurchaseApi

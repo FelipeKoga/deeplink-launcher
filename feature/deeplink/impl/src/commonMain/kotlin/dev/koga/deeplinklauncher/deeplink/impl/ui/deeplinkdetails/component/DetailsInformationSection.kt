@@ -16,17 +16,18 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import dev.koga.deeplinklauncher.deeplink.api.model.DeepLinkHandlerInfo
-import dev.koga.deeplinklauncher.deeplink.api.model.DeepLinkMetadata
+import dev.koga.deeplinklauncher.deeplink.api.domain.model.DeepLinkHandlerInfo
+import dev.koga.deeplinklauncher.deeplink.api.domain.model.DeepLinkMetadata
 import dev.koga.deeplinklauncher.deeplink.uicomponent.DeepLinkHandlerIcon
 import dev.koga.deeplinklauncher.designsystem.DLLHorizontalDivider
 import dev.koga.deeplinklauncher.designsystem.theme.DeepLinkTheme
+import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
 internal fun DetailsInformationContent(
     metadata: DeepLinkMetadata,
     handlerInfo: DeepLinkHandlerInfo,
-    iconPng: ByteArray?,
+    icon: ByteArray?,
     modifier: Modifier = Modifier,
 ) {
     val colors = DeepLinkTheme.colors
@@ -85,7 +86,7 @@ internal fun DetailsInformationContent(
                         horizontalArrangement = Arrangement.spacedBy(8.dp),
                     ) {
                         DeepLinkHandlerIcon(
-                            iconPng = iconPng,
+                            icon = icon,
                             modifier = Modifier.size(20.dp),
                         )
 

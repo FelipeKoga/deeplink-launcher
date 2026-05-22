@@ -15,7 +15,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
 import dev.koga.deeplinklauncher.designsystem.DLLSnackbarHost
 import dev.koga.deeplinklauncher.designsystem.theme.DLLTheme
-import dev.koga.deeplinklauncher.home.navigation.HomeRoute
+import dev.koga.deeplinklauncher.home.impl.ui.navigation.HomeRoute
 import dev.koga.deeplinklauncher.navigation.AppGraph
 import dev.koga.deeplinklauncher.navigation.AppNavigator
 import dev.koga.deeplinklauncher.navigation.AppRoute

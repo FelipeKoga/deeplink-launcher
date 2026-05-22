@@ -30,6 +30,7 @@ kotlin {
             implementation(libs.compose.navigation)
             implementation(libs.material3.windowSizeClass)
             implementation(compose.components.uiToolingPreview)
+            implementation(compose.preview)
         }
 
         jvmMain.dependencies {

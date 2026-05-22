@@ -14,7 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import dev.koga.deeplinklauncher.date.format
-import dev.koga.deeplinklauncher.deeplink.api.model.DeepLink
+import dev.koga.deeplinklauncher.deeplink.api.domain.model.DeepLink
 import dev.koga.deeplinklauncher.deeplink.uicomponent.DeepLinkHandlerIcon
 import dev.koga.deeplinklauncher.designsystem.theme.DeepLinkTheme
 import kotlinx.datetime.LocalDateTime
@@ -24,7 +24,7 @@ private const val addedAtDateFormat = "MMM d, yyyy 'at' h:mm a"
 @Composable
 internal fun DetailsHeader(
     deepLink: DeepLink,
-    iconPng: ByteArray?,
+    icon: ByteArray?,
     metadataHost: String?,
     createdAt: LocalDateTime,
     modifier: Modifier = Modifier,
@@ -42,7 +42,7 @@ internal fun DetailsHeader(
             .padding(horizontal = 16.dp, vertical = 8.dp),
     ) {
         DeepLinkHandlerIcon(
-            iconPng = iconPng,
+            icon = icon,
             modifier = Modifier.size(48.dp),
         )
 

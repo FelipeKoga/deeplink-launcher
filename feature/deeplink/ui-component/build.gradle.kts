@@ -10,9 +10,11 @@ kotlin {
             implementation(projects.feature.deeplink.api)
             implementation(projects.core.resources)
             implementation(projects.core.designsystem)
+            implementation(libs.kotlinx.coroutines.core)
             implementation(libs.composeIcons.tablerIcons)
 
             implementation(compose.components.uiToolingPreview)
+            implementation(compose.preview)
         }
     }
 }

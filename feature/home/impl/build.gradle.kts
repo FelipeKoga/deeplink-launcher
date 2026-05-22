@@ -34,6 +34,7 @@ kotlin {
             implementation(libs.haze.materials)
 
             implementation(compose.components.uiToolingPreview)
+            implementation(compose.preview)
         }
 
         jvmMain.dependencies {

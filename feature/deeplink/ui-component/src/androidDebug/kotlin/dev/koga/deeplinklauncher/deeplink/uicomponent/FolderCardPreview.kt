@@ -3,7 +3,7 @@ package dev.koga.deeplinklauncher.deeplink.uicomponent
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.tooling.preview.PreviewScreenSizes
-import dev.koga.deeplinklauncher.deeplink.api.model.Folder
+import dev.koga.deeplinklauncher.deeplink.api.domain.model.Folder
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Preview

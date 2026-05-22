@@ -2,8 +2,8 @@ package dev.koga.deeplinklauncher.deeplink.impl.ui.deeplinkdetails.component
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.PreviewLightDark
-import dev.koga.deeplinklauncher.deeplink.api.model.DeepLinkHandlerInfo
-import dev.koga.deeplinklauncher.deeplink.api.model.DeepLinkMetadata
+import dev.koga.deeplinklauncher.deeplink.api.domain.model.DeepLinkHandlerInfo
+import dev.koga.deeplinklauncher.deeplink.api.domain.model.DeepLinkMetadata
 import dev.koga.deeplinklauncher.designsystem.theme.DLLPreviewTheme
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
@@ -28,7 +28,7 @@ internal fun DetailsInformationContentPreview() {
         DetailsInformationContent(
             metadata = previewMetadata,
             handlerInfo = previewHandlerInfo,
-            iconPng = null,
+            icon = null,
         )
     }
 }
@@ -41,7 +41,7 @@ internal fun DetailsInformationContentCannotResolvePreview() {
         DetailsInformationContent(
             metadata = previewMetadata,
             handlerInfo = DeepLinkHandlerInfo(canResolve = false, appName = null),
-            iconPng = null,
+            icon = null,
         )
     }
 }

@@ -45,9 +45,9 @@ import compose.icons.TablerIcons
 import compose.icons.tablericons.ChevronRight
 import compose.icons.tablericons.Copy
 import compose.icons.tablericons.Plus
-import dev.koga.deeplinklauncher.deeplink.api.model.DeepLinkHandlerInfo
-import dev.koga.deeplinklauncher.deeplink.api.model.DeepLinkMetadata
-import dev.koga.deeplinklauncher.deeplink.api.model.Folder
+import dev.koga.deeplinklauncher.deeplink.api.domain.model.DeepLinkHandlerInfo
+import dev.koga.deeplinklauncher.deeplink.api.domain.model.DeepLinkMetadata
+import dev.koga.deeplinklauncher.deeplink.api.domain.model.Folder
 import dev.koga.deeplinklauncher.designsystem.DLLHorizontalDivider
 import dev.koga.deeplinklauncher.designsystem.theme.DeepLinkTheme
 import kotlinx.collections.immutable.ImmutableList
@@ -60,7 +60,7 @@ internal fun DetailsDeepLinkField(
     link: String,
     metadata: DeepLinkMetadata,
     handlerInfo: DeepLinkHandlerInfo,
-    iconPng: ByteArray?,
+    icon: ByteArray?,
     onCopyLink: () -> Unit,
     description: String? = null,
     folder: Folder? = null,
@@ -219,7 +219,7 @@ internal fun DetailsDeepLinkField(
                         DetailsInformationContent(
                             metadata = metadata,
                             handlerInfo = handlerInfo,
-                            iconPng = iconPng,
+                            icon = icon,
                         )
                     }
                 }

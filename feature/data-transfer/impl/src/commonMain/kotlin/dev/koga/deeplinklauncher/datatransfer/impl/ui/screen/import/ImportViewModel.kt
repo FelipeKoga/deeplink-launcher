@@ -3,7 +3,7 @@ package dev.koga.deeplinklauncher.datatransfer.impl.ui.screen.import
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.darkrockstudios.libraries.mpfilepicker.MPFile
-import dev.koga.deeplinklauncher.datatransfer.domain.usecase.ImportDeepLinks
+import dev.koga.deeplinklauncher.datatransfer.api.domain.usecase.ImportDeepLinks
 import dev.koga.deeplinklauncher.file.GetFileRealPath
 import dev.koga.deeplinklauncher.file.model.FileType
 import dev.koga.deeplinklauncher.navigation.AppNavigator

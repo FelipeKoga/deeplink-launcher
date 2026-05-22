@@ -1,10 +1,10 @@
 package dev.koga.deeplinklauncher.datatransfer.impl.domain.usecase
 
-import dev.koga.deeplinklauncher.datatransfer.domain.usecase.GetDeepLinksJsonPreview
-import dev.koga.deeplinklauncher.datatransfer.impl.domain.dto.dateFormat
+import dev.koga.deeplinklauncher.datatransfer.api.domain.usecase.GetDeepLinksJsonPreview
+import dev.koga.deeplinklauncher.datatransfer.impl.data.dto.dateFormat
 import dev.koga.deeplinklauncher.date.format
-import dev.koga.deeplinklauncher.deeplink.api.repository.DeepLinkRepository
-import dev.koga.deeplinklauncher.deeplink.api.repository.FolderRepository
+import dev.koga.deeplinklauncher.deeplink.api.domain.repository.DeepLinkRepository
+import dev.koga.deeplinklauncher.deeplink.api.domain.repository.FolderRepository
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 

@@ -17,7 +17,7 @@ import dev.koga.deeplinklauncher.designsystem.theme.DeepLinkTheme
 
 @Composable
 fun DeepLinkHandlerIcon(
-    iconPng: ByteArray?,
+    icon: ByteArray?,
     modifier: Modifier = Modifier,
 ) {
     val colors = DeepLinkTheme.colors
@@ -26,8 +26,8 @@ fun DeepLinkHandlerIcon(
     Box(
         modifier = modifier.clip(shapes.icon),
     ) {
-        if (iconPng != null) {
-            val imageBitmap = remember(iconPng) { iconPng.decodeToImageBitmap() }
+        if (icon != null) {
+            val imageBitmap = remember(icon) { icon.decodeToImageBitmap() }
             Image(
                 bitmap = imageBitmap,
                 contentDescription = null,

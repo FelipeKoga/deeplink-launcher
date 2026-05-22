@@ -18,7 +18,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import compose.icons.TablerIcons
 import compose.icons.tablericons.ExternalLink
-import dev.koga.deeplinklauncher.deeplink.api.model.DeepLinkListItem
+import dev.koga.deeplinklauncher.deeplink.api.domain.model.DeepLinkListItem
 import dev.koga.deeplinklauncher.designsystem.DLLOutlinedCard
 import dev.koga.deeplinklauncher.designsystem.DLLSmallChip
 import dev.koga.deeplinklauncher.designsystem.button.DLLIconButton
@@ -50,7 +50,7 @@ fun DeepLinkCard(
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 DeepLinkHandlerIcon(
-                    iconPng = item.iconPng,
+                    icon = item.icon,
                     modifier = Modifier.size(40.dp),
                 )
 

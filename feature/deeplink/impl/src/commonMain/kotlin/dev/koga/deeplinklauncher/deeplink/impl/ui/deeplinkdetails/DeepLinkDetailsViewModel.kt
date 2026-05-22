@@ -7,20 +7,20 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
 import dev.koga.deeplinklauncher.coroutines.CoroutineDebouncer
-import dev.koga.deeplinklauncher.deeplink.api.model.DeepLink
-import dev.koga.deeplinklauncher.deeplink.api.model.Folder
-import dev.koga.deeplinklauncher.deeplink.api.repository.DeepLinkRepository
-import dev.koga.deeplinklauncher.deeplink.api.repository.FolderRepository
+import dev.koga.deeplinklauncher.deeplink.api.domain.model.DeepLink
+import dev.koga.deeplinklauncher.deeplink.api.domain.model.Folder
+import dev.koga.deeplinklauncher.deeplink.api.domain.repository.DeepLinkRepository
+import dev.koga.deeplinklauncher.deeplink.api.domain.repository.FolderRepository
 import dev.koga.deeplinklauncher.deeplink.api.ui.navigation.DeepLinkRouteEntryPoint
-import dev.koga.deeplinklauncher.deeplink.api.usecase.AddDeepLinkToShortcuts
-import dev.koga.deeplinklauncher.deeplink.api.usecase.DuplicateDeepLink
-import dev.koga.deeplinklauncher.deeplink.api.usecase.GetDeepLinkHandlerIcon
-import dev.koga.deeplinklauncher.deeplink.api.usecase.GetDeepLinkHandlerInfo
-import dev.koga.deeplinklauncher.deeplink.api.usecase.GetDeepLinkMetadata
-import dev.koga.deeplinklauncher.deeplink.api.usecase.LaunchDeepLink
-import dev.koga.deeplinklauncher.deeplink.api.usecase.PinDeepLinkToHomeScreen
-import dev.koga.deeplinklauncher.deeplink.api.usecase.ShareDeepLink
-import dev.koga.deeplinklauncher.deeplink.api.usecase.ValidateDeepLink
+import dev.koga.deeplinklauncher.deeplink.api.domain.usecase.AddDeepLinkToShortcuts
+import dev.koga.deeplinklauncher.deeplink.api.domain.usecase.DuplicateDeepLink
+import dev.koga.deeplinklauncher.deeplink.api.domain.usecase.GetDeepLinkHandlerIcon
+import dev.koga.deeplinklauncher.deeplink.api.domain.usecase.GetDeepLinkHandlerInfo
+import dev.koga.deeplinklauncher.deeplink.api.domain.usecase.GetDeepLinkMetadata
+import dev.koga.deeplinklauncher.deeplink.api.domain.usecase.LaunchDeepLink
+import dev.koga.deeplinklauncher.deeplink.api.domain.usecase.PinDeepLinkToHomeScreen
+import dev.koga.deeplinklauncher.deeplink.api.domain.usecase.ShareDeepLink
+import dev.koga.deeplinklauncher.deeplink.api.domain.usecase.ValidateDeepLink
 import dev.koga.deeplinklauncher.deeplink.impl.ui.deeplinkdetails.state.DeepLinkDetailsAction
 import dev.koga.deeplinklauncher.deeplink.impl.ui.deeplinkdetails.state.DeepLinkDetailsUiState
 import dev.koga.deeplinklauncher.deeplink.impl.ui.deeplinkdetails.state.DuplicateAction
@@ -100,7 +100,7 @@ internal class DeepLinkDetailsViewModel(
                 emit(
                     DeepLinkDetailsUiState.Launch(
                         deepLink = input.deepLink,
-                        iconPng = getDeepLinkHandlerIcon(input.deepLink.link),
+                        icon = getDeepLinkHandlerIcon(input.deepLink.link),
                         showFolder = route.showFolder,
                         folders = input.folders.toPersistentList(),
                         metadata = getDeepLinkMetadata(input.deepLink.link),

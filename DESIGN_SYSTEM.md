@@ -1,5 +1,7 @@
 # DeepLink Launcher Design System
 
+For module structure and package conventions, see [MODULARIZATION.md](MODULARIZATION.md).
+
 Styling lives in `core/designsystem` and is exposed via **`DeepLinkTheme`**. Feature code must **not** use `MaterialTheme.colorScheme` or `MaterialTheme.typography`.
 
 ---

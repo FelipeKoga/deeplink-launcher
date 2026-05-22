@@ -1,12 +1,12 @@
 package dev.koga.deeplinklauncher.settings.impl.di
 
 import dev.koga.deeplinklauncher.navigation.NavigationGraph
-import dev.koga.deeplinklauncher.settings.impl.SettingsViewModel
-import dev.koga.deeplinklauncher.settings.impl.apptheme.AppThemeViewModel
-import dev.koga.deeplinklauncher.settings.impl.deletedata.DeleteDataViewModel
-import dev.koga.deeplinklauncher.settings.impl.navigation.SettingsNavigationGraph
-import dev.koga.deeplinklauncher.settings.impl.products.ProductsViewModel
-import dev.koga.deeplinklauncher.settings.impl.suggestions.SuggestionsOptionViewModel
+import dev.koga.deeplinklauncher.settings.impl.ui.SettingsViewModel
+import dev.koga.deeplinklauncher.settings.impl.ui.apptheme.AppThemeViewModel
+import dev.koga.deeplinklauncher.settings.impl.ui.deletedata.DeleteDataViewModel
+import dev.koga.deeplinklauncher.settings.impl.ui.navigation.SettingsNavigationGraph
+import dev.koga.deeplinklauncher.settings.impl.ui.products.ProductsViewModel
+import dev.koga.deeplinklauncher.settings.impl.ui.suggestions.SuggestionsOptionViewModel
 import org.koin.core.module.dsl.singleOf
 import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.bind

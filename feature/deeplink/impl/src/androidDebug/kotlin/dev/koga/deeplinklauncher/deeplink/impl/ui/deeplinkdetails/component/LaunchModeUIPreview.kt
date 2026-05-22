@@ -3,11 +3,11 @@ package dev.koga.deeplinklauncher.deeplink.impl.ui.deeplinkdetails.component
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.tooling.preview.PreviewScreenSizes
-import dev.koga.deeplinklauncher.deeplink.api.model.DeepLink.Companion.previewFavorite
-import dev.koga.deeplinklauncher.deeplink.api.model.DeepLink.Companion.previewNotFavorite
-import dev.koga.deeplinklauncher.deeplink.api.model.DeepLinkHandlerInfo
-import dev.koga.deeplinklauncher.deeplink.api.model.DeepLinkMetadata
-import dev.koga.deeplinklauncher.deeplink.api.model.Folder
+import dev.koga.deeplinklauncher.deeplink.api.domain.model.DeepLink.Companion.previewFavorite
+import dev.koga.deeplinklauncher.deeplink.api.domain.model.DeepLink.Companion.previewNotFavorite
+import dev.koga.deeplinklauncher.deeplink.api.domain.model.DeepLinkHandlerInfo
+import dev.koga.deeplinklauncher.deeplink.api.domain.model.DeepLinkMetadata
+import dev.koga.deeplinklauncher.deeplink.api.domain.model.Folder
 import dev.koga.deeplinklauncher.deeplink.impl.ui.deeplinkdetails.state.DeepLinkDetailsUiState
 import dev.koga.deeplinklauncher.designsystem.theme.DLLPreviewTheme
 import kotlinx.collections.immutable.persistentListOf
@@ -95,7 +95,7 @@ internal fun DetailsHeaderPreview() {
     DLLPreviewTheme {
         DetailsHeader(
             deepLink = previewFavorite,
-            iconPng = null,
+            icon = null,
             metadataHost = previewMetadata.host,
             createdAt = previewFavorite.createdAt,
         )
@@ -111,7 +111,7 @@ internal fun DetailsDeepLinkFieldPreview() {
             link = previewMetadata.link,
             metadata = previewMetadata,
             handlerInfo = previewHandlerInfo,
-            iconPng = null,
+            icon = null,
             description = previewFavorite.description,
             onCopyLink = {},
         )
@@ -127,7 +127,7 @@ internal fun DetailsDeepLinkFieldWithFolderPreview() {
             link = previewMetadata.link,
             metadata = previewMetadata,
             handlerInfo = previewHandlerInfo,
-            iconPng = null,
+            icon = null,
             folder = Folder.preview,
             onCopyLink = {},
             onFolderClick = {},
@@ -144,7 +144,7 @@ internal fun DetailsDeepLinkFieldWithoutFolderPreview() {
             link = previewMetadata.link,
             metadata = previewMetadata,
             handlerInfo = previewHandlerInfo,
-            iconPng = null,
+            icon = null,
             folders = persistentListOf(
                 Folder.preview,
                 Folder.previewOneDeepLinkCount,
