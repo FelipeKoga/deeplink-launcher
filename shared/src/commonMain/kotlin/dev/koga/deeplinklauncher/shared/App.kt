@@ -4,7 +4,6 @@ import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -14,6 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
+import dev.koga.deeplinklauncher.designsystem.DLLSnackbarHost
 import dev.koga.deeplinklauncher.designsystem.theme.DLLTheme
 import dev.koga.deeplinklauncher.home.navigation.HomeRoute
 import dev.koga.deeplinklauncher.navigation.AppGraph
@@ -61,7 +61,7 @@ fun App() {
     ) {
         Scaffold(
             snackbarHost = {
-                SnackbarHost(snackBarHostState)
+                DLLSnackbarHost(snackBarHostState)
             },
         ) {
             NavHost(

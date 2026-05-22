@@ -18,7 +18,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -40,6 +39,7 @@ import dev.koga.deeplinklauncher.designsystem.DLLHorizontalDivider
 import dev.koga.deeplinklauncher.designsystem.DLLSingleChoiceSegmentedButtonRow
 import dev.koga.deeplinklauncher.designsystem.DLLTopBar
 import dev.koga.deeplinklauncher.designsystem.DLLTopBarDefaults
+import dev.koga.deeplinklauncher.designsystem.button.DLLButton
 import dev.koga.deeplinklauncher.designsystem.theme.DeepLinkTheme
 import dev.koga.deeplinklauncher.file.model.FileType
 import dev.koga.deeplinklauncher.file.model.getByLabel
@@ -82,10 +82,10 @@ internal fun ImportUI(
         topBar = {
             DLLTopBar(
                 title = {
-                    DLLTopBarDefaults.title("Import DeepLinks")
+                    DLLTopBarDefaults.Title("Import DeepLinks")
                 },
                 navigationIcon = {
-                    DLLTopBarDefaults.navigationIcon(onClicked = onBack)
+                    DLLTopBarDefaults.NavigationIcon(onClicked = onBack)
                 },
             )
         },
@@ -195,12 +195,11 @@ fun ImportFooter(modifier: Modifier = Modifier, onBrowse: () -> Unit) {
     ) {
         DLLHorizontalDivider()
 
-        Button(
-            modifier = Modifier.fillMaxWidth().padding(24.dp),
+        DLLButton(
             onClick = onBrowse,
-        ) {
-            Text(text = "Browse file")
-        }
+            text = "Browse file",
+            modifier = Modifier.fillMaxWidth().padding(24.dp),
+        )
     }
 }
 

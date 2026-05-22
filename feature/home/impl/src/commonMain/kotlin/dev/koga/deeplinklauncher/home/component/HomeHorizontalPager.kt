@@ -17,7 +17,6 @@ import androidx.compose.foundation.lazy.grid.LazyGridScope
 import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Text
@@ -129,6 +128,7 @@ fun FoldersVerticalStaggeredGrid(
         else -> 2
     }
     val colors = DeepLinkTheme.colors
+    val shapes = DeepLinkTheme.shapes
 
     LazyVerticalGrid(
         columns = GridCells.Fixed(numberOfColumns),
@@ -141,7 +141,7 @@ fun FoldersVerticalStaggeredGrid(
         item {
             OutlinedCard(
                 onClick = onAdd,
-                shape = RoundedCornerShape(24.dp),
+                shape = shapes.cardLarge,
                 border = BorderStroke(1.dp, colors.border.default),
             ) {
                 Column(

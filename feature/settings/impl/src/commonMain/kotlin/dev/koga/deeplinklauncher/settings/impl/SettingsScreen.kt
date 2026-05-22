@@ -1,14 +1,9 @@
 package dev.koga.deeplinklauncher.settings.impl
 
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -22,6 +17,7 @@ import compose.icons.tablericons.ChevronRight
 import compose.icons.tablericons.ExternalLink
 import dev.koga.deeplinklauncher.datatransfer.ui.navigation.DataTransferRoute
 import dev.koga.deeplinklauncher.designsystem.DLLHorizontalDivider
+import dev.koga.deeplinklauncher.designsystem.DLLListItem
 import dev.koga.deeplinklauncher.designsystem.DLLTopBar
 import dev.koga.deeplinklauncher.designsystem.DLLTopBarDefaults
 import dev.koga.deeplinklauncher.designsystem.theme.DeepLinkTheme
@@ -87,7 +83,7 @@ internal fun SettingsUI(
             DLLTopBar(
                 title = { },
                 navigationIcon = {
-                    DLLTopBarDefaults.navigationIcon(onClicked = onBack)
+                    DLLTopBarDefaults.NavigationIcon(onClicked = onBack)
                 },
             )
         },
@@ -108,7 +104,7 @@ internal fun SettingsUI(
             }
 
             item {
-                SettingsListItem(
+                DLLListItem(
                     title = "Theme",
                     description = "Customize the appearance of the app",
                     onClick = onShowAppTheme,
@@ -122,7 +118,7 @@ internal fun SettingsUI(
             }
 
             item {
-                SettingsListItem(
+                DLLListItem(
                     title = "Suggestions",
                     description = "Enable or disable deeplink suggestions when typing a deeplink",
                     onClick = onShowSuggestionsOption,
@@ -136,7 +132,7 @@ internal fun SettingsUI(
             }
 
             item {
-                SettingsListItem(
+                DLLListItem(
                     title = "Export",
                     description = "Export all your data to a file",
                     onClick = onNavigateToExport,
@@ -150,7 +146,7 @@ internal fun SettingsUI(
             }
 
             item {
-                SettingsListItem(
+                DLLListItem(
                     title = "Import",
                     description = "Import data from a file",
                     onClick = onNavigateToImport,
@@ -164,7 +160,7 @@ internal fun SettingsUI(
             }
 
             item {
-                SettingsListItem(
+                DLLListItem(
                     title = "Delete data",
                     description = "Choose between deleting all deeplinks, folder or both",
                     onClick = onShowDeleteDataBottomSheet,
@@ -193,7 +189,7 @@ internal fun SettingsUI(
 
             if (isPurchaseAvailable) {
                 item {
-                    SettingsListItem(
+                    DLLListItem(
                         title = "Buy me a coffee!",
                         description = "Check out the source code on GitHub and contribute!",
                         onClick = onShowProducts,
@@ -208,7 +204,7 @@ internal fun SettingsUI(
             }
 
             item {
-                SettingsListItem(
+                DLLListItem(
                     title = "This project is open-source!",
                     description = "Check out the source code on GitHub and contribute!",
                     onClick = onNavigateToGithub,
@@ -223,7 +219,7 @@ internal fun SettingsUI(
 
             item {
                 when (currentPlatform) {
-                    Platform.ANDROID -> SettingsListItem(
+                    Platform.ANDROID -> DLLListItem(
                         title = "Review on the Play Store",
                         description = "Enjoying the app? Please leave a review. Your feedback helps a lot!",
                         onClick = onNavigateToStore,
@@ -235,7 +231,7 @@ internal fun SettingsUI(
                         },
                     )
 
-                    Platform.JVM -> SettingsListItem(
+                    Platform.JVM -> DLLListItem(
                         title = "Download our Android app!",
                         description = "Need the app on your phone? Get it now from the Play Store!",
                         onClick = onNavigateToStore,
@@ -252,7 +248,7 @@ internal fun SettingsUI(
             }
 
             item {
-                SettingsListItem(
+                DLLListItem(
                     title = "Open-source licenses",
                     description = "View the open-source licenses for the libraries that make this app possible",
                     onClick = onNavigateToOpenSourceLicenses,
@@ -265,38 +261,5 @@ internal fun SettingsUI(
                 )
             }
         }
-    }
-}
-
-@Composable
-internal fun SettingsListItem(
-    title: String,
-    description: String,
-    trailingContent: @Composable () -> Unit,
-    onClick: () -> Unit = {},
-) {
-    val typography = DeepLinkTheme.typography
-
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clickable(onClick = onClick)
-            .padding(vertical = 16.dp, horizontal = 12.dp),
-    ) {
-        Column(modifier = Modifier.weight(1f)) {
-            Text(
-                text = title,
-                style = typography.body.emphasis,
-            )
-
-            Text(
-                text = description,
-                style = typography.body.small,
-            )
-        }
-
-        Spacer(modifier = Modifier.width(8.dp))
-
-        trailingContent()
     }
 }

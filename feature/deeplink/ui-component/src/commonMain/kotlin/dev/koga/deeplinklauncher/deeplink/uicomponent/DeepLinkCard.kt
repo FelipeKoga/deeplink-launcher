@@ -1,6 +1,5 @@
 package dev.koga.deeplinklauncher.deeplink.uicomponent
 
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -10,20 +9,17 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
-import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import compose.icons.TablerIcons
 import compose.icons.tablericons.ExternalLink
 import dev.koga.deeplinklauncher.deeplink.api.model.DeepLinkListItem
+import dev.koga.deeplinklauncher.designsystem.DLLOutlinedCard
 import dev.koga.deeplinklauncher.designsystem.DLLSmallChip
 import dev.koga.deeplinklauncher.designsystem.button.DLLIconButton
 import dev.koga.deeplinklauncher.designsystem.theme.DeepLinkTheme
@@ -41,13 +37,7 @@ fun DeepLinkCard(
     val typography = DeepLinkTheme.typography
     val deepLink = item.deepLink
 
-    OutlinedCard(
-        shape = RoundedCornerShape(16.dp),
-        border = BorderStroke(1.dp, colors.border.subtle),
-        colors = CardDefaults.outlinedCardColors(
-            containerColor = Color.Transparent,
-            contentColor = colors.text.primary,
-        ),
+    DLLOutlinedCard(
         onClick = onClick,
         modifier = modifier,
     ) {
@@ -82,7 +72,7 @@ fun DeepLinkCard(
 
                     Text(
                         text = deepLink.link,
-                        style = typography.title.card,
+                        style = typography.title.card.copy(color = colors.text.primary),
                         maxLines = 3,
                     )
 

@@ -5,6 +5,7 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.Dp
+import dev.koga.deeplinklauncher.designsystem.theme.DeepLinkTheme
 
 @Composable
 fun DLLHorizontalDivider(
@@ -14,5 +15,6 @@ fun DLLHorizontalDivider(
     HorizontalDivider(
         modifier = modifier,
         thickness = thickness,
+        color = DeepLinkTheme.colors.border.subtle,
     )
 }

@@ -8,9 +8,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.Switch
@@ -32,6 +30,7 @@ import dev.koga.deeplinklauncher.deeplink.impl.ui.deeplinkdetails.state.DeepLink
 import dev.koga.deeplinklauncher.deeplink.impl.ui.deeplinkdetails.state.DuplicateAction
 import dev.koga.deeplinklauncher.designsystem.DLLHorizontalDivider
 import dev.koga.deeplinklauncher.designsystem.DLLTextField
+import dev.koga.deeplinklauncher.designsystem.button.DLLButton
 import dev.koga.deeplinklauncher.designsystem.button.DLLIconButton
 import dev.koga.deeplinklauncher.designsystem.theme.DeepLinkTheme
 
@@ -42,6 +41,7 @@ internal fun DuplicateModeUI(
 ) {
     val colors = DeepLinkTheme.colors
     val typography = DeepLinkTheme.typography
+    val shapes = DeepLinkTheme.shapes
     var newLink by rememberSaveable { mutableStateOf(uiState.deepLink.link) }
     var copyAllFields by rememberSaveable { mutableStateOf(true) }
 
@@ -53,7 +53,7 @@ internal fun DuplicateModeUI(
                 label = "Enter new deeplink",
                 value = newLink,
                 onValueChange = { newLink = it },
-                modifier = Modifier.clip(RoundedCornerShape(12.dp)),
+                modifier = Modifier.clip(shapes.dialog),
                 keyboardOptions = KeyboardOptions.Default.copy(
                     imeAction = ImeAction.Done,
                 ),
@@ -108,18 +108,14 @@ internal fun DuplicateModeUI(
 
         DLLHorizontalDivider()
 
-        Button(
+        DLLButton(
+            onClick = { onAction(DuplicateAction.Duplicate(newLink, copyAllFields)) },
+            text = "Duplicate",
             modifier = Modifier
                 .align(Alignment.CenterHorizontally)
                 .fillMaxWidth(0.5f)
                 .padding(24.dp),
-            onClick = { onAction(DuplicateAction.Duplicate(newLink, copyAllFields)) },
-        ) {
-            Text(
-                text = "Duplicate",
-                style = typography.action.button,
-            )
-        }
+        )
     }
 }
 

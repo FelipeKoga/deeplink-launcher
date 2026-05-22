@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
 import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
@@ -28,6 +27,7 @@ internal fun HomeTabRow(
 ) {
     val scope = rememberCoroutineScope()
     val colors = DeepLinkTheme.colors
+    val shapes = DeepLinkTheme.shapes
 
     TabRow(
         selectedTabIndex = pagerState.currentPage,
@@ -50,7 +50,7 @@ internal fun HomeTabRow(
             val selected = it.ordinal == pagerState.currentPage
             Tab(
                 selected = selected,
-                modifier = Modifier.clip(RoundedCornerShape(topStart = 8.dp, topEnd = 8.dp)),
+                modifier = Modifier.clip(shapes.tab),
                 onClick = {
                     scope.launch {
                         pagerState.animateScrollToPage(it.ordinal)

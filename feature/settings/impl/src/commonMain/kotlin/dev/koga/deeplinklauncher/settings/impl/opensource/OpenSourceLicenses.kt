@@ -25,10 +25,10 @@ fun OpenSourceLicensesScreen(
         topBar = {
             DLLTopBar(
                 title = {
-                    DLLTopBarDefaults.title("Open Source Licenses")
+                    DLLTopBarDefaults.Title("Open Source Licenses")
                 },
                 navigationIcon = {
-                    DLLTopBarDefaults.navigationIcon(onClicked = onBack)
+                    DLLTopBarDefaults.NavigationIcon(onClicked = onBack)
                 },
             )
         },

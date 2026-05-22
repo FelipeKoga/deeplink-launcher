@@ -23,7 +23,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.AssistChip
 import androidx.compose.material3.AssistChipDefaults
 import androidx.compose.material3.FilterChip
@@ -74,6 +73,7 @@ internal fun DetailsDeepLinkField(
 ) {
     val colors = DeepLinkTheme.colors
     val typography = DeepLinkTheme.typography
+    val shapes = DeepLinkTheme.shapes
     var isExpanded by rememberSaveable { mutableStateOf(false) }
     var isFolderPickerExpanded by rememberSaveable { mutableStateOf(false) }
     val chevronRotation by animateFloatAsState(
@@ -98,7 +98,7 @@ internal fun DetailsDeepLinkField(
                 .animateContentSize(
                     animationSpec = tween(durationMillis = ExpandAnimationDurationMs),
                 ),
-            shape = RoundedCornerShape(12.dp),
+            shape = shapes.dialog,
             color = colors.surface.background,
             border = BorderStroke(
                 width = 1.dp,
@@ -115,7 +115,7 @@ internal fun DetailsDeepLinkField(
                 ) {
                     Column(
                         modifier = Modifier
-                            .weight(1f)
+                            .weight(1f),
                     ) {
                         Text(
                             text = "Deeplink",
@@ -192,7 +192,6 @@ internal fun DetailsDeepLinkField(
 
                 DLLHorizontalDivider(thickness = .5.dp)
 
-
                 DetailsExpandableInfoToggle(
                     isExpanded = isExpanded,
                     chevronRotation = chevronRotation,
@@ -258,7 +257,7 @@ private fun DetailsFolderSection(
             verticalAlignment = Alignment.CenterVertically,
         ) {
             Column(
-                modifier = Modifier.weight(1f)
+                modifier = Modifier.weight(1f),
             ) {
                 Text(
                     text = "Folder",

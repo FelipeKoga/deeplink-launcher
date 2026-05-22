@@ -10,14 +10,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.pager.PagerState
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.rounded.ArrowBack
-import androidx.compose.material3.DockedSearchBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.SearchBarDefaults
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -34,9 +28,8 @@ import androidx.compose.ui.unit.dp
 import compose.icons.TablerIcons
 import compose.icons.tablericons.Search
 import compose.icons.tablericons.Settings
-import compose.icons.tablericons.X
+import dev.koga.deeplinklauncher.designsystem.DLLSearchBar
 import dev.koga.deeplinklauncher.designsystem.DLLTopBar
-import dev.koga.deeplinklauncher.designsystem.theme.DeepLinkTheme
 import dev.koga.deeplinklauncher.designsystem.button.DLLIconButton
 import kotlinx.coroutines.delay
 
@@ -107,7 +100,15 @@ internal fun HomeTopBar(
                 targetOffsetX = { fullWidth -> fullWidth },
             ),
         ) {
-            HomeSearchBar(
+            DLLSearchBar(
+                query = search,
+                onQueryChange = onSearch,
+                onClose = {
+                    isSearching = false
+                    focusRequester.freeFocus()
+                    onSearch("")
+                },
+                placeholder = "Search for deeplinks and folders",
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(
@@ -118,71 +119,7 @@ internal fun HomeTopBar(
                     )
                     .statusBarsPadding()
                     .focusRequester(focusRequester),
-                value = search,
-                onSearch = onSearch,
-                onClose = {
-                    isSearching = false
-                    focusRequester.freeFocus()
-                    onSearch("")
-                },
             )
         }
     }
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-internal fun HomeSearchBar(
-    modifier: Modifier = Modifier,
-    value: String,
-    onSearch: (String) -> Unit,
-    onClose: () -> Unit,
-) {
-    val colors = DeepLinkTheme.colors
-
-    DockedSearchBar(
-        modifier = modifier,
-        colors = SearchBarDefaults.colors(
-            containerColor = colors.surface.muted,
-            inputFieldColors = TextFieldDefaults.colors(
-                unfocusedContainerColor = colors.surface.muted,
-                focusedContainerColor = colors.surface.muted,
-            ),
-        ),
-        tonalElevation = 0.dp,
-        query = value,
-        placeholder = {
-            Text(
-                text = "Search for deeplinks and folders",
-                style = DeepLinkTheme.typography.body.default,
-            )
-        },
-        onSearch = onSearch,
-        active = false,
-        content = {},
-        onActiveChange = {},
-        onQueryChange = onSearch,
-        leadingIcon = {
-            DLLIconButton(
-                onClick = onClose,
-            ) {
-                Icon(
-                    imageVector = Icons.AutoMirrored.Rounded.ArrowBack,
-                    contentDescription = "Back",
-                )
-            }
-        },
-        trailingIcon = {
-            AnimatedVisibility(visible = value.isNotEmpty()) {
-                DLLIconButton(
-                    onClick = { onSearch("") },
-                ) {
-                    Icon(
-                        imageVector = TablerIcons.X,
-                        contentDescription = "Clear",
-                    )
-                }
-            }
-        },
-    )
 }

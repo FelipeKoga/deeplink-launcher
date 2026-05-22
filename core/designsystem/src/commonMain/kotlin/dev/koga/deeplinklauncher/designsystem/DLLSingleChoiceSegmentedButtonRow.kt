@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
@@ -26,13 +25,14 @@ fun DLLSingleChoiceSegmentedButtonRow(
 ) {
     val colors = DeepLinkTheme.colors
     val typography = DeepLinkTheme.typography
+    val shapes = DeepLinkTheme.shapes
     val scrollState = rememberScrollState()
 
     Row(
         modifier = modifier.horizontalScroll(scrollState).border(
             width = 1.dp,
             color = colors.border.default,
-            shape = RoundedCornerShape(24.dp),
+            shape = shapes.field,
         ),
         horizontalArrangement = Arrangement.Center,
     ) {

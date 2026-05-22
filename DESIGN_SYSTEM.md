@@ -10,6 +10,8 @@ Styling lives in `core/designsystem` and is exposed via **`DeepLinkTheme`**. Fea
 shared/App.kt → DLLTheme(isDarkTheme)
   ├── LocalDeepLinkColors      → DeepLinkTheme.colors
   ├── LocalDeepLinkTypography  → DeepLinkTheme.typography
+  ├── LocalDimensions          → DeepLinkTheme.dimensions
+  ├── LocalDeepLinkShapes      → DeepLinkTheme.shapes
   └── MaterialTheme            (internal M3 bridge only)
 ```
 
@@ -18,8 +20,8 @@ shared/App.kt → DLLTheme(isDarkTheme)
 | `Colors.kt` | Semantic color tokens (light/dark) |
 | `Typography.kt` | Semantic text styles by UI role |
 | `Font.kt` | Nunito + internal `materialTypography()` |
-| `Shape.kt` | M3 shapes (via `MaterialTheme.shapes`) |
-| `Dimensions.kt` | `LocalDimensions` spacing (limited use) |
+| `Shape.kt` | Semantic shapes + M3 `Shapes` bridge |
+| `Dimensions.kt` | Spacing tokens via `DeepLinkTheme.dimensions` |
 | `DLL*.kt` | Shared components wired to `DeepLinkTheme` |
 
 Palette: zinc/neutral. Light bg `#FFFFFF`, dark bg `#09090B`.
@@ -33,6 +35,8 @@ Palette: zinc/neutral. Light bg `#FFFFFF`, dark bg `#09090B`.
 fun MyScreen() {
     val colors = DeepLinkTheme.colors
     val typography = DeepLinkTheme.typography
+    val dimensions = DeepLinkTheme.dimensions
+    val shapes = DeepLinkTheme.shapes
 
     Text(
         text = "Hello",
@@ -42,7 +46,7 @@ fun MyScreen() {
 ```
 
 **Rules:**
-1. Declare `colors` and `typography` at composable top when styling UI.
+1. Declare `colors`, `typography`, `dimensions`, and `shapes` at composable top when styling UI.
 2. Apply color via `.copy(color = colors.*)` — typography tokens have no embedded color.
 3. Use semantic tokens, not raw `Color(...)`, `TextStyle(...)`, or M3 theme accessors.
 4. Prefer `DLL*` components before raw M3.
@@ -75,7 +79,9 @@ Source: `core/designsystem/.../theme/Colors.kt`
 
 ### `border` — `subtle` | `default` | `strong`
 
-### `button` — `primaryBackground`/`primaryContent`, `secondaryBackground`/`secondaryContent`
+### `button` — `primaryBackground`/`primaryContent`, `secondaryBackground`/`secondaryContent`, `textContent`/`textDestructiveContent`, `destructiveBackground`/`destructiveContent`
+
+### `chip` — `background`/`content`/`border`, `destructiveContent`/`destructiveBorder`, `accentContent`
 
 ### `status` — `errorBackground`/`errorContent`, `successBackground`/`successContent`
 
@@ -92,7 +98,9 @@ Source: `core/designsystem/.../theme/Colors.kt`
 | Card border | `border.default` |
 | Primary CTA fill | `button.primaryBackground` |
 | Accent icon / link | `surface.primary` |
-| Delete flow | `status.errorBackground` + `status.errorContent` |
+| Delete flow | `button.destructiveBackground` + `button.destructiveContent` |
+| Destructive text action | `button.textDestructiveContent` |
+| Destructive chip | `chip.destructiveContent` + `chip.destructiveBorder` |
 
 **Light mode:** `surface.background` == `surface.card` (both white). Use `surface.elevated` or borders for separation.
 
@@ -121,26 +129,84 @@ Avoid `.copy(fontWeight = ...)` when a token already defines weight. For `Annota
 
 ---
 
+## Spacing — `DeepLinkTheme.dimensions`
+
+Source: `core/designsystem/.../theme/Dimensions.kt`. Provided by `DLLTheme`.
+
+| Token | Value |
+|-------|-------|
+| `small` | 4 dp |
+| `medium` | 8 dp |
+| `mediumLarge` | 12 dp |
+| `large` | 16 dp |
+| `extraLarge` | 24 dp |
+
+Use these instead of magic numbers for padding and spacing.
+
+---
+
+## Shapes — `DeepLinkTheme.shapes`
+
+Source: `core/designsystem/.../theme/Shape.kt`
+
+| Token | Use |
+|-------|-----|
+| `card` | Standard outlined cards (16 dp) |
+| `cardLarge` | Larger cards, e.g. folder grid (24 dp) |
+| `field` | Text fields, segmented controls (24 dp) |
+| `dialog` | Dialogs, code blocks, detail panels (12 dp) |
+| `chip` | Pill/circular chips |
+| `sheet` | Bottom bar / sheet top corners (12 dp) |
+| `tab` | Tab row top corners (8 dp) |
+| `icon` | Icon containers (8 dp) |
+| `small` | Compact controls, dropdowns (4 dp) |
+| `medium` | Badges, small surfaces (6 dp) |
+
+---
+
 ## Components (`core/designsystem`)
 
 | Component | Notes |
 |-----------|-------|
 | `DLLTopBar` | Top bar; uses `title.topBar` |
-| `DLLTextField` | Labeled field; uses `label.field` |
+| `DLLTextField` / `DLLTextFieldDefaults` | Labeled field; uses `label.field`, `shapes.field` |
 | `DLLModalBottomSheet` | Sheet; default `surface.card` |
-| `DLLDialog` | Dialog wrapper |
-| `DLLHorizontalDivider` | Divider |
+| `DLLDialog` | Dialog wrapper; `surface.card`, `shapes.dialog` |
+| `DLLConfirmationDialog` | Title + divider + message + cancel/confirm actions |
+| `DLLHorizontalDivider` | Divider; `border.subtle` |
 | `DLLSmallChip` / `DLLAssistChip` | Chips |
 | `DLLSingleChoiceSegmentedButtonRow` | Segmented control |
-| `DLLIconButton` / `DLLFilledIconButton` / `DLLOutlineIconButton` | Icon buttons |
+| `DLLButton` | Primary / Secondary / Destructive variants (theme-driven) |
+| `DLLTextButton` | Default / Destructive variants (theme-driven) |
+| `DLLOutlinedChip` | Outlined action chip; Default / Destructive / Accent variants |
+| `DLLOutlinedCard` | Outlined card with theme border/shape |
+| `DLLSearchBar` | Docked search bar |
+| `DLLSnackbarHost` | Themed snackbar host |
+| `DLLListItem` | Settings-style title + description + trailing |
+| `DLLCodeBlock` | Monospace JSON/code viewer |
+| `DLLIconButton` / `DLLFilledIconButton` / `DLLOutlinedIconButton` | Icon buttons |
+
+### Button variants
+
+| Variant | Use |
+|---------|-----|
+| `Primary` | Main CTA (Save, Export, Launch) |
+| `Secondary` | Secondary filled actions |
+| `Destructive` | Delete confirmations |
+
+Text button variants: `Default` | `Destructive`
+
+Outlined chip variants: `Default` | `Destructive` | `Accent` (e.g. favorite)
+
+```kotlin
+DLLButton(onClick = { }, text = "Save")
+DLLButton(onClick = { }, text = "Delete", variant = DLLButtonVariant.Destructive)
+DLLTextButton(onClick = { }, text = "Cancel")
+DLLTextButton(onClick = { }, text = "Delete deeplinks only", variant = DLLTextButtonVariant.Destructive)
+DLLOutlinedChip(label = "Delete", icon = TrashIcon, variant = DLLOutlinedChipVariant.Destructive, onClick = { })
+```
 
 New UI reused in 2+ features → add here, wired to `DeepLinkTheme`.
-
----
-
-## Spacing — `LocalDimensions`
-
-`small=4`, `medium=8`, `mediumLarge=12`, `large=16`, `extraLarge=24` dp. Limited adoption. Match nearby padding conventions (4/8/12/16/24) before adding magic numbers.
 
 ---
 
@@ -158,6 +224,8 @@ New UI reused in 2+ features → add here, wired to `DeepLinkTheme`.
 
 **Typography:** add to group in `Typography.kt` → derive from `materialTypography()` → update `toMaterialTypography()` if needed → use in UI.
 
+**Shape / spacing:** add to `DeepLinkShapes` or `Dimensions` → provide via `DLLTheme` → use in components.
+
 **Component:** create in `core/designsystem/`, use `DeepLinkTheme` internally, expose params not M3 reads.
 
 ---
@@ -170,6 +238,9 @@ New UI reused in 2+ features → add here, wired to `DeepLinkTheme`.
 | `MaterialTheme.typography.*` | `DeepLinkTheme.typography.*` |
 | `Color(0xFF...)` in features | Semantic color token |
 | Hardcoded `TextStyle(...)` | Semantic typography token |
+| Hardcoded `RoundedCornerShape(...)` | `DeepLinkTheme.shapes.*` |
+| Hardcoded padding dp values | `DeepLinkTheme.dimensions.*` |
+| Raw `Button` / `TextButton` in features | `DLLButton` / `DLLTextButton` |
 | `import ...theme.typography` from Font.kt | `DeepLinkTheme.typography` |
 
 ---
@@ -180,9 +251,11 @@ New UI reused in 2+ features → add here, wired to `DeepLinkTheme`.
 core/designsystem/.../designsystem/
 ├── theme/Colors.kt, Typography.kt, Font.kt, DLLTheme.kt, DLLPreviewTheme.kt, Shape.kt, Dimensions.kt
 ├── DLLTopBar.kt, DLLTextField.kt, DLLModalBottomSheet.kt, DLLSmallChip.kt, DLLAssistChip.kt
+├── DLLOutlinedCard.kt, DLLOutlinedChip.kt, DLLSearchBar.kt, DLLSnackbar.kt, DLLListItem.kt, DLLCodeBlock.kt
 ├── DLLSingleChoiceSegmentedButtonRow.kt, DLLHorizontalDivider.kt
-├── dialog/DLLDialog.kt
-└── button/DLLIconButton.kt, DLLFilledIconButton.kt, DLLOutlineIconButton.kt
+├── button/DLLButton.kt, DLLTextButton.kt, DLLIconButton.kt, DLLFilledIconButton.kt, DLLOutlineIconButton.kt
+├── dialog/DLLDialog.kt, DLLConfirmationDialog.kt
+└── utils/LazyStaggeredGridScope.kt
 ```
 
 App entry: `shared/.../App.kt` → `DLLTheme { ... }`
@@ -191,9 +264,10 @@ App entry: `shared/.../App.kt` → `DLLTheme { ... }`
 
 ## Agent Checklist
 
-- [ ] Uses `DeepLinkTheme.colors` / `DeepLinkTheme.typography`
+- [ ] Uses `DeepLinkTheme.colors` / `.typography` / `.dimensions` / `.shapes`
 - [ ] No `MaterialTheme.colorScheme` or `MaterialTheme.typography` outside theme layer
 - [ ] No raw hex in feature modules
 - [ ] Text color via `.copy(color = colors.*)`
 - [ ] Previews use `DLLPreviewTheme`
 - [ ] Light/dark surface contrast verified
+- [ ] Prefer `DLLButton` / `DLLTextButton` over raw M3 buttons

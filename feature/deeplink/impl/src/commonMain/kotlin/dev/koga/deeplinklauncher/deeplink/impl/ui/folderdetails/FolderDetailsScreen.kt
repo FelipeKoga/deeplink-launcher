@@ -37,7 +37,6 @@ import dev.koga.deeplinklauncher.designsystem.DLLTopBar
 import dev.koga.deeplinklauncher.designsystem.DLLTopBarDefaults
 import dev.koga.deeplinklauncher.designsystem.button.DLLIconButton
 import dev.koga.deeplinklauncher.designsystem.theme.DeepLinkTheme
-import dev.koga.deeplinklauncher.designsystem.theme.LocalDimensions
 import dev.koga.deeplinklauncher.designsystem.utils.fullLineItem
 import dev.koga.deeplinklauncher.designsystem.utils.spacer
 import dev.koga.deeplinklauncher.navigation.AppNavigator
@@ -82,7 +81,7 @@ internal fun FolderDetailsUI(
             DLLTopBar(
                 title = {},
                 navigationIcon = {
-                    DLLTopBarDefaults.navigationIcon(
+                    DLLTopBarDefaults.NavigationIcon(
                         onClicked = { onNavigate(AppRoute.PopBackStack) },
                     )
                 },
@@ -117,7 +116,7 @@ internal fun FolderDetailsScreenContent(
     onAction: (FolderDetailsAction) -> Unit,
     onNavigate: (DeepLinkRouteEntryPoint) -> Unit,
 ) {
-    val dimensions = LocalDimensions.current
+    val dimensions = DeepLinkTheme.dimensions
     val typography = DeepLinkTheme.typography
 
     val windowSizeClass = calculateWindowSizeSharedClass()

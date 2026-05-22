@@ -18,19 +18,22 @@ import dev.koga.deeplinklauncher.designsystem.theme.DeepLinkTheme
 object DLLTopBarDefaults {
 
     @Composable
-    fun title(
+    fun Title(
         text: String,
         modifier: Modifier = Modifier,
     ) {
+        val colors = DeepLinkTheme.colors
         Text(
             modifier = modifier,
             text = text,
-            style = DeepLinkTheme.typography.title.topBar,
+            style = DeepLinkTheme.typography.title.topBar.copy(
+                color = colors.text.primary,
+            ),
         )
     }
 
     @Composable
-    fun navigationIcon(
+    fun NavigationIcon(
         onClicked: () -> Unit,
         modifier: Modifier = Modifier,
     ) {

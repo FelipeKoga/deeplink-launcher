@@ -4,6 +4,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.tooling.preview.PreviewScreenSizes
+import dev.koga.deeplinklauncher.designsystem.DLLListItem
 import dev.koga.deeplinklauncher.designsystem.theme.DLLPreviewTheme
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.viewmodel.koinViewModel
@@ -70,7 +71,7 @@ internal fun SettingsUIPurchaseNotAvailablePreview() {
 @Composable
 internal fun SettingsListItemPreview() {
     DLLPreviewTheme {
-        SettingsListItem(
+        DLLListItem(
             title = "Title",
             description = "Description",
             trailingContent = {

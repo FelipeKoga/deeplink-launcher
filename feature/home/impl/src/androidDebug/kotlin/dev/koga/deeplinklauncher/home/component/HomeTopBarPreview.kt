@@ -35,17 +35,3 @@ internal fun HomeTopBarPreview() {
         )
     }
 }
-
-@Preview
-@PreviewScreenSizes
-@PreviewLightDark
-@Composable
-internal fun HomeSearchBarPreview() {
-    DLLPreviewTheme {
-        HomeSearchBar(
-            value = "Search",
-            onSearch = {},
-            onClose = {},
-        )
-    }
-}

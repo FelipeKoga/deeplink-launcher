@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -177,6 +176,7 @@ private fun InfoRow(
 private fun ResolveStatusBadge(canResolve: Boolean) {
     val colors = DeepLinkTheme.colors
     val typography = DeepLinkTheme.typography
+    val shapes = DeepLinkTheme.shapes
     val backgroundColor = if (canResolve) {
         colors.status.successBackground
     } else {
@@ -189,7 +189,7 @@ private fun ResolveStatusBadge(canResolve: Boolean) {
     }
 
     Surface(
-        shape = RoundedCornerShape(6.dp),
+        shape = shapes.medium,
         color = backgroundColor,
     ) {
         Text(

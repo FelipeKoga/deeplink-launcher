@@ -6,9 +6,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Snackbar
 import androidx.compose.material3.SnackbarDuration
-import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
@@ -31,6 +29,7 @@ import dev.koga.deeplinklauncher.deeplink.impl.ui.deeplinkdetails.state.DeepLink
 import dev.koga.deeplinklauncher.deeplink.impl.ui.deeplinkdetails.state.DeepLinkDetailsUiState
 import dev.koga.deeplinklauncher.deeplink.impl.ui.deeplinkdetails.state.EditAction
 import dev.koga.deeplinklauncher.designsystem.DLLModalBottomSheet
+import dev.koga.deeplinklauncher.designsystem.DLLSnackbarHost
 import dev.koga.deeplinklauncher.designsystem.theme.DeepLinkTheme
 import kotlinx.coroutines.flow.collectLatest
 
@@ -78,18 +77,9 @@ internal fun DeepLinkDetailsBottomSheet(
                 onShowDeleteConfirmation = { showDeleteConfirmation = true },
             )
 
-            SnackbarHost(
+            DLLSnackbarHost(
                 modifier = Modifier.align(Alignment.BottomCenter),
                 hostState = snackBarHostState,
-                snackbar = {
-                    Snackbar(
-                        snackbarData = it,
-                        containerColor = colors.button.primaryBackground.copy(
-                            alpha = .95f,
-                        ),
-                        contentColor = colors.button.primaryContent,
-                    )
-                },
             )
         }
     }

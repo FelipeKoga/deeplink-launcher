@@ -26,7 +26,6 @@ import dev.koga.deeplinklauncher.designsystem.DLLTextField
 import dev.koga.deeplinklauncher.designsystem.button.DLLFilledIconButton
 import dev.koga.deeplinklauncher.designsystem.button.DLLIconButton
 import dev.koga.deeplinklauncher.designsystem.theme.DeepLinkTheme
-import dev.koga.deeplinklauncher.designsystem.theme.LocalDimensions
 
 @Composable
 internal fun EditableText(
@@ -38,7 +37,7 @@ internal fun EditableText(
     textContent: @Composable () -> Unit,
 ) {
     val colors = DeepLinkTheme.colors
-    val dimensions = LocalDimensions.current
+    val dimensions = DeepLinkTheme.dimensions
 
     var inEditMode by rememberSaveable {
         mutableStateOf(false)

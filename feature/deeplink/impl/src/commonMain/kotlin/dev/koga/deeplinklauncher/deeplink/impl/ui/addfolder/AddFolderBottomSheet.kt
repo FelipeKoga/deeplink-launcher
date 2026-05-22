@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -20,6 +19,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.koga.deeplinklauncher.designsystem.DLLModalBottomSheet
 import dev.koga.deeplinklauncher.designsystem.DLLTextField
+import dev.koga.deeplinklauncher.designsystem.button.DLLButton
 import dev.koga.deeplinklauncher.designsystem.theme.DeepLinkTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -49,6 +49,7 @@ internal fun AddFolderBottomSheetContent(
     onDescriptionChanged: (String) -> Unit,
     onSubmit: () -> Unit,
 ) {
+    val colors = DeepLinkTheme.colors
     val typography = DeepLinkTheme.typography
 
     Column(
@@ -56,7 +57,7 @@ internal fun AddFolderBottomSheetContent(
     ) {
         Text(
             text = "Add folder",
-            style = typography.title.sheet,
+            style = typography.title.sheet.copy(color = colors.text.primary),
         )
 
         Spacer(modifier = Modifier.height(24.dp))
@@ -84,14 +85,13 @@ internal fun AddFolderBottomSheetContent(
 
         Spacer(modifier = Modifier.height(24.dp))
 
-        Button(
+        DLLButton(
             onClick = onSubmit,
+            text = "Save",
             enabled = uiState.isSubmitEnabled,
             modifier = Modifier
                 .align(Alignment.CenterHorizontally)
                 .fillMaxWidth(.6f),
-        ) {
-            Text(text = "Save")
-        }
+        )
     }
 }

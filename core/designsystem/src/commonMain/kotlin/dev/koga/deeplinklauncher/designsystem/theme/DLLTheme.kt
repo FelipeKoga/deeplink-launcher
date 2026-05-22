@@ -31,7 +31,7 @@ private val lightScheme = lightColorScheme(
     error = Color(0xFFEF4444),
     onError = Color(0xFFFAFAFA),
     errorContainer = Color(0xFFFEF2F2),
-    onErrorContainer = Color(0xFF7F1D1D)
+    onErrorContainer = Color(0xFF7F1D1D),
 )
 
 private val darkScheme = darkColorScheme(
@@ -57,7 +57,7 @@ private val darkScheme = darkColorScheme(
     error = Color(0xFFEF4444),
     onError = Color(0xFFFAFAFA),
     errorContainer = Color(0xFF450A0A),
-    onErrorContainer = Color(0xFFFECACA)
+    onErrorContainer = Color(0xFFFECACA),
 )
 
 private val LocalDeepLinkColors = staticCompositionLocalOf<DeepLinkColors> {
@@ -77,6 +77,14 @@ object DeepLinkTheme {
     val typography: DeepLinkTypography
         @Composable
         get() = LocalDeepLinkTypography.current
+
+    val dimensions: Dimensions
+        @Composable
+        get() = LocalDimensions.current
+
+    val shapes: DeepLinkShapes
+        @Composable
+        get() = LocalDeepLinkShapes.current
 }
 
 @Composable
@@ -84,7 +92,6 @@ fun DLLTheme(
     isDarkTheme: Boolean,
     content: @Composable () -> Unit,
 ) {
-
     val colors = if (isDarkTheme) {
         DarkDeepLinkColors
     } else {
@@ -95,6 +102,8 @@ fun DLLTheme(
     CompositionLocalProvider(
         LocalDeepLinkColors provides colors,
         LocalDeepLinkTypography provides typography,
+        LocalDimensions provides Dimensions(),
+        LocalDeepLinkShapes provides defaultDeepLinkShapes,
     ) {
         MaterialTheme(
             colorScheme = if (isDarkTheme) darkScheme else lightScheme,

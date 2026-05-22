@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Icon
@@ -46,10 +45,10 @@ import compose.icons.tablericons.ExternalLink
 import compose.icons.tablericons.X
 import dev.koga.deeplinklauncher.deeplink.api.model.Suggestion
 import dev.koga.deeplinklauncher.designsystem.DLLHorizontalDivider
-import dev.koga.deeplinklauncher.designsystem.theme.DeepLinkTheme
 import dev.koga.deeplinklauncher.designsystem.DLLTextField
+import dev.koga.deeplinklauncher.designsystem.DLLTextFieldDefaults
 import dev.koga.deeplinklauncher.designsystem.button.DLLIconButton
-import dev.koga.deeplinklauncher.designsystem.defaultTextFieldColors
+import dev.koga.deeplinklauncher.designsystem.theme.DeepLinkTheme
 import dev.koga.deeplinklauncher.home.state.DeepLinkInputState
 import kotlinx.coroutines.delay
 
@@ -72,6 +71,7 @@ internal fun HomeBottomBarUI(
     var visible by remember { mutableStateOf(false) }
     val colors = DeepLinkTheme.colors
     val typography = DeepLinkTheme.typography
+    val shapes = DeepLinkTheme.shapes
 
     Column(
         modifier = modifier
@@ -102,7 +102,7 @@ internal fun HomeBottomBarUI(
                     autoCorrectEnabled = false,
                     imeAction = ImeAction.Done,
                 ),
-                colors = defaultTextFieldColors.copy(
+                colors = DLLTextFieldDefaults.colors.copy(
                     unfocusedContainerColor = Color.Transparent,
                     focusedContainerColor = Color.Transparent,
                 ),
@@ -178,7 +178,7 @@ internal fun HomeBottomBarUI(
                     SuggestionListItem(
                         modifier = Modifier
                             .animateItem()
-                            .clip(RoundedCornerShape(8.dp))
+                            .clip(shapes.icon)
                             .clickable {
                                 focusRequester.requestFocus()
                                 onSuggestionClicked(suggestion)

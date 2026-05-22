@@ -7,7 +7,6 @@ import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -15,15 +14,14 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.chrisbanes.haze.HazeState
 import dev.chrisbanes.haze.hazeEffect
 import dev.chrisbanes.haze.hazeSource
 import dev.chrisbanes.haze.materials.ExperimentalHazeMaterialsApi
 import dev.chrisbanes.haze.materials.HazeMaterials
-import dev.koga.deeplinklauncher.designsystem.theme.DeepLinkTheme
 import dev.koga.deeplinklauncher.deeplink.api.ui.navigation.DeepLinkRouteEntryPoint
+import dev.koga.deeplinklauncher.designsystem.theme.DeepLinkTheme
 import dev.koga.deeplinklauncher.home.component.DeepLinksLazyColumn
 import dev.koga.deeplinklauncher.home.component.FoldersVerticalStaggeredGrid
 import dev.koga.deeplinklauncher.home.component.HomeBottomBarUI
@@ -73,6 +71,7 @@ internal fun HomeUI(
     }
 
     val colors = DeepLinkTheme.colors
+    val shapes = DeepLinkTheme.shapes
 
     Scaffold(
         containerColor = colors.surface.background,
@@ -95,7 +94,7 @@ internal fun HomeUI(
         bottomBar = {
             HomeBottomBarUI(
                 modifier = Modifier
-                    .clip(RoundedCornerShape(topStart = 12.dp, topEnd = 12.dp))
+                    .clip(shapes.sheet)
                     .hazeEffect(
                         state = hazeState,
                         style = HazeMaterials.thick(

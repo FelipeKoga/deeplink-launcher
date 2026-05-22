@@ -4,7 +4,6 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -22,9 +21,10 @@ fun DeepLinkHandlerIcon(
     modifier: Modifier = Modifier,
 ) {
     val colors = DeepLinkTheme.colors
+    val shapes = DeepLinkTheme.shapes
 
     Box(
-        modifier = modifier.clip(RoundedCornerShape(8.dp)),
+        modifier = modifier.clip(shapes.icon),
     ) {
         if (iconPng != null) {
             val imageBitmap = remember(iconPng) { iconPng.decodeToImageBitmap() }

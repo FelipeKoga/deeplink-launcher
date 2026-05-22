@@ -5,16 +5,16 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 import dev.koga.deeplinklauncher.designsystem.DLLModalBottomSheet
+import dev.koga.deeplinklauncher.designsystem.button.DLLButton
+import dev.koga.deeplinklauncher.designsystem.button.DLLButtonVariant
+import dev.koga.deeplinklauncher.designsystem.button.DLLTextButton
+import dev.koga.deeplinklauncher.designsystem.button.DLLTextButtonVariant
 import dev.koga.deeplinklauncher.designsystem.theme.DeepLinkTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -37,62 +37,53 @@ internal fun DeleteDataBottomSheetContent(
 ) {
     val colors = DeepLinkTheme.colors
     val typography = DeepLinkTheme.typography
+    val dimensions = DeepLinkTheme.dimensions
 
     Column(
-        modifier = Modifier.padding(24.dp).fillMaxWidth(),
+        modifier = Modifier.padding(dimensions.extraLarge).fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Text(
             text = "Delete data",
-            style = typography.title.sheet,
+            style = typography.title.sheet.copy(color = colors.text.primary),
         )
 
-        Spacer(modifier = Modifier.height(24.dp))
+        Spacer(modifier = Modifier.height(dimensions.extraLarge))
 
         Text(
             text = "Choose an option and press to confirm.",
-            style = typography.body.default,
+            style = typography.body.default.copy(color = colors.text.primary),
         )
 
-        Spacer(modifier = Modifier.height(4.dp))
+        Spacer(modifier = Modifier.height(dimensions.small))
 
         Text(
             text = "This action cannot be undone",
-            style = typography.label.chip,
+            style = typography.label.chip.copy(color = colors.text.muted),
         )
 
-        Spacer(modifier = Modifier.height(24.dp))
+        Spacer(modifier = Modifier.height(dimensions.extraLarge))
 
-        TextButton(
-            colors = ButtonDefaults.outlinedButtonColors(
-                contentColor = colors.text.error,
-            ),
+        DLLTextButton(
             onClick = { onDelete(DeletionType.DEEP_LINKS) },
-        ) {
-            Text(text = "Delete deeplinks only")
-        }
+            text = "Delete deeplinks only",
+            variant = DLLTextButtonVariant.Destructive,
+        )
 
-        Spacer(modifier = Modifier.height(24.dp))
+        Spacer(modifier = Modifier.height(dimensions.extraLarge))
 
-        TextButton(
-            colors = ButtonDefaults.outlinedButtonColors(
-                contentColor = colors.text.error,
-            ),
+        DLLTextButton(
             onClick = { onDelete(DeletionType.FOLDERS) },
-        ) {
-            Text(text = "Delete folders only")
-        }
+            text = "Delete folders only",
+            variant = DLLTextButtonVariant.Destructive,
+        )
 
-        Spacer(modifier = Modifier.height(24.dp))
+        Spacer(modifier = Modifier.height(dimensions.extraLarge))
 
-        ElevatedButton(
+        DLLButton(
             onClick = { onDelete(DeletionType.ALL) },
-            colors = ButtonDefaults.elevatedButtonColors(
-                containerColor = colors.status.errorBackground,
-                contentColor = colors.status.errorContent,
-            ),
-        ) {
-            Text(text = "Delete all")
-        }
+            text = "Delete all",
+            variant = DLLButtonVariant.Destructive,
+        )
     }
 }
