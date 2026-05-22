@@ -29,7 +29,6 @@ import androidx.compose.material3.AssistChipDefaults
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -40,7 +39,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -75,6 +73,7 @@ internal fun DetailsDeepLinkField(
     modifier: Modifier = Modifier,
 ) {
     val colors = DeepLinkTheme.colors
+    val typography = DeepLinkTheme.typography
     var isExpanded by rememberSaveable { mutableStateOf(false) }
     var isFolderPickerExpanded by rememberSaveable { mutableStateOf(false) }
     val chevronRotation by animateFloatAsState(
@@ -120,9 +119,8 @@ internal fun DetailsDeepLinkField(
                     ) {
                         Text(
                             text = "Deeplink",
-                            style = MaterialTheme.typography.labelSmall.copy(
+                            style = typography.label.fieldHeader.copy(
                                 color = colors.text.muted,
-                                fontWeight = FontWeight.Bold,
                             ),
                         )
 
@@ -130,9 +128,8 @@ internal fun DetailsDeepLinkField(
 
                         Text(
                             text = link,
-                            style = MaterialTheme.typography.bodyMedium.copy(
+                            style = typography.code.link.copy(
                                 color = colors.surface.primary,
-                                fontFamily = FontFamily.Monospace,
                             ),
                             maxLines = 5,
                             overflow = TextOverflow.Ellipsis,
@@ -160,15 +157,14 @@ internal fun DetailsDeepLinkField(
                     ) {
                         Text(
                             text = "Notes",
-                            style = MaterialTheme.typography.labelSmall.copy(
+                            style = typography.label.fieldHeader.copy(
                                 color = colors.text.muted,
-                                fontWeight = FontWeight.Bold,
                             ),
                         )
 
                         Text(
                             text = descriptionText,
-                            style = MaterialTheme.typography.bodySmall.copy(
+                            style = typography.body.small.copy(
                                 color = colors.text.primary,
                             ),
                             modifier = Modifier.padding(top = 2.dp),
@@ -245,6 +241,7 @@ private fun DetailsFolderSection(
     onAddFolder: () -> Unit,
 ) {
     val colors = DeepLinkTheme.colors
+    val typography = DeepLinkTheme.typography
 
     Column {
         Row(
@@ -265,15 +262,14 @@ private fun DetailsFolderSection(
             ) {
                 Text(
                     text = "Folder",
-                    style = MaterialTheme.typography.labelSmall.copy(
+                    style = typography.label.fieldHeader.copy(
                         color = colors.text.muted,
-                        fontWeight = FontWeight.Bold,
                     ),
                 )
 
                 Text(
                     text = folder?.name ?: "Add to folder",
-                    style = MaterialTheme.typography.bodySmall.copy(
+                    style = typography.body.small.copy(
                         color = if (folder != null) {
                             colors.text.primary
                         } else {
@@ -342,9 +338,7 @@ private fun DetailsFolderSection(
                             label = {
                                 Text(
                                     text = "Add folder",
-                                    style = MaterialTheme.typography.labelSmall.copy(
-                                        fontWeight = FontWeight.SemiBold,
-                                    ),
+                                    style = typography.label.chip,
                                 )
                             },
                             colors = AssistChipDefaults.assistChipColors(
@@ -362,9 +356,7 @@ private fun DetailsFolderSection(
                             label = {
                                 Text(
                                     text = availableFolder.name,
-                                    style = MaterialTheme.typography.labelSmall.copy(
-                                        fontWeight = FontWeight.SemiBold,
-                                    ),
+                                    style = typography.label.chip,
                                 )
                             },
                             shape = CircleShape,
@@ -392,6 +384,7 @@ private fun DetailsExpandableInfoToggle(
     onToggle: () -> Unit,
 ) {
     val colors = DeepLinkTheme.colors
+    val typography = DeepLinkTheme.typography
     val summaryParts = buildList {
         metadata.scheme?.takeIf { it.isNotBlank() }?.let { add(it) }
         metadata.host?.takeIf { it.isNotBlank() }?.let { add(it) }
@@ -409,16 +402,15 @@ private fun DetailsExpandableInfoToggle(
         Column(modifier = Modifier.weight(1f)) {
             Text(
                 text = "Info",
-                style = MaterialTheme.typography.labelSmall.copy(
+                style = typography.label.fieldHeader.copy(
                     color = colors.text.muted,
-                    fontWeight = FontWeight.Bold,
                 ),
             )
 
             AnimatedVisibility(visible = !isExpanded && summary.isNotBlank()) {
                 Text(
                     text = summary,
-                    style = MaterialTheme.typography.bodySmall.copy(
+                    style = typography.body.small.copy(
                         color = colors.text.muted,
                     ),
                     maxLines = 1,

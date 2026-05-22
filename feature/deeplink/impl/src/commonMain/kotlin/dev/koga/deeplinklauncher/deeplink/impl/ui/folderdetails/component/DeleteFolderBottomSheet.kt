@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilledTonalButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberModalBottomSheetState
@@ -31,6 +30,7 @@ internal fun DeleteFolderBottomSheet(
     onDelete: () -> Unit,
 ) {
     val colors = DeepLinkTheme.colors
+    val typography = DeepLinkTheme.typography
 
     DLLModalBottomSheet(
         onDismiss = onDismissRequest,
@@ -41,9 +41,7 @@ internal fun DeleteFolderBottomSheet(
         Column {
             Text(
                 text = "Delete folder",
-                style = MaterialTheme.typography.titleSmall.copy(
-                    fontWeight = FontWeight.Bold,
-                ),
+                style = typography.title.dialog,
                 modifier = Modifier.padding(24.dp),
             )
 
@@ -52,7 +50,7 @@ internal fun DeleteFolderBottomSheet(
             Text(
                 text = "Are you sure you want to delete this folder? " +
                     "\nNote: The deeplinks vinculated to this folder will not be deleted",
-                style = MaterialTheme.typography.bodyMedium,
+                style = typography.body.default,
                 modifier = Modifier.padding(24.dp),
             )
 

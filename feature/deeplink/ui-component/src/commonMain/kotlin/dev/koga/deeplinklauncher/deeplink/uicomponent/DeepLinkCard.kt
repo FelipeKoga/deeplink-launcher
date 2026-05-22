@@ -13,14 +13,12 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import compose.icons.TablerIcons
@@ -40,6 +38,7 @@ fun DeepLinkCard(
     showFolder: Boolean = true,
 ) {
     val colors = DeepLinkTheme.colors
+    val typography = DeepLinkTheme.typography
     val deepLink = item.deepLink
 
     OutlinedCard(
@@ -71,9 +70,8 @@ fun DeepLinkCard(
                     if (!deepLink.name.isNullOrBlank()) {
                         Text(
                             text = deepLink.name.orEmpty(),
-                            style = MaterialTheme.typography.titleMedium.copy(
+                            style = typography.title.card.copy(
                                 color = colors.text.secondary,
-                                fontWeight = FontWeight.SemiBold,
                             ),
                             maxLines = 2,
                             overflow = TextOverflow.Ellipsis,
@@ -84,9 +82,7 @@ fun DeepLinkCard(
 
                     Text(
                         text = deepLink.link,
-                        style = MaterialTheme.typography.titleMedium.copy(
-                            fontWeight = FontWeight.SemiBold,
-                        ),
+                        style = typography.title.card,
                         maxLines = 3,
                     )
 

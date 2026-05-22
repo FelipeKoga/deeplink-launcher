@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -31,6 +30,7 @@ fun FolderCard(
     onClick: (Folder) -> Unit,
 ) {
     val colors = DeepLinkTheme.colors
+    val typography = DeepLinkTheme.typography
 
     OutlinedCard(
         onClick = { onClick(folder) },
@@ -51,8 +51,7 @@ fun FolderCard(
         ) {
             Text(
                 text = folder.name,
-                style = MaterialTheme.typography.titleSmall.copy(
-                    fontWeight = FontWeight.Bold,
+                style = typography.title.dialog.copy(
                     color = colors.surface.primary,
                 ),
                 maxLines = 2,
@@ -71,7 +70,7 @@ fun FolderCard(
                 } else {
                     "No deeplinks"
                 },
-                style = MaterialTheme.typography.bodySmall.copy(
+                style = typography.body.small.copy(
                     fontWeight = FontWeight.Bold,
                     color = colors.text.secondary,
                 ),

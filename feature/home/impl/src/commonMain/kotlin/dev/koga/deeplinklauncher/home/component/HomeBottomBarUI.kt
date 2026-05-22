@@ -19,7 +19,6 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -72,6 +71,7 @@ internal fun HomeBottomBarUI(
 
     var visible by remember { mutableStateOf(false) }
     val colors = DeepLinkTheme.colors
+    val typography = DeepLinkTheme.typography
 
     Column(
         modifier = modifier
@@ -109,7 +109,7 @@ internal fun HomeBottomBarUI(
                 keyboardActions = KeyboardActions(
                     onDone = { launch() },
                 ),
-                textStyle = MaterialTheme.typography.bodyMedium.copy(
+                textStyle = typography.body.default.copy(
                     fontWeight = FontWeight.Bold,
                 ),
                 trailingIcon = {
@@ -155,9 +155,8 @@ internal fun HomeBottomBarUI(
             Text(
                 text = state.errorMessage.orEmpty(),
                 modifier = Modifier.padding(bottom = 4.dp),
-                style = MaterialTheme.typography.labelMedium.copy(
+                style = typography.label.error.copy(
                     color = colors.text.error,
-                    fontWeight = FontWeight.Bold,
                 ),
             )
         }
@@ -203,6 +202,7 @@ internal fun SuggestionListItem(
     onVisibleChanged: (Boolean) -> Unit = {},
 ) {
     val colors = DeepLinkTheme.colors
+    val typography = DeepLinkTheme.typography
 
     LaunchedEffect(Unit) {
         delay(animationDelay)
@@ -223,7 +223,7 @@ internal fun SuggestionListItem(
                 if (suggestion is Suggestion.Clipboard) {
                     Text(
                         text = "Deeplink from clipboard",
-                        style = MaterialTheme.typography.labelSmall.copy(
+                        style = typography.label.caption.copy(
                             fontWeight = FontWeight.SemiBold,
                             color = colors.text.secondary,
                         ),
@@ -231,9 +231,7 @@ internal fun SuggestionListItem(
                 }
                 Text(
                     text = suggestion.text,
-                    style = MaterialTheme.typography.bodyMedium.copy(
-                        fontWeight = FontWeight.SemiBold,
-                    ),
+                    style = typography.body.emphasis,
                 )
             }
 

@@ -15,7 +15,6 @@ import androidx.compose.material.icons.automirrored.rounded.ArrowBack
 import androidx.compose.material3.DockedSearchBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SearchBarDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
@@ -31,7 +30,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import compose.icons.TablerIcons
 import compose.icons.tablericons.Search
@@ -156,9 +154,7 @@ internal fun HomeSearchBar(
         placeholder = {
             Text(
                 text = "Search for deeplinks and folders",
-                style = MaterialTheme.typography.bodyMedium.copy(
-                    fontWeight = FontWeight.Normal,
-                ),
+                style = DeepLinkTheme.typography.body.default,
             )
         },
         onSearch = onSearch,

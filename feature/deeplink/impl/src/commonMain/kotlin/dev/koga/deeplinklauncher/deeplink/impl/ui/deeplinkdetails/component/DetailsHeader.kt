@@ -7,12 +7,10 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import dev.koga.deeplinklauncher.date.format
@@ -32,6 +30,7 @@ internal fun DetailsHeader(
     modifier: Modifier = Modifier,
 ) {
     val colors = DeepLinkTheme.colors
+    val typography = DeepLinkTheme.typography
     val customName = deepLink.name?.takeIf { it.isNotBlank() }
     val title = customName ?: metadataHost ?: deepLink.link
     val addedAtText = "Added ${createdAt.format(addedAtDateFormat)}"
@@ -52,8 +51,7 @@ internal fun DetailsHeader(
         Column(modifier = Modifier.weight(1f)) {
             Text(
                 text = title,
-                style = MaterialTheme.typography.titleMedium.copy(
-                    fontWeight = FontWeight.SemiBold,
+                style = typography.title.card.copy(
                     color = colors.text.primary,
                 ),
                 maxLines = 1,
@@ -62,7 +60,7 @@ internal fun DetailsHeader(
 
             Text(
                 text = addedAtText,
-                style = MaterialTheme.typography.bodySmall.copy(
+                style = typography.body.small.copy(
                     color = colors.text.muted,
                 ),
                 maxLines = 1,

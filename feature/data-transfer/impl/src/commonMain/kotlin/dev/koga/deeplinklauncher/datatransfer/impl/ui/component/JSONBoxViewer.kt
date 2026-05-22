@@ -13,15 +13,12 @@ import dev.koga.deeplinklauncher.designsystem.theme.DeepLinkTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 
 @Composable
 fun JSONBoxViewer(text: String) {
     val colors = DeepLinkTheme.colors
+    val typography = DeepLinkTheme.typography
 
     Box(
         modifier = Modifier
@@ -40,11 +37,7 @@ fun JSONBoxViewer(text: String) {
         Text(
             text = text,
             modifier = Modifier.padding(24.dp),
-            style = TextStyle(
-                fontFamily = FontFamily.Monospace,
-                fontSize = 14.sp,
-                fontWeight = FontWeight.Normal,
-            ),
+            style = typography.code.block,
         )
     }
 }

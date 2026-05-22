@@ -13,14 +13,12 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.text.AnnotatedString
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import compose.icons.TablerIcons
 import compose.icons.tablericons.ExternalLink
@@ -36,6 +34,7 @@ internal fun LaunchModeUI(
     onShowDeleteConfirmation: () -> Unit,
 ) {
     val colors = DeepLinkTheme.colors
+    val typography = DeepLinkTheme.typography
     val clipboardManager = LocalClipboardManager.current
     val deepLink = uiState.deepLink
 
@@ -103,9 +102,7 @@ internal fun LaunchModeUI(
             ) {
                 Text(
                     text = "Launch",
-                    style = MaterialTheme.typography.labelLarge.copy(
-                        fontWeight = FontWeight.SemiBold,
-                    ),
+                    style = typography.action.button,
                 )
 
                 Spacer(modifier = Modifier.width(8.dp))

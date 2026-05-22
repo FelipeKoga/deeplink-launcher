@@ -7,15 +7,14 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import dev.koga.deeplinklauncher.designsystem.DLLModalBottomSheet
+import dev.koga.deeplinklauncher.designsystem.theme.DeepLinkTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -23,6 +22,8 @@ fun OnboardingBottomSheet(
     modifier: Modifier = Modifier,
     onDismiss: () -> Unit,
 ) {
+    val typography = DeepLinkTheme.typography
+
     DLLModalBottomSheet(
         modifier = modifier,
         onDismiss = onDismiss,
@@ -33,8 +34,7 @@ fun OnboardingBottomSheet(
         ) {
             Text(
                 text = "Welcome!",
-                style = MaterialTheme.typography.titleLarge.copy(
-                    fontWeight = FontWeight.Bold,
+                style = typography.title.sheet.copy(
                     textAlign = TextAlign.Center,
                 ),
             )
@@ -43,9 +43,8 @@ fun OnboardingBottomSheet(
 
             Text(
                 text = "Thank you for trying out DeepLink Launcher.",
-                style = MaterialTheme.typography.titleMedium.copy(
+                style = typography.title.card.copy(
                     textAlign = TextAlign.Center,
-
                 ),
             )
 
@@ -54,9 +53,8 @@ fun OnboardingBottomSheet(
             Text(
                 text = "Please note that data is stored locally on your device. If you wish to keep a backup" +
                     " of your data, you can export it from the settings screen.",
-                style = MaterialTheme.typography.bodyMedium.copy(
+                style = typography.body.emphasis.copy(
                     textAlign = TextAlign.Center,
-                    fontWeight = FontWeight.SemiBold,
                 ),
             )
 

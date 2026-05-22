@@ -64,11 +64,19 @@ private val LocalDeepLinkColors = staticCompositionLocalOf<DeepLinkColors> {
     error("DeepLinkColors not provided")
 }
 
+private val LocalDeepLinkTypography = staticCompositionLocalOf<DeepLinkTypography> {
+    error("DeepLinkTypography not provided")
+}
+
 object DeepLinkTheme {
 
     val colors: DeepLinkColors
         @Composable
         get() = LocalDeepLinkColors.current
+
+    val typography: DeepLinkTypography
+        @Composable
+        get() = LocalDeepLinkTypography.current
 }
 
 @Composable
@@ -82,13 +90,15 @@ fun DLLTheme(
     } else {
         LightDeepLinkColors
     }
+    val typography = rememberDeepLinkTypography()
 
     CompositionLocalProvider(
         LocalDeepLinkColors provides colors,
+        LocalDeepLinkTypography provides typography,
     ) {
         MaterialTheme(
             colorScheme = if (isDarkTheme) darkScheme else lightScheme,
-            typography = typography,
+            typography = typography.toMaterialTypography(),
             shapes = shapes,
             content = content,
         )

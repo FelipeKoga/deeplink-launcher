@@ -5,7 +5,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.LocalTextStyle
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldColors
@@ -25,7 +24,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
@@ -59,6 +57,7 @@ fun DLLTextField(
     leadingIcon: @Composable (() -> Unit)? = null,
 ) {
     val themeColors = DeepLinkTheme.colors
+    val typography = DeepLinkTheme.typography
     var isFocused by remember { mutableStateOf(false) }
     var textFieldValue by remember {
         mutableStateOf(TextFieldValue(text = value))
@@ -90,8 +89,7 @@ fun DLLTextField(
         label = {
             Text(
                 text = label,
-                style = MaterialTheme.typography.labelMedium.copy(
-                    fontWeight = FontWeight.SemiBold,
+                style = typography.label.field.copy(
                     color = themeColors.text.secondary,
                 ),
             )

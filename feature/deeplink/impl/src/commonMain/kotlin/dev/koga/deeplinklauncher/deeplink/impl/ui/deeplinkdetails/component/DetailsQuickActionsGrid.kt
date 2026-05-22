@@ -13,7 +13,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Star
 import androidx.compose.material.icons.rounded.StarOutline
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -22,7 +21,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import compose.icons.TablerIcons
@@ -120,6 +118,7 @@ private fun QuickActionChip(
     destructive: Boolean = false,
 ) {
     val colors = DeepLinkTheme.colors
+    val typography = DeepLinkTheme.typography
     val contentColor = if (destructive) {
         colors.text.error
     } else {
@@ -173,8 +172,7 @@ private fun QuickActionChip(
 
             Text(
                 text = label,
-                style = MaterialTheme.typography.bodySmall.copy(
-                    fontWeight = FontWeight.Normal,
+                style = typography.body.small.copy(
                     color = contentColor,
                 ),
                 maxLines = 1,

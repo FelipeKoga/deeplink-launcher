@@ -8,18 +8,17 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.ListItem
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import compose.icons.TablerIcons
 import compose.icons.tablericons.Check
 import dev.koga.deeplinklauncher.designsystem.DLLModalBottomSheet
+import dev.koga.deeplinklauncher.designsystem.theme.DeepLinkTheme
 import dev.koga.deeplinklauncher.preferences.model.AppTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -29,6 +28,7 @@ fun AppThemeBottomSheet(
     onDismissRequest: () -> Unit,
 ) {
     val appTheme by viewModel.appTheme.collectAsStateWithLifecycle()
+    val typography = DeepLinkTheme.typography
 
     DLLModalBottomSheet(onDismiss = onDismissRequest) {
         Column(
@@ -37,18 +37,14 @@ fun AppThemeBottomSheet(
         ) {
             Text(
                 text = "Theme",
-                style = MaterialTheme.typography.titleLarge.copy(
-                    fontWeight = FontWeight.Bold,
-                ),
+                style = typography.title.sheet,
             )
 
             Spacer(modifier = Modifier.height(12.dp))
 
             Text(
                 text = "Choose an option and press to confirm.",
-                style = MaterialTheme.typography.bodyMedium.copy(
-                    fontWeight = FontWeight.Normal,
-                ),
+                style = typography.body.default,
             )
 
             Spacer(modifier = Modifier.height(24.dp))
@@ -79,6 +75,8 @@ fun AppThemeListItem(
     selected: Boolean,
     onClick: () -> Unit,
 ) {
+    val typography = DeepLinkTheme.typography
+
     ListItem(
         modifier = modifier
             .fillMaxWidth()
@@ -94,9 +92,7 @@ fun AppThemeListItem(
         headlineContent = {
             Text(
                 text = label,
-                style = MaterialTheme.typography.titleSmall.copy(
-                    fontWeight = FontWeight.Bold,
-                ),
+                style = typography.title.dialog,
             )
         },
     )

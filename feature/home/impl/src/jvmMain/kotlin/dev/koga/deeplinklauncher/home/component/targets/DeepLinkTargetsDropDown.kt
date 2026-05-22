@@ -29,10 +29,8 @@ import androidx.compose.ui.input.pointer.PointerEventType
 import androidx.compose.ui.input.pointer.onPointerEvent
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.koga.deeplinklauncher.designsystem.theme.DeepLinkTheme
-import dev.koga.deeplinklauncher.designsystem.theme.typography
 import dev.koga.deeplinklauncher.home.util.ext.hoverIndication
 import org.koin.compose.koinInject
 
@@ -45,6 +43,7 @@ fun DeepLinkTargetsDropDown(
     val uiState by manager.uiState.collectAsStateWithLifecycle()
     var expanded by remember { mutableStateOf(false) }
     val colors = DeepLinkTheme.colors
+    val typography = DeepLinkTheme.typography
 
     ExposedDropdownMenuBox(
         expanded = expanded,
@@ -86,10 +85,7 @@ fun DeepLinkTargetsDropDown(
 
             Text(
                 text = uiState.selected.name,
-                style = typography.labelLarge.copy(
-                    fontWeight = FontWeight.SemiBold,
-                    fontSize = 16.sp,
-                ),
+                style = typography.action.dropdown,
             )
 
             Spacer(Modifier.width(8.dp))
@@ -123,7 +119,7 @@ fun DeepLinkTargetsDropDown(
                     text = {
                         Text(
                             text = target.name,
-                            style = typography.labelLarge.copy(
+                            style = typography.action.button.copy(
                                 fontWeight = if (target.selected) {
                                     FontWeight.Bold
                                 } else {

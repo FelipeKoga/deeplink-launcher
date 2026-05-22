@@ -14,7 +14,6 @@ import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
 import androidx.compose.foundation.lazy.staggeredgrid.rememberLazyStaggeredGridState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
@@ -25,7 +24,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import compose.icons.TablerIcons
@@ -38,6 +36,7 @@ import dev.koga.deeplinklauncher.designsystem.DLLHorizontalDivider
 import dev.koga.deeplinklauncher.designsystem.DLLTopBar
 import dev.koga.deeplinklauncher.designsystem.DLLTopBarDefaults
 import dev.koga.deeplinklauncher.designsystem.button.DLLIconButton
+import dev.koga.deeplinklauncher.designsystem.theme.DeepLinkTheme
 import dev.koga.deeplinklauncher.designsystem.theme.LocalDimensions
 import dev.koga.deeplinklauncher.designsystem.utils.fullLineItem
 import dev.koga.deeplinklauncher.designsystem.utils.spacer
@@ -119,6 +118,7 @@ internal fun FolderDetailsScreenContent(
     onNavigate: (DeepLinkRouteEntryPoint) -> Unit,
 ) {
     val dimensions = LocalDimensions.current
+    val typography = DeepLinkTheme.typography
 
     val windowSizeClass = calculateWindowSizeSharedClass()
 
@@ -142,7 +142,7 @@ internal fun FolderDetailsScreenContent(
             Column(modifier = Modifier.padding(horizontal = 12.dp)) {
                 Text(
                     text = "Name",
-                    style = MaterialTheme.typography.labelSmall,
+                    style = typography.label.caption,
                 )
 
                 Spacer(modifier = Modifier.height(8.dp))
@@ -156,9 +156,7 @@ internal fun FolderDetailsScreenContent(
                 ) {
                     Text(
                         text = uiState.name,
-                        style = MaterialTheme.typography.headlineMedium.copy(
-                            fontWeight = FontWeight.Bold,
-                        ),
+                        style = typography.title.page,
                     )
                 }
 
@@ -166,7 +164,7 @@ internal fun FolderDetailsScreenContent(
 
                 Text(
                     text = "Description",
-                    style = MaterialTheme.typography.labelSmall,
+                    style = typography.label.caption,
                 )
 
                 Spacer(modifier = Modifier.height(8.dp))
@@ -179,9 +177,7 @@ internal fun FolderDetailsScreenContent(
                 ) {
                     Text(
                         text = uiState.description.ifEmpty { "--" },
-                        style = MaterialTheme.typography.bodyMedium.copy(
-                            fontWeight = FontWeight.Normal,
-                        ),
+                        style = typography.body.default,
                     )
                 }
             }
@@ -204,9 +200,7 @@ internal fun FolderDetailsScreenContent(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(start = 12.dp),
-                style = MaterialTheme.typography.labelSmall.copy(
-                    fontWeight = FontWeight.Normal,
-                ),
+                style = typography.label.caption,
             )
         }
 

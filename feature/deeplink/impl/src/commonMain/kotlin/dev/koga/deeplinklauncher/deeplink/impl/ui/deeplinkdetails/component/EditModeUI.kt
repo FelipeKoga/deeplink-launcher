@@ -21,7 +21,6 @@ import androidx.compose.material3.AssistChipDefaults
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -30,7 +29,6 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import compose.icons.TablerIcons
 import compose.icons.tablericons.ArrowLeft
@@ -51,6 +49,7 @@ internal fun EditModeUI(
     onShowDeleteConfirmation: () -> Unit,
 ) {
     val colors = DeepLinkTheme.colors
+    val typography = DeepLinkTheme.typography
     val deepLink = uiState.deepLink
 
     Column(modifier = modifier) {
@@ -91,9 +90,8 @@ internal fun EditModeUI(
             ) {
                 Text(
                     text = uiState.errorMessage.orEmpty(),
-                    style = MaterialTheme.typography.labelMedium.copy(
+                    style = typography.label.error.copy(
                         color = colors.text.error,
-                        fontWeight = FontWeight.Bold,
                     ),
                 )
             }
@@ -119,9 +117,7 @@ internal fun EditModeUI(
                     label = {
                         Text(
                             text = "Add folder",
-                            style = MaterialTheme.typography.labelSmall.copy(
-                                fontWeight = FontWeight.SemiBold,
-                            ),
+                            style = typography.label.chip,
                         )
                     },
                     colors = AssistChipDefaults.assistChipColors(
@@ -141,9 +137,7 @@ internal fun EditModeUI(
                     label = {
                         Text(
                             text = folder.name,
-                            style = MaterialTheme.typography.labelSmall.copy(
-                                fontWeight = FontWeight.SemiBold,
-                            ),
+                            style = typography.label.chip,
                         )
                     },
                     shape = CircleShape,

@@ -8,13 +8,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import dev.koga.deeplinklauncher.designsystem.DLLModalBottomSheet
 import dev.koga.deeplinklauncher.designsystem.theme.DeepLinkTheme
@@ -38,6 +36,7 @@ internal fun DeleteDataBottomSheetContent(
     onDelete: (DeletionType) -> Unit,
 ) {
     val colors = DeepLinkTheme.colors
+    val typography = DeepLinkTheme.typography
 
     Column(
         modifier = Modifier.padding(24.dp).fillMaxWidth(),
@@ -45,27 +44,21 @@ internal fun DeleteDataBottomSheetContent(
     ) {
         Text(
             text = "Delete data",
-            style = MaterialTheme.typography.titleLarge.copy(
-                fontWeight = FontWeight.Bold,
-            ),
+            style = typography.title.sheet,
         )
 
         Spacer(modifier = Modifier.height(24.dp))
 
         Text(
             text = "Choose an option and press to confirm.",
-            style = MaterialTheme.typography.bodyMedium.copy(
-                fontWeight = FontWeight.Normal,
-            ),
+            style = typography.body.default,
         )
 
         Spacer(modifier = Modifier.height(4.dp))
 
         Text(
             text = "This action cannot be undone",
-            style = MaterialTheme.typography.labelSmall.copy(
-                fontWeight = FontWeight.SemiBold,
-            ),
+            style = typography.label.chip,
         )
 
         Spacer(modifier = Modifier.height(24.dp))

@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -26,6 +25,7 @@ fun DLLSingleChoiceSegmentedButtonRow(
     onOptionSelected: (String) -> Unit,
 ) {
     val colors = DeepLinkTheme.colors
+    val typography = DeepLinkTheme.typography
     val scrollState = rememberScrollState()
 
     Row(
@@ -62,7 +62,7 @@ fun DLLSingleChoiceSegmentedButtonRow(
             ) {
                 Text(
                     text = option,
-                    style = MaterialTheme.typography.bodyMedium,
+                    style = typography.body.default,
                 )
             }
         }

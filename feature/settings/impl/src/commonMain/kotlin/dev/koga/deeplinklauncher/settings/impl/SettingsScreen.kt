@@ -12,12 +12,10 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import compose.icons.TablerIcons
 import compose.icons.tablericons.ChevronRight
@@ -82,6 +80,7 @@ internal fun SettingsUI(
     onShowProducts: () -> Unit,
 ) {
     val colors = DeepLinkTheme.colors
+    val typography = DeepLinkTheme.typography
 
     Scaffold(
         topBar = {
@@ -102,8 +101,7 @@ internal fun SettingsUI(
                 Text(
                     text = "Settings",
                     modifier = Modifier.padding(horizontal = 12.dp),
-                    style = MaterialTheme.typography.labelLarge.copy(
-                        fontWeight = FontWeight.Bold,
+                    style = typography.label.section.copy(
                         color = colors.text.placeholder,
                     ),
                 )
@@ -187,8 +185,7 @@ internal fun SettingsUI(
                 Text(
                     text = "About",
                     modifier = Modifier.padding(horizontal = 12.dp),
-                    style = MaterialTheme.typography.labelLarge.copy(
-                        fontWeight = FontWeight.Bold,
+                    style = typography.label.section.copy(
                         color = colors.text.placeholder,
                     ),
                 )
@@ -278,6 +275,8 @@ internal fun SettingsListItem(
     trailingContent: @Composable () -> Unit,
     onClick: () -> Unit = {},
 ) {
+    val typography = DeepLinkTheme.typography
+
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -287,16 +286,12 @@ internal fun SettingsListItem(
         Column(modifier = Modifier.weight(1f)) {
             Text(
                 text = title,
-                style = MaterialTheme.typography.bodyMedium.copy(
-                    fontWeight = FontWeight.Bold,
-                ),
+                style = typography.body.emphasis,
             )
 
             Text(
                 text = description,
-                style = MaterialTheme.typography.bodySmall.copy(
-                    fontWeight = FontWeight.Normal,
-                ),
+                style = typography.body.small,
             )
         }
 

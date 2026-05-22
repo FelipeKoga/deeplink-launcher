@@ -20,7 +20,6 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -112,6 +111,8 @@ internal fun ImportContent(
     selectedType: FileType,
     onOptionSelected: (FileType) -> Unit,
 ) {
+    val typography = DeepLinkTheme.typography
+
     Column(
         modifier = modifier
             .padding(horizontal = 24.dp)
@@ -119,9 +120,7 @@ internal fun ImportContent(
     ) {
         Text(
             "How to Import Data",
-            style = MaterialTheme.typography.titleMedium.copy(
-                fontWeight = FontWeight.Bold,
-            ),
+            style = typography.title.card,
         )
 
         Spacer(modifier = Modifier.height(16.dp))
@@ -149,9 +148,7 @@ internal fun ImportContent(
 
         Text(
             text = headerText,
-            style = MaterialTheme.typography.titleSmall.copy(
-                fontWeight = FontWeight.Normal,
-            ),
+            style = typography.body.small,
         )
 
         Spacer(modifier = Modifier.height(16.dp))
@@ -209,15 +206,15 @@ fun ImportFooter(modifier: Modifier = Modifier, onBrowse: () -> Unit) {
 
 @Composable
 fun JSONTutorial() {
+    val typography = DeepLinkTheme.typography
+
     Column(
         verticalArrangement = Arrangement.spacedBy(8.dp),
     ) {
         Text(
             text = "The most basic JSON format is an object that only " +
                 "contains a link property.",
-            style = MaterialTheme.typography.titleSmall.copy(
-                fontWeight = FontWeight.Normal,
-            ),
+            style = typography.body.small,
         )
 
         JSONBoxViewer(
@@ -226,39 +223,29 @@ fun JSONTutorial() {
 
         Text(
             text = generalPropertiesHint,
-            style = MaterialTheme.typography.titleSmall.copy(
-                fontWeight = FontWeight.Normal,
-            ),
+            style = typography.body.small,
         )
 
         Text(
             text = folderPropertiesHint,
-            style = MaterialTheme.typography.titleSmall.copy(
-                fontWeight = FontWeight.Normal,
-            ),
+            style = typography.body.small,
         )
 
         Text(
             text = uuidHint,
-            style = MaterialTheme.typography.titleSmall.copy(
-                fontWeight = FontWeight.Normal,
-            ),
+            style = typography.body.small,
         )
 
         Text(
             text = createdAtHint,
-            style = MaterialTheme.typography.titleSmall.copy(
-                fontWeight = FontWeight.Normal,
-            ),
+            style = typography.body.small,
         )
 
         Spacer(modifier = Modifier.height(8.dp))
 
         Text(
             text = "JSON structure:",
-            style = MaterialTheme.typography.labelSmall.copy(
-                fontWeight = FontWeight.Normal,
-            ),
+            style = typography.label.caption,
         )
 
         JSONBoxViewer(text = jsonStructurePreview)
@@ -269,13 +256,13 @@ fun JSONTutorial() {
 
 @Composable
 fun PlainTextTutorial() {
+    val typography = DeepLinkTheme.typography
+
     Column {
         Text(
             text = "The plain text format is a simple list of deeplinks, " +
                 "one per line.",
-            style = MaterialTheme.typography.titleSmall.copy(
-                fontWeight = FontWeight.Normal,
-            ),
+            style = typography.body.small,
         )
 
         Spacer(modifier = Modifier.height(8.dp))

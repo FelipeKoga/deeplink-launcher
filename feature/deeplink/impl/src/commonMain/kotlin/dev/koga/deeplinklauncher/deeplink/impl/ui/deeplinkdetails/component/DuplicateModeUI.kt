@@ -13,7 +13,6 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LocalTextStyle
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -42,6 +41,7 @@ internal fun DuplicateModeUI(
     onAction: (DuplicateAction) -> Unit,
 ) {
     val colors = DeepLinkTheme.colors
+    val typography = DeepLinkTheme.typography
     var newLink by rememberSaveable { mutableStateOf(uiState.deepLink.link) }
     var copyAllFields by rememberSaveable { mutableStateOf(true) }
 
@@ -68,9 +68,8 @@ internal fun DuplicateModeUI(
                 Text(
                     text = uiState.errorMessage.orEmpty(),
                     modifier = Modifier.padding(top = 8.dp),
-                    style = MaterialTheme.typography.labelMedium.copy(
+                    style = typography.label.error.copy(
                         color = colors.text.error,
-                        fontWeight = FontWeight.Bold,
                     ),
                 )
             }
@@ -85,16 +84,14 @@ internal fun DuplicateModeUI(
                 Column {
                     Text(
                         text = "Copy all fields",
-                        style = MaterialTheme.typography.bodyMedium.copy(
-                            fontWeight = FontWeight.SemiBold,
+                        style = typography.body.emphasis.copy(
                             color = colors.text.primary,
                         ),
                     )
 
                     Text(
                         text = "All fields will be copied to the new deeplink",
-                        style = MaterialTheme.typography.labelSmall.copy(
-                            fontWeight = FontWeight.Normal,
+                        style = typography.label.caption.copy(
                             color = colors.text.primary,
                         ),
                     )
@@ -120,9 +117,7 @@ internal fun DuplicateModeUI(
         ) {
             Text(
                 text = "Duplicate",
-                style = MaterialTheme.typography.labelMedium.copy(
-                    fontWeight = FontWeight.Bold,
-                ),
+                style = typography.action.button,
             )
         }
     }
