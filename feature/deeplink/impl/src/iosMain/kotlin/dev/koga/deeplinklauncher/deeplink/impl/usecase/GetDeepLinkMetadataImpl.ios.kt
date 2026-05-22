@@ -16,15 +16,17 @@ internal class GetDeepLinkMetadataImpl : GetDeepLinkMetadata {
         ) ?: return DeepLinkMetadata(
             link = link,
             scheme = null,
-            query = null,
             host = null,
+            path = "/",
+            query = null,
         )
 
         return DeepLinkMetadata(
             link = link,
             scheme = components.scheme,
-            query = components.query,
             host = components.host,
+            path = components.path ?: "/",
+            query = components.query,
         )
     }
 }

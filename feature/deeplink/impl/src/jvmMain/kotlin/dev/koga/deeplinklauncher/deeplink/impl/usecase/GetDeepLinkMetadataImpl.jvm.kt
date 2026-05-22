@@ -10,10 +10,22 @@ internal class GetDeepLinkMetadataImpl : GetDeepLinkMetadata {
 
         val remainingLink = link.substringAfter(':', "")
 
-        val host = if (remainingLink.startsWith("//")) {
-            remainingLink.substringAfter("//").substringBefore("?")
+        val host: String?
+        val path: String
+
+        if (remainingLink.startsWith("//")) {
+            val afterAuthority = remainingLink.substringAfter("//")
+            val pathStart = afterAuthority.indexOf('/')
+            if (pathStart == -1) {
+                host = afterAuthority.substringBefore("?").ifEmpty { null }
+                path = "/"
+            } else {
+                host = afterAuthority.substring(0, pathStart).ifEmpty { null }
+                path = afterAuthority.substring(pathStart).substringBefore("?").ifEmpty { "/" }
+            }
         } else {
-            remainingLink.substringBefore("?")
+            host = remainingLink.substringBefore("?").ifEmpty { null }
+            path = "/"
         }
 
         val query = remainingLink.substringAfter("?", "").takeIf { it.isNotBlank() }
@@ -21,7 +33,8 @@ internal class GetDeepLinkMetadataImpl : GetDeepLinkMetadata {
         return DeepLinkMetadata(
             link = link,
             scheme = scheme,
-            host = host.ifEmpty { null },
+            host = host,
+            path = path,
             query = query,
         )
     }

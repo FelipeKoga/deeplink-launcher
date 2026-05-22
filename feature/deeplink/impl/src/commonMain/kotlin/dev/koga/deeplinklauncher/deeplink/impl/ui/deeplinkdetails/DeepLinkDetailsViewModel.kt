@@ -12,8 +12,11 @@ import dev.koga.deeplinklauncher.deeplink.api.model.Folder
 import dev.koga.deeplinklauncher.deeplink.api.repository.DeepLinkRepository
 import dev.koga.deeplinklauncher.deeplink.api.repository.FolderRepository
 import dev.koga.deeplinklauncher.deeplink.api.ui.navigation.DeepLinkRouteEntryPoint
+import dev.koga.deeplinklauncher.deeplink.api.usecase.AddDeepLinkToShortcuts
 import dev.koga.deeplinklauncher.deeplink.api.usecase.DuplicateDeepLink
 import dev.koga.deeplinklauncher.deeplink.api.usecase.GetDeepLinkHandlerIcon
+import dev.koga.deeplinklauncher.deeplink.api.usecase.GetDeepLinkHandlerInfo
+import dev.koga.deeplinklauncher.deeplink.api.usecase.GetDeepLinkMetadata
 import dev.koga.deeplinklauncher.deeplink.api.usecase.LaunchDeepLink
 import dev.koga.deeplinklauncher.deeplink.api.usecase.PinDeepLinkToHomeScreen
 import dev.koga.deeplinklauncher.deeplink.api.usecase.ShareDeepLink
@@ -24,15 +27,16 @@ import dev.koga.deeplinklauncher.deeplink.impl.ui.deeplinkdetails.state.Duplicat
 import dev.koga.deeplinklauncher.deeplink.impl.ui.deeplinkdetails.state.EditAction
 import dev.koga.deeplinklauncher.deeplink.impl.ui.deeplinkdetails.state.LaunchAction
 import dev.koga.deeplinklauncher.navigation.AppNavigator
-import dev.koga.deeplinklauncher.uievent.SnackBarDispatcher
 import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -42,10 +46,12 @@ internal class DeepLinkDetailsViewModel(
     folderRepository: FolderRepository,
     private val deepLinkRepository: DeepLinkRepository,
     private val getDeepLinkHandlerIcon: GetDeepLinkHandlerIcon,
+    private val getDeepLinkMetadata: GetDeepLinkMetadata,
+    private val getDeepLinkHandlerInfo: GetDeepLinkHandlerInfo,
     private val launchDeepLink: LaunchDeepLink,
     private val shareDeepLink: ShareDeepLink,
     private val pinDeepLinkToHomeScreen: PinDeepLinkToHomeScreen,
-    private val snackBarDispatcher: SnackBarDispatcher,
+    private val addDeepLinkToShortcuts: AddDeepLinkToShortcuts,
     private val duplicateDeepLink: DuplicateDeepLink,
     private val validateDeepLink: ValidateDeepLink,
     private val coroutineDebouncer: CoroutineDebouncer,
@@ -71,28 +77,54 @@ internal class DeepLinkDetailsViewModel(
     private val deepLinkErrorMessage = MutableStateFlow<String?>(null)
     private val mode = MutableStateFlow(Mode.LAUNCH)
 
+    private val messageDispatcher = Channel<String>(Channel.UNLIMITED)
+    val messages = messageDispatcher.receiveAsFlow()
+
     val uiState = combine(
         folders,
         deepLink,
         duplicateErrorMessage,
         deepLinkErrorMessage,
         mode,
-    ) { folders, deepLink,duplicateErrorMessage, deepLinkErrorMessage, mode ->
-        when (mode) {
-            Mode.LAUNCH -> DeepLinkDetailsUiState.Launch(
-                deepLink = deepLink,
-                iconPng = getDeepLinkHandlerIcon(deepLink.link),
-            )
-            Mode.EDIT -> DeepLinkDetailsUiState.Edit(
-                deepLink = deepLink,
-                folders = folders.toPersistentList(),
-                errorMessage = deepLinkErrorMessage,
-            )
+    ) { folders, deepLink, duplicateErrorMessage, deepLinkErrorMessage, mode ->
+        UiStateInput(
+            folders = folders,
+            deepLink = deepLink,
+            duplicateErrorMessage = duplicateErrorMessage,
+            deepLinkErrorMessage = deepLinkErrorMessage,
+            mode = mode,
+        )
+    }.flatMapLatest { input ->
+        when (input.mode) {
+            Mode.LAUNCH -> flow {
+                emit(
+                    DeepLinkDetailsUiState.Launch(
+                        deepLink = input.deepLink,
+                        iconPng = getDeepLinkHandlerIcon(input.deepLink.link),
+                        metadata = getDeepLinkMetadata(input.deepLink.link),
+                        handlerInfo = getDeepLinkHandlerInfo(input.deepLink.link),
+                    ),
+                )
+            }
 
-            Mode.DUPLICATE -> DeepLinkDetailsUiState.Duplicate(
-                deepLink = deepLink,
-                errorMessage = duplicateErrorMessage,
-            )
+            Mode.EDIT -> flow {
+                emit(
+                    DeepLinkDetailsUiState.Edit(
+                        deepLink = input.deepLink,
+                        folders = input.folders.toPersistentList(),
+                        errorMessage = input.deepLinkErrorMessage,
+                    ),
+                )
+            }
+
+            Mode.DUPLICATE -> flow {
+                emit(
+                    DeepLinkDetailsUiState.Duplicate(
+                        deepLink = input.deepLink,
+                        errorMessage = input.duplicateErrorMessage,
+                    ),
+                )
+            }
         }
     }.stateIn(
         scope = viewModelScope,
@@ -123,6 +155,8 @@ internal class DeepLinkDetailsViewModel(
                     id = deepLink.value.folder?.id.orEmpty(),
                 ),
             )
+            LaunchAction.NotifyLinkCopied -> messageDispatcher.trySend("Link copied")
+            LaunchAction.AddToShortCut -> addToShortcut()
         }
     }
 
@@ -194,9 +228,22 @@ internal class DeepLinkDetailsViewModel(
 
     private fun pinToHomeScreen() {
         when (pinDeepLinkToHomeScreen(deepLink.value)) {
-            PinDeepLinkToHomeScreen.Result.Requested -> Unit
+            PinDeepLinkToHomeScreen.Result.Requested -> {
+            }
+
             PinDeepLinkToHomeScreen.Result.NotSupported -> {
-                snackBarDispatcher.show("Pinning shortcuts is not supported on this device")
+                messageDispatcher.trySend("Pinning shortcuts is not supported on this device")
+            }
+        }
+    }
+
+    private fun addToShortcut() {
+        when (addDeepLinkToShortcuts(deepLink.value)) {
+            AddDeepLinkToShortcuts.Result.Added -> {
+            }
+
+            AddDeepLinkToShortcuts.Result.NotSupported -> {
+                messageDispatcher.trySend("App shortcuts are not supported on this device")
             }
         }
     }
@@ -247,6 +294,14 @@ internal class DeepLinkDetailsViewModel(
             }
         }
     }
+
+    private data class UiStateInput(
+        val folders: List<Folder>,
+        val deepLink: DeepLink,
+        val duplicateErrorMessage: String?,
+        val deepLinkErrorMessage: String?,
+        val mode: Mode,
+    )
 
     private enum class Mode {
         LAUNCH,

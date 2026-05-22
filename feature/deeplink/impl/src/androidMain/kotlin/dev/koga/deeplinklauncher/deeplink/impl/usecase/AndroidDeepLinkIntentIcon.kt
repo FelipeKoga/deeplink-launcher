@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.drawable.Icon
+import androidx.core.graphics.drawable.IconCompat
 import androidx.core.graphics.drawable.toBitmap
 import androidx.core.net.toUri
 import java.io.ByteArrayOutputStream
@@ -22,6 +23,11 @@ internal fun Context.resolveHandlerIconPng(link: String): ByteArray? {
 internal fun Context.resolveShortcutIcon(intent: Intent): Icon? {
     val drawable = packageManager.resolveActivity(intent, 0)?.loadIcon(packageManager) ?: return null
     return Icon.createWithBitmap(drawable.toBitmap())
+}
+
+internal fun Context.resolveShortcutIconCompat(intent: Intent): IconCompat? {
+    val drawable = packageManager.resolveActivity(intent, 0)?.loadIcon(packageManager) ?: return null
+    return IconCompat.createWithBitmap(drawable.toBitmap())
 }
 
 private fun Bitmap.toPngByteArray(): ByteArray {

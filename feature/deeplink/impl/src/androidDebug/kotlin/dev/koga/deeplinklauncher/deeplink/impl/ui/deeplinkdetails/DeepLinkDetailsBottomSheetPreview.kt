@@ -4,11 +4,26 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.tooling.preview.PreviewScreenSizes
 import dev.koga.deeplinklauncher.deeplink.api.model.DeepLink.Companion.previewFavorite
+import dev.koga.deeplinklauncher.deeplink.api.model.DeepLinkHandlerInfo
+import dev.koga.deeplinklauncher.deeplink.api.model.DeepLinkMetadata
 import dev.koga.deeplinklauncher.deeplink.api.model.Folder
 import dev.koga.deeplinklauncher.deeplink.impl.ui.deeplinkdetails.state.DeepLinkDetailsUiState
 import dev.koga.deeplinklauncher.designsystem.theme.DLLPreviewTheme
 import kotlinx.collections.immutable.persistentListOf
 import org.jetbrains.compose.ui.tooling.preview.Preview
+
+private val previewMetadata = DeepLinkMetadata(
+    link = "https://google.com",
+    scheme = "https",
+    host = "google.com",
+    path = "/",
+    query = null,
+)
+
+private val previewHandlerInfo = DeepLinkHandlerInfo(
+    canResolve = true,
+    appName = "Chrome",
+)
 
 @Preview
 @PreviewScreenSizes
@@ -20,6 +35,8 @@ internal fun DeepLinkDetailsLaunchUIPreview() {
             uiState = DeepLinkDetailsUiState.Launch(
                 deepLink = previewFavorite,
                 iconPng = null,
+                metadata = previewMetadata,
+                handlerInfo = previewHandlerInfo,
             ),
             onAction = {},
             onShowDeleteConfirmation = {},

@@ -11,8 +11,9 @@ internal class GetDeepLinkMetadataImpl : GetDeepLinkMetadata {
         return DeepLinkMetadata(
             link = link,
             scheme = uri.scheme,
-            query = uri.query,
             host = uri.host,
+            path = uri.path ?: "/",
+            query = uri.query,
         )
     }
 }

@@ -7,6 +7,8 @@ import androidx.compose.material3.SheetState
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -17,14 +19,16 @@ fun DLLModalBottomSheet(
     sheetState: SheetState = rememberModalBottomSheetState(
         skipPartiallyExpanded = true,
     ),
+    containerColor: Color = MaterialTheme.colorScheme.surface,
+    tonalElevation: Dp = 0.dp,
     content: @Composable () -> Unit,
 ) {
     ModalBottomSheet(
         modifier = modifier,
         sheetState = sheetState,
         onDismissRequest = onDismiss,
-        containerColor = MaterialTheme.colorScheme.surface,
-        tonalElevation = 0.dp,
+        containerColor = containerColor,
+        tonalElevation = tonalElevation,
     ) {
         content()
     }
