@@ -41,6 +41,7 @@ import dev.koga.deeplinklauncher.designsystem.DLLHorizontalDivider
 import dev.koga.deeplinklauncher.designsystem.DLLSingleChoiceSegmentedButtonRow
 import dev.koga.deeplinklauncher.designsystem.DLLTopBar
 import dev.koga.deeplinklauncher.designsystem.DLLTopBarDefaults
+import dev.koga.deeplinklauncher.designsystem.theme.DeepLinkTheme
 import dev.koga.deeplinklauncher.file.model.FileType
 import dev.koga.deeplinklauncher.file.model.getByLabel
 import dev.koga.deeplinklauncher.file.model.label
@@ -76,6 +77,8 @@ internal fun ImportUI(
     onBack: () -> Unit,
     onOptionSelected: (FileType) -> Unit,
 ) {
+    val colors = DeepLinkTheme.colors
+
     Scaffold(
         topBar = {
             DLLTopBar(
@@ -87,7 +90,7 @@ internal fun ImportUI(
                 },
             )
         },
-        containerColor = MaterialTheme.colorScheme.background,
+        containerColor = colors.surface.background,
     ) { contentPadding ->
         Column(modifier = Modifier.padding(contentPadding).fillMaxSize()) {
             ImportContent(

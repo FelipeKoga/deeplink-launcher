@@ -19,12 +19,15 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import dev.koga.deeplinklauncher.designsystem.DLLHorizontalDivider
 import dev.koga.deeplinklauncher.designsystem.dialog.DLLDialog
+import dev.koga.deeplinklauncher.designsystem.theme.DeepLinkTheme
 
 @Composable
 internal fun DeepLinkDeleteConfirmationDialog(
     onDismissRequest: () -> Unit,
     onDelete: () -> Unit,
 ) {
+    val colors = DeepLinkTheme.colors
+
     DLLDialog(
         onDismissRequest = onDismissRequest,
     ) {
@@ -66,8 +69,8 @@ internal fun DeepLinkDeleteConfirmationDialog(
                     onClick = onDelete,
                     modifier = Modifier.padding(end = 12.dp),
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = MaterialTheme.colorScheme.errorContainer,
-                        contentColor = MaterialTheme.colorScheme.onErrorContainer,
+                        containerColor = colors.status.errorBackground,
+                        contentColor = colors.status.errorContent,
                     ),
                 ) {
                     Text(text = "Delete")

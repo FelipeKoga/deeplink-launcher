@@ -13,13 +13,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import dev.koga.deeplinklauncher.designsystem.theme.DeepLinkTheme
 
 @Composable
 fun DLLSmallChip(modifier: Modifier = Modifier, label: String, onClick: () -> Unit) {
+    val colors = DeepLinkTheme.colors
     Box(
         modifier = modifier
             .clip(CircleShape)
-            .background(MaterialTheme.colorScheme.surfaceVariant)
+            .background(colors.surface.muted)
             .clickable { onClick() }
             .padding(horizontal = 8.dp, vertical = 4.dp),
     ) {
@@ -28,7 +30,7 @@ fun DLLSmallChip(modifier: Modifier = Modifier, label: String, onClick: () -> Un
             modifier = Modifier.align(Alignment.Center),
             style = MaterialTheme.typography.labelMedium.copy(
                 fontWeight = FontWeight.SemiBold,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                color = colors.text.muted,
             ),
         )
     }

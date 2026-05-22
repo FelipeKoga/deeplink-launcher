@@ -47,6 +47,7 @@ import compose.icons.tablericons.ExternalLink
 import compose.icons.tablericons.X
 import dev.koga.deeplinklauncher.deeplink.api.model.Suggestion
 import dev.koga.deeplinklauncher.designsystem.DLLHorizontalDivider
+import dev.koga.deeplinklauncher.designsystem.theme.DeepLinkTheme
 import dev.koga.deeplinklauncher.designsystem.DLLTextField
 import dev.koga.deeplinklauncher.designsystem.button.DLLIconButton
 import dev.koga.deeplinklauncher.designsystem.defaultTextFieldColors
@@ -70,6 +71,7 @@ internal fun HomeBottomBarUI(
     }
 
     var visible by remember { mutableStateOf(false) }
+    val colors = DeepLinkTheme.colors
 
     Column(
         modifier = modifier
@@ -121,7 +123,7 @@ internal fun HomeBottomBarUI(
                                 onValueChange("")
                             },
                             colors = IconButtonDefaults.iconButtonColors(
-                                contentColor = MaterialTheme.colorScheme.secondary,
+                                contentColor = colors.text.secondary,
                             ),
                             modifier = modifier,
                         ) {
@@ -154,7 +156,7 @@ internal fun HomeBottomBarUI(
                 text = state.errorMessage.orEmpty(),
                 modifier = Modifier.padding(bottom = 4.dp),
                 style = MaterialTheme.typography.labelMedium.copy(
-                    color = MaterialTheme.colorScheme.error,
+                    color = colors.text.error,
                     fontWeight = FontWeight.Bold,
                 ),
             )
@@ -200,6 +202,8 @@ internal fun SuggestionListItem(
     animationDelay: Long = 0,
     onVisibleChanged: (Boolean) -> Unit = {},
 ) {
+    val colors = DeepLinkTheme.colors
+
     LaunchedEffect(Unit) {
         delay(animationDelay)
         onVisibleChanged(true)
@@ -221,7 +225,7 @@ internal fun SuggestionListItem(
                         text = "Deeplink from clipboard",
                         style = MaterialTheme.typography.labelSmall.copy(
                             fontWeight = FontWeight.SemiBold,
-                            color = MaterialTheme.colorScheme.secondary,
+                            color = colors.text.secondary,
                         ),
                     )
                 }
@@ -236,7 +240,7 @@ internal fun SuggestionListItem(
             Icon(
                 imageVector = TablerIcons.ArrowUp,
                 contentDescription = null,
-                tint = MaterialTheme.colorScheme.secondary,
+                tint = colors.text.secondary,
                 modifier = Modifier.size(16.dp),
             )
         }

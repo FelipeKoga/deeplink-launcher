@@ -8,8 +8,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import dev.koga.deeplinklauncher.designsystem.theme.DeepLinkTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -21,14 +21,16 @@ import androidx.compose.ui.unit.sp
 
 @Composable
 fun JSONBoxViewer(text: String) {
+    val colors = DeepLinkTheme.colors
+
     Box(
         modifier = Modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(12.dp))
-            .background(MaterialTheme.colorScheme.surface)
+            .background(colors.surface.card)
             .border(
                 width = 1.dp,
-                color = MaterialTheme.colorScheme.surfaceVariant,
+                color = colors.border.default,
                 shape = RoundedCornerShape(12.dp),
             )
             .horizontalScroll(

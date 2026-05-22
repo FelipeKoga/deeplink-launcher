@@ -12,6 +12,7 @@ plugins {
     alias(libs.plugins.composeCompiler)
     alias(libs.plugins.baselineProfile)
     alias(libs.plugins.aboutLibraries)
+    alias(libs.plugins.hotswan.compiler)
 }
 
 val keystoreProperties = Properties()

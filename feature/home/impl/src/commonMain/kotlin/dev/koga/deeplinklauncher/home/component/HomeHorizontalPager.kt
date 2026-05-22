@@ -37,6 +37,7 @@ import dev.koga.deeplinklauncher.deeplink.api.model.DeepLinkListItem
 import dev.koga.deeplinklauncher.deeplink.api.model.Folder
 import dev.koga.deeplinklauncher.deeplink.uicomponent.DeepLinkCard
 import dev.koga.deeplinklauncher.deeplink.uicomponent.FolderCard
+import dev.koga.deeplinklauncher.designsystem.theme.DeepLinkTheme
 import dev.koga.deeplinklauncher.ui.calculateWindowSizeSharedClass
 import kotlinx.collections.immutable.ImmutableList
 
@@ -129,6 +130,7 @@ fun FoldersVerticalStaggeredGrid(
         WindowWidthSizeClass.Expanded -> 3
         else -> 2
     }
+    val colors = DeepLinkTheme.colors
 
     LazyVerticalGrid(
         columns = GridCells.Fixed(numberOfColumns),
@@ -142,7 +144,7 @@ fun FoldersVerticalStaggeredGrid(
             OutlinedCard(
                 onClick = onAdd,
                 shape = RoundedCornerShape(24.dp),
-                border = BorderStroke(1.dp, MaterialTheme.colorScheme.surfaceVariant),
+                border = BorderStroke(1.dp, colors.border.default),
             ) {
                 Column(
                     modifier = Modifier
@@ -155,7 +157,7 @@ fun FoldersVerticalStaggeredGrid(
                         imageVector = TablerIcons.Plus,
                         contentDescription = null,
                         modifier = Modifier.size(24.dp),
-                        tint = MaterialTheme.colorScheme.onSurface,
+                        tint = colors.text.primary,
                     )
                     Spacer(modifier = Modifier.height(8.dp))
                     Text(

@@ -20,6 +20,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import dev.koga.deeplinklauncher.designsystem.DLLHorizontalDivider
+import dev.koga.deeplinklauncher.designsystem.theme.DeepLinkTheme
 import dev.koga.deeplinklauncher.home.HomeTabPage
 import kotlinx.coroutines.launch
 
@@ -28,6 +29,7 @@ internal fun HomeTabRow(
     pagerState: PagerState,
 ) {
     val scope = rememberCoroutineScope()
+    val colors = DeepLinkTheme.colors
 
     TabRow(
         selectedTabIndex = pagerState.currentPage,
@@ -37,14 +39,14 @@ internal fun HomeTabRow(
                     .tabIndicatorOffset(it[pagerState.currentPage])
                     .fillMaxWidth(.3f)
                     .height(2.dp)
-                    .background(color = MaterialTheme.colorScheme.primary, shape = CircleShape),
+                    .background(color = colors.surface.primary, shape = CircleShape),
             )
         },
         divider = {
             DLLHorizontalDivider()
         },
         containerColor = Color.Transparent,
-        contentColor = MaterialTheme.colorScheme.onSurfaceVariant,
+        contentColor = colors.text.muted,
     ) {
         HomeTabPage.entries.forEach {
             val selected = it.ordinal == pagerState.currentPage
@@ -69,8 +71,8 @@ internal fun HomeTabRow(
                         ),
                     )
                 },
-                unselectedContentColor = MaterialTheme.colorScheme.secondary,
-                selectedContentColor = MaterialTheme.colorScheme.onBackground,
+                unselectedContentColor = colors.text.muted,
+                selectedContentColor = colors.text.primary,
             )
         }
     }

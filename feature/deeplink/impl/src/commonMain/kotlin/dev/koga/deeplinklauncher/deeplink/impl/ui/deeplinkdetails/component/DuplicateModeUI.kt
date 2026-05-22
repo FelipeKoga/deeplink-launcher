@@ -34,12 +34,14 @@ import dev.koga.deeplinklauncher.deeplink.impl.ui.deeplinkdetails.state.Duplicat
 import dev.koga.deeplinklauncher.designsystem.DLLHorizontalDivider
 import dev.koga.deeplinklauncher.designsystem.DLLTextField
 import dev.koga.deeplinklauncher.designsystem.button.DLLIconButton
+import dev.koga.deeplinklauncher.designsystem.theme.DeepLinkTheme
 
 @Composable
 internal fun DuplicateModeUI(
     uiState: DeepLinkDetailsUiState.Duplicate,
     onAction: (DuplicateAction) -> Unit,
 ) {
+    val colors = DeepLinkTheme.colors
     var newLink by rememberSaveable { mutableStateOf(uiState.deepLink.link) }
     var copyAllFields by rememberSaveable { mutableStateOf(true) }
 
@@ -67,7 +69,7 @@ internal fun DuplicateModeUI(
                     text = uiState.errorMessage.orEmpty(),
                     modifier = Modifier.padding(top = 8.dp),
                     style = MaterialTheme.typography.labelMedium.copy(
-                        color = MaterialTheme.colorScheme.error,
+                        color = colors.text.error,
                         fontWeight = FontWeight.Bold,
                     ),
                 )
@@ -85,7 +87,7 @@ internal fun DuplicateModeUI(
                         text = "Copy all fields",
                         style = MaterialTheme.typography.bodyMedium.copy(
                             fontWeight = FontWeight.SemiBold,
-                            color = MaterialTheme.colorScheme.onSurface,
+                            color = colors.text.primary,
                         ),
                     )
 
@@ -93,7 +95,7 @@ internal fun DuplicateModeUI(
                         text = "All fields will be copied to the new deeplink",
                         style = MaterialTheme.typography.labelSmall.copy(
                             fontWeight = FontWeight.Normal,
-                            color = MaterialTheme.colorScheme.onSurface,
+                            color = colors.text.primary,
                         ),
                     )
                 }
@@ -131,6 +133,8 @@ internal fun TopBar(
     modifier: Modifier = Modifier,
     onBack: () -> Unit,
 ) {
+    val colors = DeepLinkTheme.colors
+
     Row(
         modifier = modifier.fillMaxWidth().padding(horizontal = 12.dp, vertical = 8.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
@@ -142,7 +146,7 @@ internal fun TopBar(
             Icon(
                 imageVector = TablerIcons.ArrowLeft,
                 contentDescription = "Back",
-                tint = MaterialTheme.colorScheme.primary,
+                tint = colors.surface.primary,
             )
         }
     }

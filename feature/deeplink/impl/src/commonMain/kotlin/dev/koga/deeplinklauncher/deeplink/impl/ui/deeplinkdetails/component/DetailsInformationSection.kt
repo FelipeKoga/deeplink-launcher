@@ -15,7 +15,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -24,6 +23,7 @@ import dev.koga.deeplinklauncher.deeplink.api.model.DeepLinkHandlerInfo
 import dev.koga.deeplinklauncher.deeplink.api.model.DeepLinkMetadata
 import dev.koga.deeplinklauncher.deeplink.uicomponent.DeepLinkHandlerIcon
 import dev.koga.deeplinklauncher.designsystem.DLLHorizontalDivider
+import dev.koga.deeplinklauncher.designsystem.theme.DeepLinkTheme
 
 @Composable
 internal fun DetailsInformationContent(
@@ -32,6 +32,7 @@ internal fun DetailsInformationContent(
     iconPng: ByteArray?,
     modifier: Modifier = Modifier,
 ) {
+    val colors = DeepLinkTheme.colors
     val showPath = metadata.path?.let { it != "/" && it.isNotBlank() } == true
     val targetAppName = handlerInfo.appName
 
@@ -94,7 +95,7 @@ internal fun DetailsInformationContent(
                             text = targetAppName,
                             style = MaterialTheme.typography.bodySmall.copy(
                                 fontWeight = FontWeight.Medium,
-                                color = MaterialTheme.colorScheme.onSurface,
+                                color = colors.text.primary,
                             ),
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis,
@@ -120,6 +121,7 @@ private fun InfoRow(
     trailingIcon: ImageVector? = null,
     onClick: (() -> Unit)? = null,
 ) {
+    val colors = DeepLinkTheme.colors
     val clickableModifier = if (onClick != null) {
         Modifier.clickable(onClick = onClick)
     } else {
@@ -137,7 +139,7 @@ private fun InfoRow(
         Text(
             text = label,
             style = MaterialTheme.typography.bodySmall.copy(
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                color = colors.text.muted,
             ),
             modifier = Modifier.padding(end = 8.dp),
         )
@@ -154,7 +156,7 @@ private fun InfoRow(
                     text = value.orEmpty(),
                     style = MaterialTheme.typography.bodySmall.copy(
                         fontWeight = FontWeight.Medium,
-                        color = MaterialTheme.colorScheme.onSurface,
+                        color = colors.text.primary,
                     ),
                     maxLines = 3,
                     overflow = TextOverflow.Ellipsis,
@@ -165,7 +167,7 @@ private fun InfoRow(
                 Icon(
                     imageVector = trailingIcon,
                     contentDescription = null,
-                    tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f),
+                    tint = colors.text.muted.copy(alpha = 0.7f),
                     modifier = Modifier.size(14.dp),
                 )
             }
@@ -175,15 +177,16 @@ private fun InfoRow(
 
 @Composable
 private fun ResolveStatusBadge(canResolve: Boolean) {
+    val colors = DeepLinkTheme.colors
     val backgroundColor = if (canResolve) {
-        Color(0xFFE8F5E9)
+        colors.status.successBackground
     } else {
-        MaterialTheme.colorScheme.errorContainer.copy(alpha = 0.5f)
+        colors.status.errorBackground.copy(alpha = 0.5f)
     }
     val contentColor = if (canResolve) {
-        Color(0xFF2E7D32)
+        colors.status.successContent
     } else {
-        MaterialTheme.colorScheme.error
+        colors.status.errorContent
     }
 
     Surface(

@@ -41,6 +41,7 @@ import dev.koga.deeplinklauncher.deeplink.impl.ui.deeplinkdetails.state.DeepLink
 import dev.koga.deeplinklauncher.deeplink.impl.ui.deeplinkdetails.state.EditAction
 import dev.koga.deeplinklauncher.designsystem.DLLTextField
 import dev.koga.deeplinklauncher.designsystem.button.DLLIconButton
+import dev.koga.deeplinklauncher.designsystem.theme.DeepLinkTheme
 
 @Composable
 internal fun EditModeUI(
@@ -49,6 +50,7 @@ internal fun EditModeUI(
     onAction: (EditAction) -> Unit,
     onShowDeleteConfirmation: () -> Unit,
 ) {
+    val colors = DeepLinkTheme.colors
     val deepLink = uiState.deepLink
 
     Column(modifier = modifier) {
@@ -90,7 +92,7 @@ internal fun EditModeUI(
                 Text(
                     text = uiState.errorMessage.orEmpty(),
                     style = MaterialTheme.typography.labelMedium.copy(
-                        color = MaterialTheme.colorScheme.error,
+                        color = colors.text.error,
                         fontWeight = FontWeight.Bold,
                     ),
                 )
@@ -123,7 +125,7 @@ internal fun EditModeUI(
                         )
                     },
                     colors = AssistChipDefaults.assistChipColors(
-                        containerColor = MaterialTheme.colorScheme.surfaceContainerHighest,
+                        containerColor = colors.surface.elevated,
                     ),
                     border = null,
                     onClick = { onAction(EditAction.AddFolder) },
@@ -146,14 +148,14 @@ internal fun EditModeUI(
                     },
                     shape = CircleShape,
                     colors = FilterChipDefaults.filterChipColors(
-                        containerColor = MaterialTheme.colorScheme.surface,
-                        selectedContainerColor = MaterialTheme.colorScheme.primary,
-                        selectedLabelColor = MaterialTheme.colorScheme.onPrimary,
-                        selectedTrailingIconColor = MaterialTheme.colorScheme.onPrimary,
+                        containerColor = colors.surface.card,
+                        selectedContainerColor = colors.button.primaryBackground,
+                        selectedLabelColor = colors.button.primaryContent,
+                        selectedTrailingIconColor = colors.button.primaryContent,
                     ),
                     border = BorderStroke(
                         1.dp,
-                        color = MaterialTheme.colorScheme.surfaceContainerHighest,
+                        color = colors.surface.elevated,
                     ),
                     trailingIcon = {
                         if (selected) {
@@ -197,6 +199,8 @@ internal fun EditTopBar(
     onBack: () -> Unit,
     onDelete: () -> Unit,
 ) {
+    val colors = DeepLinkTheme.colors
+
     Row(
         modifier = modifier.fillMaxWidth().padding(horizontal = 12.dp, vertical = 8.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
@@ -208,7 +212,7 @@ internal fun EditTopBar(
             Icon(
                 imageVector = TablerIcons.ArrowLeft,
                 contentDescription = "Back",
-                tint = MaterialTheme.colorScheme.primary,
+                tint = colors.surface.primary,
             )
         }
 
@@ -218,7 +222,7 @@ internal fun EditTopBar(
             Icon(
                 imageVector = TablerIcons.Trash,
                 contentDescription = "Delete deeplink",
-                tint = MaterialTheme.colorScheme.primary,
+                tint = colors.surface.primary,
             )
         }
     }

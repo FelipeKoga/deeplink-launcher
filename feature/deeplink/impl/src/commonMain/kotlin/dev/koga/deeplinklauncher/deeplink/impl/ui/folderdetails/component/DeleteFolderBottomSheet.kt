@@ -21,6 +21,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import dev.koga.deeplinklauncher.designsystem.DLLHorizontalDivider
+import dev.koga.deeplinklauncher.designsystem.theme.DeepLinkTheme
 import dev.koga.deeplinklauncher.designsystem.DLLModalBottomSheet
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -29,6 +30,8 @@ internal fun DeleteFolderBottomSheet(
     onDismissRequest: () -> Unit,
     onDelete: () -> Unit,
 ) {
+    val colors = DeepLinkTheme.colors
+
     DLLModalBottomSheet(
         onDismiss = onDismissRequest,
         sheetState = rememberModalBottomSheetState(
@@ -75,7 +78,8 @@ internal fun DeleteFolderBottomSheet(
                     onClick = onDelete,
                     modifier = Modifier.padding(end = 12.dp),
                     colors = ButtonDefaults.filledTonalButtonColors(
-                        containerColor = MaterialTheme.colorScheme.errorContainer,
+                        containerColor = colors.status.errorBackground,
+                        contentColor = colors.status.errorContent,
                     ),
                 ) {
                     Text(

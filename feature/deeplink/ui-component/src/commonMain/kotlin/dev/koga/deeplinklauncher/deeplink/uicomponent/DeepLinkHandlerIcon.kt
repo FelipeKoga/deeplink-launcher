@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -15,12 +14,15 @@ import androidx.compose.ui.graphics.decodeToImageBitmap
 import androidx.compose.ui.unit.dp
 import compose.icons.TablerIcons
 import compose.icons.tablericons.World
+import dev.koga.deeplinklauncher.designsystem.theme.DeepLinkTheme
 
 @Composable
 fun DeepLinkHandlerIcon(
     iconPng: ByteArray?,
     modifier: Modifier = Modifier,
 ) {
+    val colors = DeepLinkTheme.colors
+
     Box(
         modifier = modifier.clip(RoundedCornerShape(8.dp)),
     ) {
@@ -38,7 +40,7 @@ fun DeepLinkHandlerIcon(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(10.dp),
-                tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                tint = colors.text.muted,
             )
         }
     }

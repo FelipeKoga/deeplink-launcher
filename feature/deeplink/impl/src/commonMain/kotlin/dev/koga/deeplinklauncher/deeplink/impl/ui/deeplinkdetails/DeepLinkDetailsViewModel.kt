@@ -101,6 +101,8 @@ internal class DeepLinkDetailsViewModel(
                     DeepLinkDetailsUiState.Launch(
                         deepLink = input.deepLink,
                         iconPng = getDeepLinkHandlerIcon(input.deepLink.link),
+                        showFolder = route.showFolder,
+                        folders = input.folders.toPersistentList(),
                         metadata = getDeepLinkMetadata(input.deepLink.link),
                         handlerInfo = getDeepLinkHandlerInfo(input.deepLink.link),
                     ),
@@ -155,6 +157,8 @@ internal class DeepLinkDetailsViewModel(
                     id = deepLink.value.folder?.id.orEmpty(),
                 ),
             )
+            LaunchAction.AddFolder -> appNavigator.navigate(DeepLinkRouteEntryPoint.AddFolder)
+            is LaunchAction.ToggleFolder -> toggleFolder(action.folder)
             LaunchAction.NotifyLinkCopied -> messageDispatcher.trySend("Link copied")
             LaunchAction.AddToShortCut -> addToShortcut()
         }

@@ -10,7 +10,9 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -18,7 +20,14 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.AssistChip
+import androidx.compose.material3.AssistChipDefaults
+import androidx.compose.material3.FilterChip
+import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -31,15 +40,21 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import compose.icons.TablerIcons
 import compose.icons.tablericons.ChevronRight
 import compose.icons.tablericons.Copy
+import compose.icons.tablericons.Plus
 import dev.koga.deeplinklauncher.deeplink.api.model.DeepLinkHandlerInfo
 import dev.koga.deeplinklauncher.deeplink.api.model.DeepLinkMetadata
+import dev.koga.deeplinklauncher.deeplink.api.model.Folder
 import dev.koga.deeplinklauncher.designsystem.DLLHorizontalDivider
+import dev.koga.deeplinklauncher.designsystem.theme.DeepLinkTheme
+import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.persistentListOf
 
 private const val ExpandAnimationDurationMs = 250
 
@@ -50,13 +65,27 @@ internal fun DetailsDeepLinkField(
     handlerInfo: DeepLinkHandlerInfo,
     iconPng: ByteArray?,
     onCopyLink: () -> Unit,
+    description: String? = null,
+    folder: Folder? = null,
+    folders: ImmutableList<Folder> = persistentListOf(),
+    showFolder: Boolean = true,
+    onFolderClick: () -> Unit = {},
+    onToggleFolder: (Folder) -> Unit = {},
+    onAddFolder: () -> Unit = {},
     modifier: Modifier = Modifier,
 ) {
+    val colors = DeepLinkTheme.colors
     var isExpanded by rememberSaveable { mutableStateOf(false) }
+    var isFolderPickerExpanded by rememberSaveable { mutableStateOf(false) }
     val chevronRotation by animateFloatAsState(
         targetValue = if (isExpanded) 90f else 0f,
         animationSpec = tween(durationMillis = ExpandAnimationDurationMs),
         label = "deeplink_info_chevron",
+    )
+    val folderChevronRotation by animateFloatAsState(
+        targetValue = if (isFolderPickerExpanded) 90f else 0f,
+        animationSpec = tween(durationMillis = ExpandAnimationDurationMs),
+        label = "folder_picker_chevron",
     )
 
     Column(
@@ -64,16 +93,6 @@ internal fun DetailsDeepLinkField(
             .fillMaxWidth()
             .padding(horizontal = 16.dp),
     ) {
-        Text(
-            text = "Deeplink",
-            style = MaterialTheme.typography.labelMedium.copy(
-                fontWeight = FontWeight.SemiBold,
-                color = MaterialTheme.colorScheme.onBackground,
-            ),
-        )
-
-        Spacer(modifier = Modifier.height(8.dp))
-
         Surface(
             modifier = Modifier
                 .fillMaxWidth()
@@ -81,10 +100,10 @@ internal fun DetailsDeepLinkField(
                     animationSpec = tween(durationMillis = ExpandAnimationDurationMs),
                 ),
             shape = RoundedCornerShape(12.dp),
-            color = MaterialTheme.colorScheme.background,
+            color = colors.surface.background,
             border = BorderStroke(
                 width = 1.dp,
-                color = MaterialTheme.colorScheme.outline.copy(alpha = 0.35f),
+                color = colors.border.default,
             ),
         ) {
             Column {
@@ -92,29 +111,91 @@ internal fun DetailsDeepLinkField(
                     modifier = Modifier
                         .fillMaxWidth()
                         .clickable { onCopyLink() }
-                        .padding(horizontal = 12.dp, vertical = 24.dp),
+                        .padding(16.dp),
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
-                    Text(
-                        text = link,
-                        style = MaterialTheme.typography.bodySmall.copy(
-                            color = MaterialTheme.colorScheme.onSurface,
-                            fontWeight = FontWeight.SemiBold,
-                        ),
-                        maxLines = 5,
-                        overflow = TextOverflow.Ellipsis,
-                        modifier = Modifier.weight(1f),
-                    )
+                    Column(
+                        modifier = Modifier
+                            .weight(1f)
+                    ) {
+                        Text(
+                            text = "Deeplink",
+                            style = MaterialTheme.typography.labelSmall.copy(
+                                color = colors.text.muted,
+                                fontWeight = FontWeight.Bold,
+                            ),
+                        )
+
+                        Spacer(modifier = Modifier.height(4.dp))
+
+                        Text(
+                            text = link,
+                            style = MaterialTheme.typography.bodyMedium.copy(
+                                color = colors.surface.primary,
+                                fontFamily = FontFamily.Monospace,
+                            ),
+                            maxLines = 5,
+                            overflow = TextOverflow.Ellipsis,
+                            modifier = Modifier.padding(top = 2.dp),
+                        )
+                    }
+
+                    Spacer(modifier = Modifier.width(4.dp))
 
                     Icon(
                         imageVector = TablerIcons.Copy,
                         contentDescription = "Copy deep link",
-                        tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                        modifier = Modifier.size(18.dp),
+                        tint = colors.surface.primary,
+                        modifier = Modifier.size(24.dp),
                     )
                 }
 
-                DLLHorizontalDivider(thickness = .7.dp)
+                description?.takeIf { it.isNotBlank() }?.let { descriptionText ->
+                    DLLHorizontalDivider()
+
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(16.dp),
+                    ) {
+                        Text(
+                            text = "Notes",
+                            style = MaterialTheme.typography.labelSmall.copy(
+                                color = colors.text.muted,
+                                fontWeight = FontWeight.Bold,
+                            ),
+                        )
+
+                        Text(
+                            text = descriptionText,
+                            style = MaterialTheme.typography.bodySmall.copy(
+                                color = colors.text.primary,
+                            ),
+                            modifier = Modifier.padding(top = 2.dp),
+                        )
+                    }
+                }
+
+                if (showFolder) {
+                    DLLHorizontalDivider(thickness = .5.dp)
+
+                    DetailsFolderSection(
+                        folder = folder,
+                        folders = folders,
+                        isFolderPickerExpanded = isFolderPickerExpanded,
+                        folderChevronRotation = folderChevronRotation,
+                        onFolderClick = onFolderClick,
+                        onToggleFolderPicker = { isFolderPickerExpanded = !isFolderPickerExpanded },
+                        onToggleFolder = {
+                            onToggleFolder(it)
+                            isFolderPickerExpanded = false
+                        },
+                        onAddFolder = onAddFolder,
+                    )
+                }
+
+                DLLHorizontalDivider(thickness = .5.dp)
+
 
                 DetailsExpandableInfoToggle(
                     isExpanded = isExpanded,
@@ -138,14 +219,162 @@ internal fun DetailsDeepLinkField(
                     Column(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(bottom = 4.dp),
+                            .padding(horizontal = 12.dp),
                     ) {
-                        DLLHorizontalDivider(modifier = Modifier.padding(horizontal = 12.dp))
-
                         DetailsInformationContent(
                             metadata = metadata,
                             handlerInfo = handlerInfo,
                             iconPng = iconPng,
+                        )
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun DetailsFolderSection(
+    folder: Folder?,
+    folders: ImmutableList<Folder>,
+    isFolderPickerExpanded: Boolean,
+    folderChevronRotation: Float,
+    onFolderClick: () -> Unit,
+    onToggleFolderPicker: () -> Unit,
+    onToggleFolder: (Folder) -> Unit,
+    onAddFolder: () -> Unit,
+) {
+    val colors = DeepLinkTheme.colors
+
+    Column {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .clickable {
+                    if (folder != null) {
+                        onFolderClick()
+                    } else {
+                        onToggleFolderPicker()
+                    }
+                }
+                .padding(16.dp),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Column(
+                modifier = Modifier.weight(1f)
+            ) {
+                Text(
+                    text = "Folder",
+                    style = MaterialTheme.typography.labelSmall.copy(
+                        color = colors.text.muted,
+                        fontWeight = FontWeight.Bold,
+                    ),
+                )
+
+                Text(
+                    text = folder?.name ?: "Add to folder",
+                    style = MaterialTheme.typography.bodySmall.copy(
+                        color = if (folder != null) {
+                            colors.text.primary
+                        } else {
+                            colors.text.muted
+                        },
+                        fontWeight = if (folder != null) FontWeight.SemiBold else FontWeight.Normal,
+                    ),
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    modifier = Modifier.padding(top = 2.dp),
+                )
+            }
+
+            Icon(
+                imageVector = TablerIcons.ChevronRight,
+                contentDescription = if (folder != null) {
+                    "Open folder"
+                } else if (isFolderPickerExpanded) {
+                    "Collapse folder picker"
+                } else {
+                    "Expand folder picker"
+                },
+                tint = colors.text.muted,
+                modifier = Modifier
+                    .size(18.dp)
+                    .then(
+                        if (folder == null) {
+                            Modifier.rotate(folderChevronRotation)
+                        } else {
+                            Modifier
+                        },
+                    ),
+            )
+        }
+
+        if (folder == null) {
+            AnimatedVisibility(
+                visible = isFolderPickerExpanded,
+                enter = expandVertically(
+                    animationSpec = tween(ExpandAnimationDurationMs),
+                    expandFrom = Alignment.Top,
+                ) + fadeIn(animationSpec = tween(ExpandAnimationDurationMs)),
+                exit = shrinkVertically(
+                    animationSpec = tween(ExpandAnimationDurationMs),
+                    shrinkTowards = Alignment.Top,
+                ) + fadeOut(animationSpec = tween(ExpandAnimationDurationMs)),
+            ) {
+                LazyRow(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = 10.dp),
+                    contentPadding = PaddingValues(horizontal = 12.dp),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    item {
+                        AssistChip(
+                            shape = CircleShape,
+                            leadingIcon = {
+                                Icon(
+                                    imageVector = TablerIcons.Plus,
+                                    contentDescription = null,
+                                    modifier = Modifier.size(12.dp),
+                                )
+                            },
+                            label = {
+                                Text(
+                                    text = "Add folder",
+                                    style = MaterialTheme.typography.labelSmall.copy(
+                                        fontWeight = FontWeight.SemiBold,
+                                    ),
+                                )
+                            },
+                            colors = AssistChipDefaults.assistChipColors(
+                                containerColor = colors.surface.elevated,
+                            ),
+                            border = null,
+                            onClick = onAddFolder,
+                        )
+                    }
+
+                    items(folders, key = { it.id }) { availableFolder ->
+                        FilterChip(
+                            selected = false,
+                            onClick = { onToggleFolder(availableFolder) },
+                            label = {
+                                Text(
+                                    text = availableFolder.name,
+                                    style = MaterialTheme.typography.labelSmall.copy(
+                                        fontWeight = FontWeight.SemiBold,
+                                    ),
+                                )
+                            },
+                            shape = CircleShape,
+                            colors = FilterChipDefaults.filterChipColors(
+                                containerColor = colors.surface.card,
+                            ),
+                            border = BorderStroke(
+                                1.dp,
+                                color = colors.surface.elevated,
+                            ),
                         )
                     }
                 }
@@ -162,6 +391,7 @@ private fun DetailsExpandableInfoToggle(
     handlerInfo: DeepLinkHandlerInfo,
     onToggle: () -> Unit,
 ) {
+    val colors = DeepLinkTheme.colors
     val summaryParts = buildList {
         metadata.scheme?.takeIf { it.isNotBlank() }?.let { add(it) }
         metadata.host?.takeIf { it.isNotBlank() }?.let { add(it) }
@@ -173,23 +403,23 @@ private fun DetailsExpandableInfoToggle(
         modifier = Modifier
             .fillMaxWidth()
             .clickable(onClick = onToggle)
-            .padding(horizontal = 14.dp, vertical = 8.dp),
+            .padding(16.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Column(modifier = Modifier.weight(1f)) {
             Text(
-                text = if (isExpanded) "Hide breakdown" else "Show breakdown",
+                text = "Info",
                 style = MaterialTheme.typography.labelSmall.copy(
-                    fontWeight = FontWeight.SemiBold,
-                    color = MaterialTheme.colorScheme.primary,
+                    color = colors.text.muted,
+                    fontWeight = FontWeight.Bold,
                 ),
             )
 
-            AnimatedVisibility(visible = !isExpanded) {
+            AnimatedVisibility(visible = !isExpanded && summary.isNotBlank()) {
                 Text(
                     text = summary,
                     style = MaterialTheme.typography.bodySmall.copy(
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        color = colors.text.muted,
                     ),
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
@@ -198,12 +428,10 @@ private fun DetailsExpandableInfoToggle(
             }
         }
 
-        Spacer(modifier = Modifier.width(8.dp))
-
         Icon(
             imageVector = TablerIcons.ChevronRight,
             contentDescription = if (isExpanded) "Collapse details" else "Expand details",
-            tint = MaterialTheme.colorScheme.onSurfaceVariant,
+            tint = colors.text.muted,
             modifier = Modifier
                 .size(18.dp)
                 .rotate(chevronRotation),

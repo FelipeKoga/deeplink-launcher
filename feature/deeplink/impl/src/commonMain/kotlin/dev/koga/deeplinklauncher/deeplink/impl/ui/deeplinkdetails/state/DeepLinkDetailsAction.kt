@@ -13,6 +13,8 @@ internal sealed interface LaunchAction : DeepLinkDetailsAction {
     data object Duplicate : LaunchAction
     data object Edit : LaunchAction
     data object NavigateToFolder : LaunchAction
+    data object AddFolder : LaunchAction
+    data class ToggleFolder(val folder: Folder) : LaunchAction
     data object NotifyLinkCopied : LaunchAction
 }
 

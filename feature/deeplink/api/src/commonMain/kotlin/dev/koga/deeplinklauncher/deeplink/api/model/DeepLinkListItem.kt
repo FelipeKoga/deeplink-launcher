@@ -10,7 +10,7 @@ public data class DeepLinkListItem(
 
         other as DeepLinkListItem
 
-        return deepLink.id == other.deepLink.id
+        return deepLink == other.deepLink
     }
 
     override fun hashCode(): Int = deepLink.id.hashCode()

@@ -3,10 +3,10 @@ package dev.koga.deeplinklauncher.designsystem
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.AssistChip
 import androidx.compose.material3.AssistChipDefaults
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import dev.koga.deeplinklauncher.designsystem.theme.DeepLinkTheme
 
 @Composable
 fun DLLAssistChip(
@@ -16,15 +16,16 @@ fun DLLAssistChip(
     leadingIcon: @Composable (() -> Unit)? = null,
     trailingIcon: @Composable (() -> Unit)? = null,
 ) {
+    val colors = DeepLinkTheme.colors
     AssistChip(
         shape = CircleShape,
         colors = AssistChipDefaults.elevatedAssistChipColors(
             containerColor = Color.Transparent,
-            labelColor = MaterialTheme.colorScheme.primary,
+            labelColor = colors.surface.primary,
         ),
         border = AssistChipDefaults.assistChipBorder(
             true,
-            borderColor = MaterialTheme.colorScheme.surfaceVariant,
+            borderColor = colors.border.default,
         ),
         modifier = modifier,
         onClick = onClick,

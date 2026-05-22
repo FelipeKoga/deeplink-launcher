@@ -14,7 +14,6 @@ import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.MenuAnchorType
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -32,6 +31,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import dev.koga.deeplinklauncher.designsystem.theme.DeepLinkTheme
 import dev.koga.deeplinklauncher.designsystem.theme.typography
 import dev.koga.deeplinklauncher.home.util.ext.hoverIndication
 import org.koin.compose.koinInject
@@ -44,6 +44,7 @@ fun DeepLinkTargetsDropDown(
 ) {
     val uiState by manager.uiState.collectAsStateWithLifecycle()
     var expanded by remember { mutableStateOf(false) }
+    val colors = DeepLinkTheme.colors
 
     ExposedDropdownMenuBox(
         expanded = expanded,
@@ -61,7 +62,7 @@ fun DeepLinkTargetsDropDown(
             }
             .border(
                 width = 1.dp,
-                color = colorScheme.secondary.copy(alpha = .3f),
+                color = colors.border.default,
                 shape = RoundedCornerShape(4.dp),
             )
             .hoverIndication(
@@ -77,7 +78,7 @@ fun DeepLinkTargetsDropDown(
             Icon(
                 imageVector = uiState.selected.icon,
                 contentDescription = null,
-                tint = colorScheme.secondary,
+                tint = colors.text.secondary,
                 modifier = Modifier.size(18.dp),
             )
 
@@ -97,7 +98,7 @@ fun DeepLinkTargetsDropDown(
                 Icon(
                     imageVector = Icons.Default.ArrowDropDown,
                     contentDescription = null,
-                    tint = colorScheme.secondary,
+                    tint = colors.text.secondary,
                     modifier = Modifier.size(18.dp),
                 )
             }

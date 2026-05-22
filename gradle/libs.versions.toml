@@ -47,6 +47,7 @@ stately = "2.1.0"
 uiautomator = "2.3.0"
 jetbrains-kotlinxDatetime = "0.7.1-0.6.x-compat"
 uitoolingandroid = "1.10.2"
+hotswan = "1.3.2"
 
 [libraries]
 aboutlibraries_compose = { module = "com.mikepenz:aboutlibraries-compose-m3", version.ref = "aboutlibraries" }
@@ -121,3 +122,4 @@ kotlinAndroid = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlinMultiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
 kotlinJvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 sqlDelight = { id = "app.cash.sqldelight", version.ref = "sqlDelight" }
+hotswan-compiler = { id = "com.github.skydoves.compose.hotswan.compiler", version.ref = "hotswan" }

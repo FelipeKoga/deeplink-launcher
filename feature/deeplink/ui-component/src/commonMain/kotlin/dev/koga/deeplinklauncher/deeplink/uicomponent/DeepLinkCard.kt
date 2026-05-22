@@ -28,6 +28,7 @@ import compose.icons.tablericons.ExternalLink
 import dev.koga.deeplinklauncher.deeplink.api.model.DeepLinkListItem
 import dev.koga.deeplinklauncher.designsystem.DLLSmallChip
 import dev.koga.deeplinklauncher.designsystem.button.DLLIconButton
+import dev.koga.deeplinklauncher.designsystem.theme.DeepLinkTheme
 
 @Composable
 fun DeepLinkCard(
@@ -38,14 +39,15 @@ fun DeepLinkCard(
     onFolderClicked: () -> Unit = {},
     showFolder: Boolean = true,
 ) {
+    val colors = DeepLinkTheme.colors
     val deepLink = item.deepLink
 
     OutlinedCard(
         shape = RoundedCornerShape(16.dp),
-        border = BorderStroke(1.dp, MaterialTheme.colorScheme.surfaceVariant),
+        border = BorderStroke(1.dp, colors.border.subtle),
         colors = CardDefaults.outlinedCardColors(
             containerColor = Color.Transparent,
-            contentColor = MaterialTheme.colorScheme.onBackground,
+            contentColor = colors.text.primary,
         ),
         onClick = onClick,
         modifier = modifier,
@@ -70,7 +72,7 @@ fun DeepLinkCard(
                         Text(
                             text = deepLink.name.orEmpty(),
                             style = MaterialTheme.typography.titleMedium.copy(
-                                color = MaterialTheme.colorScheme.secondary,
+                                color = colors.text.secondary,
                                 fontWeight = FontWeight.SemiBold,
                             ),
                             maxLines = 2,

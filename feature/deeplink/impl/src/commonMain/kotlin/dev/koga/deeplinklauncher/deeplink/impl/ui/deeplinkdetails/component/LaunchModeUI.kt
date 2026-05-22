@@ -26,6 +26,7 @@ import compose.icons.TablerIcons
 import compose.icons.tablericons.ExternalLink
 import dev.koga.deeplinklauncher.deeplink.impl.ui.deeplinkdetails.state.DeepLinkDetailsUiState
 import dev.koga.deeplinklauncher.deeplink.impl.ui.deeplinkdetails.state.LaunchAction
+import dev.koga.deeplinklauncher.designsystem.theme.DeepLinkTheme
 
 @Composable
 internal fun LaunchModeUI(
@@ -34,6 +35,7 @@ internal fun LaunchModeUI(
     onAction: (LaunchAction) -> Unit,
     onShowDeleteConfirmation: () -> Unit,
 ) {
+    val colors = DeepLinkTheme.colors
     val clipboardManager = LocalClipboardManager.current
     val deepLink = uiState.deepLink
 
@@ -56,35 +58,46 @@ internal fun LaunchModeUI(
 
         Spacer(modifier = Modifier.height(12.dp))
 
-        DetailsQuickActionsGrid(
-            isFavorite = deepLink.isFavorite,
-            onAction = onAction,
-            onShowDeleteConfirmation = onShowDeleteConfirmation,
-        )
-
-        Spacer(modifier = Modifier.height(16.dp))
 
         DetailsDeepLinkField(
             link = deepLink.link,
             metadata = uiState.metadata,
             handlerInfo = uiState.handlerInfo,
             iconPng = uiState.iconPng,
+            description = deepLink.description,
+            folder = deepLink.folder,
+            folders = uiState.folders,
+            showFolder = uiState.showFolder,
             onCopyLink = ::copyLink,
+            onFolderClick = { onAction(LaunchAction.NavigateToFolder) },
+            onToggleFolder = { onAction(LaunchAction.ToggleFolder(it)) },
+            onAddFolder = { onAction(LaunchAction.AddFolder) },
         )
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        DetailsQuickActions(
+            isFavorite = deepLink.isFavorite,
+            onAction = onAction,
+            onShowDeleteConfirmation = onShowDeleteConfirmation,
+        )
+
 
         Spacer(modifier = Modifier.height(12.dp))
 
         Button(
             onClick = { onAction(LaunchAction.Launch) },
-            modifier = Modifier.align(Alignment.CenterHorizontally),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp),
             shape = RoundedCornerShape(12.dp),
             colors = ButtonDefaults.buttonColors(
-                containerColor = MaterialTheme.colorScheme.primary,
-                contentColor = MaterialTheme.colorScheme.onPrimary,
+                containerColor = colors.button.primaryBackground,
+                contentColor = colors.button.primaryContent,
             ),
         ) {
             Row(
-                modifier = Modifier.fillMaxWidth(.5f),
+                modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.Center,
                 verticalAlignment = Alignment.CenterVertically,
             ) {

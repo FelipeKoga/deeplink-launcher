@@ -12,3 +12,4 @@ xcuserdata
 .kotlin
 env.properties
 keystore.properties
+.hotswan/

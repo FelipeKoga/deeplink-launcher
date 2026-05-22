@@ -15,6 +15,7 @@ import androidx.compose.ui.text.font.FontWeight
 import compose.icons.TablerIcons
 import compose.icons.tablericons.ArrowLeft
 import dev.koga.deeplinklauncher.designsystem.button.DLLIconButton
+import dev.koga.deeplinklauncher.designsystem.theme.DeepLinkTheme
 
 object DLLTopBarDefaults {
 
@@ -58,8 +59,8 @@ fun DLLTopBar(
     actions: @Composable (RowScope.() -> Unit) = {},
     scrollBehavior: TopAppBarScrollBehavior? = null,
     colors: TopAppBarColors = TopAppBarDefaults.topAppBarColors(
-        containerColor = MaterialTheme.colorScheme.background,
-        scrolledContainerColor = MaterialTheme.colorScheme.background,
+        containerColor = DeepLinkTheme.colors.surface.background,
+        scrolledContainerColor = DeepLinkTheme.colors.surface.background,
     ),
 ) {
     TopAppBar(

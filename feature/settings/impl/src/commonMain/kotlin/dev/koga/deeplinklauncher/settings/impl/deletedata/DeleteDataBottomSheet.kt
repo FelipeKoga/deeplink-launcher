@@ -17,6 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import dev.koga.deeplinklauncher.designsystem.DLLModalBottomSheet
+import dev.koga.deeplinklauncher.designsystem.theme.DeepLinkTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -36,6 +37,8 @@ fun DeleteDataBottomSheet(
 internal fun DeleteDataBottomSheetContent(
     onDelete: (DeletionType) -> Unit,
 ) {
+    val colors = DeepLinkTheme.colors
+
     Column(
         modifier = Modifier.padding(24.dp).fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -69,7 +72,7 @@ internal fun DeleteDataBottomSheetContent(
 
         TextButton(
             colors = ButtonDefaults.outlinedButtonColors(
-                contentColor = MaterialTheme.colorScheme.error,
+                contentColor = colors.text.error,
             ),
             onClick = { onDelete(DeletionType.DEEP_LINKS) },
         ) {
@@ -80,7 +83,7 @@ internal fun DeleteDataBottomSheetContent(
 
         TextButton(
             colors = ButtonDefaults.outlinedButtonColors(
-                contentColor = MaterialTheme.colorScheme.error,
+                contentColor = colors.text.error,
             ),
             onClick = { onDelete(DeletionType.FOLDERS) },
         ) {
@@ -92,8 +95,8 @@ internal fun DeleteDataBottomSheetContent(
         ElevatedButton(
             onClick = { onDelete(DeletionType.ALL) },
             colors = ButtonDefaults.elevatedButtonColors(
-                containerColor = MaterialTheme.colorScheme.errorContainer,
-                contentColor = MaterialTheme.colorScheme.onErrorContainer,
+                containerColor = colors.status.errorBackground,
+                contentColor = colors.status.errorContent,
             ),
         ) {
             Text(text = "Delete all")

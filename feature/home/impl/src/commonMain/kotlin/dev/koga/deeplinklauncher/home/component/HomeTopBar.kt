@@ -38,6 +38,7 @@ import compose.icons.tablericons.Search
 import compose.icons.tablericons.Settings
 import compose.icons.tablericons.X
 import dev.koga.deeplinklauncher.designsystem.DLLTopBar
+import dev.koga.deeplinklauncher.designsystem.theme.DeepLinkTheme
 import dev.koga.deeplinklauncher.designsystem.button.DLLIconButton
 import kotlinx.coroutines.delay
 
@@ -139,13 +140,15 @@ internal fun HomeSearchBar(
     onSearch: (String) -> Unit,
     onClose: () -> Unit,
 ) {
+    val colors = DeepLinkTheme.colors
+
     DockedSearchBar(
         modifier = modifier,
         colors = SearchBarDefaults.colors(
-            containerColor = MaterialTheme.colorScheme.surfaceVariant,
+            containerColor = colors.surface.muted,
             inputFieldColors = TextFieldDefaults.colors(
-                unfocusedContainerColor = MaterialTheme.colorScheme.surfaceVariant,
-                focusedContainerColor = MaterialTheme.colorScheme.surfaceVariant,
+                unfocusedContainerColor = colors.surface.muted,
+                focusedContainerColor = colors.surface.muted,
             ),
         ),
         tonalElevation = 0.dp,

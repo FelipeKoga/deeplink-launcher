@@ -26,6 +26,7 @@ import dev.koga.deeplinklauncher.datatransfer.ui.navigation.DataTransferRoute
 import dev.koga.deeplinklauncher.designsystem.DLLHorizontalDivider
 import dev.koga.deeplinklauncher.designsystem.DLLTopBar
 import dev.koga.deeplinklauncher.designsystem.DLLTopBarDefaults
+import dev.koga.deeplinklauncher.designsystem.theme.DeepLinkTheme
 import dev.koga.deeplinklauncher.platform.Platform
 import dev.koga.deeplinklauncher.platform.currentPlatform
 import dev.koga.deeplinklauncher.settings.impl.navigation.SettingsRoute
@@ -80,6 +81,8 @@ internal fun SettingsUI(
     onShowSuggestionsOption: () -> Unit,
     onShowProducts: () -> Unit,
 ) {
+    val colors = DeepLinkTheme.colors
+
     Scaffold(
         topBar = {
             DLLTopBar(
@@ -101,7 +104,7 @@ internal fun SettingsUI(
                     modifier = Modifier.padding(horizontal = 12.dp),
                     style = MaterialTheme.typography.labelLarge.copy(
                         fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f),
+                        color = colors.text.placeholder,
                     ),
                 )
             }
@@ -186,7 +189,7 @@ internal fun SettingsUI(
                     modifier = Modifier.padding(horizontal = 12.dp),
                     style = MaterialTheme.typography.labelLarge.copy(
                         fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f),
+                        color = colors.text.placeholder,
                     ),
                 )
             }

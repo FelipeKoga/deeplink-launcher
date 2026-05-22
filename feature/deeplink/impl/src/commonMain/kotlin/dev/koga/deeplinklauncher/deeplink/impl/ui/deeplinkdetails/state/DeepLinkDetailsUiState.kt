@@ -5,6 +5,7 @@ import dev.koga.deeplinklauncher.deeplink.api.model.DeepLinkHandlerInfo
 import dev.koga.deeplinklauncher.deeplink.api.model.DeepLinkMetadata
 import dev.koga.deeplinklauncher.deeplink.api.model.Folder
 import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.persistentListOf
 
 internal sealed interface DeepLinkDetailsUiState {
     val deepLink: DeepLink
@@ -12,6 +13,8 @@ internal sealed interface DeepLinkDetailsUiState {
     data class Launch(
         override val deepLink: DeepLink,
         val iconPng: ByteArray? = null,
+        val showFolder: Boolean = true,
+        val folders: ImmutableList<Folder> = persistentListOf(),
         val metadata: DeepLinkMetadata = DeepLinkMetadata(
             link = deepLink.link,
             scheme = null,

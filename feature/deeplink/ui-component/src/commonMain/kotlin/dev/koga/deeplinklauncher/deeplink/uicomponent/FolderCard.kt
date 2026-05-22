@@ -21,6 +21,7 @@ import androidx.compose.ui.unit.dp
 import dev.koga.deeplinklauncher.deeplink.api.model.Folder
 import dev.koga.resources.Res
 import dev.koga.resources.folder_deeplink_count
+import dev.koga.deeplinklauncher.designsystem.theme.DeepLinkTheme
 import org.jetbrains.compose.resources.pluralStringResource
 
 @Composable
@@ -29,12 +30,14 @@ fun FolderCard(
     folder: Folder,
     onClick: (Folder) -> Unit,
 ) {
+    val colors = DeepLinkTheme.colors
+
     OutlinedCard(
         onClick = { onClick(folder) },
-        border = BorderStroke(1.dp, MaterialTheme.colorScheme.surfaceVariant),
+        border = BorderStroke(1.dp, colors.border.subtle),
         colors = CardDefaults.outlinedCardColors(
-            containerColor = MaterialTheme.colorScheme.background,
-            contentColor = MaterialTheme.colorScheme.onBackground,
+            containerColor = colors.surface.background,
+            contentColor = colors.text.primary,
         ),
         modifier = modifier.size(184.dp),
         shape = RoundedCornerShape(24.dp),
@@ -50,7 +53,7 @@ fun FolderCard(
                 text = folder.name,
                 style = MaterialTheme.typography.titleSmall.copy(
                     fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.primary,
+                    color = colors.surface.primary,
                 ),
                 maxLines = 2,
                 overflow = TextOverflow.Ellipsis,
@@ -70,7 +73,7 @@ fun FolderCard(
                 },
                 style = MaterialTheme.typography.bodySmall.copy(
                     fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.secondary,
+                    color = colors.text.secondary,
                 ),
             )
         }

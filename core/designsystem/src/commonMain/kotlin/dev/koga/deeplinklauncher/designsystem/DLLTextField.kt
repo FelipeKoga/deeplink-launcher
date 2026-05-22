@@ -29,6 +29,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
+import dev.koga.deeplinklauncher.designsystem.theme.DeepLinkTheme
 
 val defaultTextFieldColors: TextFieldColors
     @Composable get() = TextFieldDefaults.colors(
@@ -57,6 +58,7 @@ fun DLLTextField(
     textStyle: TextStyle = LocalTextStyle.current,
     leadingIcon: @Composable (() -> Unit)? = null,
 ) {
+    val themeColors = DeepLinkTheme.colors
     var isFocused by remember { mutableStateOf(false) }
     var textFieldValue by remember {
         mutableStateOf(TextFieldValue(text = value))
@@ -90,7 +92,7 @@ fun DLLTextField(
                 text = label,
                 style = MaterialTheme.typography.labelMedium.copy(
                     fontWeight = FontWeight.SemiBold,
-                    color = MaterialTheme.colorScheme.secondary,
+                    color = themeColors.text.secondary,
                 ),
             )
         },

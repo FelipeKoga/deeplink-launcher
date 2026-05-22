@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Snackbar
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
@@ -32,6 +31,7 @@ import dev.koga.deeplinklauncher.deeplink.impl.ui.deeplinkdetails.state.DeepLink
 import dev.koga.deeplinklauncher.deeplink.impl.ui.deeplinkdetails.state.DeepLinkDetailsUiState
 import dev.koga.deeplinklauncher.deeplink.impl.ui.deeplinkdetails.state.EditAction
 import dev.koga.deeplinklauncher.designsystem.DLLModalBottomSheet
+import dev.koga.deeplinklauncher.designsystem.theme.DeepLinkTheme
 import kotlinx.coroutines.flow.collectLatest
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -44,6 +44,7 @@ internal fun DeepLinkDetailsBottomSheet(
     val snackBarHostState = remember { SnackbarHostState() }
 
     var showDeleteConfirmation by rememberSaveable { mutableStateOf(false) }
+    val colors = DeepLinkTheme.colors
 
     if (showDeleteConfirmation) {
         DeepLinkDeleteConfirmationDialog(
@@ -68,7 +69,7 @@ internal fun DeepLinkDetailsBottomSheet(
         sheetState = rememberModalBottomSheetState(
             skipPartiallyExpanded = true,
         ),
-        containerColor = MaterialTheme.colorScheme.background,
+        containerColor = colors.surface.background,
     ) {
         Box(modifier = Modifier.fillMaxWidth()) {
             DeepLinkDetailsUI(
@@ -83,10 +84,10 @@ internal fun DeepLinkDetailsBottomSheet(
                 snackbar = {
                     Snackbar(
                         snackbarData = it,
-                        containerColor = MaterialTheme.colorScheme.primary.copy(
+                        containerColor = colors.button.primaryBackground.copy(
                             alpha = .95f,
                         ),
-                        contentColor = MaterialTheme.colorScheme.onPrimary,
+                        contentColor = colors.button.primaryContent,
                     )
                 },
             )

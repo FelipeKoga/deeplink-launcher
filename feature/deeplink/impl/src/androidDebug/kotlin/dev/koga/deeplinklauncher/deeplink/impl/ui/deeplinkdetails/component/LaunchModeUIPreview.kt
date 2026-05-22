@@ -7,8 +7,10 @@ import dev.koga.deeplinklauncher.deeplink.api.model.DeepLink.Companion.previewFa
 import dev.koga.deeplinklauncher.deeplink.api.model.DeepLink.Companion.previewNotFavorite
 import dev.koga.deeplinklauncher.deeplink.api.model.DeepLinkHandlerInfo
 import dev.koga.deeplinklauncher.deeplink.api.model.DeepLinkMetadata
+import dev.koga.deeplinklauncher.deeplink.api.model.Folder
 import dev.koga.deeplinklauncher.deeplink.impl.ui.deeplinkdetails.state.DeepLinkDetailsUiState
 import dev.koga.deeplinklauncher.designsystem.theme.DLLPreviewTheme
+import kotlinx.collections.immutable.persistentListOf
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 private val previewMetadata = DeepLinkMetadata(
@@ -65,7 +67,7 @@ internal fun LaunchModeUINotFavoritePreview() {
 @Composable
 internal fun DetailsQuickActionsGridPreview() {
     DLLPreviewTheme {
-        DetailsQuickActionsGrid(
+        DetailsQuickActions(
             isFavorite = false,
             onAction = {},
             onShowDeleteConfirmation = {},
@@ -78,7 +80,7 @@ internal fun DetailsQuickActionsGridPreview() {
 @Composable
 internal fun DetailsQuickActionsGridFavoritePreview() {
     DLLPreviewTheme {
-        DetailsQuickActionsGrid(
+        DetailsQuickActions(
             isFavorite = true,
             onAction = {},
             onShowDeleteConfirmation = {},
@@ -110,7 +112,46 @@ internal fun DetailsDeepLinkFieldPreview() {
             metadata = previewMetadata,
             handlerInfo = previewHandlerInfo,
             iconPng = null,
+            description = previewFavorite.description,
             onCopyLink = {},
+        )
+    }
+}
+
+@Preview
+@PreviewLightDark
+@Composable
+internal fun DetailsDeepLinkFieldWithFolderPreview() {
+    DLLPreviewTheme {
+        DetailsDeepLinkField(
+            link = previewMetadata.link,
+            metadata = previewMetadata,
+            handlerInfo = previewHandlerInfo,
+            iconPng = null,
+            folder = Folder.preview,
+            onCopyLink = {},
+            onFolderClick = {},
+        )
+    }
+}
+
+@Preview
+@PreviewLightDark
+@Composable
+internal fun DetailsDeepLinkFieldWithoutFolderPreview() {
+    DLLPreviewTheme {
+        DetailsDeepLinkField(
+            link = previewMetadata.link,
+            metadata = previewMetadata,
+            handlerInfo = previewHandlerInfo,
+            iconPng = null,
+            folders = persistentListOf(
+                Folder.preview,
+                Folder.previewOneDeepLinkCount,
+            ),
+            onCopyLink = {},
+            onToggleFolder = {},
+            onAddFolder = {},
         )
     }
 }

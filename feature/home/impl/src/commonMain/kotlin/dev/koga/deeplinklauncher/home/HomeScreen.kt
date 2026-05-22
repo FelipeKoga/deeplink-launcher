@@ -8,7 +8,6 @@ import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -23,6 +22,7 @@ import dev.chrisbanes.haze.hazeEffect
 import dev.chrisbanes.haze.hazeSource
 import dev.chrisbanes.haze.materials.ExperimentalHazeMaterialsApi
 import dev.chrisbanes.haze.materials.HazeMaterials
+import dev.koga.deeplinklauncher.designsystem.theme.DeepLinkTheme
 import dev.koga.deeplinklauncher.deeplink.api.ui.navigation.DeepLinkRouteEntryPoint
 import dev.koga.deeplinklauncher.home.component.DeepLinksLazyColumn
 import dev.koga.deeplinklauncher.home.component.FoldersVerticalStaggeredGrid
@@ -72,7 +72,10 @@ internal fun HomeUI(
         }
     }
 
+    val colors = DeepLinkTheme.colors
+
     Scaffold(
+        containerColor = colors.surface.background,
         topBar = {
             HomeTopBar(
                 search = uiState.searchInput,
@@ -84,7 +87,7 @@ internal fun HomeUI(
                 modifier = Modifier.hazeEffect(
                     state = hazeState,
                     style = HazeMaterials.regular(
-                        containerColor = MaterialTheme.colorScheme.background,
+                        containerColor = colors.surface.background,
                     ),
                 ),
             )
@@ -95,7 +98,9 @@ internal fun HomeUI(
                     .clip(RoundedCornerShape(topStart = 12.dp, topEnd = 12.dp))
                     .hazeEffect(
                         state = hazeState,
-                        style = HazeMaterials.thick(),
+                        style = HazeMaterials.thick(
+                            containerColor = colors.surface.elevated,
+                        ),
                     )
                     .navigationBarsPadding(),
                 state = uiState.deepLinkInputState,
