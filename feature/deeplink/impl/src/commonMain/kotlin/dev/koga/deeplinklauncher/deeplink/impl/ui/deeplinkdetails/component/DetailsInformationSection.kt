@@ -156,8 +156,6 @@ private fun InfoRow(
                     style = typography.body.smallEmphasis.copy(
                         color = colors.text.primary,
                     ),
-                    maxLines = 3,
-                    overflow = TextOverflow.Ellipsis,
                 )
             }
 

@@ -3,11 +3,6 @@ package dev.koga.deeplinklauncher.deeplink.api.ui.formatting
 import dev.koga.deeplinklauncher.deeplink.api.domain.model.DeepLink
 import dev.koga.deeplinklauncher.deeplink.api.domain.model.DeepLinkMetadata
 
-public fun DeepLink.displayName(metadata: DeepLinkMetadata? = null): String {
-    val customName = name?.takeIf { it.isNotBlank() }
-    return customName ?: metadata?.host ?: link
-}
-
 public fun DeepLink.truncatedLink(): String = link.truncateDeepLinkMiddle()
 
 private const val DEFAULT_DEEP_LINK_TRUNCATE_MAX_LENGTH = 60
