@@ -7,18 +7,24 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
 import androidx.compose.foundation.lazy.staggeredgrid.rememberLazyStaggeredGridState
+import androidx.compose.material3.BottomSheetDefaults
+import androidx.compose.material3.BottomSheetScaffold
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SheetValue
 import androidx.compose.material3.Text
+import androidx.compose.material3.rememberBottomSheetScaffoldState
+import androidx.compose.material3.rememberStandardBottomSheetState
 import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -31,9 +37,11 @@ import compose.icons.tablericons.Trash
 import dev.koga.deeplinklauncher.deeplink.api.ui.navigation.DeepLinkRouteEntryPoint
 import dev.koga.deeplinklauncher.deeplink.impl.ui.folderdetails.component.DeleteFolderBottomSheet
 import dev.koga.deeplinklauncher.deeplink.impl.ui.folderdetails.component.EditableText
+import dev.koga.deeplinklauncher.deeplink.impl.ui.folderdetails.component.LinkDeepLinkToFolderBottomSheet
 import dev.koga.deeplinklauncher.deeplink.impl.ui.folderdetails.state.FolderDetailsAction
 import dev.koga.deeplinklauncher.deeplink.impl.ui.folderdetails.state.FolderDetailsUiState
 import dev.koga.deeplinklauncher.deeplink.uicomponent.DeepLinkCard
+import dev.koga.deeplinklauncher.deeplink.uicomponent.DeepLinkLaunchBottomBar
 import dev.koga.deeplinklauncher.designsystem.DLLHorizontalDivider
 import dev.koga.deeplinklauncher.designsystem.DLLTopBar
 import dev.koga.deeplinklauncher.designsystem.DLLTopBarDefaults
@@ -62,6 +70,14 @@ internal fun FolderDetailsScreen(
         )
     }
 
+    uiState.pendingLinkConfirmation?.let {
+        LinkDeepLinkToFolderBottomSheet(
+            folderName = uiState.name,
+            onDismissRequest = { viewModel.onAction(FolderDetailsAction.DismissLinkConfirmation) },
+            onConfirm = { viewModel.onAction(FolderDetailsAction.ConfirmLinkToFolder) },
+        )
+    }
+
     FolderDetailsUI(
         uiState = uiState,
         onAction = viewModel::onAction,
@@ -78,7 +94,34 @@ internal fun FolderDetailsUI(
     onNavigate: (AppRoute) -> Unit,
     onShowDeleteConfirmation: () -> Unit,
 ) {
-    Scaffold(
+    val colors = DeepLinkTheme.colors
+    val shapes = DeepLinkTheme.shapes
+
+    val bottomSheetState = rememberStandardBottomSheetState(
+        initialValue = SheetValue.PartiallyExpanded,
+        skipHiddenState = true,
+    )
+    val scaffoldState = rememberBottomSheetScaffoldState(
+        bottomSheetState = bottomSheetState,
+    )
+
+    val shouldExpandSheet = uiState.deepLinkInputState.suggestions.isNotEmpty() ||
+        uiState.deepLinkInputState.errorMessage != null
+
+    LaunchedEffect(shouldExpandSheet) {
+        if (shouldExpandSheet) {
+            bottomSheetState.expand()
+        }
+    }
+
+    BottomSheetScaffold(
+        scaffoldState = scaffoldState,
+        containerColor = colors.surface.background,
+        sheetPeekHeight = LaunchBottomBarPeekHeight,
+        sheetSwipeEnabled = true,
+        sheetContainerColor = colors.surface.elevated,
+        sheetShape = shapes.sheet,
+        sheetDragHandle = { BottomSheetDefaults.DragHandle() },
         topBar = {
             DLLTopBar(
                 title = {},
@@ -100,6 +143,15 @@ internal fun FolderDetailsUI(
                 },
             )
         },
+        sheetContent = {
+            DeepLinkLaunchBottomBar(
+                modifier = Modifier.navigationBarsPadding(),
+                state = uiState.deepLinkInputState,
+                launch = { onAction(FolderDetailsAction.LaunchInputDeepLink) },
+                onSuggestionClicked = { onAction(FolderDetailsAction.OnSuggestionClicked(it)) },
+                onValueChange = { onAction(FolderDetailsAction.OnInputChanged(it)) },
+            )
+        },
     ) { contentPadding ->
         FolderDetailsScreenContent(
             modifier = Modifier.fillMaxSize().padding(contentPadding),
@@ -109,6 +161,8 @@ internal fun FolderDetailsUI(
         )
     }
 }
+
+private val LaunchBottomBarPeekHeight = 88.dp
 
 @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
 @Composable

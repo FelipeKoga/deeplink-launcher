@@ -13,7 +13,7 @@ import dev.koga.deeplinklauncher.deeplink.api.domain.usecase.GetAutoSuggestionLi
 import dev.koga.deeplinklauncher.deeplink.api.domain.usecase.GetDeepLinksAndFolderStream
 import dev.koga.deeplinklauncher.deeplink.api.domain.usecase.LaunchDeepLink
 import dev.koga.deeplinklauncher.deeplink.api.ui.model.DeepLinkListItem
-import dev.koga.deeplinklauncher.home.impl.ui.state.DeepLinkInputState
+import dev.koga.deeplinklauncher.deeplink.uicomponent.DeepLinkInputState
 import dev.koga.deeplinklauncher.home.impl.ui.state.HomeUiState
 import dev.koga.deeplinklauncher.navigation.AppNavigator
 import dev.koga.deeplinklauncher.preferences.repository.PreferencesDataSource

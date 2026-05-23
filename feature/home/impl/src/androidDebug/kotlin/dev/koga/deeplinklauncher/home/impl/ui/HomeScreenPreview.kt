@@ -5,7 +5,7 @@ import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.tooling.preview.PreviewScreenSizes
 import dev.koga.deeplinklauncher.deeplink.api.domain.model.Suggestion
 import dev.koga.deeplinklauncher.designsystem.theme.DLLPreviewTheme
-import dev.koga.deeplinklauncher.home.impl.ui.state.DeepLinkInputState
+import dev.koga.deeplinklauncher.deeplink.uicomponent.DeepLinkInputState
 import dev.koga.deeplinklauncher.home.impl.ui.state.HomeUiState
 import kotlinx.collections.immutable.persistentListOf
 import org.jetbrains.compose.ui.tooling.preview.Preview

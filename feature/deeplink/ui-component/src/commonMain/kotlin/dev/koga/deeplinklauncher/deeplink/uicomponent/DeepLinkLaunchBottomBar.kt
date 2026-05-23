@@ -1,4 +1,4 @@
-package dev.koga.deeplinklauncher.home.impl.ui.component
+package dev.koga.deeplinklauncher.deeplink.uicomponent
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateContentSize
@@ -49,11 +49,10 @@ import dev.koga.deeplinklauncher.designsystem.DLLTextField
 import dev.koga.deeplinklauncher.designsystem.DLLTextFieldDefaults
 import dev.koga.deeplinklauncher.designsystem.button.DLLIconButton
 import dev.koga.deeplinklauncher.designsystem.theme.DeepLinkTheme
-import dev.koga.deeplinklauncher.home.impl.ui.state.DeepLinkInputState
 import kotlinx.coroutines.delay
 
 @Composable
-internal fun HomeBottomBarUI(
+public fun DeepLinkLaunchBottomBar(
     modifier: Modifier = Modifier,
     state: DeepLinkInputState,
     onValueChange: (String) -> Unit,

@@ -24,7 +24,7 @@ import dev.koga.deeplinklauncher.deeplink.api.ui.navigation.DeepLinkRouteEntryPo
 import dev.koga.deeplinklauncher.designsystem.theme.DeepLinkTheme
 import dev.koga.deeplinklauncher.home.impl.ui.component.DeepLinksLazyColumn
 import dev.koga.deeplinklauncher.home.impl.ui.component.FoldersVerticalStaggeredGrid
-import dev.koga.deeplinklauncher.home.impl.ui.component.HomeBottomBarUI
+import dev.koga.deeplinklauncher.deeplink.uicomponent.DeepLinkLaunchBottomBar
 import dev.koga.deeplinklauncher.home.impl.ui.component.HomeTopBar
 import dev.koga.deeplinklauncher.home.impl.ui.navigation.HomeRoute
 import dev.koga.deeplinklauncher.home.impl.ui.state.HomeUiState
@@ -92,7 +92,7 @@ internal fun HomeUI(
             )
         },
         bottomBar = {
-            HomeBottomBarUI(
+            DeepLinkLaunchBottomBar(
                 modifier = Modifier
                     .clip(shapes.sheet)
                     .hazeEffect(
