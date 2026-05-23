@@ -6,7 +6,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.tooling.preview.PreviewScreenSizes
 import androidx.compose.ui.unit.dp
-import dev.koga.deeplinklauncher.deeplink.api.domain.model.Folder
+import dev.koga.deeplinklauncher.home.impl.ui.preview.previewFolder
 import dev.koga.deeplinklauncher.designsystem.theme.DLLPreviewTheme
 import kotlinx.collections.immutable.persistentListOf
 import org.jetbrains.compose.ui.tooling.preview.Preview
@@ -57,9 +57,9 @@ internal fun FoldersVerticalStaggeredGridPreview() {
     DLLPreviewTheme {
         FoldersVerticalStaggeredGrid(
             folders = persistentListOf(
-                Folder.preview,
-                Folder.preview,
-                Folder.preview,
+                previewFolder,
+                previewFolder,
+                previewFolder,
             ),
             contentPadding = PaddingValues(0.dp),
             onAdd = {},

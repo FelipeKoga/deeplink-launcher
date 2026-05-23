@@ -5,9 +5,9 @@ import android.content.Intent
 import android.content.pm.ShortcutInfo
 import android.content.pm.ShortcutManager
 import androidx.core.net.toUri
-import dev.koga.deeplinklauncher.deeplink.impl.platform.android.resolveShortcutIcon
 import dev.koga.deeplinklauncher.deeplink.api.domain.model.DeepLink
 import dev.koga.deeplinklauncher.deeplink.api.domain.usecase.PinDeepLinkToHomeScreen
+import dev.koga.deeplinklauncher.deeplink.impl.platform.android.resolveShortcutIcon
 internal class PinDeepLinkToHomeScreenImpl(
     private val context: Context,
 ) : PinDeepLinkToHomeScreen {

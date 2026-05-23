@@ -6,9 +6,9 @@ import androidx.core.content.pm.ShortcutInfoCompat
 import androidx.core.content.pm.ShortcutManagerCompat
 import androidx.core.net.toUri
 import androidx.core.os.persistableBundleOf
-import dev.koga.deeplinklauncher.deeplink.impl.platform.android.resolveShortcutIconCompat
 import dev.koga.deeplinklauncher.deeplink.api.domain.model.DeepLink
 import dev.koga.deeplinklauncher.deeplink.api.domain.usecase.AddDeepLinkToShortcuts
+import dev.koga.deeplinklauncher.deeplink.impl.platform.android.resolveShortcutIconCompat
 
 internal class AddDeepLinkToShortcutsImpl(
     private val context: Context,

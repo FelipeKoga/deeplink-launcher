@@ -18,7 +18,9 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import compose.icons.TablerIcons
 import compose.icons.tablericons.ExternalLink
-import dev.koga.deeplinklauncher.deeplink.api.domain.model.DeepLinkListItem
+import dev.koga.deeplinklauncher.deeplink.api.ui.formatting.displayName
+import dev.koga.deeplinklauncher.deeplink.api.ui.model.DeepLinkListItem
+import dev.koga.deeplinklauncher.deeplink.api.ui.formatting.truncatedLink
 import dev.koga.deeplinklauncher.designsystem.DLLOutlinedCard
 import dev.koga.deeplinklauncher.designsystem.DLLSmallChip
 import dev.koga.deeplinklauncher.designsystem.button.DLLIconButton
@@ -57,22 +59,22 @@ fun DeepLinkCard(
                 Spacer(modifier = Modifier.width(12.dp))
 
                 Column(modifier = Modifier.weight(1f)) {
-                    if (!deepLink.name.isNullOrBlank()) {
-                        Text(
-                            text = deepLink.name.orEmpty(),
-                            style = typography.title.card.copy(
-                                color = colors.text.secondary,
-                            ),
-                            maxLines = 2,
-                            overflow = TextOverflow.Ellipsis,
-                        )
+                    Text(
+                        text = deepLink.displayName(),
+                        style = typography.title.card.copy(
+                            color = colors.text.secondary,
+                        ),
+                        maxLines = 2,
+                        overflow = TextOverflow.Ellipsis,
+                    )
 
-                        Spacer(modifier = Modifier.height(8.dp))
-                    }
+                    Spacer(modifier = Modifier.height(8.dp))
 
                     Text(
-                        text = deepLink.link,
-                        style = typography.title.card.copy(color = colors.text.primary),
+                        text = deepLink.truncatedLink(),
+                        style = DeepLinkTheme.typography.code.link.copy(
+                            color = DeepLinkTheme.colors.surface.primary,
+                        ),
                         maxLines = 3,
                     )
 

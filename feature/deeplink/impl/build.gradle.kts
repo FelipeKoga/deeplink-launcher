@@ -2,6 +2,7 @@
 
 plugins {
     alias(libs.plugins.deeplinkLauncher.composeMultiplatform)
+    alias(libs.plugins.stability.analyzer)
 }
 
 kotlin {
@@ -28,6 +29,8 @@ kotlin {
             implementation(libs.kotlinx.immutable)
 
             implementation(libs.compose.navigation)
+            implementation(libs.compose.runtime)
+
             implementation(libs.material3.windowSizeClass)
             implementation(compose.components.uiToolingPreview)
             implementation(compose.preview)

@@ -9,7 +9,6 @@ internal class GetDeepLinkMetadataImpl : GetDeepLinkMetadata {
         val uri = link.toUri()
 
         return DeepLinkMetadata(
-            link = link,
             scheme = uri.scheme,
             host = uri.host,
             path = uri.path ?: "/",

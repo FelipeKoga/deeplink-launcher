@@ -22,12 +22,12 @@ internal fun Context.resolveHandlericon(link: String): ByteArray? {
 
 internal fun Context.resolveShortcutIcon(intent: Intent): Icon? {
     val drawable = packageManager.resolveActivity(intent, 0)?.loadIcon(packageManager) ?: return null
-    return Icon.createWithBitmap(drawable.toBitmap())
+    return Icon.createWithAdaptiveBitmap(drawable.toBitmap())
 }
 
 internal fun Context.resolveShortcutIconCompat(intent: Intent): IconCompat? {
     val drawable = packageManager.resolveActivity(intent, 0)?.loadIcon(packageManager) ?: return null
-    return IconCompat.createWithBitmap(drawable.toBitmap())
+    return IconCompat.createWithAdaptiveBitmap(drawable.toBitmap())
 }
 
 private fun Bitmap.toPngByteArray(): ByteArray {

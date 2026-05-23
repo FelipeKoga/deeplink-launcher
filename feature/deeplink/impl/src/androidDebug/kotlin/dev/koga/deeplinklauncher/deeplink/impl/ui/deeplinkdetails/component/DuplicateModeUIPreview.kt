@@ -4,9 +4,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.tooling.preview.PreviewScreenSizes
 import dev.koga.deeplinklauncher.deeplink.api.domain.model.DeepLink
-import dev.koga.deeplinklauncher.deeplink.api.domain.model.DeepLink.Companion.previewFavorite
-import dev.koga.deeplinklauncher.deeplink.api.domain.model.DeepLink.Companion.previewNotFavorite
 import dev.koga.deeplinklauncher.deeplink.impl.ui.deeplinkdetails.state.DeepLinkDetailsUiState
+import dev.koga.deeplinklauncher.deeplink.impl.ui.preview.previewFavoriteDeepLink
+import dev.koga.deeplinklauncher.deeplink.impl.ui.preview.previewNotFavoriteDeepLink
 import dev.koga.deeplinklauncher.designsystem.theme.DLLPreviewTheme
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
@@ -18,7 +18,7 @@ internal fun DuplicateModeUIFavoritePreview() {
     DLLPreviewTheme {
         DuplicateModeUI(
             uiState = DeepLinkDetailsUiState.Duplicate(
-                deepLink = previewFavorite,
+                deepLink = previewFavoriteDeepLink,
             ),
             onAction = {},
         )
@@ -33,7 +33,7 @@ internal fun DuplicateModeUINotFavoritePreview() {
     DLLPreviewTheme {
         DuplicateModeUI(
             uiState = DeepLinkDetailsUiState.Duplicate(
-                deepLink = previewNotFavorite,
+                deepLink = previewNotFavoriteDeepLink,
             ),
             onAction = {},
         )

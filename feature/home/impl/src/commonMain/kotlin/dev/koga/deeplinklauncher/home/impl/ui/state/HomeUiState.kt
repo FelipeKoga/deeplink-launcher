@@ -1,8 +1,8 @@
 package dev.koga.deeplinklauncher.home.impl.ui.state
 
-import dev.koga.deeplinklauncher.deeplink.api.domain.model.DeepLinkListItem
 import dev.koga.deeplinklauncher.deeplink.api.domain.model.Folder
 import dev.koga.deeplinklauncher.deeplink.api.domain.model.Suggestion
+import dev.koga.deeplinklauncher.deeplink.api.ui.model.DeepLinkListItem
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 

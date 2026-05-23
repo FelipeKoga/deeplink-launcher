@@ -1,32 +1,25 @@
 package dev.koga.deeplinklauncher.deeplink.impl.ui.deeplinkdetails.state
 
+import androidx.compose.runtime.Immutable
 import dev.koga.deeplinklauncher.deeplink.api.domain.model.DeepLink
-import dev.koga.deeplinklauncher.deeplink.api.domain.model.DeepLinkHandlerInfo
-import dev.koga.deeplinklauncher.deeplink.api.domain.model.DeepLinkMetadata
 import dev.koga.deeplinklauncher.deeplink.api.domain.model.Folder
+import dev.koga.deeplinklauncher.deeplink.api.ui.model.DeepLinkDetailsModel
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 
+@Immutable
 internal sealed interface DeepLinkDetailsUiState {
     val deepLink: DeepLink
 
+    @Immutable
     data class Launch(
-        override val deepLink: DeepLink,
-        val icon: ByteArray? = null,
+        val details: DeepLinkDetailsModel,
         val showFolder: Boolean = true,
         val folders: ImmutableList<Folder> = persistentListOf(),
-        val metadata: DeepLinkMetadata = DeepLinkMetadata(
-            link = deepLink.link,
-            scheme = null,
-            host = null,
-            path = null,
-            query = null,
-        ),
-        val handlerInfo: DeepLinkHandlerInfo = DeepLinkHandlerInfo(
-            canResolve = false,
-            appName = null,
-        ),
-    ) : DeepLinkDetailsUiState
+    ) : DeepLinkDetailsUiState {
+        override val deepLink: DeepLink
+            get() = details.deepLink
+    }
 
     data class Edit(
         override val deepLink: DeepLink,

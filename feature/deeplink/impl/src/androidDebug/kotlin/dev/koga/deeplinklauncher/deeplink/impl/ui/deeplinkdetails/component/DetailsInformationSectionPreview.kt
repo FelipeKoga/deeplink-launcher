@@ -8,7 +8,6 @@ import dev.koga.deeplinklauncher.designsystem.theme.DLLPreviewTheme
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 private val previewMetadata = DeepLinkMetadata(
-    link = "https://google.com/search?q=compose",
     scheme = "https",
     host = "google.com",
     path = "/search",

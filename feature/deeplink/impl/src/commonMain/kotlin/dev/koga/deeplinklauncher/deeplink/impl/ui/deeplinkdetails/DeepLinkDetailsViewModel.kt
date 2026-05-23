@@ -7,20 +7,21 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
 import dev.koga.deeplinklauncher.coroutines.CoroutineDebouncer
+import dev.koga.deeplinklauncher.deeplink.api.application.EnrichDeepLinkForDetails
 import dev.koga.deeplinklauncher.deeplink.api.domain.model.DeepLink
 import dev.koga.deeplinklauncher.deeplink.api.domain.model.Folder
 import dev.koga.deeplinklauncher.deeplink.api.domain.repository.DeepLinkRepository
 import dev.koga.deeplinklauncher.deeplink.api.domain.repository.FolderRepository
-import dev.koga.deeplinklauncher.deeplink.api.ui.navigation.DeepLinkRouteEntryPoint
 import dev.koga.deeplinklauncher.deeplink.api.domain.usecase.AddDeepLinkToShortcuts
 import dev.koga.deeplinklauncher.deeplink.api.domain.usecase.DuplicateDeepLink
-import dev.koga.deeplinklauncher.deeplink.api.domain.usecase.GetDeepLinkHandlerIcon
-import dev.koga.deeplinklauncher.deeplink.api.domain.usecase.GetDeepLinkHandlerInfo
-import dev.koga.deeplinklauncher.deeplink.api.domain.usecase.GetDeepLinkMetadata
 import dev.koga.deeplinklauncher.deeplink.api.domain.usecase.LaunchDeepLink
 import dev.koga.deeplinklauncher.deeplink.api.domain.usecase.PinDeepLinkToHomeScreen
 import dev.koga.deeplinklauncher.deeplink.api.domain.usecase.ShareDeepLink
 import dev.koga.deeplinklauncher.deeplink.api.domain.usecase.ValidateDeepLink
+import dev.koga.deeplinklauncher.deeplink.api.domain.model.DeepLinkHandlerInfo
+import dev.koga.deeplinklauncher.deeplink.api.domain.model.DeepLinkMetadata
+import dev.koga.deeplinklauncher.deeplink.api.ui.model.DeepLinkDetailsModel
+import dev.koga.deeplinklauncher.deeplink.api.ui.navigation.DeepLinkRouteEntryPoint
 import dev.koga.deeplinklauncher.deeplink.impl.ui.deeplinkdetails.state.DeepLinkDetailsAction
 import dev.koga.deeplinklauncher.deeplink.impl.ui.deeplinkdetails.state.DeepLinkDetailsUiState
 import dev.koga.deeplinklauncher.deeplink.impl.ui.deeplinkdetails.state.DuplicateAction
@@ -45,9 +46,7 @@ internal class DeepLinkDetailsViewModel(
     savedStateHandle: SavedStateHandle,
     folderRepository: FolderRepository,
     private val deepLinkRepository: DeepLinkRepository,
-    private val getDeepLinkHandlerIcon: GetDeepLinkHandlerIcon,
-    private val getDeepLinkMetadata: GetDeepLinkMetadata,
-    private val getDeepLinkHandlerInfo: GetDeepLinkHandlerInfo,
+    private val enrichDeepLinkForDetails: EnrichDeepLinkForDetails,
     private val launchDeepLink: LaunchDeepLink,
     private val shareDeepLink: ShareDeepLink,
     private val pinDeepLinkToHomeScreen: PinDeepLinkToHomeScreen,
@@ -99,12 +98,9 @@ internal class DeepLinkDetailsViewModel(
             Mode.LAUNCH -> flow {
                 emit(
                     DeepLinkDetailsUiState.Launch(
-                        deepLink = input.deepLink,
-                        icon = getDeepLinkHandlerIcon(input.deepLink.link),
+                        details = enrichDeepLinkForDetails(input.deepLink),
                         showFolder = route.showFolder,
                         folders = input.folders.toPersistentList(),
-                        metadata = getDeepLinkMetadata(input.deepLink.link),
-                        handlerInfo = getDeepLinkHandlerInfo(input.deepLink.link),
                     ),
                 )
             }
@@ -132,7 +128,19 @@ internal class DeepLinkDetailsViewModel(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(),
         initialValue = DeepLinkDetailsUiState.Launch(
-            deepLink = deepLink.value,
+            details = DeepLinkDetailsModel(
+                deepLink = deepLink.value,
+                metadata = DeepLinkMetadata(
+                    scheme = null,
+                    host = null,
+                    path = null,
+                    query = null,
+                ),
+                handlerInfo = DeepLinkHandlerInfo(
+                    canResolve = false,
+                    appName = null,
+                ),
+            ),
         ),
     )
 

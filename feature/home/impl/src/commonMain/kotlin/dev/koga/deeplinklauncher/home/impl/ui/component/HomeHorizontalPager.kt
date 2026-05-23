@@ -30,8 +30,8 @@ import androidx.compose.ui.unit.dp
 import compose.icons.TablerIcons
 import compose.icons.tablericons.Plus
 import dev.koga.deeplinklauncher.deeplink.api.domain.model.DeepLink
-import dev.koga.deeplinklauncher.deeplink.api.domain.model.DeepLinkListItem
 import dev.koga.deeplinklauncher.deeplink.api.domain.model.Folder
+import dev.koga.deeplinklauncher.deeplink.api.ui.model.DeepLinkListItem
 import dev.koga.deeplinklauncher.deeplink.uicomponent.DeepLinkCard
 import dev.koga.deeplinklauncher.deeplink.uicomponent.FolderCard
 import dev.koga.deeplinklauncher.designsystem.theme.DeepLinkTheme

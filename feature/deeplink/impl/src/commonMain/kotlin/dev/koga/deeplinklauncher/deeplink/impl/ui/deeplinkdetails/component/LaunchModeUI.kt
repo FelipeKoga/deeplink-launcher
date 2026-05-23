@@ -49,7 +49,7 @@ internal fun LaunchModeUI(
 
         Spacer(modifier = Modifier.height(12.dp))
 
-        DetailsDeepLinkField(
+        DetailsDeepLinkInfo(
             uiState = uiState,
             onCopyLink = ::copyLink,
             onFolderClick = { onAction(LaunchAction.NavigateToFolder) },

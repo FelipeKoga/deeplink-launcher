@@ -31,7 +31,6 @@ internal class GetDeepLinkMetadataImpl : GetDeepLinkMetadata {
         val query = remainingLink.substringAfter("?", "").takeIf { it.isNotBlank() }
 
         return DeepLinkMetadata(
-            link = link,
             scheme = scheme,
             host = host,
             path = path,

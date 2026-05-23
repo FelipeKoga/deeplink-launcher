@@ -6,12 +6,11 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
+import dev.koga.deeplinklauncher.deeplink.api.application.EnrichDeepLinksForList
 import dev.koga.deeplinklauncher.deeplink.api.domain.model.DeepLink
-import dev.koga.deeplinklauncher.deeplink.api.domain.mapper.toListItems
 import dev.koga.deeplinklauncher.deeplink.api.domain.repository.FolderRepository
-import dev.koga.deeplinklauncher.deeplink.api.ui.navigation.DeepLinkRouteEntryPoint
-import dev.koga.deeplinklauncher.deeplink.api.domain.usecase.GetDeepLinkHandlerIcon
 import dev.koga.deeplinklauncher.deeplink.api.domain.usecase.LaunchDeepLink
+import dev.koga.deeplinklauncher.deeplink.api.ui.navigation.DeepLinkRouteEntryPoint
 import dev.koga.deeplinklauncher.deeplink.impl.ui.folderdetails.state.FolderDetailsAction
 import dev.koga.deeplinklauncher.deeplink.impl.ui.folderdetails.state.FolderDetailsUiState
 import dev.koga.deeplinklauncher.navigation.AppNavigator
@@ -32,7 +31,7 @@ import kotlinx.coroutines.launch
 internal class FolderDetailsViewModel(
     savedStateHandle: SavedStateHandle,
     private val repository: FolderRepository,
-    private val getDeepLinkHandlerIcon: GetDeepLinkHandlerIcon,
+    private val enrichDeepLinksForList: EnrichDeepLinksForList,
     private val launchDeepLink: LaunchDeepLink,
     private val appNavigator: AppNavigator,
 ) : ViewModel() {
@@ -53,7 +52,7 @@ internal class FolderDetailsViewModel(
     private val deepLinks = repository.getFolderDeepLinksStream(folderId)
         .flatMapLatest { links ->
             flow {
-                emit(links.toListItems(getDeepLinkHandlerIcon))
+                emit(enrichDeepLinksForList(links))
             }
         }
         .stateIn(

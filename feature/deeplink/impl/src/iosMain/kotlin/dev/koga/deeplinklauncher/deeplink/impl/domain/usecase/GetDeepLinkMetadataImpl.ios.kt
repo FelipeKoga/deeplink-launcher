@@ -14,7 +14,6 @@ internal class GetDeepLinkMetadataImpl : GetDeepLinkMetadata {
             url = nsurl,
             resolvingAgainstBaseURL = false,
         ) ?: return DeepLinkMetadata(
-            link = link,
             scheme = null,
             host = null,
             path = "/",
@@ -22,7 +21,6 @@ internal class GetDeepLinkMetadataImpl : GetDeepLinkMetadata {
         )
 
         return DeepLinkMetadata(
-            link = link,
             scheme = components.scheme,
             host = components.host,
             path = components.path ?: "/",

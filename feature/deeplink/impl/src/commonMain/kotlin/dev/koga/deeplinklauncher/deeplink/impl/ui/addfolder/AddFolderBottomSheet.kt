@@ -1,6 +1,5 @@
 package dev.koga.deeplinklauncher.deeplink.impl.ui.addfolder
 
-import dev.koga.deeplinklauncher.deeplink.impl.ui.addfolder.state.AddFolderUiState
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.defaultMinSize
@@ -18,6 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import dev.koga.deeplinklauncher.deeplink.impl.ui.addfolder.state.AddFolderUiState
 import dev.koga.deeplinklauncher.designsystem.DLLModalBottomSheet
 import dev.koga.deeplinklauncher.designsystem.DLLTextField
 import dev.koga.deeplinklauncher.designsystem.button.DLLButton

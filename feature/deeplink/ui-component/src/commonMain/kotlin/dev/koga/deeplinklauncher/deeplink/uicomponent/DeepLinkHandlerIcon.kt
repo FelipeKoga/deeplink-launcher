@@ -13,11 +13,12 @@ import androidx.compose.ui.graphics.decodeToImageBitmap
 import androidx.compose.ui.unit.dp
 import compose.icons.TablerIcons
 import compose.icons.tablericons.World
+import dev.koga.deeplinklauncher.deeplink.api.ui.model.DeepLinkIcon
 import dev.koga.deeplinklauncher.designsystem.theme.DeepLinkTheme
 
 @Composable
 fun DeepLinkHandlerIcon(
-    icon: ByteArray?,
+    icon: DeepLinkIcon?,
     modifier: Modifier = Modifier,
 ) {
     val colors = DeepLinkTheme.colors
@@ -27,7 +28,7 @@ fun DeepLinkHandlerIcon(
         modifier = modifier.clip(shapes.icon),
     ) {
         if (icon != null) {
-            val imageBitmap = remember(icon) { icon.decodeToImageBitmap() }
+            val imageBitmap = remember(icon) { icon.byteArray.decodeToImageBitmap() }
             Image(
                 bitmap = imageBitmap,
                 contentDescription = null,

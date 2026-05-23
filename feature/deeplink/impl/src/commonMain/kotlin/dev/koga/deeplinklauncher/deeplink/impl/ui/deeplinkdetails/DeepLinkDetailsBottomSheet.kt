@@ -1,10 +1,13 @@
 package dev.koga.deeplinklauncher.deeplink.impl.ui.deeplinkdetails
 
 import androidx.compose.animation.AnimatedContent
+import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.selection.SelectionContainer
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHostState
@@ -30,7 +33,6 @@ import dev.koga.deeplinklauncher.deeplink.impl.ui.deeplinkdetails.state.DeepLink
 import dev.koga.deeplinklauncher.deeplink.impl.ui.deeplinkdetails.state.EditAction
 import dev.koga.deeplinklauncher.designsystem.DLLModalBottomSheet
 import dev.koga.deeplinklauncher.designsystem.DLLSnackbarHost
-import dev.koga.deeplinklauncher.designsystem.theme.DeepLinkTheme
 import kotlinx.coroutines.flow.collectLatest
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -43,7 +45,7 @@ internal fun DeepLinkDetailsBottomSheet(
     val snackBarHostState = remember { SnackbarHostState() }
 
     var showDeleteConfirmation by rememberSaveable { mutableStateOf(false) }
-    val colors = DeepLinkTheme.colors
+    val scrollState = rememberScrollState()
 
     if (showDeleteConfirmation) {
         DeepLinkDeleteConfirmationDialog(
@@ -68,11 +70,11 @@ internal fun DeepLinkDetailsBottomSheet(
         sheetState = rememberModalBottomSheetState(
             skipPartiallyExpanded = true,
         ),
-        containerColor = colors.surface.background,
     ) {
         Box(modifier = Modifier.fillMaxWidth()) {
             DeepLinkDetailsUI(
                 uiState = uiState,
+                scrollState = scrollState,
                 onAction = viewModel::onAction,
                 onShowDeleteConfirmation = { showDeleteConfirmation = true },
             )
@@ -89,11 +91,12 @@ internal fun DeepLinkDetailsBottomSheet(
 internal fun DeepLinkDetailsUI(
     modifier: Modifier = Modifier,
     uiState: DeepLinkDetailsUiState,
+    scrollState: ScrollState,
     onAction: (DeepLinkDetailsAction) -> Unit,
     onShowDeleteConfirmation: () -> Unit,
 ) {
     SelectionContainer {
-        Column(modifier = modifier) {
+        Column(modifier = modifier.verticalScroll(scrollState)) {
             AnimatedContent(
                 targetState = uiState,
                 contentKey = { it::class },

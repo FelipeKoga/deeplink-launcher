@@ -1,7 +1,6 @@
 package dev.koga.deeplinklauncher.deeplink.impl.ui.deeplinkdetails.component
 
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.expandVertically
@@ -38,6 +37,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -45,7 +46,6 @@ import compose.icons.TablerIcons
 import compose.icons.tablericons.ChevronRight
 import compose.icons.tablericons.Copy
 import compose.icons.tablericons.Plus
-import dev.koga.deeplinklauncher.deeplink.api.domain.model.DeepLink
 import dev.koga.deeplinklauncher.deeplink.api.domain.model.DeepLinkHandlerInfo
 import dev.koga.deeplinklauncher.deeplink.api.domain.model.DeepLinkMetadata
 import dev.koga.deeplinklauncher.deeplink.api.domain.model.Folder
@@ -53,12 +53,11 @@ import dev.koga.deeplinklauncher.deeplink.impl.ui.deeplinkdetails.state.DeepLink
 import dev.koga.deeplinklauncher.designsystem.DLLHorizontalDivider
 import dev.koga.deeplinklauncher.designsystem.theme.DeepLinkTheme
 import kotlinx.collections.immutable.ImmutableList
-import kotlinx.collections.immutable.persistentListOf
 
 private const val ExpandAnimationDurationMs = 250
 
 @Composable
-internal fun DetailsDeepLinkField(
+internal fun DetailsDeepLinkInfo(
     uiState: DeepLinkDetailsUiState.Launch,
     onCopyLink: () -> Unit,
     onFolderClick: () -> Unit = {},
@@ -68,11 +67,7 @@ internal fun DetailsDeepLinkField(
 ) {
     var isExpanded by rememberSaveable { mutableStateOf(false) }
     var isFolderPickerExpanded by rememberSaveable { mutableStateOf(false) }
-    val chevronRotation by animateFloatAsState(
-        targetValue = if (isExpanded) 90f else 0f,
-        animationSpec = tween(durationMillis = ExpandAnimationDurationMs),
-        label = "deeplink_info_chevron",
-    )
+
     val folderChevronRotation by animateFloatAsState(
         targetValue = if (isFolderPickerExpanded) 90f else 0f,
         animationSpec = tween(durationMillis = ExpandAnimationDurationMs),
@@ -86,15 +81,12 @@ internal fun DetailsDeepLinkField(
     ) {
         Surface(
             modifier = Modifier
-                .fillMaxWidth()
-                .animateContentSize(
-                    animationSpec = tween(durationMillis = ExpandAnimationDurationMs),
-                ),
+                .fillMaxWidth(),
             shape = DeepLinkTheme.shapes.dialog,
-            color = DeepLinkTheme.colors.surface.background,
+            color = Color.Transparent,
             border = BorderStroke(
                 width = 1.dp,
-                color = DeepLinkTheme.colors.border.default,
+                color = DeepLinkTheme.colors.border.subtle,
             ),
         ) {
             Column {
@@ -123,8 +115,6 @@ internal fun DetailsDeepLinkField(
                             style = DeepLinkTheme.typography.code.link.copy(
                                 color = DeepLinkTheme.colors.surface.primary,
                             ),
-                            maxLines = 5,
-                            overflow = TextOverflow.Ellipsis,
                             modifier = Modifier.padding(top = 2.dp),
                         )
                     }
@@ -186,9 +176,8 @@ internal fun DetailsDeepLinkField(
 
                 DetailsExpandableInfoToggle(
                     isExpanded = isExpanded,
-                    chevronRotation = chevronRotation,
-                    metadata = uiState.metadata,
-                    handlerInfo = uiState.handlerInfo,
+                    metadata = uiState.details.metadata,
+                    handlerInfo = uiState.details.handlerInfo,
                     onToggle = { isExpanded = !isExpanded },
                 )
 
@@ -209,9 +198,9 @@ internal fun DetailsDeepLinkField(
                             .padding(horizontal = 12.dp),
                     ) {
                         DetailsInformationContent(
-                            metadata = uiState.metadata,
-                            handlerInfo = uiState.handlerInfo,
-                            icon = uiState.icon,
+                            metadata = uiState.details.metadata,
+                            handlerInfo = uiState.details.handlerInfo,
+                            icon = uiState.details.icon,
                         )
                     }
                 }
@@ -259,7 +248,7 @@ private fun DetailsFolderSection(
                 )
 
                 Text(
-                    text = folder?.name ?: "Add to folder",
+                    text = folder?.name ?: "No folder vinculated to the deeplink",
                     style = typography.body.small.copy(
                         color = if (folder != null) {
                             colors.text.primary
@@ -369,17 +358,21 @@ private fun DetailsFolderSection(
 @Composable
 private fun DetailsExpandableInfoToggle(
     isExpanded: Boolean,
-    chevronRotation: Float,
     metadata: DeepLinkMetadata,
     handlerInfo: DeepLinkHandlerInfo,
     onToggle: () -> Unit,
 ) {
-    val summaryParts = buildList {
+    val chevronRotation by animateFloatAsState(
+        targetValue = if (isExpanded) 90f else 0f,
+        animationSpec = tween(durationMillis = ExpandAnimationDurationMs),
+        label = "deeplink_info_chevron",
+    )
+
+    val summary = buildList {
         metadata.scheme?.takeIf { it.isNotBlank() }?.let { add(it) }
         metadata.host?.takeIf { it.isNotBlank() }?.let { add(it) }
         metadata.path?.takeIf { it.isNotBlank() }?.let { add(it) }
-    }
-    val summary = summaryParts.joinToString(" · ")
+    }.joinToString(" · ")
 
     Row(
         modifier = Modifier
@@ -396,7 +389,7 @@ private fun DetailsExpandableInfoToggle(
                 ),
             )
 
-            AnimatedVisibility(visible = !isExpanded && summary.isNotBlank()) {
+            if (!isExpanded && summary.isNotBlank()) {
                 Text(
                     text = summary,
                     style = DeepLinkTheme.typography.body.small.copy(
@@ -415,7 +408,9 @@ private fun DetailsExpandableInfoToggle(
             tint = DeepLinkTheme.colors.text.muted,
             modifier = Modifier
                 .size(18.dp)
-                .rotate(chevronRotation),
+                .graphicsLayer {
+                    rotationZ = chevronRotation
+                },
         )
     }
 }

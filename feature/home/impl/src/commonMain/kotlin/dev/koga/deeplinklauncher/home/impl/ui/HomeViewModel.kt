@@ -5,15 +5,14 @@ package dev.koga.deeplinklauncher.home.impl.ui
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dev.koga.deeplinklauncher.date.currentLocalDateTime
-import dev.koga.deeplinklauncher.deeplink.api.domain.mapper.toListItems
+import dev.koga.deeplinklauncher.deeplink.api.application.EnrichDeepLinksForList
 import dev.koga.deeplinklauncher.deeplink.api.domain.model.DeepLink
-import dev.koga.deeplinklauncher.deeplink.api.domain.model.DeepLinkListItem
 import dev.koga.deeplinklauncher.deeplink.api.domain.model.Folder
 import dev.koga.deeplinklauncher.deeplink.api.domain.repository.DeepLinkRepository
 import dev.koga.deeplinklauncher.deeplink.api.domain.usecase.GetAutoSuggestionLinks
-import dev.koga.deeplinklauncher.deeplink.api.domain.usecase.GetDeepLinkHandlerIcon
 import dev.koga.deeplinklauncher.deeplink.api.domain.usecase.GetDeepLinksAndFolderStream
 import dev.koga.deeplinklauncher.deeplink.api.domain.usecase.LaunchDeepLink
+import dev.koga.deeplinklauncher.deeplink.api.ui.model.DeepLinkListItem
 import dev.koga.deeplinklauncher.home.impl.ui.state.DeepLinkInputState
 import dev.koga.deeplinklauncher.home.impl.ui.state.HomeUiState
 import dev.koga.deeplinklauncher.navigation.AppNavigator
@@ -35,7 +34,7 @@ import kotlin.uuid.Uuid
 
 class HomeViewModel(
     getDeepLinksAndFolderStream: GetDeepLinksAndFolderStream,
-    private val getDeepLinkHandlerIcon: GetDeepLinkHandlerIcon,
+    private val enrichDeepLinksForList: EnrichDeepLinksForList,
     private val getAutoSuggestionLinks: GetAutoSuggestionLinks,
     private val deepLinkRepository: DeepLinkRepository,
     private val launchDeepLink: LaunchDeepLink,
@@ -51,10 +50,11 @@ class HomeViewModel(
 
     private val enrichedDataStream = dataStream.flatMapLatest { data ->
         flow {
+            val deepLinks = enrichDeepLinksForList(data.deepLinks)
             emit(
                 EnrichedData(
-                    deepLinks = data.deepLinks.toListItems(getDeepLinkHandlerIcon),
-                    favorites = data.favorites.toListItems(getDeepLinkHandlerIcon),
+                    deepLinks = deepLinks,
+                    favorites = deepLinks.filter { it.deepLink.isFavorite },
                     folders = data.folders,
                 ),
             )
