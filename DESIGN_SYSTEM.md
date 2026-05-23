@@ -35,14 +35,14 @@ Palette: zinc/neutral. Light bg `#FFFFFF`, dark bg `#09090B`.
 ```kotlin
 @Composable
 fun MyScreen() {
-    val colors = DeepLinkTheme.colors
-    val typography = DeepLinkTheme.typography
     val dimensions = DeepLinkTheme.dimensions
     val shapes = DeepLinkTheme.shapes
 
     Text(
         text = "Hello",
-        style = typography.body.default.copy(color = colors.text.primary),
+        style = DeepLinkTheme.typography.body.default.copy(
+            color = DeepLinkTheme.colors.text.primary
+        ),
     )
 }
 ```

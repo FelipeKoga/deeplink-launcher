@@ -31,12 +31,10 @@ internal fun LaunchModeUI(
     onAction: (LaunchAction) -> Unit,
     onShowDeleteConfirmation: () -> Unit,
 ) {
-    val typography = DeepLinkTheme.typography
     val clipboardManager = LocalClipboardManager.current
-    val deepLink = uiState.deepLink
 
     fun copyLink() {
-        clipboardManager.setText(AnnotatedString(deepLink.link))
+        clipboardManager.setText(AnnotatedString(uiState.deepLink.link))
         onAction(LaunchAction.NotifyLinkCopied)
     }
 
@@ -46,23 +44,13 @@ internal fun LaunchModeUI(
             .padding(bottom = 16.dp),
     ) {
         DetailsHeader(
-            deepLink = deepLink,
-            icon = uiState.icon,
-            metadataHost = uiState.metadata.host,
-            createdAt = deepLink.createdAt,
+            uiState = uiState,
         )
 
         Spacer(modifier = Modifier.height(12.dp))
 
         DetailsDeepLinkField(
-            link = deepLink.link,
-            metadata = uiState.metadata,
-            handlerInfo = uiState.handlerInfo,
-            icon = uiState.icon,
-            description = deepLink.description,
-            folder = deepLink.folder,
-            folders = uiState.folders,
-            showFolder = uiState.showFolder,
+            uiState = uiState,
             onCopyLink = ::copyLink,
             onFolderClick = { onAction(LaunchAction.NavigateToFolder) },
             onToggleFolder = { onAction(LaunchAction.ToggleFolder(it)) },
@@ -72,7 +60,7 @@ internal fun LaunchModeUI(
         Spacer(modifier = Modifier.height(16.dp))
 
         DetailsQuickActions(
-            isFavorite = deepLink.isFavorite,
+            isFavorite = uiState.deepLink.isFavorite,
             onAction = onAction,
             onShowDeleteConfirmation = onShowDeleteConfirmation,
         )
@@ -92,7 +80,7 @@ internal fun LaunchModeUI(
             ) {
                 Text(
                     text = "Launch",
-                    style = typography.action.button,
+                    style = DeepLinkTheme.typography.action.button,
                 )
 
                 Spacer(modifier = Modifier.width(8.dp))

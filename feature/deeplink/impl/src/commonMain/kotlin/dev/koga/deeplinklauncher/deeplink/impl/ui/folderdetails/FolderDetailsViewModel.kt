@@ -7,7 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
 import dev.koga.deeplinklauncher.deeplink.api.domain.model.DeepLink
-import dev.koga.deeplinklauncher.deeplink.uicomponent.mapper.toListItems
+import dev.koga.deeplinklauncher.deeplink.api.domain.mapper.toListItems
 import dev.koga.deeplinklauncher.deeplink.api.domain.repository.FolderRepository
 import dev.koga.deeplinklauncher.deeplink.api.ui.navigation.DeepLinkRouteEntryPoint
 import dev.koga.deeplinklauncher.deeplink.api.domain.usecase.GetDeepLinkHandlerIcon

@@ -45,9 +45,11 @@ import compose.icons.TablerIcons
 import compose.icons.tablericons.ChevronRight
 import compose.icons.tablericons.Copy
 import compose.icons.tablericons.Plus
+import dev.koga.deeplinklauncher.deeplink.api.domain.model.DeepLink
 import dev.koga.deeplinklauncher.deeplink.api.domain.model.DeepLinkHandlerInfo
 import dev.koga.deeplinklauncher.deeplink.api.domain.model.DeepLinkMetadata
 import dev.koga.deeplinklauncher.deeplink.api.domain.model.Folder
+import dev.koga.deeplinklauncher.deeplink.impl.ui.deeplinkdetails.state.DeepLinkDetailsUiState
 import dev.koga.deeplinklauncher.designsystem.DLLHorizontalDivider
 import dev.koga.deeplinklauncher.designsystem.theme.DeepLinkTheme
 import kotlinx.collections.immutable.ImmutableList
@@ -57,23 +59,13 @@ private const val ExpandAnimationDurationMs = 250
 
 @Composable
 internal fun DetailsDeepLinkField(
-    link: String,
-    metadata: DeepLinkMetadata,
-    handlerInfo: DeepLinkHandlerInfo,
-    icon: ByteArray?,
+    uiState: DeepLinkDetailsUiState.Launch,
     onCopyLink: () -> Unit,
-    description: String? = null,
-    folder: Folder? = null,
-    folders: ImmutableList<Folder> = persistentListOf(),
-    showFolder: Boolean = true,
     onFolderClick: () -> Unit = {},
     onToggleFolder: (Folder) -> Unit = {},
     onAddFolder: () -> Unit = {},
     modifier: Modifier = Modifier,
 ) {
-    val colors = DeepLinkTheme.colors
-    val typography = DeepLinkTheme.typography
-    val shapes = DeepLinkTheme.shapes
     var isExpanded by rememberSaveable { mutableStateOf(false) }
     var isFolderPickerExpanded by rememberSaveable { mutableStateOf(false) }
     val chevronRotation by animateFloatAsState(
@@ -98,11 +90,11 @@ internal fun DetailsDeepLinkField(
                 .animateContentSize(
                     animationSpec = tween(durationMillis = ExpandAnimationDurationMs),
                 ),
-            shape = shapes.dialog,
-            color = colors.surface.background,
+            shape = DeepLinkTheme.shapes.dialog,
+            color = DeepLinkTheme.colors.surface.background,
             border = BorderStroke(
                 width = 1.dp,
-                color = colors.border.default,
+                color = DeepLinkTheme.colors.border.default,
             ),
         ) {
             Column {
@@ -119,17 +111,17 @@ internal fun DetailsDeepLinkField(
                     ) {
                         Text(
                             text = "Deeplink",
-                            style = typography.label.fieldHeader.copy(
-                                color = colors.text.muted,
+                            style = DeepLinkTheme.typography.label.fieldHeader.copy(
+                                color = DeepLinkTheme.colors.text.muted,
                             ),
                         )
 
                         Spacer(modifier = Modifier.height(4.dp))
 
                         Text(
-                            text = link,
-                            style = typography.code.link.copy(
-                                color = colors.surface.primary,
+                            text = uiState.deepLink.link,
+                            style = DeepLinkTheme.typography.code.link.copy(
+                                color = DeepLinkTheme.colors.surface.primary,
                             ),
                             maxLines = 5,
                             overflow = TextOverflow.Ellipsis,
@@ -142,12 +134,12 @@ internal fun DetailsDeepLinkField(
                     Icon(
                         imageVector = TablerIcons.Copy,
                         contentDescription = "Copy deep link",
-                        tint = colors.surface.primary,
+                        tint = DeepLinkTheme.colors.surface.primary,
                         modifier = Modifier.size(24.dp),
                     )
                 }
 
-                description?.takeIf { it.isNotBlank() }?.let { descriptionText ->
+                uiState.deepLink.description?.takeIf { it.isNotBlank() }?.let { descriptionText ->
                     DLLHorizontalDivider()
 
                     Column(
@@ -157,27 +149,27 @@ internal fun DetailsDeepLinkField(
                     ) {
                         Text(
                             text = "Notes",
-                            style = typography.label.fieldHeader.copy(
-                                color = colors.text.muted,
+                            style = DeepLinkTheme.typography.label.fieldHeader.copy(
+                                color = DeepLinkTheme.colors.text.muted,
                             ),
                         )
 
                         Text(
                             text = descriptionText,
-                            style = typography.body.small.copy(
-                                color = colors.text.primary,
+                            style = DeepLinkTheme.typography.body.small.copy(
+                                color = DeepLinkTheme.colors.text.primary,
                             ),
                             modifier = Modifier.padding(top = 2.dp),
                         )
                     }
                 }
 
-                if (showFolder) {
+                if (uiState.showFolder) {
                     DLLHorizontalDivider(thickness = .5.dp)
 
                     DetailsFolderSection(
-                        folder = folder,
-                        folders = folders,
+                        folder = uiState.deepLink.folder,
+                        folders = uiState.folders,
                         isFolderPickerExpanded = isFolderPickerExpanded,
                         folderChevronRotation = folderChevronRotation,
                         onFolderClick = onFolderClick,
@@ -195,8 +187,8 @@ internal fun DetailsDeepLinkField(
                 DetailsExpandableInfoToggle(
                     isExpanded = isExpanded,
                     chevronRotation = chevronRotation,
-                    metadata = metadata,
-                    handlerInfo = handlerInfo,
+                    metadata = uiState.metadata,
+                    handlerInfo = uiState.handlerInfo,
                     onToggle = { isExpanded = !isExpanded },
                 )
 
@@ -217,9 +209,9 @@ internal fun DetailsDeepLinkField(
                             .padding(horizontal = 12.dp),
                     ) {
                         DetailsInformationContent(
-                            metadata = metadata,
-                            handlerInfo = handlerInfo,
-                            icon = icon,
+                            metadata = uiState.metadata,
+                            handlerInfo = uiState.handlerInfo,
+                            icon = uiState.icon,
                         )
                     }
                 }
@@ -382,8 +374,6 @@ private fun DetailsExpandableInfoToggle(
     handlerInfo: DeepLinkHandlerInfo,
     onToggle: () -> Unit,
 ) {
-    val colors = DeepLinkTheme.colors
-    val typography = DeepLinkTheme.typography
     val summaryParts = buildList {
         metadata.scheme?.takeIf { it.isNotBlank() }?.let { add(it) }
         metadata.host?.takeIf { it.isNotBlank() }?.let { add(it) }
@@ -401,16 +391,16 @@ private fun DetailsExpandableInfoToggle(
         Column(modifier = Modifier.weight(1f)) {
             Text(
                 text = "Info",
-                style = typography.label.fieldHeader.copy(
-                    color = colors.text.muted,
+                style = DeepLinkTheme.typography.label.fieldHeader.copy(
+                    color = DeepLinkTheme.colors.text.muted,
                 ),
             )
 
             AnimatedVisibility(visible = !isExpanded && summary.isNotBlank()) {
                 Text(
                     text = summary,
-                    style = typography.body.small.copy(
-                        color = colors.text.muted,
+                    style = DeepLinkTheme.typography.body.small.copy(
+                        color = DeepLinkTheme.colors.text.primary,
                     ),
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
@@ -422,7 +412,7 @@ private fun DetailsExpandableInfoToggle(
         Icon(
             imageVector = TablerIcons.ChevronRight,
             contentDescription = if (isExpanded) "Collapse details" else "Expand details",
-            tint = colors.text.muted,
+            tint = DeepLinkTheme.colors.text.muted,
             modifier = Modifier
                 .size(18.dp)
                 .rotate(chevronRotation),

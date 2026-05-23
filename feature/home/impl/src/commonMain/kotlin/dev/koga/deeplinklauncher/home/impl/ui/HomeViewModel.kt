@@ -5,10 +5,10 @@ package dev.koga.deeplinklauncher.home.impl.ui
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dev.koga.deeplinklauncher.date.currentLocalDateTime
+import dev.koga.deeplinklauncher.deeplink.api.domain.mapper.toListItems
 import dev.koga.deeplinklauncher.deeplink.api.domain.model.DeepLink
 import dev.koga.deeplinklauncher.deeplink.api.domain.model.DeepLinkListItem
 import dev.koga.deeplinklauncher.deeplink.api.domain.model.Folder
-import dev.koga.deeplinklauncher.deeplink.uicomponent.mapper.toListItems
 import dev.koga.deeplinklauncher.deeplink.api.domain.repository.DeepLinkRepository
 import dev.koga.deeplinklauncher.deeplink.api.domain.usecase.GetAutoSuggestionLinks
 import dev.koga.deeplinklauncher.deeplink.api.domain.usecase.GetDeepLinkHandlerIcon
