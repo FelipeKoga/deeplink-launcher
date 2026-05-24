@@ -3,49 +3,45 @@ package dev.koga.deeplinklauncher.deeplink.impl.ui.folderdetails
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
 import androidx.compose.foundation.lazy.staggeredgrid.rememberLazyStaggeredGridState
-import androidx.compose.material3.BottomSheetDefaults
-import androidx.compose.material3.BottomSheetScaffold
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.SheetValue
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.rememberBottomSheetScaffoldState
-import androidx.compose.material3.rememberStandardBottomSheetState
 import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import compose.icons.TablerIcons
+import compose.icons.tablericons.Plus
 import compose.icons.tablericons.Trash
 import dev.koga.deeplinklauncher.deeplink.api.ui.navigation.DeepLinkRouteEntryPoint
 import dev.koga.deeplinklauncher.deeplink.impl.ui.folderdetails.component.DeleteFolderBottomSheet
 import dev.koga.deeplinklauncher.deeplink.impl.ui.folderdetails.component.EditableText
-import dev.koga.deeplinklauncher.deeplink.impl.ui.folderdetails.component.LinkDeepLinkToFolderBottomSheet
 import dev.koga.deeplinklauncher.deeplink.impl.ui.folderdetails.state.FolderDetailsAction
 import dev.koga.deeplinklauncher.deeplink.impl.ui.folderdetails.state.FolderDetailsUiState
 import dev.koga.deeplinklauncher.deeplink.uicomponent.DeepLinkCard
-import dev.koga.deeplinklauncher.deeplink.uicomponent.DeepLinkLaunchBottomBar
 import dev.koga.deeplinklauncher.designsystem.DLLHorizontalDivider
 import dev.koga.deeplinklauncher.designsystem.DLLTopBar
 import dev.koga.deeplinklauncher.designsystem.DLLTopBarDefaults
 import dev.koga.deeplinklauncher.designsystem.button.DLLIconButton
+import dev.koga.deeplinklauncher.designsystem.button.DLLTextButton
 import dev.koga.deeplinklauncher.designsystem.theme.DeepLinkTheme
 import dev.koga.deeplinklauncher.designsystem.utils.fullLineItem
 import dev.koga.deeplinklauncher.designsystem.utils.spacer
@@ -70,14 +66,6 @@ internal fun FolderDetailsScreen(
         )
     }
 
-    uiState.pendingLinkConfirmation?.let {
-        LinkDeepLinkToFolderBottomSheet(
-            folderName = uiState.name,
-            onDismissRequest = { viewModel.onAction(FolderDetailsAction.DismissLinkConfirmation) },
-            onConfirm = { viewModel.onAction(FolderDetailsAction.ConfirmLinkToFolder) },
-        )
-    }
-
     FolderDetailsUI(
         uiState = uiState,
         onAction = viewModel::onAction,
@@ -95,33 +83,9 @@ internal fun FolderDetailsUI(
     onShowDeleteConfirmation: () -> Unit,
 ) {
     val colors = DeepLinkTheme.colors
-    val shapes = DeepLinkTheme.shapes
 
-    val bottomSheetState = rememberStandardBottomSheetState(
-        initialValue = SheetValue.PartiallyExpanded,
-        skipHiddenState = true,
-    )
-    val scaffoldState = rememberBottomSheetScaffoldState(
-        bottomSheetState = bottomSheetState,
-    )
-
-    val shouldExpandSheet = uiState.deepLinkInputState.suggestions.isNotEmpty() ||
-        uiState.deepLinkInputState.errorMessage != null
-
-    LaunchedEffect(shouldExpandSheet) {
-        if (shouldExpandSheet) {
-            bottomSheetState.expand()
-        }
-    }
-
-    BottomSheetScaffold(
-        scaffoldState = scaffoldState,
+    Scaffold(
         containerColor = colors.surface.background,
-        sheetPeekHeight = LaunchBottomBarPeekHeight,
-        sheetSwipeEnabled = true,
-        sheetContainerColor = colors.surface.elevated,
-        sheetShape = shapes.sheet,
-        sheetDragHandle = { BottomSheetDefaults.DragHandle() },
         topBar = {
             DLLTopBar(
                 title = {},
@@ -143,15 +107,6 @@ internal fun FolderDetailsUI(
                 },
             )
         },
-        sheetContent = {
-            DeepLinkLaunchBottomBar(
-                modifier = Modifier.navigationBarsPadding(),
-                state = uiState.deepLinkInputState,
-                launch = { onAction(FolderDetailsAction.LaunchInputDeepLink) },
-                onSuggestionClicked = { onAction(FolderDetailsAction.OnSuggestionClicked(it)) },
-                onValueChange = { onAction(FolderDetailsAction.OnInputChanged(it)) },
-            )
-        },
     ) { contentPadding ->
         FolderDetailsScreenContent(
             modifier = Modifier.fillMaxSize().padding(contentPadding),
@@ -161,8 +116,6 @@ internal fun FolderDetailsUI(
         )
     }
 }
-
-private val LaunchBottomBarPeekHeight = 88.dp
 
 @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
 @Composable
@@ -246,17 +199,44 @@ internal fun FolderDetailsScreenContent(
         }
 
         fullLineItem {
-            Text(
-                text = if (uiState.deepLinks.isNotEmpty()) {
-                    "Deeplinks"
-                } else {
-                    "No Deeplinks vinculated to this folder"
-                },
+            Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(start = 12.dp),
-                style = typography.label.caption,
-            )
+                    .padding(horizontal = 12.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween,
+            ) {
+                Text(
+                    text = if (uiState.deepLinks.isNotEmpty()) {
+                        "Deeplinks"
+                    } else {
+                        "No Deeplinks vinculated to this folder"
+                    },
+                    style = typography.label.caption,
+                )
+
+                DLLIconButton(
+                    onClick = { onAction(FolderDetailsAction.OpenLinkDeepLinkScreen) },
+                ) {
+                    Icon(
+                        imageVector = TablerIcons.Plus,
+                        contentDescription = "Link deeplink",
+                        modifier = Modifier.size(18.dp),
+                    )
+                }
+            }
+        }
+
+        if (uiState.deepLinks.isEmpty()) {
+            fullLineItem {
+                DLLTextButton(
+                    onClick = { onAction(FolderDetailsAction.OpenLinkDeepLinkScreen) },
+                    text = "Vincular deeplink",
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 12.dp),
+                )
+            }
         }
 
         items(

@@ -15,6 +15,7 @@ import dev.koga.deeplinklauncher.deeplink.api.domain.repository.FolderRepository
 import dev.koga.deeplinklauncher.deeplink.api.domain.usecase.AddDeepLinkToShortcuts
 import dev.koga.deeplinklauncher.deeplink.api.domain.usecase.DuplicateDeepLink
 import dev.koga.deeplinklauncher.deeplink.api.domain.usecase.LaunchDeepLink
+import dev.koga.deeplinklauncher.deeplink.api.domain.usecase.LinkDeepLinkToFolder
 import dev.koga.deeplinklauncher.deeplink.api.domain.usecase.PinDeepLinkToHomeScreen
 import dev.koga.deeplinklauncher.deeplink.api.domain.usecase.ShareDeepLink
 import dev.koga.deeplinklauncher.deeplink.api.domain.usecase.ValidateDeepLink
@@ -52,6 +53,7 @@ internal class DeepLinkDetailsViewModel(
     private val pinDeepLinkToHomeScreen: PinDeepLinkToHomeScreen,
     private val addDeepLinkToShortcuts: AddDeepLinkToShortcuts,
     private val duplicateDeepLink: DuplicateDeepLink,
+    private val linkDeepLinkToFolder: LinkDeepLinkToFolder,
     private val validateDeepLink: ValidateDeepLink,
     private val coroutineDebouncer: CoroutineDebouncer,
     private val appNavigator: AppNavigator,
@@ -261,9 +263,14 @@ internal class DeepLinkDetailsViewModel(
     }
 
     private fun toggleFolder(folder: Folder) {
-        deepLinkRepository.upsertDeepLink(
-            deepLink.value.copy(folder = folder.takeIf { folder.id != deepLink.value.folder?.id }),
-        )
+        if (folder.id == deepLink.value.folder?.id) {
+            deepLinkRepository.upsertDeepLink(deepLink.value.copy(folder = null))
+            return
+        }
+
+        viewModelScope.launch {
+            linkDeepLinkToFolder(deepLink.value.id, folder.id)
+        }
     }
 
     private fun duplicate(

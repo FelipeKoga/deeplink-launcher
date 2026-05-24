@@ -32,6 +32,9 @@ kotlin {
             implementation(libs.compose.runtime)
 
             implementation(libs.material3.windowSizeClass)
+            implementation(libs.haze)
+            implementation(libs.haze.materials)
+
             implementation(compose.components.uiToolingPreview)
             implementation(compose.preview)
         }
