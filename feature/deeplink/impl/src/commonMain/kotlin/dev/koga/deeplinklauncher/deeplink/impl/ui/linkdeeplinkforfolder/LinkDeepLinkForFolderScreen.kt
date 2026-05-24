@@ -9,9 +9,11 @@ import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.BottomSheetScaffold
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.rememberBottomSheetScaffoldState
+import androidx.compose.material3.rememberStandardBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -70,8 +72,12 @@ internal fun LinkDeepLinkForFolderUI(
     val colors = DeepLinkTheme.colors
     val shapes = DeepLinkTheme.shapes
 
-    Scaffold(
+    BottomSheetScaffold(
+        scaffoldState = rememberBottomSheetScaffoldState(
+            bottomSheetState = rememberStandardBottomSheetState(),
+        ),
         containerColor = colors.surface.background,
+        sheetPeekHeight = 80.dp,
         topBar = {
             DLLTopBar(
                 title = {
@@ -90,16 +96,11 @@ internal fun LinkDeepLinkForFolderUI(
                 ),
             )
         },
-        bottomBar = {
+        sheetContainerColor = colors.surface.elevated,
+        sheetContent = {
             DeepLinkLaunchBottomBar(
                 modifier = Modifier
                     .clip(shapes.sheet)
-                    .hazeEffect(
-                        state = hazeState,
-                        style = HazeMaterials.thick(
-                            containerColor = colors.surface.elevated,
-                        ),
-                    )
                     .navigationBarsPadding(),
                 state = uiState.deepLinkInputState,
                 launch = { onAction(LinkDeepLinkForFolderAction.LaunchInputDeepLink) },

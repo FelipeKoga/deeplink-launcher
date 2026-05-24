@@ -39,7 +39,7 @@ internal fun DetailsQuickActions(
     ) {
         item {
             DLLOutlinedChip(
-                label = "Favorite",
+                label = "",
                 icon = if (isFavorite) Icons.Rounded.Star else Icons.Rounded.StarOutline,
                 variant = if (isFavorite) {
                     DLLOutlinedChipVariant.Accent
@@ -53,7 +53,7 @@ internal fun DetailsQuickActions(
         if (canShareContent) {
             item {
                 DLLOutlinedChip(
-                    label = "Share",
+                    label = "",
                     icon = TablerIcons.Share,
                     onClick = { onAction(LaunchAction.Share) },
                 )
@@ -62,7 +62,7 @@ internal fun DetailsQuickActions(
 
         item {
             DLLOutlinedChip(
-                label = "Edit",
+                label = "",
                 icon = TablerIcons.Pencil,
                 onClick = { onAction(LaunchAction.Edit) },
             )
@@ -70,7 +70,7 @@ internal fun DetailsQuickActions(
 
         item {
             DLLOutlinedChip(
-                label = "Duplicate",
+                label = "",
                 iconPainter = painterResource(Res.drawable.ic_duplicate_24dp),
                 onClick = { onAction(LaunchAction.Duplicate) },
             )
@@ -79,7 +79,7 @@ internal fun DetailsQuickActions(
         if (currentPlatform == Platform.ANDROID) {
             item {
                 DLLOutlinedChip(
-                    label = "Add to home",
+                    label = "",
                     icon = TablerIcons.Home,
                     onClick = { onAction(LaunchAction.PinToHomeScreen) },
                 )
@@ -88,7 +88,7 @@ internal fun DetailsQuickActions(
 
         item {
             DLLOutlinedChip(
-                label = "Delete",
+                label = "",
                 icon = TablerIcons.Trash,
                 variant = DLLOutlinedChipVariant.Destructive,
                 onClick = onShowDeleteConfirmation,

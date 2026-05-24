@@ -18,8 +18,8 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import compose.icons.TablerIcons
 import compose.icons.tablericons.ExternalLink
-import dev.koga.deeplinklauncher.deeplink.api.ui.model.DeepLinkListItem
 import dev.koga.deeplinklauncher.deeplink.api.ui.formatting.truncatedLink
+import dev.koga.deeplinklauncher.deeplink.api.ui.model.DeepLinkListItem
 import dev.koga.deeplinklauncher.designsystem.DLLOutlinedCard
 import dev.koga.deeplinklauncher.designsystem.DLLSmallChip
 import dev.koga.deeplinklauncher.designsystem.button.DLLIconButton
@@ -58,7 +58,6 @@ fun DeepLinkCard(
                 Spacer(modifier = Modifier.width(12.dp))
 
                 Column(modifier = Modifier.weight(1f)) {
-
                     if (!deepLink.name.isNullOrBlank()) {
                         Text(
                             text = deepLink.name.orEmpty(),
@@ -71,7 +70,6 @@ fun DeepLinkCard(
 
                         Spacer(modifier = Modifier.height(8.dp))
                     }
-
 
                     Text(
                         text = deepLink.truncatedLink(),

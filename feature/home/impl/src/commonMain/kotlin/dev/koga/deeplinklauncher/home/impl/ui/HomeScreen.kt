@@ -7,6 +7,7 @@ import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -21,10 +22,10 @@ import dev.chrisbanes.haze.hazeSource
 import dev.chrisbanes.haze.materials.ExperimentalHazeMaterialsApi
 import dev.chrisbanes.haze.materials.HazeMaterials
 import dev.koga.deeplinklauncher.deeplink.api.ui.navigation.DeepLinkRouteEntryPoint
+import dev.koga.deeplinklauncher.deeplink.uicomponent.DeepLinkLaunchBottomBar
 import dev.koga.deeplinklauncher.designsystem.theme.DeepLinkTheme
 import dev.koga.deeplinklauncher.home.impl.ui.component.DeepLinksLazyColumn
 import dev.koga.deeplinklauncher.home.impl.ui.component.FoldersVerticalStaggeredGrid
-import dev.koga.deeplinklauncher.deeplink.uicomponent.DeepLinkLaunchBottomBar
 import dev.koga.deeplinklauncher.home.impl.ui.component.HomeTopBar
 import dev.koga.deeplinklauncher.home.impl.ui.navigation.HomeRoute
 import dev.koga.deeplinklauncher.home.impl.ui.state.HomeUiState
@@ -50,7 +51,7 @@ fun HomeScreen(
     )
 }
 
-@OptIn(ExperimentalHazeMaterialsApi::class)
+@OptIn(ExperimentalHazeMaterialsApi::class, ExperimentalMaterial3Api::class)
 @Composable
 internal fun HomeUI(
     uiState: HomeUiState,
@@ -97,7 +98,7 @@ internal fun HomeUI(
                     .clip(shapes.sheet)
                     .hazeEffect(
                         state = hazeState,
-                        style = HazeMaterials.thick(
+                        style = HazeMaterials.regular(
                             containerColor = colors.surface.elevated,
                         ),
                     )

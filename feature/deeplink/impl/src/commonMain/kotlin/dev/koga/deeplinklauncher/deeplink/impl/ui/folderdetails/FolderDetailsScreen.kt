@@ -40,8 +40,8 @@ import dev.koga.deeplinklauncher.deeplink.uicomponent.DeepLinkCard
 import dev.koga.deeplinklauncher.designsystem.DLLHorizontalDivider
 import dev.koga.deeplinklauncher.designsystem.DLLTopBar
 import dev.koga.deeplinklauncher.designsystem.DLLTopBarDefaults
+import dev.koga.deeplinklauncher.designsystem.button.DLLButton
 import dev.koga.deeplinklauncher.designsystem.button.DLLIconButton
-import dev.koga.deeplinklauncher.designsystem.button.DLLTextButton
 import dev.koga.deeplinklauncher.designsystem.theme.DeepLinkTheme
 import dev.koga.deeplinklauncher.designsystem.utils.fullLineItem
 import dev.koga.deeplinklauncher.designsystem.utils.spacer
@@ -194,7 +194,6 @@ internal fun FolderDetailsScreenContent(
         fullLineItem {
             DLLHorizontalDivider(
                 modifier = Modifier.padding(vertical = dimensions.extraLarge),
-                thickness = .4.dp,
             )
         }
 
@@ -229,9 +228,9 @@ internal fun FolderDetailsScreenContent(
 
         if (uiState.deepLinks.isEmpty()) {
             fullLineItem {
-                DLLTextButton(
+                DLLButton(
                     onClick = { onAction(FolderDetailsAction.OpenLinkDeepLinkScreen) },
-                    text = "Vincular deeplink",
+                    text = "Link deeplinks",
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(horizontal = 12.dp),

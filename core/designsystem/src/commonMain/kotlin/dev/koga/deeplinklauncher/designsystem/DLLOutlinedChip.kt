@@ -44,6 +44,12 @@ fun DLLOutlinedChip(
         DLLOutlinedChipVariant.Destructive -> chipColors.destructiveContent
         DLLOutlinedChipVariant.Accent -> chipColors.content
     }
+    val containerColor = when (variant) {
+        DLLOutlinedChipVariant.Default -> chipColors.background
+        DLLOutlinedChipVariant.Destructive -> chipColors.destructiveBackground
+        DLLOutlinedChipVariant.Accent -> chipColors.background
+    }
+
     val iconTint = when (variant) {
         DLLOutlinedChipVariant.Accent -> chipColors.accentContent
         else -> contentColor
@@ -57,7 +63,7 @@ fun DLLOutlinedChip(
         modifier = modifier,
         onClick = onClick,
         shape = shapes.chip,
-        color = chipColors.background,
+        color = containerColor,
         border = BorderStroke(
             width = 1.dp,
             color = borderColor,
@@ -88,14 +94,16 @@ fun DLLOutlinedChip(
                 }
             }
 
-            Text(
-                text = label,
-                style = typography.body.small.copy(
-                    color = contentColor,
-                ),
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis,
-            )
+            if (label.isNotBlank()) {
+                Text(
+                    text = label,
+                    style = typography.body.small.copy(
+                        color = contentColor,
+                    ),
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                )
+            }
         }
     }
 }

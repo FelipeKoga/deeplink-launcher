@@ -73,6 +73,7 @@ data class ChipColors(
     val destructiveContent: Color,
     val destructiveBorder: Color,
     val accentContent: Color,
+    val destructiveBackground: Color,
 )
 
 val LightDeepLinkColors = DeepLinkColors(
@@ -112,6 +113,7 @@ val LightDeepLinkColors = DeepLinkColors(
         border = Color(0xFFF4F4F5),
         destructiveContent = Color(0xFF7F1D1D),
         destructiveBorder = Color(0xFF7F1D1D).copy(alpha = 0.4f),
+        destructiveBackground = Color(0xFFFECACA),
         accentContent = Color(0xFFFFB300),
     ),
     status = StatusColors(
@@ -163,6 +165,7 @@ val DarkDeepLinkColors = DeepLinkColors(
         destructiveContent = Color(0xFFFECACA),
         destructiveBorder = Color(0xFFFECACA).copy(alpha = 0.4f),
         accentContent = Color(0xFFFFB300),
+        destructiveBackground = Color(0xFF450A0A),
     ),
     status = StatusColors(
         errorBackground = Color(0xFF450A0A),

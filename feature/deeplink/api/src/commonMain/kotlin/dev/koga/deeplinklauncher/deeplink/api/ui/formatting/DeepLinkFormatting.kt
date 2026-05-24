@@ -1,7 +1,6 @@
 package dev.koga.deeplinklauncher.deeplink.api.ui.formatting
 
 import dev.koga.deeplinklauncher.deeplink.api.domain.model.DeepLink
-import dev.koga.deeplinklauncher.deeplink.api.domain.model.DeepLinkMetadata
 
 public fun DeepLink.truncatedLink(): String = link.truncateDeepLinkMiddle()
 

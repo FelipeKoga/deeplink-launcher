@@ -38,7 +38,7 @@ internal fun LinkDeepLinkToFolderBottomSheet(
     ) {
         Column {
             Text(
-                text = "Vincular deeplink",
+                text = "Link deeplink",
                 style = typography.title.dialog.copy(color = colors.text.primary),
                 modifier = Modifier.padding(dimensions.extraLarge),
             )

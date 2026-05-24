@@ -32,7 +32,6 @@ import compose.icons.TablerIcons
 import compose.icons.tablericons.ArrowLeft
 import compose.icons.tablericons.Check
 import compose.icons.tablericons.Plus
-import compose.icons.tablericons.Trash
 import dev.koga.deeplinklauncher.deeplink.impl.ui.deeplinkdetails.state.DeepLinkDetailsUiState
 import dev.koga.deeplinklauncher.deeplink.impl.ui.deeplinkdetails.state.EditAction
 import dev.koga.deeplinklauncher.designsystem.DLLTextField
@@ -195,8 +194,6 @@ internal fun EditTopBar(
 
     Row(
         modifier = modifier.fillMaxWidth().padding(horizontal = 12.dp, vertical = 8.dp),
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically,
     ) {
         DLLIconButton(
             onClick = onBack,
@@ -204,16 +201,6 @@ internal fun EditTopBar(
             Icon(
                 imageVector = TablerIcons.ArrowLeft,
                 contentDescription = "Back",
-                tint = colors.surface.primary,
-            )
-        }
-
-        DLLIconButton(
-            onClick = onDelete,
-        ) {
-            Icon(
-                imageVector = TablerIcons.Trash,
-                contentDescription = "Delete deeplink",
                 tint = colors.surface.primary,
             )
         }
