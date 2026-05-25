@@ -23,6 +23,7 @@ data class DeepLinkColors(
     val border: BorderColors,
     val button: ButtonColors,
     val chip: ChipColors,
+    val category: CategoryColors,
     val status: StatusColors,
     val accent: AccentColors,
 )
@@ -76,6 +77,23 @@ data class ChipColors(
     val destructiveBackground: Color,
 )
 
+@Immutable
+data class CategoryChipColors(
+    val background: Color,
+    val content: Color,
+)
+
+@Immutable
+data class CategoryColors(
+    val webLink: CategoryChipColors,
+    val phone: CategoryChipColors,
+    val sms: CategoryChipColors,
+    val location: CategoryChipColors,
+    val androidIntent: CategoryChipColors,
+    val system: CategoryChipColors,
+    val customScheme: CategoryChipColors,
+)
+
 val LightDeepLinkColors = DeepLinkColors(
     text = TextColors(
         primary = Color(0xFF18181B),
@@ -115,6 +133,36 @@ val LightDeepLinkColors = DeepLinkColors(
         destructiveBorder = Color(0xFF7F1D1D).copy(alpha = 0.4f),
         destructiveBackground = Color(0xFFFECACA),
         accentContent = Color(0xFFFFB300),
+    ),
+    category = CategoryColors(
+        webLink = CategoryChipColors(
+            background = Color(0xFFE3F2FD),
+            content = Color(0xFF1565C0),
+        ),
+        phone = CategoryChipColors(
+            background = Color(0xFFE8F5E9),
+            content = Color(0xFF2E7D32),
+        ),
+        sms = CategoryChipColors(
+            background = Color(0xFFE0F7FA),
+            content = Color(0xFF00838F),
+        ),
+        location = CategoryChipColors(
+            background = Color(0xFFFCE4EC),
+            content = Color(0xFFC62828),
+        ),
+        androidIntent = CategoryChipColors(
+            background = Color(0xFFEDE7F6),
+            content = Color(0xFF5E35B1),
+        ),
+        system = CategoryChipColors(
+            background = Color(0xFFF4F4F5),
+            content = Color(0xFF71717A),
+        ),
+        customScheme = CategoryChipColors(
+            background = Color(0xFFF3E5F5),
+            content = Color(0xFF7B1FA2),
+        ),
     ),
     status = StatusColors(
         errorBackground = Color(0xFFFEF2F2),
@@ -166,6 +214,36 @@ val DarkDeepLinkColors = DeepLinkColors(
         destructiveBorder = Color(0xFFFECACA).copy(alpha = 0.4f),
         accentContent = Color(0xFFFFB300),
         destructiveBackground = Color(0xFF450A0A),
+    ),
+    category = CategoryColors(
+        webLink = CategoryChipColors(
+            background = Color(0xFF0D47A1).copy(alpha = 0.25f),
+            content = Color(0xFF90CAF9),
+        ),
+        phone = CategoryChipColors(
+            background = Color(0xFF1B5E20).copy(alpha = 0.25f),
+            content = Color(0xFFA5D6A7),
+        ),
+        sms = CategoryChipColors(
+            background = Color(0xFF006064).copy(alpha = 0.25f),
+            content = Color(0xFF80DEEA),
+        ),
+        location = CategoryChipColors(
+            background = Color(0xFFB71C1C).copy(alpha = 0.25f),
+            content = Color(0xFFF48FB1),
+        ),
+        androidIntent = CategoryChipColors(
+            background = Color(0xFF4527A0).copy(alpha = 0.25f),
+            content = Color(0xFFB39DDB),
+        ),
+        system = CategoryChipColors(
+            background = Color(0xFF27272A),
+            content = Color(0xFFA1A1AA),
+        ),
+        customScheme = CategoryChipColors(
+            background = Color(0xFF4A148C).copy(alpha = 0.25f),
+            content = Color(0xFFCE93D8),
+        ),
     ),
     status = StatusColors(
         errorBackground = Color(0xFF450A0A),

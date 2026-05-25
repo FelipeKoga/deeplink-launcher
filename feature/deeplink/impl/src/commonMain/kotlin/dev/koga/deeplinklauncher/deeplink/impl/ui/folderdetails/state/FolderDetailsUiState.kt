@@ -7,4 +7,5 @@ internal data class FolderDetailsUiState(
     val name: String,
     val description: String,
     val deepLinks: ImmutableList<DeepLinkListItem>,
+    val isDeepLinksLoaded: Boolean = false,
 )

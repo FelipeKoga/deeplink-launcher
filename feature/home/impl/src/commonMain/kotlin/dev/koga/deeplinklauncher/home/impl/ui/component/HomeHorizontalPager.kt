@@ -33,6 +33,7 @@ import dev.koga.deeplinklauncher.deeplink.api.domain.model.DeepLink
 import dev.koga.deeplinklauncher.deeplink.api.domain.model.Folder
 import dev.koga.deeplinklauncher.deeplink.api.ui.model.DeepLinkListItem
 import dev.koga.deeplinklauncher.deeplink.uicomponent.DeepLinkCard
+import dev.koga.deeplinklauncher.deeplink.uicomponent.DeepLinkCardActionsPresets
 import dev.koga.deeplinklauncher.deeplink.uicomponent.FolderCard
 import dev.koga.deeplinklauncher.designsystem.theme.DeepLinkTheme
 import dev.koga.deeplinklauncher.ui.calculateWindowSizeSharedClass
@@ -46,6 +47,7 @@ fun DeepLinksLazyColumn(
     contentPadding: PaddingValues,
     onClick: (DeepLink) -> Unit,
     onLaunch: (DeepLink) -> Unit,
+    onToggleFavorite: (DeepLink) -> Unit,
     onFolderClicked: (Folder) -> Unit,
 ) {
     val padding = PaddingValues(
@@ -71,7 +73,10 @@ fun DeepLinksLazyColumn(
                 modifier = Modifier.animateItem(),
                 item = item,
                 onClick = { onClick(deepLink) },
-                onLaunch = { onLaunch(deepLink) },
+                actions = DeepLinkCardActionsPresets.browse(
+                    onLaunch = { onLaunch(deepLink) },
+                    onToggleFavorite = { onToggleFavorite(deepLink) },
+                ),
                 onFolderClicked = { onFolderClicked(deepLink.folder!!) },
             )
         }

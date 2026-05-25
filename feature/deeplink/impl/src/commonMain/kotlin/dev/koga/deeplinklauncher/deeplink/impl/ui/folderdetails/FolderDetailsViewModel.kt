@@ -10,6 +10,7 @@ import dev.koga.deeplinklauncher.deeplink.api.application.EnrichDeepLinksForList
 import dev.koga.deeplinklauncher.deeplink.api.domain.model.DeepLink
 import dev.koga.deeplinklauncher.deeplink.api.domain.repository.FolderRepository
 import dev.koga.deeplinklauncher.deeplink.api.domain.usecase.LaunchDeepLink
+import dev.koga.deeplinklauncher.deeplink.api.ui.model.DeepLinkListItem
 import dev.koga.deeplinklauncher.deeplink.api.ui.navigation.DeepLinkRouteEntryPoint
 import dev.koga.deeplinklauncher.deeplink.impl.ui.folderdetails.state.FolderDetailsAction
 import dev.koga.deeplinklauncher.deeplink.impl.ui.folderdetails.state.FolderDetailsUiState
@@ -49,20 +50,28 @@ internal class FolderDetailsViewModel(
         },
     )
 
-    private val deepLinks = repository.getFolderDeepLinksStream(folderId)
+    private val deepLinksState = repository.getFolderDeepLinksStream(folderId)
         .flatMapLatest { links ->
             flow {
-                emit(enrichDeepLinksForList(links))
+                emit(
+                    DeepLinksState(
+                        deepLinks = enrichDeepLinksForList(links),
+                        isLoaded = true,
+                    ),
+                )
             }
         }
         .stateIn(
             scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(),
-            initialValue = emptyList(),
+            started = SharingStarted.Eagerly,
+            initialValue = DeepLinksState(),
         )
 
-    val uiState = combine(form, deepLinks) { form, deepLinks ->
-        form.copy(deepLinks = deepLinks.toPersistentList())
+    val uiState = combine(form, deepLinksState) { form, deepLinksState ->
+        form.copy(
+            deepLinks = deepLinksState.deepLinks.toPersistentList(),
+            isDeepLinksLoaded = deepLinksState.isLoaded,
+        )
     }.stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(),
@@ -112,4 +121,9 @@ internal class FolderDetailsViewModel(
     private fun openLinkDeepLinkScreen() {
         appNavigator.navigate(DeepLinkRouteEntryPoint.PickDeepLinkForFolder(folderId))
     }
+
+    private data class DeepLinksState(
+        val deepLinks: List<DeepLinkListItem> = emptyList(),
+        val isLoaded: Boolean = false,
+    )
 }

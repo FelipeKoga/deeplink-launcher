@@ -6,6 +6,7 @@ import dev.koga.deeplinklauncher.navigation.AppRoute
 
 sealed interface HomeAction {
     data class LaunchDeepLink(val deepLink: DeepLink) : HomeAction
+    data class ToggleFavorite(val deepLink: DeepLink) : HomeAction
     data class Search(val text: String) : HomeAction
     data class OnInputChanged(val text: String) : HomeAction
     data class OnSuggestionClicked(val suggestion: Suggestion) : HomeAction

@@ -37,6 +37,7 @@ import dev.koga.deeplinklauncher.deeplink.impl.ui.folderdetails.component.Editab
 import dev.koga.deeplinklauncher.deeplink.impl.ui.folderdetails.state.FolderDetailsAction
 import dev.koga.deeplinklauncher.deeplink.impl.ui.folderdetails.state.FolderDetailsUiState
 import dev.koga.deeplinklauncher.deeplink.uicomponent.DeepLinkCard
+import dev.koga.deeplinklauncher.deeplink.uicomponent.DeepLinkCardActionsPresets
 import dev.koga.deeplinklauncher.designsystem.DLLHorizontalDivider
 import dev.koga.deeplinklauncher.designsystem.DLLTopBar
 import dev.koga.deeplinklauncher.designsystem.DLLTopBarDefaults
@@ -206,10 +207,10 @@ internal fun FolderDetailsScreenContent(
                 horizontalArrangement = Arrangement.SpaceBetween,
             ) {
                 Text(
-                    text = if (uiState.deepLinks.isNotEmpty()) {
-                        "Deeplinks"
-                    } else {
-                        "No Deeplinks vinculated to this folder"
+                    text = when {
+                        !uiState.isDeepLinksLoaded -> "Deeplinks"
+                        uiState.deepLinks.isNotEmpty() -> "Deeplinks"
+                        else -> "No Deeplinks vinculated to this folder"
                     },
                     style = typography.label.caption,
                 )
@@ -226,7 +227,7 @@ internal fun FolderDetailsScreenContent(
             }
         }
 
-        if (uiState.deepLinks.isEmpty()) {
+        if (uiState.isDeepLinksLoaded && uiState.deepLinks.isEmpty()) {
             fullLineItem {
                 DLLButton(
                     onClick = { onAction(FolderDetailsAction.OpenLinkDeepLinkScreen) },
@@ -255,7 +256,9 @@ internal fun FolderDetailsScreenContent(
                         DeepLinkRouteEntryPoint.DeepLinkDetails(id = deepLink.id, showFolder = false),
                     )
                 },
-                onLaunch = { onAction(FolderDetailsAction.Launch(deepLink)) },
+                actions = DeepLinkCardActionsPresets.folderMember(
+                    onLaunch = { onAction(FolderDetailsAction.Launch(deepLink)) },
+                ),
                 showFolder = false,
             )
         }

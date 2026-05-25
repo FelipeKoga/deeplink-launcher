@@ -91,6 +91,7 @@ class HomeViewModel(
     fun onAction(action: HomeAction) {
         when (action) {
             is HomeAction.LaunchDeepLink -> launchDeepLink(action.deepLink)
+            is HomeAction.ToggleFavorite -> toggleFavorite(action.deepLink)
             is HomeAction.Search -> searchInput.update { action.text }
             is HomeAction.OnInputChanged -> onDeepLinkTextChanged(action.text)
             is HomeAction.OnSuggestionClicked -> onDeepLinkTextChanged(action.suggestion.text)
@@ -127,6 +128,14 @@ class HomeViewModel(
     private fun launchDeepLink(deepLink: DeepLink) {
         viewModelScope.launch {
             launchDeepLink.launch(deepLink)
+        }
+    }
+
+    private fun toggleFavorite(deepLink: DeepLink) {
+        viewModelScope.launch {
+            deepLinkRepository.upsertDeepLink(
+                deepLink.copy(isFavorite = !deepLink.isFavorite),
+            )
         }
     }
 

@@ -30,6 +30,7 @@ import dev.koga.deeplinklauncher.deeplink.impl.ui.folderdetails.component.LinkDe
 import dev.koga.deeplinklauncher.deeplink.impl.ui.linkdeeplinkforfolder.state.LinkDeepLinkForFolderAction
 import dev.koga.deeplinklauncher.deeplink.impl.ui.linkdeeplinkforfolder.state.LinkDeepLinkForFolderUiState
 import dev.koga.deeplinklauncher.deeplink.uicomponent.DeepLinkCard
+import dev.koga.deeplinklauncher.deeplink.uicomponent.DeepLinkCardActionsPresets
 import dev.koga.deeplinklauncher.deeplink.uicomponent.DeepLinkLaunchBottomBar
 import dev.koga.deeplinklauncher.designsystem.DLLHorizontalDivider
 import dev.koga.deeplinklauncher.designsystem.DLLTextField
@@ -189,9 +190,7 @@ internal fun LinkDeepLinkForFolderContent(
                     onClick = {
                         onAction(LinkDeepLinkForFolderAction.DeepLinkSelected(item.deepLink.id))
                     },
-                    onLaunch = {
-                        onAction(LinkDeepLinkForFolderAction.Launch(item.deepLink))
-                    },
+                    actions = DeepLinkCardActionsPresets.linkPicker,
                 )
             }
         }

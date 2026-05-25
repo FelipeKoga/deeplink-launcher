@@ -10,6 +10,7 @@ kotlin {
             implementation(projects.feature.deeplink.api)
             implementation(projects.core.resources)
             implementation(projects.core.designsystem)
+            implementation(projects.core.date)
             implementation(libs.kotlinx.coroutines.core)
             implementation(libs.kotlinx.immutable)
 

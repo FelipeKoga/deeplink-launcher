@@ -3,12 +3,14 @@ package dev.koga.deeplinklauncher.deeplink.impl.application
 import dev.koga.deeplinklauncher.deeplink.api.application.EnrichDeepLinksForList
 import dev.koga.deeplinklauncher.deeplink.api.domain.model.DeepLink
 import dev.koga.deeplinklauncher.deeplink.api.domain.usecase.GetDeepLinkHandlerIcon
+import dev.koga.deeplinklauncher.deeplink.api.domain.usecase.GetDeepLinkHandlerInfo
 import dev.koga.deeplinklauncher.deeplink.api.ui.model.DeepLinkListItem
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
 internal class EnrichDeepLinksForListImpl(
     private val getDeepLinkHandlerIcon: GetDeepLinkHandlerIcon,
+    private val getDeepLinkHandlerInfo: GetDeepLinkHandlerInfo,
 ) : EnrichDeepLinksForList {
     private val cache = LinkedHashMap<String, DeepLinkListItem>()
 
@@ -23,6 +25,7 @@ internal class EnrichDeepLinksForListImpl(
             DeepLinkListItem(
                 deepLink = deepLink,
                 icon = getDeepLinkHandlerIcon(deepLink.link),
+                handlerAppName = getDeepLinkHandlerInfo(deepLink.link).appName,
             ).also { item ->
                 cache[cacheKey] = item
                 trimCacheIfNeeded()

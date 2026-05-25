@@ -128,6 +128,9 @@ internal fun HomeUI(
                     onLaunch = {
                         onAction(HomeAction.LaunchDeepLink(it))
                     },
+                    onToggleFavorite = {
+                        onAction(HomeAction.ToggleFavorite(it))
+                    },
                     onFolderClicked = {
                         onAction(HomeAction.Navigate(DeepLinkRouteEntryPoint.FolderDetails(it.id)))
                     },
@@ -145,6 +148,9 @@ internal fun HomeUI(
                     },
                     onLaunch = {
                         onAction(HomeAction.LaunchDeepLink(it))
+                    },
+                    onToggleFavorite = {
+                        onAction(HomeAction.ToggleFavorite(it))
                     },
                     onFolderClicked = {
                         onAction(HomeAction.Navigate(DeepLinkRouteEntryPoint.FolderDetails(it.id)))
