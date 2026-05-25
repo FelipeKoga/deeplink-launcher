@@ -8,6 +8,7 @@ public interface FolderRepository {
     public fun getFoldersStream(): Flow<List<Folder>>
     public fun getFolders(): List<Folder>
     public fun getFolderDeepLinksStream(id: String): Flow<List<DeepLink>>
+    public fun getFolderDeepLinks(id: String): List<DeepLink>
     public fun getFolderById(id: String): Folder?
     public fun upsertFolder(folder: Folder)
     public fun deleteFolder(id: String)

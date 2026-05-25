@@ -239,6 +239,18 @@ internal fun FolderDetailsScreenContent(
             }
         }
 
+        if (uiState.isDeepLinksLoaded && uiState.deepLinks.isNotEmpty() && supportsFolderBatchTest) {
+            fullLineItem {
+                DLLButton(
+                    onClick = { onAction(FolderDetailsAction.OpenBatchTestScreen) },
+                    text = "Test folder",
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 12.dp),
+                )
+            }
+        }
+
         items(
             count = uiState.deepLinks.size,
             key = { uiState.deepLinks[it].deepLink.id },

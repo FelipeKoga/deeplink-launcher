@@ -15,5 +15,8 @@ public sealed interface DeepLinkRouteEntryPoint : AppRoute {
     public data class PickDeepLinkForFolder(val folderId: String) : DeepLinkRouteEntryPoint
 
     @Serializable
+    public data class FolderBatchTest(val folderId: String) : DeepLinkRouteEntryPoint
+
+    @Serializable
     public data class DeepLinkDetails(val id: String, val showFolder: Boolean) : DeepLinkRouteEntryPoint
 }

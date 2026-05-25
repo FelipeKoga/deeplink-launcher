@@ -7,5 +7,6 @@ internal sealed interface FolderDetailsAction {
     data class UpdateDescription(val text: String) : FolderDetailsAction
     data class Launch(val deeplink: DeepLink) : FolderDetailsAction
     data object OpenLinkDeepLinkScreen : FolderDetailsAction
+    data object OpenBatchTestScreen : FolderDetailsAction
     data object Delete : FolderDetailsAction
 }

@@ -118,6 +118,17 @@ internal fun DeepLinkCardContent(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(6.dp),
             ) {
+                if (item.hasAssertion) {
+                    Text(
+                        text = "Assert",
+                        style = typography.label.caption.copy(color = colors.status.successContent),
+                    )
+                    Text(
+                        text = "·",
+                        style = typography.label.caption.copy(color = colors.text.muted),
+                    )
+                }
+
                 if (deepLink.folder != null && showFolder) {
                     Row(
                         modifier = Modifier.clickable(onClick = onFolderClicked),

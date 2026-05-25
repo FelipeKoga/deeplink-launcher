@@ -14,6 +14,7 @@ public data class DeepLink(
     val isFavorite: Boolean,
     val lastLaunchedAt: LocalDateTime? = null,
     val folder: Folder? = null,
+    val assertion: DeepLinkAssertion? = null,
 ) {
     public companion object {
         public val empty: DeepLink = DeepLink(

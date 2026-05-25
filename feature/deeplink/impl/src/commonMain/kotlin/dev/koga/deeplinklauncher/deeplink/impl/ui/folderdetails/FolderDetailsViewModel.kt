@@ -96,6 +96,7 @@ internal class FolderDetailsViewModel(
             is FolderDetailsAction.UpdateDescription -> updateDescription(action.text)
             is FolderDetailsAction.UpdateName -> updateName(action.text)
             FolderDetailsAction.OpenLinkDeepLinkScreen -> openLinkDeepLinkScreen()
+            FolderDetailsAction.OpenBatchTestScreen -> openBatchTestScreen()
         }
     }
 
@@ -120,6 +121,10 @@ internal class FolderDetailsViewModel(
 
     private fun openLinkDeepLinkScreen() {
         appNavigator.navigate(DeepLinkRouteEntryPoint.PickDeepLinkForFolder(folderId))
+    }
+
+    private fun openBatchTestScreen() {
+        appNavigator.navigate(DeepLinkRouteEntryPoint.FolderBatchTest(folderId))
     }
 
     private data class DeepLinksState(

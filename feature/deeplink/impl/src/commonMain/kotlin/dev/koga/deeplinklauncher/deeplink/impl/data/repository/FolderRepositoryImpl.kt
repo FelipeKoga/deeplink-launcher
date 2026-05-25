@@ -45,11 +45,19 @@ internal class FolderRepositoryImpl(
             .map { it.map(GetFolderDeepLinks::toDomain) }
     }
 
-    override fun getFolderById(id: String): Folder {
+    override fun getFolderDeepLinks(id: String): List<DeepLink> {
+        return database
+            .folderQueries
+            .getFolderDeepLinks(id)
+            .executeAsList()
+            .map(GetFolderDeepLinks::toDomain)
+    }
+
+    override fun getFolderById(id: String): Folder? {
         return database.folderQueries
             .getFolderById(id)
-            .executeAsOne()
-            .let(GetFolderById::toDomain)
+            .executeAsOneOrNull()
+            ?.let(GetFolderById::toDomain)
     }
 
     override fun upsertFolder(folder: Folder) {

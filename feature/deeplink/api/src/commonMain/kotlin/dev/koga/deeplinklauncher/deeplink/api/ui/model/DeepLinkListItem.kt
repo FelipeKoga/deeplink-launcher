@@ -6,4 +6,5 @@ public data class DeepLinkListItem(
     val deepLink: DeepLink,
     val icon: DeepLinkIcon? = null,
     val handlerAppName: String? = null,
+    val hasAssertion: Boolean = false,
 )

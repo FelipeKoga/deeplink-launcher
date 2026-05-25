@@ -13,6 +13,12 @@ interface DeviceBridge {
         link: String,
     ): Process
 
+    suspend fun getForegroundActivity(id: String): ForegroundActivity?
+
+    suspend fun dumpUiHierarchy(id: String): String
+
+    suspend fun shell(id: String, command: List<String>): ProcessResult
+
     data class Device(
         val id: String,
         val name: String,
@@ -25,4 +31,18 @@ interface DeviceBridge {
         ANDROID,
         IOS,
     }
+}
+
+data class ForegroundActivity(
+    val packageName: String,
+    val activityClass: String,
+)
+
+data class ProcessResult(
+    val exitCode: Int,
+    val stdout: String,
+    val stderr: String,
+) {
+    val isSuccess: Boolean
+        get() = exitCode == 0
 }

@@ -3,6 +3,7 @@
 package dev.koga.deeplinklauncher.datatransfer.impl.data.dto
 
 import dev.koga.deeplinklauncher.deeplink.api.domain.model.DeepLink
+import dev.koga.deeplinklauncher.deeplink.api.domain.model.DeepLinkAssertion
 import dev.koga.deeplinklauncher.deeplink.api.domain.model.Folder
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
@@ -28,6 +29,7 @@ internal data class Payload(
         val description: String? = null,
         val folderId: String? = null,
         val isFavorite: Boolean? = false,
+        val assertion: DeepLinkAssertion? = null,
     )
 
     @Serializable
@@ -54,4 +56,5 @@ internal fun Payload.DeepLink.toModel(folder: Folder?) = DeepLink(
     description = description,
     isFavorite = isFavorite ?: false,
     folder = folder,
+    assertion = assertion,
 )

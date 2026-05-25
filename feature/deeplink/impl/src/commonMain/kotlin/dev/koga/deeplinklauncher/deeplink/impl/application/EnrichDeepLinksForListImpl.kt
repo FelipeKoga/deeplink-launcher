@@ -26,6 +26,7 @@ internal class EnrichDeepLinksForListImpl(
                 deepLink = deepLink,
                 icon = getDeepLinkHandlerIcon(deepLink.link),
                 handlerAppName = getDeepLinkHandlerInfo(deepLink.link).appName,
+                hasAssertion = deepLink.assertion?.hasCriteria == true,
             ).also { item ->
                 cache[cacheKey] = item
                 trimCacheIfNeeded()

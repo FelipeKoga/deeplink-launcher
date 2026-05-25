@@ -1,6 +1,8 @@
 package dev.koga.deeplinklauncher.devicebridge.impl.adb
 
 import dev.koga.deeplinklauncher.devicebridge.api.DeviceBridge
+import dev.koga.deeplinklauncher.devicebridge.api.ForegroundActivity
+import dev.koga.deeplinklauncher.devicebridge.api.ProcessResult
 import dev.koga.deeplinklauncher.devicebridge.api.model.Os
 import dev.koga.deeplinklauncher.devicebridge.impl.ext.installed
 import kotlinx.coroutines.CoroutineDispatcher
@@ -38,6 +40,62 @@ internal class Adb private constructor(
             ).start().apply {
                 waitFor()
             }
+        }
+    }
+
+    override suspend fun getForegroundActivity(id: String): ForegroundActivity? {
+        val topResult = shell(id, listOf("cmd", "activity", "top"))
+        if (topResult.isSuccess && topResult.stdout.isNotBlank()) {
+            parseForegroundFromActivityTop(topResult.stdout)?.let { return it }
+        }
+
+        val dumpsysResult = shell(id, listOf("dumpsys", "activity", "activities"))
+        if (dumpsysResult.isSuccess && dumpsysResult.stdout.isNotBlank()) {
+            parseForegroundFromDumpsys(dumpsysResult.stdout)?.let { return it }
+        }
+
+        return null
+    }
+
+    override suspend fun dumpUiHierarchy(id: String): String {
+        val dumpResult = shell(
+            id = id,
+            command = listOf("uiautomator", "dump", "/dev/tty"),
+        )
+
+        if (dumpResult.isSuccess && dumpResult.stdout.isNotBlank()) {
+            return dumpResult.stdout
+        }
+
+        val fallbackResult = shell(
+            id = id,
+            command = listOf("sh", "-c", "uiautomator dump /sdcard/window_dump.xml && cat /sdcard/window_dump.xml"),
+        )
+
+        return if (fallbackResult.isSuccess) fallbackResult.stdout else ""
+    }
+
+    override suspend fun shell(id: String, command: List<String>): ProcessResult {
+        return withContext(dispatcher) {
+            val process = ProcessBuilder(
+                buildList {
+                    add(path)
+                    add("-s")
+                    add(id)
+                    add("shell")
+                    addAll(command)
+                },
+            ).start()
+
+            val stdout = process.inputStream.bufferedReader().readText()
+            val stderr = process.errorStream.bufferedReader().readText()
+            val exitCode = process.waitFor()
+
+            ProcessResult(
+                exitCode = exitCode,
+                stdout = stdout.trim(),
+                stderr = stderr.trim(),
+            )
         }
     }
 
@@ -153,6 +211,43 @@ internal class Adb private constructor(
     }
 
     companion object {
+        private const val CACHE_SIZE = 128
+
+        private val activityTopPattern = Regex(
+            """ACTIVITY\s+([^\s/]+)/([^\s]+)\s+\d+\s+pid=\d+""",
+        )
+        private val resumedActivityPattern = Regex(
+            """mResumedActivity:\s+ActivityRecord\{[^ ]+ [^ ]+ ([^\s/]+)/([^\s}]+)""",
+        )
+        private val topResumedActivityPattern = Regex(
+            """topResumedActivity=ActivityRecord\{[^ ]+ [^ ]+ ([^\s/]+)/([^\s}]+)""",
+        )
+
+        private fun parseForegroundFromActivityTop(output: String): ForegroundActivity? {
+            return activityTopPattern.find(output)?.let { match ->
+                ForegroundActivity(
+                    packageName = match.groupValues[1],
+                    activityClass = match.groupValues[2],
+                )
+            }
+        }
+
+        private fun parseForegroundFromDumpsys(output: String): ForegroundActivity? {
+            topResumedActivityPattern.find(output)?.let { match ->
+                return ForegroundActivity(
+                    packageName = match.groupValues[1],
+                    activityClass = match.groupValues[2],
+                )
+            }
+
+            return resumedActivityPattern.find(output)?.let { match ->
+                ForegroundActivity(
+                    packageName = match.groupValues[1],
+                    activityClass = match.groupValues[2],
+                )
+            }
+        }
+
         fun build(dispatcher: CoroutineDispatcher): Adb {
             val userHome = System.getProperty("user.home")
 

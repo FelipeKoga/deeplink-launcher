@@ -15,10 +15,13 @@ import dev.koga.deeplinklauncher.deeplink.api.domain.model.Folder
 import dev.koga.deeplinklauncher.deeplink.api.domain.repository.DeepLinkRepository
 import dev.koga.deeplinklauncher.deeplink.api.domain.repository.FolderRepository
 import dev.koga.deeplinklauncher.deeplink.api.domain.usecase.AddDeepLinkToShortcuts
+import dev.koga.deeplinklauncher.deeplink.api.domain.usecase.CaptureDeviceState
 import dev.koga.deeplinklauncher.deeplink.api.domain.usecase.DuplicateDeepLink
+import dev.koga.deeplinklauncher.deeplink.api.domain.usecase.GetSelectedAndroidDeviceId
 import dev.koga.deeplinklauncher.deeplink.api.domain.usecase.LaunchDeepLink
 import dev.koga.deeplinklauncher.deeplink.api.domain.usecase.LinkDeepLinkToFolder
 import dev.koga.deeplinklauncher.deeplink.api.domain.usecase.PinDeepLinkToHomeScreen
+import dev.koga.deeplinklauncher.deeplink.api.domain.usecase.SaveDeepLinkAssertion
 import dev.koga.deeplinklauncher.deeplink.api.domain.usecase.ShareDeepLink
 import dev.koga.deeplinklauncher.deeplink.api.domain.usecase.ValidateDeepLink
 import dev.koga.deeplinklauncher.deeplink.api.ui.model.DeepLinkDetailsModel
@@ -55,6 +58,9 @@ internal class DeepLinkDetailsViewModel(
     private val duplicateDeepLink: DuplicateDeepLink,
     private val linkDeepLinkToFolder: LinkDeepLinkToFolder,
     private val validateDeepLink: ValidateDeepLink,
+    private val saveDeepLinkAssertion: SaveDeepLinkAssertion,
+    private val captureDeviceState: CaptureDeviceState,
+    private val getSelectedAndroidDeviceId: GetSelectedAndroidDeviceId,
     private val coroutineDebouncer: CoroutineDebouncer,
     private val appNavigator: AppNavigator,
 ) : ViewModel(), AppNavigator by appNavigator {
@@ -76,25 +82,32 @@ internal class DeepLinkDetailsViewModel(
 
     private val duplicateErrorMessage = MutableStateFlow<String?>(null)
     private val deepLinkErrorMessage = MutableStateFlow<String?>(null)
+    private val assertionCaptureMessage = MutableStateFlow<String?>(null)
     private val mode = MutableStateFlow(Mode.LAUNCH)
 
     private val messageDispatcher = Channel<String>(Channel.UNLIMITED)
     val messages = messageDispatcher.receiveAsFlow()
 
     val uiState = combine(
-        folders,
-        deepLink,
-        duplicateErrorMessage,
-        deepLinkErrorMessage,
+        combine(
+            folders,
+            deepLink,
+            duplicateErrorMessage,
+            deepLinkErrorMessage,
+            assertionCaptureMessage,
+        ) { foldersValue, deepLinkValue, duplicateError, deepLinkError, assertionMessage ->
+            UiStateInput(
+                folders = foldersValue,
+                deepLink = deepLinkValue,
+                duplicateErrorMessage = duplicateError,
+                deepLinkErrorMessage = deepLinkError,
+                assertionCaptureMessage = assertionMessage,
+                mode = Mode.LAUNCH,
+            )
+        },
         mode,
-    ) { folders, deepLink, duplicateErrorMessage, deepLinkErrorMessage, mode ->
-        UiStateInput(
-            folders = folders,
-            deepLink = deepLink,
-            duplicateErrorMessage = duplicateErrorMessage,
-            deepLinkErrorMessage = deepLinkErrorMessage,
-            mode = mode,
-        )
+    ) { input, modeValue ->
+        input.copy(mode = modeValue)
     }.flatMapLatest { input ->
         when (input.mode) {
             Mode.LAUNCH -> flow {
@@ -103,6 +116,7 @@ internal class DeepLinkDetailsViewModel(
                         details = enrichDeepLinkForDetails(input.deepLink),
                         showFolder = route.showFolder,
                         folders = input.folders.toPersistentList(),
+                        assertionCaptureMessage = input.assertionCaptureMessage,
                     ),
                 )
             }
@@ -171,6 +185,35 @@ internal class DeepLinkDetailsViewModel(
             is LaunchAction.ToggleFolder -> toggleFolder(action.folder)
             LaunchAction.NotifyLinkCopied -> messageDispatcher.trySend("Link copied")
             LaunchAction.AddToShortCut -> addToShortcut()
+            is LaunchAction.UpdateAssertion -> updateAssertion(action.assertion)
+            LaunchAction.CaptureAssertionState -> captureAssertionState()
+        }
+    }
+
+    private fun updateAssertion(assertion: dev.koga.deeplinklauncher.deeplink.api.domain.model.DeepLinkAssertion?) {
+        saveDeepLinkAssertion(deepLink.value.id, assertion)
+    }
+
+    private fun captureAssertionState() {
+        viewModelScope.launch {
+            val deviceId = getSelectedAndroidDeviceId()
+            if (deviceId == null) {
+                assertionCaptureMessage.update { "Select an Android device on the home screen first" }
+                return@launch
+            }
+
+            when (val result = captureDeviceState(deviceId)) {
+                is CaptureDeviceState.Result.Success -> {
+                    saveDeepLinkAssertion(deepLink.value.id, result.assertion)
+                    assertionCaptureMessage.update {
+                        "Captured ${result.visibleTexts.size} visible text values"
+                    }
+                }
+
+                is CaptureDeviceState.Result.Failure -> {
+                    assertionCaptureMessage.update { result.message }
+                }
+            }
         }
     }
 
@@ -319,6 +362,7 @@ internal class DeepLinkDetailsViewModel(
         val deepLink: DeepLink,
         val duplicateErrorMessage: String?,
         val deepLinkErrorMessage: String?,
+        val assertionCaptureMessage: String?,
         val mode: Mode,
     )
 

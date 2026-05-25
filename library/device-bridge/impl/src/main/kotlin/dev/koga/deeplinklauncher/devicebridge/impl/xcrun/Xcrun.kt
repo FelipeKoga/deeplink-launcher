@@ -1,6 +1,8 @@
 package dev.koga.deeplinklauncher.devicebridge.impl.xcrun
 
 import dev.koga.deeplinklauncher.devicebridge.api.DeviceBridge
+import dev.koga.deeplinklauncher.devicebridge.api.ForegroundActivity
+import dev.koga.deeplinklauncher.devicebridge.api.ProcessResult
 import dev.koga.deeplinklauncher.devicebridge.api.model.Os
 import dev.koga.deeplinklauncher.devicebridge.impl.ext.installed
 import kotlinx.coroutines.CoroutineDispatcher
@@ -38,6 +40,18 @@ internal class Xcrun private constructor(
                 waitFor()
             }
         }
+    }
+
+    override suspend fun getForegroundActivity(id: String): ForegroundActivity? = null
+
+    override suspend fun dumpUiHierarchy(id: String): String = ""
+
+    override suspend fun shell(id: String, command: List<String>): ProcessResult {
+        return ProcessResult(
+            exitCode = 1,
+            stdout = "",
+            stderr = "Shell is not supported for iOS devices",
+        )
     }
 
     override fun track(): Flow<List<DeviceBridge.Device>> = flow {

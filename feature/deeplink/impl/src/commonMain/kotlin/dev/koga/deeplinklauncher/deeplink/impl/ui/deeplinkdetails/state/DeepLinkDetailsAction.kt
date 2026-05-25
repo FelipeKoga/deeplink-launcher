@@ -1,6 +1,7 @@
 package dev.koga.deeplinklauncher.deeplink.impl.ui.deeplinkdetails.state
 
 import dev.koga.deeplinklauncher.deeplink.api.domain.model.Folder
+import dev.koga.deeplinklauncher.deeplink.api.domain.model.DeepLinkAssertion
 
 internal sealed interface DeepLinkDetailsAction
 
@@ -16,6 +17,8 @@ internal sealed interface LaunchAction : DeepLinkDetailsAction {
     data object AddFolder : LaunchAction
     data class ToggleFolder(val folder: Folder) : LaunchAction
     data object NotifyLinkCopied : LaunchAction
+    data class UpdateAssertion(val assertion: DeepLinkAssertion?) : LaunchAction
+    data object CaptureAssertionState : LaunchAction
 }
 
 internal sealed interface DuplicateAction : DeepLinkDetailsAction {

@@ -94,5 +94,14 @@ internal fun LaunchModeUI(
         }
 
         Spacer(modifier = Modifier.height(12.dp))
+
+        DeepLinkAssertionSection(
+            assertion = uiState.deepLink.assertion,
+            captureMessage = uiState.assertionCaptureMessage,
+            onAssertionChanged = { onAction(LaunchAction.UpdateAssertion(it)) },
+            onCaptureCurrentState = { onAction(LaunchAction.CaptureAssertionState) },
+        )
+
+        Spacer(modifier = Modifier.height(12.dp))
     }
 }

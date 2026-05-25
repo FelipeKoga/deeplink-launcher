@@ -16,6 +16,7 @@ internal sealed interface DeepLinkDetailsUiState {
         val details: DeepLinkDetailsModel,
         val showFolder: Boolean = true,
         val folders: ImmutableList<Folder> = persistentListOf(),
+        val assertionCaptureMessage: String? = null,
     ) : DeepLinkDetailsUiState {
         override val deepLink: DeepLink
             get() = details.deepLink

@@ -37,6 +37,8 @@ internal class DeepLinkNavigationGraph(
             )
         }
 
+        registerFolderBatchTestDestination(appNavigator)
+
         dialog<DeepLinkRouteEntryPoint.AddFolder> {
             AddFolderBottomSheet(
                 onDismiss = appNavigator::popBackStack,

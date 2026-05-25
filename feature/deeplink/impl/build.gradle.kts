@@ -3,6 +3,7 @@
 plugins {
     alias(libs.plugins.deeplinkLauncher.composeMultiplatform)
     alias(libs.plugins.stability.analyzer)
+    alias(libs.plugins.kotlinSerialization)
 }
 
 kotlin {
@@ -27,6 +28,7 @@ kotlin {
             implementation(libs.sqldelight.coroutines.extensions)
             implementation(libs.kotlinx.coroutines.core)
             implementation(libs.kotlinx.immutable)
+            implementation(libs.kotlinx.serialization.json)
 
             implementation(libs.compose.navigation)
             implementation(libs.compose.runtime)
@@ -39,8 +41,13 @@ kotlin {
             implementation(compose.preview)
         }
 
+        commonTest.dependencies {
+            implementation(kotlin("test"))
+        }
+
         jvmMain.dependencies {
             implementation(projects.library.deviceBridge.api)
+            implementation(projects.core.file)
         }
     }
 }
