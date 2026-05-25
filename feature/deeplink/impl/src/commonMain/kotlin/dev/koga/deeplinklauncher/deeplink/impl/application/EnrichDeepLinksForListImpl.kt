@@ -2,6 +2,7 @@ package dev.koga.deeplinklauncher.deeplink.impl.application
 
 import dev.koga.deeplinklauncher.deeplink.api.application.EnrichDeepLinksForList
 import dev.koga.deeplinklauncher.deeplink.api.domain.model.DeepLink
+import dev.koga.deeplinklauncher.deeplink.api.domain.model.DeepLinkHandlerInfo
 import dev.koga.deeplinklauncher.deeplink.api.domain.usecase.GetDeepLinkHandlerIcon
 import dev.koga.deeplinklauncher.deeplink.api.domain.usecase.GetDeepLinkHandlerInfo
 import dev.koga.deeplinklauncher.deeplink.api.ui.model.DeepLinkListItem
@@ -25,7 +26,10 @@ internal class EnrichDeepLinksForListImpl(
             DeepLinkListItem(
                 deepLink = deepLink,
                 icon = getDeepLinkHandlerIcon(deepLink.link),
-                handlerAppName = getDeepLinkHandlerInfo(deepLink.link).appName,
+                handlerAppName = when (val handlerInfo = getDeepLinkHandlerInfo(deepLink.link)) {
+                    is DeepLinkHandlerInfo.Available -> handlerInfo.appName
+                    DeepLinkHandlerInfo.Unavailable -> null
+                },
             ).also { item ->
                 cache[cacheKey] = item
                 trimCacheIfNeeded()

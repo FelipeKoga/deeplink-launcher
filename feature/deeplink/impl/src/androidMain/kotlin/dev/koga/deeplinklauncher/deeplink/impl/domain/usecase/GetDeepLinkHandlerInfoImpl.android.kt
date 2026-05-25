@@ -12,14 +12,14 @@ internal class GetDeepLinkHandlerInfoImpl(
 ) : GetDeepLinkHandlerInfo {
     private val cache = LruCache<String, DeepLinkHandlerInfo>(CACHE_SIZE)
 
-    override fun invoke(link: String): DeepLinkHandlerInfo {
+    override suspend fun invoke(link: String): DeepLinkHandlerInfo {
         val key = link.trim()
         cache.get(key)?.let { return it }
 
         val intent = Intent(Intent.ACTION_VIEW, key.toUri())
         val resolveInfo = context.packageManager.resolveActivity(intent, 0)
 
-        return DeepLinkHandlerInfo(
+        return DeepLinkHandlerInfo.Available(
             canResolve = resolveInfo != null,
             appName = resolveInfo?.loadLabel(context.packageManager)?.toString(),
         ).also { cache.put(key, it) }

@@ -46,7 +46,6 @@ import compose.icons.TablerIcons
 import compose.icons.tablericons.ChevronRight
 import compose.icons.tablericons.Copy
 import compose.icons.tablericons.Plus
-import dev.koga.deeplinklauncher.deeplink.api.domain.model.DeepLinkHandlerInfo
 import dev.koga.deeplinklauncher.deeplink.api.domain.model.DeepLinkMetadata
 import dev.koga.deeplinklauncher.deeplink.api.domain.model.Folder
 import dev.koga.deeplinklauncher.deeplink.impl.ui.deeplinkdetails.state.DeepLinkDetailsUiState
@@ -177,7 +176,6 @@ internal fun DetailsDeepLinkInfo(
                 DetailsExpandableInfoToggle(
                     isExpanded = isExpanded,
                     metadata = uiState.details.metadata,
-                    handlerInfo = uiState.details.handlerInfo,
                     onToggle = { isExpanded = !isExpanded },
                 )
 
@@ -359,7 +357,6 @@ private fun DetailsFolderSection(
 private fun DetailsExpandableInfoToggle(
     isExpanded: Boolean,
     metadata: DeepLinkMetadata,
-    handlerInfo: DeepLinkHandlerInfo,
     onToggle: () -> Unit,
 ) {
     val chevronRotation by animateFloatAsState(

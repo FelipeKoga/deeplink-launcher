@@ -138,10 +138,7 @@ internal class DeepLinkDetailsViewModel(
                     path = null,
                     query = null,
                 ),
-                handlerInfo = DeepLinkHandlerInfo(
-                    canResolve = false,
-                    appName = null,
-                ),
+                handlerInfo = DeepLinkHandlerInfo.Unavailable,
             ),
         ),
     )

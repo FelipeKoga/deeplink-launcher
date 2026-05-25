@@ -30,10 +30,8 @@ internal fun DetailsInformationContent(
     icon: DeepLinkIcon?,
     modifier: Modifier = Modifier,
 ) {
-    val colors = DeepLinkTheme.colors
-    val typography = DeepLinkTheme.typography
     val showPath = metadata.path?.let { it != "/" && it.isNotBlank() } == true
-    val targetAppName = handlerInfo.appName
+    val availableHandlerInfo = handlerInfo as? DeepLinkHandlerInfo.Available
 
     Column(modifier = modifier.fillMaxWidth()) {
         InfoRow(
@@ -66,41 +64,43 @@ internal fun DetailsInformationContent(
             )
         }
 
-        InfoDivider()
-
-        InfoRow(
-            label = "Can resolve",
-            valueContent = {
-                ResolveStatusBadge(canResolve = handlerInfo.canResolve)
-            },
-        )
-
-        if (targetAppName != null) {
+        if (availableHandlerInfo != null) {
             InfoDivider()
 
             InfoRow(
-                label = "Target app",
+                label = "Can resolve",
                 valueContent = {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(8.dp),
-                    ) {
-                        DeepLinkHandlerIcon(
-                            icon = icon,
-                            modifier = Modifier.size(20.dp),
-                        )
-
-                        Text(
-                            text = targetAppName,
-                            style = typography.body.smallEmphasis.copy(
-                                color = colors.text.primary,
-                            ),
-                            maxLines = 1,
-                            overflow = TextOverflow.Ellipsis,
-                        )
-                    }
+                    ResolveStatusBadge(canResolve = availableHandlerInfo.canResolve)
                 },
             )
+
+            availableHandlerInfo.appName?.let { targetAppName ->
+                InfoDivider()
+
+                InfoRow(
+                    label = "Target app",
+                    valueContent = {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(8.dp),
+                        ) {
+                            DeepLinkHandlerIcon(
+                                icon = icon,
+                                modifier = Modifier.size(20.dp),
+                            )
+
+                            Text(
+                                text = targetAppName,
+                                style = DeepLinkTheme.typography.body.smallEmphasis.copy(
+                                    color = DeepLinkTheme.colors.text.primary,
+                                ),
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis,
+                            )
+                        }
+                    },
+                )
+            }
         }
     }
 }

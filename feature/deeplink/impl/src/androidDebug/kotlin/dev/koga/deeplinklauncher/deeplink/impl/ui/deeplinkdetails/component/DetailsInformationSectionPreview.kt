@@ -14,7 +14,7 @@ private val previewMetadata = DeepLinkMetadata(
     query = "q=compose",
 )
 
-private val previewHandlerInfo = DeepLinkHandlerInfo(
+private val previewHandlerInfo = DeepLinkHandlerInfo.Available(
     canResolve = true,
     appName = "Chrome",
 )
@@ -39,7 +39,20 @@ internal fun DetailsInformationContentCannotResolvePreview() {
     DLLPreviewTheme {
         DetailsInformationContent(
             metadata = previewMetadata,
-            handlerInfo = DeepLinkHandlerInfo(canResolve = false, appName = null),
+            handlerInfo = DeepLinkHandlerInfo.Available(canResolve = false, appName = null),
+            icon = null,
+        )
+    }
+}
+
+@Preview
+@PreviewLightDark
+@Composable
+internal fun DetailsInformationContentUnavailablePreview() {
+    DLLPreviewTheme {
+        DetailsInformationContent(
+            metadata = previewMetadata,
+            handlerInfo = DeepLinkHandlerInfo.Unavailable,
             icon = null,
         )
     }

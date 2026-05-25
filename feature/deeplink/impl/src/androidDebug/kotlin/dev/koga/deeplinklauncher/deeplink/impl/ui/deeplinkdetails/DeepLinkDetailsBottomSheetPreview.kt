@@ -22,7 +22,7 @@ private val previewMetadata = DeepLinkMetadata(
     query = null,
 )
 
-private val previewHandlerInfo = DeepLinkHandlerInfo(
+private val previewHandlerInfo = DeepLinkHandlerInfo.Available(
     canResolve = true,
     appName = "Chrome",
 )
