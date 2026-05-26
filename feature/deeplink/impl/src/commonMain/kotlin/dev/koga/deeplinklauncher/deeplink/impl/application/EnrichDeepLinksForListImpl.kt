@@ -17,7 +17,7 @@ internal class EnrichDeepLinksForListImpl(
 
     override suspend fun invoke(links: List<DeepLink>): List<DeepLinkListItem> = withContext(Dispatchers.Default) {
         links.map { deepLink ->
-            val cacheKey = "${deepLink.id}:${deepLink.link}"
+            val cacheKey = "${deepLink.id}:${deepLink.link}:${deepLink.targetPackage.orEmpty()}"
             val cached = cache[cacheKey]
             if (cached != null && cached.deepLink == deepLink) {
                 return@map cached
@@ -25,8 +25,8 @@ internal class EnrichDeepLinksForListImpl(
 
             DeepLinkListItem(
                 deepLink = deepLink,
-                icon = getDeepLinkHandlerIcon(deepLink.link),
-                handlerAppName = when (val handlerInfo = getDeepLinkHandlerInfo(deepLink.link)) {
+                icon = getDeepLinkHandlerIcon(deepLink.link, deepLink.targetPackage),
+                handlerAppName = when (val handlerInfo = getDeepLinkHandlerInfo(deepLink.link, deepLink.targetPackage)) {
                     is DeepLinkHandlerInfo.Available -> handlerInfo.appName
                     DeepLinkHandlerInfo.Unavailable -> null
                 },

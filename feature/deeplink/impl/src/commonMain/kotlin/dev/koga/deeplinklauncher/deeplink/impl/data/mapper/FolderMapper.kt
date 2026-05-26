@@ -28,6 +28,7 @@ internal fun GetFolderDeepLinks.toDomain() = DeepLink(
     createdAt = createdAt,
     isFavorite = isFavorite == 1L,
     lastLaunchedAt = lastLaunchedAt,
+    targetPackage = targetPackage,
     folder = folderId?.let { folderId ->
         Folder(
             id = folderId,

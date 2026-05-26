@@ -13,6 +13,7 @@ import dev.koga.deeplinklauncher.deeplink.api.domain.usecase.GetAutoSuggestionLi
 import dev.koga.deeplinklauncher.deeplink.api.domain.usecase.GetDeepLinksAndFolderStream
 import dev.koga.deeplinklauncher.deeplink.api.domain.usecase.LaunchDeepLink
 import dev.koga.deeplinklauncher.deeplink.api.ui.model.DeepLinkListItem
+import dev.koga.deeplinklauncher.deeplink.api.ui.navigation.DeepLinkRouteEntryPoint
 import dev.koga.deeplinklauncher.deeplink.uicomponent.DeepLinkInputState
 import dev.koga.deeplinklauncher.home.impl.ui.state.HomeUiState
 import dev.koga.deeplinklauncher.navigation.AppNavigator
@@ -25,7 +26,6 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -45,7 +45,12 @@ class HomeViewModel(
     private val searchInput = MutableStateFlow("")
     private val launchInput = MutableStateFlow("")
     private val errorMessage = MutableStateFlow<String?>(null)
-    private val suggestions = launchInput.mapLatest { getAutoSuggestionLinks(it) }
+    private val suggestions = combine(
+        launchInput,
+        preferencesDataSource.preferencesStream,
+    ) { input, _ ->
+        getAutoSuggestionLinks(input)
+    }
     private val dataStream = searchInput.flatMapLatest { getDeepLinksAndFolderStream(it) }
 
     private val enrichedDataStream = dataStream.flatMapLatest { data ->
@@ -107,21 +112,32 @@ class HomeViewModel(
         val deepLink = deepLinkRepository.getDeepLinkByLink(link)
 
         if (deepLink != null) {
-            launchDeepLink(deepLink)
+            when (launchDeepLink.launch(deepLink)) {
+                is LaunchDeepLink.Result.Success -> onBottomBarLaunchSuccess(deepLink.id)
+                is LaunchDeepLink.Result.Failure -> showLaunchError(link)
+            }
 
             return@launch
         }
 
         when (launchDeepLink.launch(link)) {
             is LaunchDeepLink.Result.Success -> {
-                insertDeepLink(link)
+                val id = Uuid.random().toString()
+                deepLinkRepository.upsertDeepLink(
+                    DeepLink(
+                        id = id,
+                        link = link,
+                        name = null,
+                        description = null,
+                        folder = null,
+                        isFavorite = false,
+                        lastLaunchedAt = currentLocalDateTime,
+                    ),
+                )
+                onBottomBarLaunchSuccess(id)
             }
 
-            is LaunchDeepLink.Result.Failure -> {
-                errorMessage.update {
-                    "No app found to handle this deep link: $link"
-                }
-            }
+            is LaunchDeepLink.Result.Failure -> showLaunchError(link)
         }
     }
 
@@ -131,27 +147,24 @@ class HomeViewModel(
         }
     }
 
+    private fun onBottomBarLaunchSuccess(deepLinkId: String) {
+        launchInput.update { "" }
+        errorMessage.update { null }
+        appNavigator.navigate(
+            DeepLinkRouteEntryPoint.DeepLinkDetails(deepLinkId, showFolder = true),
+        )
+    }
+
+    private fun showLaunchError(link: String) {
+        errorMessage.update {
+            "No app found to handle this deep link: $link"
+        }
+    }
+
     private fun toggleFavorite(deepLink: DeepLink) {
         viewModelScope.launch {
             deepLinkRepository.upsertDeepLink(
                 deepLink.copy(isFavorite = !deepLink.isFavorite),
-            )
-        }
-    }
-
-    @OptIn(ExperimentalUuidApi::class)
-    private fun insertDeepLink(link: String) {
-        viewModelScope.launch {
-            deepLinkRepository.upsertDeepLink(
-                DeepLink(
-                    id = Uuid.random().toString(),
-                    link = link,
-                    name = null,
-                    description = null,
-                    folder = null,
-                    isFavorite = false,
-                    lastLaunchedAt = currentLocalDateTime,
-                ),
             )
         }
     }

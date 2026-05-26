@@ -84,6 +84,7 @@ internal class ImportDeepLinksImpl(
                                 ?: databaseDeepLink.createdAt,
                             folder = folders.find { folder -> folder.id == newDeepLinkDto.folderId }
                                 ?: databaseDeepLink.folder,
+                            targetPackage = newDeepLinkDto.targetPackage ?: databaseDeepLink.targetPackage,
                         )
                     }
 

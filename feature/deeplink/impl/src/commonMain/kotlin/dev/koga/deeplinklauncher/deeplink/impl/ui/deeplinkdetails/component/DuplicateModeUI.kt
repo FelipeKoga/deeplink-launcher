@@ -11,7 +11,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LocalTextStyle
-import androidx.compose.material3.Switch
+import dev.koga.deeplinklauncher.designsystem.DLLSwitch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -97,7 +97,7 @@ internal fun DuplicateModeUI(
                     )
                 }
 
-                Switch(
+                DLLSwitch(
                     checked = copyAllFields,
                     onCheckedChange = { copyAllFields = it },
                 )

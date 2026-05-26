@@ -43,6 +43,7 @@ internal class ExportDeepLinksImpl(
                         description = it.description,
                         folderId = it.folder?.id,
                         isFavorite = it.isFavorite,
+                        targetPackage = it.targetPackage,
                     )
                 }
 

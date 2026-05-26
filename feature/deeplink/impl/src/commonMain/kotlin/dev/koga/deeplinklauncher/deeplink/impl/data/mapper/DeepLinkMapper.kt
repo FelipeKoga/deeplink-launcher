@@ -15,6 +15,7 @@ internal fun DatabaseDeepLink.toDomain() = DeepLink(
     description = description,
     isFavorite = isFavorite == 1L,
     lastLaunchedAt = lastLaunchedAt,
+    targetPackage = targetPackage,
 )
 
 internal fun SelectAllDeeplinks.toDomain() = DeepLink(
@@ -25,6 +26,7 @@ internal fun SelectAllDeeplinks.toDomain() = DeepLink(
     description = description,
     isFavorite = isFavorite == 1L,
     lastLaunchedAt = lastLaunchedAt,
+    targetPackage = targetPackage,
     folder = folderId?.let { folderId ->
         Folder(
             id = folderId,
@@ -42,6 +44,7 @@ internal fun GetDeepLinkById.toDomain() = DeepLink(
     createdAt = createdAt,
     isFavorite = isFavorite == 1L,
     lastLaunchedAt = lastLaunchedAt,
+    targetPackage = targetPackage,
     folder = folderId?.let { folderId ->
         Folder(
             id = folderId,
@@ -59,6 +62,7 @@ internal fun GetDeepLinkByLink.toDomain() = DeepLink(
     createdAt = createdAt,
     isFavorite = isFavorite == 1L,
     lastLaunchedAt = lastLaunchedAt,
+    targetPackage = targetPackage,
     folder = folderId?.let { folderId ->
         Folder(
             id = folderId,

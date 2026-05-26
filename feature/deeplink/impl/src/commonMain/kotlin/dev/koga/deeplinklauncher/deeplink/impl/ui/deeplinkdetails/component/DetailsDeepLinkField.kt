@@ -51,6 +51,8 @@ import dev.koga.deeplinklauncher.deeplink.api.domain.model.Folder
 import dev.koga.deeplinklauncher.deeplink.impl.ui.deeplinkdetails.state.DeepLinkDetailsUiState
 import dev.koga.deeplinklauncher.designsystem.DLLHorizontalDivider
 import dev.koga.deeplinklauncher.designsystem.theme.DeepLinkTheme
+import dev.koga.deeplinklauncher.platform.Platform
+import dev.koga.deeplinklauncher.platform.currentPlatform
 import kotlinx.collections.immutable.ImmutableList
 
 private const val ExpandAnimationDurationMs = 250
@@ -62,6 +64,7 @@ internal fun DetailsDeepLinkInfo(
     onFolderClick: () -> Unit = {},
     onToggleFolder: (Folder) -> Unit = {},
     onAddFolder: () -> Unit = {},
+    onSelectTargetPackage: (String?) -> Unit = {},
     modifier: Modifier = Modifier,
 ) {
     var isExpanded by rememberSaveable { mutableStateOf(false) }
@@ -171,6 +174,18 @@ internal fun DetailsDeepLinkInfo(
                     )
                 }
 
+                if (currentPlatform == Platform.ANDROID &&
+                    shouldShowTargetAppPicker(uiState.availableHandlers, uiState.deepLink.targetPackage)
+                ) {
+                    DLLHorizontalDivider(thickness = .5.dp)
+
+                    DetailsTargetAppSection(
+                        targetPackage = uiState.deepLink.targetPackage,
+                        availableHandlers = uiState.availableHandlers,
+                        onSelectTargetPackage = onSelectTargetPackage,
+                    )
+                }
+
                 DLLHorizontalDivider(thickness = .5.dp)
 
                 DetailsExpandableInfoToggle(
@@ -199,6 +214,7 @@ internal fun DetailsDeepLinkInfo(
                             metadata = uiState.details.metadata,
                             handlerInfo = uiState.details.handlerInfo,
                             icon = uiState.details.icon,
+                            targetPackage = uiState.deepLink.targetPackage,
                         )
                     }
                 }

@@ -16,6 +16,7 @@ import dev.koga.deeplinklauncher.deeplink.api.domain.repository.DeepLinkReposito
 import dev.koga.deeplinklauncher.deeplink.api.domain.repository.FolderRepository
 import dev.koga.deeplinklauncher.deeplink.api.domain.usecase.AddDeepLinkToShortcuts
 import dev.koga.deeplinklauncher.deeplink.api.domain.usecase.DuplicateDeepLink
+import dev.koga.deeplinklauncher.deeplink.api.domain.usecase.GetDeepLinkHandlers
 import dev.koga.deeplinklauncher.deeplink.api.domain.usecase.LaunchDeepLink
 import dev.koga.deeplinklauncher.deeplink.api.domain.usecase.LinkDeepLinkToFolder
 import dev.koga.deeplinklauncher.deeplink.api.domain.usecase.PinDeepLinkToHomeScreen
@@ -49,6 +50,7 @@ internal class DeepLinkDetailsViewModel(
     private val deepLinkRepository: DeepLinkRepository,
     private val enrichDeepLinkForDetails: EnrichDeepLinkForDetails,
     private val launchDeepLink: LaunchDeepLink,
+    private val getDeepLinkHandlers: GetDeepLinkHandlers,
     private val shareDeepLink: ShareDeepLink,
     private val pinDeepLinkToHomeScreen: PinDeepLinkToHomeScreen,
     private val addDeepLinkToShortcuts: AddDeepLinkToShortcuts,
@@ -98,21 +100,25 @@ internal class DeepLinkDetailsViewModel(
     }.flatMapLatest { input ->
         when (input.mode) {
             Mode.LAUNCH -> flow {
+                val handlers = getDeepLinkHandlers(input.deepLink.link)
                 emit(
                     DeepLinkDetailsUiState.Launch(
                         details = enrichDeepLinkForDetails(input.deepLink),
                         showFolder = route.showFolder,
                         folders = input.folders.toPersistentList(),
+                        availableHandlers = handlers.toPersistentList(),
                     ),
                 )
             }
 
             Mode.EDIT -> flow {
+                val handlers = getDeepLinkHandlers(input.deepLink.link)
                 emit(
                     DeepLinkDetailsUiState.Edit(
                         deepLink = input.deepLink,
                         folders = input.folders.toPersistentList(),
                         errorMessage = input.deepLinkErrorMessage,
+                        availableHandlers = handlers.toPersistentList(),
                     ),
                 )
             }
@@ -168,6 +174,7 @@ internal class DeepLinkDetailsViewModel(
             is LaunchAction.ToggleFolder -> toggleFolder(action.folder)
             LaunchAction.NotifyLinkCopied -> messageDispatcher.trySend("Link copied")
             LaunchAction.AddToShortCut -> addToShortcut()
+            is LaunchAction.SelectTargetPackage -> updateTargetPackage(action.packageName)
         }
     }
 
@@ -185,6 +192,7 @@ internal class DeepLinkDetailsViewModel(
             is EditAction.OnLinkChanged -> updateLink(action.text)
             is EditAction.OnNameChanged -> updateName(action.text)
             is EditAction.ToggleFolder -> toggleFolder(action.folder)
+            is EditAction.SelectTargetPackage -> updateTargetPackage(action.packageName)
             EditAction.Delete -> delete()
             EditAction.Back -> mode.update { Mode.LAUNCH }
         }
@@ -212,6 +220,10 @@ internal class DeepLinkDetailsViewModel(
         coroutineDebouncer.debounce(viewModelScope, "description") {
             deepLinkRepository.upsertDeepLink(deepLink.value.copy(description = description))
         }
+    }
+
+    private fun updateTargetPackage(targetPackage: String?) {
+        deepLinkRepository.upsertDeepLink(deepLink.value.copy(targetPackage = targetPackage))
     }
 
     private fun toggleFavorite() {

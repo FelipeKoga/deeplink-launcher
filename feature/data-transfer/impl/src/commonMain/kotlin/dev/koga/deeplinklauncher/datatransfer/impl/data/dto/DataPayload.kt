@@ -28,6 +28,7 @@ internal data class Payload(
         val description: String? = null,
         val folderId: String? = null,
         val isFavorite: Boolean? = false,
+        val targetPackage: String? = null,
     )
 
     @Serializable
@@ -54,4 +55,5 @@ internal fun Payload.DeepLink.toModel(folder: Folder?) = DeepLink(
     description = description,
     isFavorite = isFavorite ?: false,
     folder = folder,
+    targetPackage = targetPackage,
 )

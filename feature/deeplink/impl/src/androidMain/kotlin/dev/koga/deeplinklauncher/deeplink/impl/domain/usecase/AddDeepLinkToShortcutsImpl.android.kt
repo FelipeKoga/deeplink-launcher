@@ -1,13 +1,12 @@
 package dev.koga.deeplinklauncher.deeplink.impl.domain.usecase
 
 import android.content.Context
-import android.content.Intent
 import androidx.core.content.pm.ShortcutInfoCompat
 import androidx.core.content.pm.ShortcutManagerCompat
-import androidx.core.net.toUri
 import androidx.core.os.persistableBundleOf
 import dev.koga.deeplinklauncher.deeplink.api.domain.model.DeepLink
 import dev.koga.deeplinklauncher.deeplink.api.domain.usecase.AddDeepLinkToShortcuts
+import dev.koga.deeplinklauncher.deeplink.impl.platform.android.createDeepLinkViewIntent
 import dev.koga.deeplinklauncher.deeplink.impl.platform.android.resolveShortcutIconCompat
 
 internal class AddDeepLinkToShortcutsImpl(
@@ -19,7 +18,7 @@ internal class AddDeepLinkToShortcutsImpl(
         val longLabel = (deepLink.description?.takeIf { it.isNotBlank() } ?: shortLabel)
             .take(MAX_LONG_LABEL_LENGTH)
 
-        val intent = Intent(Intent.ACTION_VIEW, deepLink.link.trim().toUri())
+        val intent = context.createDeepLinkViewIntent(deepLink.link, deepLink.targetPackage)
         val shortcutIcon = context.resolveShortcutIconCompat(intent)
 
         val shortcut = ShortcutInfoCompat.Builder(context, deepLink.id)

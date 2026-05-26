@@ -1,6 +1,7 @@
 package dev.koga.deeplinklauncher.deeplink.impl.ui.preview
 
 import dev.koga.deeplinklauncher.deeplink.api.domain.model.DeepLink
+import dev.koga.deeplinklauncher.deeplink.api.domain.model.DeepLinkHandler
 import dev.koga.deeplinklauncher.deeplink.api.domain.model.Folder
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
@@ -36,4 +37,10 @@ internal val previewFolderOneDeepLinkCount: Folder = Folder(
     name = "Folder name",
     description = "Folder description",
     deepLinkCount = 1,
+)
+
+internal val previewTargetAppHandlers = listOf(
+    DeepLinkHandler(packageName = "com.example.dev", appName = "Example Dev"),
+    DeepLinkHandler(packageName = "com.example.staging", appName = "Example Staging"),
+    DeepLinkHandler(packageName = "com.example", appName = "Example"),
 )

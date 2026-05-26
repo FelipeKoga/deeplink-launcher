@@ -55,6 +55,7 @@ internal fun LaunchModeUI(
             onFolderClick = { onAction(LaunchAction.NavigateToFolder) },
             onToggleFolder = { onAction(LaunchAction.ToggleFolder(it)) },
             onAddFolder = { onAction(LaunchAction.AddFolder) },
+            onSelectTargetPackage = { onAction(LaunchAction.SelectTargetPackage(it)) },
         )
 
         Spacer(modifier = Modifier.height(16.dp))

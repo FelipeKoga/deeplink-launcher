@@ -37,6 +37,8 @@ import dev.koga.deeplinklauncher.deeplink.impl.ui.deeplinkdetails.state.EditActi
 import dev.koga.deeplinklauncher.designsystem.DLLTextField
 import dev.koga.deeplinklauncher.designsystem.button.DLLIconButton
 import dev.koga.deeplinklauncher.designsystem.theme.DeepLinkTheme
+import dev.koga.deeplinklauncher.platform.Platform
+import dev.koga.deeplinklauncher.platform.currentPlatform
 
 @Composable
 internal fun EditModeUI(
@@ -92,6 +94,26 @@ internal fun EditModeUI(
                     ),
                 )
             }
+
+            Spacer(modifier = Modifier.height(16.dp))
+        }
+
+        if (currentPlatform == Platform.ANDROID &&
+            shouldShowTargetAppPicker(uiState.availableHandlers, deepLink.targetPackage)
+        ) {
+            Text(
+                text = "Target app",
+                style = typography.label.chip.copy(color = colors.text.muted),
+                modifier = Modifier.padding(horizontal = 24.dp),
+            )
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            TargetAppPickerChips(
+                selectedPackage = deepLink.targetPackage,
+                availableHandlers = uiState.availableHandlers,
+                onSelectPackage = { onAction(EditAction.SelectTargetPackage(it)) },
+            )
 
             Spacer(modifier = Modifier.height(16.dp))
         }

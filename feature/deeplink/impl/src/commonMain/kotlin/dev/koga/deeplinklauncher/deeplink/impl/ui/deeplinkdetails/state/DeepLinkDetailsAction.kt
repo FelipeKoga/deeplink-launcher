@@ -16,6 +16,7 @@ internal sealed interface LaunchAction : DeepLinkDetailsAction {
     data object AddFolder : LaunchAction
     data class ToggleFolder(val folder: Folder) : LaunchAction
     data object NotifyLinkCopied : LaunchAction
+    data class SelectTargetPackage(val packageName: String?) : LaunchAction
 }
 
 internal sealed interface DuplicateAction : DeepLinkDetailsAction {
@@ -31,4 +32,5 @@ internal sealed interface EditAction : DeepLinkDetailsAction {
     data class OnLinkChanged(val text: String) : EditAction
     data class ToggleFolder(val folder: Folder) : EditAction
     data object AddFolder : EditAction
+    data class SelectTargetPackage(val packageName: String?) : EditAction
 }

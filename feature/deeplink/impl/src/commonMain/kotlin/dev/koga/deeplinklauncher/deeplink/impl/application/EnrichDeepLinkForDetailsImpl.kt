@@ -15,9 +15,9 @@ internal class EnrichDeepLinkForDetailsImpl(
     override suspend fun invoke(deepLink: DeepLink): DeepLinkDetailsModel {
         return DeepLinkDetailsModel(
             deepLink = deepLink,
-            icon = getDeepLinkHandlerIcon(deepLink.link),
+            icon = getDeepLinkHandlerIcon(deepLink.link, deepLink.targetPackage),
             metadata = getDeepLinkMetadata(deepLink.link),
-            handlerInfo = getDeepLinkHandlerInfo(deepLink.link),
+            handlerInfo = getDeepLinkHandlerInfo(deepLink.link, deepLink.targetPackage),
         )
     }
 }

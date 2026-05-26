@@ -39,6 +39,7 @@ internal class GetDeepLinksJsonPreviewImpl(
                         isFavorite = it.isFavorite,
                         createdAt = it.createdAt.format(dateFormat),
                         folderId = it.folder?.id,
+                        targetPackage = it.targetPackage,
                     )
                 },
             ),
@@ -59,6 +60,7 @@ internal class GetDeepLinksJsonPreviewImpl(
             val isFavorite: Boolean,
             val createdAt: String?,
             val folderId: String?,
+            val targetPackage: String? = null,
         )
 
         @Serializable

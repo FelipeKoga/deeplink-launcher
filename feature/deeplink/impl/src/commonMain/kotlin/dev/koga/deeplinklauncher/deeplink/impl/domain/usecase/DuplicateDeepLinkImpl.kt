@@ -45,6 +45,7 @@ internal class DuplicateDeepLinkImpl(
             lastLaunchedAt = null,
             folder = if (copyAllFields) deepLink.folder else null,
             isFavorite = if (copyAllFields) deepLink.isFavorite else false,
+            targetPackage = if (copyAllFields) deepLink.targetPackage else null,
         )
 
         repository.upsertDeepLink(duplicatedDeepLink)

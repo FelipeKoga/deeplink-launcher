@@ -9,6 +9,7 @@ CREATE TABLE deeplink(
   lastLaunchedAt INTEGER AS LocalDateTime,
   folderId TEXT,
   isFavorite INTEGER DEFAULT 0,
+  targetPackage TEXT,
   FOREIGN KEY(folderId) REFERENCES folder(id) ON UPDATE CASCADE
 );
 
@@ -22,8 +23,8 @@ deleteDeeplinkById:
 DELETE FROM deeplink WHERE id = ?;
 
 upsertDeeplink:
-INSERT OR REPLACE INTO deeplink (id, link, name, description, createdAt, lastLaunchedAt, isFavorite, folderId)
-VALUES (?, ?, ?, ?, ?, ?, ?, ?);
+INSERT OR REPLACE INTO deeplink (id, link, name, description, createdAt, lastLaunchedAt, isFavorite, folderId, targetPackage)
+VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);
 
 getDeepLinkByLink:
 SELECT d.*, f.*

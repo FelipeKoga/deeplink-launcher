@@ -28,6 +28,7 @@ internal fun DetailsInformationContent(
     metadata: DeepLinkMetadata,
     handlerInfo: DeepLinkHandlerInfo,
     icon: DeepLinkIcon?,
+    targetPackage: String? = null,
     modifier: Modifier = Modifier,
 ) {
     val showPath = metadata.path?.let { it != "/" && it.isNotBlank() } == true
@@ -99,6 +100,15 @@ internal fun DetailsInformationContent(
                             )
                         }
                     },
+                )
+            }
+
+            targetPackage?.let { packageName ->
+                InfoDivider()
+
+                InfoRow(
+                    label = "Package",
+                    value = packageName,
                 )
             }
         }

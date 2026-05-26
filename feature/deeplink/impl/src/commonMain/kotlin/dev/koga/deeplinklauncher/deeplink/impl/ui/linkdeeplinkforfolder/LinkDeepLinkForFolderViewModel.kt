@@ -19,6 +19,7 @@ import dev.koga.deeplinklauncher.deeplink.impl.ui.linkdeeplinkforfolder.state.Li
 import dev.koga.deeplinklauncher.deeplink.impl.ui.linkdeeplinkforfolder.state.LinkDeepLinkForFolderUiState
 import dev.koga.deeplinklauncher.deeplink.uicomponent.DeepLinkInputState
 import dev.koga.deeplinklauncher.navigation.AppNavigator
+import dev.koga.deeplinklauncher.preferences.repository.PreferencesDataSource
 import dev.koga.deeplinklauncher.uievent.SnackBarDispatcher
 import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -28,7 +29,6 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -45,6 +45,7 @@ internal class LinkDeepLinkForFolderViewModel(
     private val linkDeepLinkToFolder: LinkDeepLinkToFolder,
     private val snackBarDispatcher: SnackBarDispatcher,
     private val appNavigator: AppNavigator,
+    private val preferencesDataSource: PreferencesDataSource,
 ) : ViewModel() {
     private val folderId = savedStateHandle.toRoute<DeepLinkRouteEntryPoint.PickDeepLinkForFolder>().folderId
     private val folder = folderRepository.getFolderById(folderId)!!
@@ -53,7 +54,12 @@ internal class LinkDeepLinkForFolderViewModel(
     private val launchInput = MutableStateFlow("")
     private val errorMessage = MutableStateFlow<String?>(null)
     private val pendingLinkConfirmation = MutableStateFlow<DeepLink?>(null)
-    private val suggestions = launchInput.mapLatest { getAutoSuggestionLinks(it) }
+    private val suggestions = combine(
+        launchInput,
+        preferencesDataSource.preferencesStream,
+    ) { input, _ ->
+        getAutoSuggestionLinks(input)
+    }
 
     private val deepLinkInputState =
         combine(launchInput, errorMessage, suggestions, ::DeepLinkInputState)

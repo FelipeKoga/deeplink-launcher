@@ -71,6 +71,7 @@ internal class DeepLinkRepositoryImpl(
                 isFavorite = if (deepLink.isFavorite) 1L else 0L,
                 lastLaunchedAt = deepLink.lastLaunchedAt,
                 folderId = deepLink.folder?.id,
+                targetPackage = deepLink.targetPackage,
             )
         }
     }

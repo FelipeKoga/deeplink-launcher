@@ -1,12 +1,11 @@
 package dev.koga.deeplinklauncher.deeplink.impl.domain.usecase
 
 import android.content.Context
-import android.content.Intent
 import android.content.pm.ShortcutInfo
 import android.content.pm.ShortcutManager
-import androidx.core.net.toUri
 import dev.koga.deeplinklauncher.deeplink.api.domain.model.DeepLink
 import dev.koga.deeplinklauncher.deeplink.api.domain.usecase.PinDeepLinkToHomeScreen
+import dev.koga.deeplinklauncher.deeplink.impl.platform.android.createDeepLinkViewIntent
 import dev.koga.deeplinklauncher.deeplink.impl.platform.android.resolveShortcutIcon
 internal class PinDeepLinkToHomeScreenImpl(
     private val context: Context,
@@ -21,7 +20,7 @@ internal class PinDeepLinkToHomeScreenImpl(
         val label = (deepLink.name?.takeIf { it.isNotBlank() } ?: deepLink.link)
             .take(MAX_SHORT_LABEL_LENGTH)
 
-        val intent = Intent(Intent.ACTION_VIEW, deepLink.link.trim().toUri())
+        val intent = context.createDeepLinkViewIntent(deepLink.link, deepLink.targetPackage)
         val shortcutIcon = context.resolveShortcutIcon(intent)
 
         val shortcut = ShortcutInfo.Builder(context, deepLink.id)

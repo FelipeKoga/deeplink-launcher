@@ -7,8 +7,10 @@ import dev.koga.deeplinklauncher.deeplink.api.domain.model.DeepLink
 import dev.koga.deeplinklauncher.deeplink.impl.ui.deeplinkdetails.state.DeepLinkDetailsUiState
 import dev.koga.deeplinklauncher.deeplink.impl.ui.preview.previewFavoriteDeepLink
 import dev.koga.deeplinklauncher.deeplink.impl.ui.preview.previewNotFavoriteDeepLink
+import dev.koga.deeplinklauncher.deeplink.impl.ui.preview.previewTargetAppHandlers
 import dev.koga.deeplinklauncher.designsystem.theme.DLLPreviewTheme
 import kotlinx.collections.immutable.persistentListOf
+import kotlinx.collections.immutable.toPersistentList
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Preview
@@ -56,6 +58,27 @@ internal fun EditModeUIErrorPreview() {
                 deepLink = DeepLink.empty,
                 folders = persistentListOf(),
                 errorMessage = "Something went wrong",
+            ),
+            onAction = {},
+            onShowDeleteConfirmation = {},
+        )
+    }
+}
+
+@Preview
+@PreviewScreenSizes
+@PreviewLightDark
+@Composable
+internal fun EditModeUITargetAppPreview() {
+    DLLPreviewTheme {
+        EditModeUI(
+            uiState = DeepLinkDetailsUiState.Edit(
+                deepLink = previewFavoriteDeepLink.copy(
+                    link = "myapp://home",
+                    targetPackage = "com.example.staging",
+                ),
+                folders = persistentListOf(),
+                availableHandlers = previewTargetAppHandlers.toPersistentList(),
             ),
             onAction = {},
             onShowDeleteConfirmation = {},

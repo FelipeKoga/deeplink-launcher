@@ -3,6 +3,7 @@ package dev.koga.deeplinklauncher.deeplink.impl.di
 import dev.koga.deeplinklauncher.deeplink.api.domain.manager.DeepLinkTargetStateManager
 import dev.koga.deeplinklauncher.deeplink.api.domain.usecase.AddDeepLinkToShortcuts
 import dev.koga.deeplinklauncher.deeplink.api.domain.usecase.GetDeepLinkHandlerIcon
+import dev.koga.deeplinklauncher.deeplink.api.domain.usecase.GetDeepLinkHandlers
 import dev.koga.deeplinklauncher.deeplink.api.domain.usecase.GetDeepLinkHandlerInfo
 import dev.koga.deeplinklauncher.deeplink.api.domain.usecase.GetDeepLinkMetadata
 import dev.koga.deeplinklauncher.deeplink.api.domain.usecase.LaunchDeepLink
@@ -12,6 +13,7 @@ import dev.koga.deeplinklauncher.deeplink.api.domain.usecase.ValidateDeepLink
 import dev.koga.deeplinklauncher.deeplink.impl.domain.manager.DeepLinkTargetStateManagerImpl
 import dev.koga.deeplinklauncher.deeplink.impl.domain.usecase.AddDeepLinkToShortcutsImpl
 import dev.koga.deeplinklauncher.deeplink.impl.domain.usecase.GetDeepLinkFromClipboard
+import dev.koga.deeplinklauncher.deeplink.impl.domain.usecase.GetDeepLinkHandlersImpl
 import dev.koga.deeplinklauncher.deeplink.impl.domain.usecase.GetDeepLinkHandlerIconImpl
 import dev.koga.deeplinklauncher.deeplink.impl.domain.usecase.GetDeepLinkHandlerInfoImpl
 import dev.koga.deeplinklauncher.deeplink.impl.domain.usecase.GetDeepLinkMetadataImpl
@@ -29,6 +31,7 @@ internal actual val platformModule: Module = module {
     singleOf(::GetDeepLinkMetadataImpl) bind GetDeepLinkMetadata::class
     singleOf(::GetDeepLinkHandlerInfoImpl) bind GetDeepLinkHandlerInfo::class
     singleOf(::GetDeepLinkHandlerIconImpl) bind GetDeepLinkHandlerIcon::class
+    singleOf(::GetDeepLinkHandlersImpl) bind GetDeepLinkHandlers::class
     singleOf(::LaunchDeepLinkImpl) bind LaunchDeepLink::class
     singleOf(::ValidateDeepLinkImpl) bind ValidateDeepLink::class
     singleOf(::ShareDeepLinkImpl) bind ShareDeepLink::class
