@@ -98,9 +98,9 @@ fun isAppThemeInDarkTheme(
 ): Boolean {
     val isSystemDarkTheme = isSystemInDarkTheme()
 
-    val preferences by preferencesDataSource.preferencesStream.collectAsStateWithLifecycle(preferencesDataSource.preferences)
+    val preferences by preferencesDataSource.preferencesStream.collectAsStateWithLifecycle(initialValue = null)
 
-    return when (preferences.appTheme) {
+    return when (preferences?.appTheme ?: AppTheme.AUTO) {
         AppTheme.LIGHT -> false
         AppTheme.DARK -> true
         AppTheme.AUTO -> isSystemDarkTheme

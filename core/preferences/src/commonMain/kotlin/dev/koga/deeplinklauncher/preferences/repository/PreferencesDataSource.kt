@@ -11,13 +11,14 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import androidx.datastore.preferences.core.Preferences as StoragePreferences
 
 interface PreferencesDataSource {
     val preferencesStream: Flow<Preferences>
-    val preferences: Preferences
+    val preferences: Preferences?
 
     suspend fun updateTheme(theme: AppTheme)
     suspend fun setShouldHideOnboarding(shouldHideOnboarding: Boolean)
@@ -35,21 +36,21 @@ internal class PreferencesDataStore(
     private val shouldDisableDeepLinkSuggestions =
         booleanPreferencesKey("should_disable_deep_link_suggestions")
 
-    override val preferencesStream = dataStore.data.map {
+    private val preferencesState = dataStore.data.map {
         Preferences(
             shouldShowOnboarding = it[shouldShowOnboarding] ?: true,
             appTheme = AppTheme.get(it[themeKey]),
             shouldDisableDeepLinkSuggestions = it[shouldDisableDeepLinkSuggestions] ?: false,
         )
-    }
-
-    private val preferencesState = preferencesStream.stateIn(
+    }.stateIn(
         scope = scope,
         started = SharingStarted.Eagerly,
-        initialValue = Preferences(),
+        initialValue = null,
     )
 
-    override val preferences: Preferences
+    override val preferencesStream: Flow<Preferences> = preferencesState.filterNotNull()
+
+    override val preferences: Preferences?
         get() = preferencesState.value
 
     override suspend fun updateTheme(theme: AppTheme) {

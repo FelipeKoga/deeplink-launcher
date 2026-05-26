@@ -33,6 +33,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
@@ -57,7 +58,13 @@ internal class LinkDeepLinkForFolderViewModel(
 ) : ViewModel() {
     private val folderId =
         savedStateHandle.toRoute<DeepLinkRouteEntryPoint.PickDeepLinkForFolder>().folderId
-    private val folder = folderRepository.getFolderById(folderId)!!
+
+    private val folder = folderRepository.getFolderByIdStream(folderId)
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.Eagerly,
+            initialValue = null,
+        )
 
     private val query = MutableStateFlow("")
     private val launchInput = MutableStateFlow("")
@@ -99,13 +106,15 @@ internal class LinkDeepLinkForFolderViewModel(
     )
 
     val uiState = combine(
+        folder,
         query,
         linkableDeepLinks,
         deepLinkInputState,
         pendingLinkConfirmation,
-    ) { searchQuery, linkable, inputState, pending ->
+    ) { folder, searchQuery, linkable, inputState, pending ->
         LinkDeepLinkForFolderUiState(
-            folderName = folder.name,
+            folderName = folder?.name.orEmpty(),
+            isFolderLoaded = folder != null,
             query = searchQuery,
             linkableDeepLinks = linkable.toPersistentList(),
             deepLinkInputState = inputState,
@@ -114,8 +123,16 @@ internal class LinkDeepLinkForFolderViewModel(
     }.stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(),
-        initialValue = LinkDeepLinkForFolderUiState(folderName = folder.name),
+        initialValue = LinkDeepLinkForFolderUiState(folderName = ""),
     )
+
+    init {
+        viewModelScope.launch {
+            if (folder.first() == null) {
+                appNavigator.popBackStack()
+            }
+        }
+    }
 
     fun onAction(action: LinkDeepLinkForFolderAction) {
         when (action) {
@@ -178,13 +195,15 @@ internal class LinkDeepLinkForFolderViewModel(
     }
 
     private fun insertDeepLinkWithFolder(link: String) {
+        val currentFolder = folder.value ?: return
+
         deepLinkRepository.upsertDeepLink(
             DeepLink(
                 id = Uuid.random().toString(),
                 link = link,
                 name = null,
                 description = null,
-                folder = folder,
+                folder = currentFolder,
                 isFavorite = false,
                 lastLaunchedAt = currentLocalDateTime,
             ),

@@ -8,6 +8,7 @@ import kotlinx.collections.immutable.persistentListOf
 
 internal data class LinkDeepLinkForFolderUiState(
     val folderName: String,
+    val isFolderLoaded: Boolean = false,
     val query: String = "",
     val linkableDeepLinks: ImmutableList<DeepLinkListItem> = persistentListOf(),
     val deepLinkInputState: DeepLinkInputState = DeepLinkInputState(),

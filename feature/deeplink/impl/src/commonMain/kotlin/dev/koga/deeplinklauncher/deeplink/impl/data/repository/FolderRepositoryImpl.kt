@@ -3,7 +3,6 @@ package dev.koga.deeplinklauncher.deeplink.impl.data.repository
 import app.cash.sqldelight.coroutines.asFlow
 import app.cash.sqldelight.coroutines.mapToList
 import dev.koga.deeplinklauncher.database.DeepLinkLauncherDatabase
-import dev.koga.deeplinklauncher.database.GetFolderById
 import dev.koga.deeplinklauncher.database.GetFolderDeepLinks
 import dev.koga.deeplinklauncher.database.SelectFoldersWithDeeplinkCount
 import dev.koga.deeplinklauncher.deeplink.api.domain.model.DeepLink
@@ -45,11 +44,19 @@ internal class FolderRepositoryImpl(
             .map { it.map(GetFolderDeepLinks::toDomain) }
     }
 
-    override fun getFolderById(id: String): Folder {
+    override fun getFolderByIdStream(id: String): Flow<Folder?> {
         return database.folderQueries
             .getFolderById(id)
-            .executeAsOne()
-            .let(GetFolderById::toDomain)
+            .asFlow()
+            .mapToList(Dispatchers.IO)
+            .map { rows -> rows.singleOrNull()?.toDomain() }
+    }
+
+    override fun getFolderById(id: String): Folder? {
+        return database.folderQueries
+            .getFolderById(id)
+            .executeAsOneOrNull()
+            ?.toDomain()
     }
 
     override fun upsertFolder(folder: Folder) {

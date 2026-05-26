@@ -240,15 +240,19 @@ internal class DeepLinkDetailsViewModel(
     }
 
     private fun updateTargetPackage(targetPackage: String?) {
-        deepLinkRepository.upsertDeepLink(deepLink.value.copy(targetPackage = targetPackage))
+        viewModelScope.launch {
+            deepLinkRepository.upsertDeepLink(deepLink.value.copy(targetPackage = targetPackage))
+        }
     }
 
     private fun toggleFavorite() {
-        val isFavorite = !deepLink.value.isFavorite
-        deepLinkRepository.upsertDeepLink(
-            deepLink.value.copy(isFavorite = isFavorite),
-        )
-        analyticsTracker.track(FavoriteToggled(isFavorite = isFavorite))
+        viewModelScope.launch {
+            val isFavorite = !deepLink.value.isFavorite
+            deepLinkRepository.upsertDeepLink(
+                deepLink.value.copy(isFavorite = isFavorite),
+            )
+            analyticsTracker.track(FavoriteToggled(isFavorite = isFavorite))
+        }
     }
 
     private fun launch() {
@@ -308,7 +312,9 @@ internal class DeepLinkDetailsViewModel(
 
     private fun toggleFolder(folder: Folder) {
         if (folder.id == deepLink.value.folder?.id) {
-            deepLinkRepository.upsertDeepLink(deepLink.value.copy(folder = null))
+            viewModelScope.launch {
+                deepLinkRepository.upsertDeepLink(deepLink.value.copy(folder = null))
+            }
             return
         }
 

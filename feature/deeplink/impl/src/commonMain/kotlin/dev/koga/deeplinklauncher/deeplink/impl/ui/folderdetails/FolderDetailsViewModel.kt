@@ -27,6 +27,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.launchIn
@@ -45,16 +46,19 @@ internal class FolderDetailsViewModel(
 ) : ViewModel() {
     private val folderId = savedStateHandle.toRoute<DeepLinkRouteEntryPoint.FolderDetails>().id
 
-    private val folder = repository.getFolderById(folderId)!!
+    private val folder = repository.getFolderByIdStream(folderId)
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.Eagerly,
+            initialValue = null,
+        )
 
     private val form = MutableStateFlow(
-        folder.let {
-            FolderDetailsUiState(
-                name = it.name,
-                description = it.description.orEmpty(),
-                deepLinks = persistentListOf(),
-            )
-        },
+        FolderDetailsUiState(
+            name = "",
+            description = "",
+            deepLinks = persistentListOf(),
+        ),
     )
 
     private val deepLinksState = repository.getFolderDeepLinksStream(folderId)
@@ -74,10 +78,11 @@ internal class FolderDetailsViewModel(
             initialValue = DeepLinksState(),
         )
 
-    val uiState = combine(form, deepLinksState) { form, deepLinksState ->
+    val uiState = combine(form, deepLinksState, folder) { form, deepLinksState, folder ->
         form.copy(
             deepLinks = deepLinksState.deepLinks.toPersistentList(),
             isDeepLinksLoaded = deepLinksState.isLoaded,
+            isFolderLoaded = folder != null,
         )
     }.stateIn(
         scope = viewModelScope,
@@ -86,14 +91,28 @@ internal class FolderDetailsViewModel(
     )
 
     init {
-        form.onEach {
-            repository.upsertFolder(
-                folder.copy(
-                    name = it.name,
-                    description = it.description,
-                ),
-            )
-        }.launchIn(viewModelScope)
+        viewModelScope.launch {
+            when (val loadedFolder = folder.first()) {
+                null -> appNavigator.popBackStack()
+                else -> {
+                    form.update {
+                        it.copy(
+                            name = loadedFolder.name,
+                            description = loadedFolder.description.orEmpty(),
+                        )
+                    }
+
+                    form.onEach { state ->
+                        repository.upsertFolder(
+                            loadedFolder.copy(
+                                name = state.name,
+                                description = state.description.ifBlank { null },
+                            ),
+                        )
+                    }.launchIn(this)
+                }
+            }
+        }
     }
 
     fun onAction(action: FolderDetailsAction) {

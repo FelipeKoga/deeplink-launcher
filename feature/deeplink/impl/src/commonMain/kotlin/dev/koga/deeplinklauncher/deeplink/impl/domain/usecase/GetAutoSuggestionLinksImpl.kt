@@ -18,7 +18,7 @@ internal class GetAutoSuggestionLinksImpl(
     private var cachedIndex: MetadataIndex? = null
 
     override operator fun invoke(link: String): List<Suggestion> {
-        if (preferencesDataSource.preferences.shouldDisableDeepLinkSuggestions) {
+        if (preferencesDataSource.preferences?.shouldDisableDeepLinkSuggestions == true) {
             return listOf()
         }
 
@@ -70,7 +70,9 @@ internal class GetAutoSuggestionLinksImpl(
     }
 
     private fun List<MetadataEntry>.schemes(text: String): List<Suggestion> {
-        return filter { it.metadata.scheme != null && it.metadata.scheme!!.contains(text) }.map {
+        return filter { entry ->
+            entry.metadata.scheme?.contains(text, ignoreCase = true) == true
+        }.map {
             Suggestion.History(
                 text = when {
                     it.link.contains("://") -> "${it.metadata.scheme}://"

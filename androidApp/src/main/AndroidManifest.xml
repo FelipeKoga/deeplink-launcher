@@ -23,6 +23,10 @@
         <intent>
             <action android:name="android.intent.action.VIEW" />
         </intent>
+        <intent>
+            <action android:name="android.intent.action.VIEW" />
+            <data android:scheme="*" />
+        </intent>
     </queries>
 
     <application
