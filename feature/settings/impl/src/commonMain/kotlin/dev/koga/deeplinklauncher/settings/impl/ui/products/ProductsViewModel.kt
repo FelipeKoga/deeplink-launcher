@@ -2,10 +2,15 @@ package dev.koga.deeplinklauncher.settings.impl.ui.products
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import dev.koga.deeplinklauncher.analytics.api.AnalyticsTracker
 import dev.koga.deeplinklauncher.navigation.AppNavigator
 import dev.koga.deeplinklauncher.purchase.api.Product
 import dev.koga.deeplinklauncher.purchase.api.PurchaseApi
 import dev.koga.deeplinklauncher.purchase.api.PurchaseResult
+import dev.koga.deeplinklauncher.settings.impl.analytics.PurchaseCompleted
+import dev.koga.deeplinklauncher.settings.impl.analytics.PurchaseFailed
+import dev.koga.deeplinklauncher.settings.impl.analytics.PurchaseStarted
+import dev.koga.deeplinklauncher.settings.impl.analytics.track
 import dev.koga.deeplinklauncher.uievent.SnackBar
 import dev.koga.deeplinklauncher.uievent.SnackBarDispatcher
 import kotlinx.collections.immutable.persistentListOf
@@ -17,6 +22,7 @@ class ProductsViewModel(
     private val purchaseApi: PurchaseApi,
     private val appNavigator: AppNavigator,
     private val snackBarDispatcher: SnackBarDispatcher,
+    private val analyticsTracker: AnalyticsTracker,
 ) : ViewModel() {
 
     val products = purchaseApi.getProducts().stateIn(
@@ -26,9 +32,11 @@ class ProductsViewModel(
     )
 
     fun purchase(product: Product) {
+        analyticsTracker.track(PurchaseStarted(productId = product.packageId))
         viewModelScope.launch {
             when (val response = purchaseApi.purchase(product)) {
                 PurchaseResult.Success -> {
+                    analyticsTracker.track(PurchaseCompleted(productId = product.packageId))
                     snackBarDispatcher.show(
                         SnackBar(
                             message = "Thank you for your support!",
@@ -40,6 +48,12 @@ class ProductsViewModel(
                 }
 
                 is PurchaseResult.Error -> {
+                    analyticsTracker.track(
+                        PurchaseFailed(
+                            productId = product.packageId,
+                            userCancelled = response.userCancelled,
+                        ),
+                    )
                     if (!response.userCancelled) {
                         snackBarDispatcher.show(
                             SnackBar(

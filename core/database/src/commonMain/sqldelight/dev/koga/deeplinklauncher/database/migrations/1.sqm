@@ -1,1 +1,1 @@
-ALTER TABLE deeplink ADD COLUMN targetPackage TEXT;
+SELECT 1;

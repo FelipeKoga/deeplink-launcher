@@ -6,12 +6,18 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
+import dev.koga.deeplinklauncher.analytics.api.AnalyticsTracker
 import dev.koga.deeplinklauncher.deeplink.api.application.EnrichDeepLinksForList
 import dev.koga.deeplinklauncher.deeplink.api.domain.model.DeepLink
+import dev.koga.deeplinklauncher.deeplink.api.domain.model.LaunchSource
 import dev.koga.deeplinklauncher.deeplink.api.domain.repository.FolderRepository
 import dev.koga.deeplinklauncher.deeplink.api.domain.usecase.LaunchDeepLink
 import dev.koga.deeplinklauncher.deeplink.api.ui.model.DeepLinkListItem
 import dev.koga.deeplinklauncher.deeplink.api.ui.navigation.DeepLinkRouteEntryPoint
+import dev.koga.deeplinklauncher.deeplink.impl.analytics.DeeplinkLaunchFailed
+import dev.koga.deeplinklauncher.deeplink.impl.analytics.DeeplinkLaunched
+import dev.koga.deeplinklauncher.deeplink.impl.analytics.FolderDeleted
+import dev.koga.deeplinklauncher.deeplink.impl.analytics.track
 import dev.koga.deeplinklauncher.deeplink.impl.ui.folderdetails.state.FolderDetailsAction
 import dev.koga.deeplinklauncher.deeplink.impl.ui.folderdetails.state.FolderDetailsUiState
 import dev.koga.deeplinklauncher.navigation.AppNavigator
@@ -35,6 +41,7 @@ internal class FolderDetailsViewModel(
     private val enrichDeepLinksForList: EnrichDeepLinksForList,
     private val launchDeepLink: LaunchDeepLink,
     private val appNavigator: AppNavigator,
+    private val analyticsTracker: AnalyticsTracker,
 ) : ViewModel() {
     private val folderId = savedStateHandle.toRoute<DeepLinkRouteEntryPoint.FolderDetails>().id
 
@@ -101,6 +108,7 @@ internal class FolderDetailsViewModel(
 
     private fun delete() {
         repository.deleteFolder(folderId)
+        analyticsTracker.track(FolderDeleted)
         appNavigator.popBackStack()
     }
 
@@ -114,7 +122,19 @@ internal class FolderDetailsViewModel(
 
     private fun launch(deepLink: DeepLink) {
         viewModelScope.launch {
-            launchDeepLink.launch(deepLink)
+            when (launchDeepLink.launch(deepLink)) {
+                is LaunchDeepLink.Result.Success -> {
+                    analyticsTracker.track(
+                        DeeplinkLaunched(source = LaunchSource.FOLDER),
+                    )
+                }
+
+                is LaunchDeepLink.Result.Failure -> {
+                    analyticsTracker.track(
+                        DeeplinkLaunchFailed(source = LaunchSource.FOLDER),
+                    )
+                }
+            }
         }
     }
 

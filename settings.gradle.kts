@@ -38,6 +38,8 @@ include(
     ":library:device-bridge:impl",
     ":library:purchase:api",
     ":library:purchase:impl",
+    ":library:analytics:api",
+    ":library:analytics:impl",
     ":core:file",
     ":core:date",
     ":core:resources",

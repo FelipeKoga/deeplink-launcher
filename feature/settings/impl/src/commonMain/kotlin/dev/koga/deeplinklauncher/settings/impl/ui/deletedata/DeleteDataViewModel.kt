@@ -1,8 +1,11 @@
 package dev.koga.deeplinklauncher.settings.impl.ui.deletedata
 
 import androidx.lifecycle.ViewModel
+import dev.koga.deeplinklauncher.analytics.api.AnalyticsTracker
 import dev.koga.deeplinklauncher.deeplink.api.domain.repository.DeepLinkRepository
 import dev.koga.deeplinklauncher.deeplink.api.domain.repository.FolderRepository
+import dev.koga.deeplinklauncher.settings.impl.analytics.DataDeleted
+import dev.koga.deeplinklauncher.settings.impl.analytics.track
 
 enum class DeletionType {
     ALL,
@@ -13,6 +16,7 @@ enum class DeletionType {
 class DeleteDataViewModel(
     private val deepLinkRepository: DeepLinkRepository,
     private val folderRepository: FolderRepository,
+    private val analyticsTracker: AnalyticsTracker,
 ) : ViewModel() {
 
     fun delete(type: DeletionType) {
@@ -28,5 +32,7 @@ class DeleteDataViewModel(
                 folderRepository.deleteAll()
             }
         }
+
+        analyticsTracker.track(DataDeleted(deletionType = type.name.lowercase()))
     }
 }

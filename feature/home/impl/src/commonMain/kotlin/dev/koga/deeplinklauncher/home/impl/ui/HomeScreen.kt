@@ -45,9 +45,19 @@ fun HomeScreen(
         }
     }
 
+    val pagerState = rememberPagerState(
+        initialPage = HomeTabPage.HISTORY.ordinal,
+        pageCount = { HomeTabPage.entries.size },
+    )
+
+    LaunchedEffect(pagerState.currentPage) {
+        viewModel.onAction(HomeAction.TabSelected(HomeTabPage.entries[pagerState.currentPage]))
+    }
+
     HomeUI(
         uiState = uiState,
         onAction = viewModel::onAction,
+        pagerState = pagerState,
     )
 }
 

@@ -7,5 +7,5 @@ import org.koin.core.module.Module
 import org.koin.dsl.module
 
 actual val platformHomeUiModule: Module = module {
-    factory { DeepLinkTargetsDropdownManager(get(), CoroutineScope(Dispatchers.IO)) }
+    factory { DeepLinkTargetsDropdownManager(get(), get(), CoroutineScope(Dispatchers.IO)) }
 }

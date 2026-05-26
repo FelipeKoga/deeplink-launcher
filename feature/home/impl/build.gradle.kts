@@ -21,6 +21,8 @@ kotlin {
             implementation(projects.core.coroutines)
             implementation(projects.core.ui)
 
+            implementation(projects.library.analytics.api)
+
             implementation(libs.compose.navigation)
 
             implementation(libs.kotlinx.coroutines.core)

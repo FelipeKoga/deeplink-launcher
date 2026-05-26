@@ -2,9 +2,12 @@ package dev.koga.deeplinklauncher.datatransfer.impl.ui.screen.export
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import dev.koga.deeplinklauncher.analytics.api.AnalyticsTracker
 import dev.koga.deeplinklauncher.datatransfer.api.domain.usecase.ExportDeepLinks
 import dev.koga.deeplinklauncher.datatransfer.api.domain.usecase.GetDeepLinksJsonPreview
 import dev.koga.deeplinklauncher.datatransfer.api.domain.usecase.GetDeepLinksPlainTextPreview
+import dev.koga.deeplinklauncher.datatransfer.impl.analytics.DataExported
+import dev.koga.deeplinklauncher.datatransfer.impl.analytics.track
 import dev.koga.deeplinklauncher.file.StoragePermission
 import dev.koga.deeplinklauncher.file.model.FileType
 import dev.koga.deeplinklauncher.navigation.AppNavigator
@@ -18,6 +21,7 @@ class ExportViewModel(
     private val storagePermission: StoragePermission,
     private val appNavigator: AppNavigator,
     private val snackBarDispatcher: SnackBarDispatcher,
+    private val analyticsTracker: AnalyticsTracker,
 ) : ViewModel(), AppNavigator by appNavigator {
 
     private val plainTextPreview = getDeepLinksPlainTextPreview()
@@ -44,10 +48,13 @@ class ExportViewModel(
                     "An error occurred while exporting DeepLinks.",
                 )
 
-                is ExportDeepLinks.Result.Success -> snackBarDispatcher.show(
-                    "DeepLinks exported successfully. " +
-                        "Check your downloads folder for a file named ${response.fileName}.",
-                )
+                is ExportDeepLinks.Result.Success -> {
+                    analyticsTracker.track(DataExported)
+                    snackBarDispatcher.show(
+                        "DeepLinks exported successfully. " +
+                            "Check your downloads folder for a file named ${response.fileName}.",
+                    )
+                }
             }
         }
     }

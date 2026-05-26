@@ -6,15 +6,22 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
+import dev.koga.deeplinklauncher.analytics.api.AnalyticsTracker
 import dev.koga.deeplinklauncher.date.currentLocalDateTime
 import dev.koga.deeplinklauncher.deeplink.api.application.EnrichDeepLinksForList
 import dev.koga.deeplinklauncher.deeplink.api.domain.model.DeepLink
+import dev.koga.deeplinklauncher.deeplink.api.domain.model.LaunchSource
 import dev.koga.deeplinklauncher.deeplink.api.domain.repository.DeepLinkRepository
 import dev.koga.deeplinklauncher.deeplink.api.domain.repository.FolderRepository
 import dev.koga.deeplinklauncher.deeplink.api.domain.usecase.GetAutoSuggestionLinks
 import dev.koga.deeplinklauncher.deeplink.api.domain.usecase.LaunchDeepLink
 import dev.koga.deeplinklauncher.deeplink.api.domain.usecase.LinkDeepLinkToFolder
 import dev.koga.deeplinklauncher.deeplink.api.ui.navigation.DeepLinkRouteEntryPoint
+import dev.koga.deeplinklauncher.deeplink.impl.analytics.DeeplinkCreated
+import dev.koga.deeplinklauncher.deeplink.impl.analytics.DeeplinkLaunchFailed
+import dev.koga.deeplinklauncher.deeplink.impl.analytics.DeeplinkLaunched
+import dev.koga.deeplinklauncher.deeplink.impl.analytics.FolderLinkCompleted
+import dev.koga.deeplinklauncher.deeplink.impl.analytics.track
 import dev.koga.deeplinklauncher.deeplink.impl.ui.linkdeeplinkforfolder.state.LinkDeepLinkForFolderAction
 import dev.koga.deeplinklauncher.deeplink.impl.ui.linkdeeplinkforfolder.state.LinkDeepLinkForFolderUiState
 import dev.koga.deeplinklauncher.deeplink.uicomponent.DeepLinkInputState
@@ -46,8 +53,10 @@ internal class LinkDeepLinkForFolderViewModel(
     private val snackBarDispatcher: SnackBarDispatcher,
     private val appNavigator: AppNavigator,
     private val preferencesDataSource: PreferencesDataSource,
+    private val analyticsTracker: AnalyticsTracker,
 ) : ViewModel() {
-    private val folderId = savedStateHandle.toRoute<DeepLinkRouteEntryPoint.PickDeepLinkForFolder>().folderId
+    private val folderId =
+        savedStateHandle.toRoute<DeepLinkRouteEntryPoint.PickDeepLinkForFolder>().folderId
     private val folder = folderRepository.getFolderById(folderId)!!
 
     private val query = MutableStateFlow("")
@@ -123,7 +132,8 @@ internal class LinkDeepLinkForFolderViewModel(
 
     private fun launch(deepLink: DeepLink) {
         viewModelScope.launch {
-            launchDeepLink.launch(deepLink)
+            val result = launchDeepLink.launch(deepLink)
+            trackLaunchResult(result = result)
         }
     }
 
@@ -132,14 +142,20 @@ internal class LinkDeepLinkForFolderViewModel(
         val existing = deepLinkRepository.getDeepLinkByLink(link)
 
         if (existing != null) {
-            when (launchDeepLink.launch(existing)) {
+            when (val result = launchDeepLink.launch(existing)) {
                 is LaunchDeepLink.Result.Success -> {
+                    trackLaunchResult(result = result)
                     if (existing.folder?.id != folderId) {
                         pendingLinkConfirmation.update { existing }
                     }
                 }
 
-                is LaunchDeepLink.Result.Failure -> showLaunchError(link)
+                is LaunchDeepLink.Result.Failure -> {
+                    analyticsTracker.track(
+                        DeeplinkLaunchFailed(source = LaunchSource.LINK_FLOW),
+                    )
+                    showLaunchError(link)
+                }
             }
             return@launch
         }
@@ -147,10 +163,17 @@ internal class LinkDeepLinkForFolderViewModel(
         when (launchDeepLink.launch(link)) {
             is LaunchDeepLink.Result.Success -> {
                 insertDeepLinkWithFolder(link)
+                analyticsTracker.track(DeeplinkCreated(source = LaunchSource.LINK_FLOW))
                 appNavigator.popBackStack()
             }
 
-            is LaunchDeepLink.Result.Failure -> showLaunchError(link)
+            is LaunchDeepLink.Result.Failure -> {
+                analyticsTracker.track(
+                    DeeplinkLaunchFailed(source = LaunchSource.LINK_FLOW),
+                )
+
+                showLaunchError(link)
+            }
         }
     }
 
@@ -176,6 +199,7 @@ internal class LinkDeepLinkForFolderViewModel(
                 LinkDeepLinkToFolder.Result.Linked,
                 LinkDeepLinkToFolder.Result.AlreadyLinked,
                 -> {
+                    analyticsTracker.track(FolderLinkCompleted)
                     pendingLinkConfirmation.update { null }
                     appNavigator.popBackStack()
                 }
@@ -193,7 +217,10 @@ internal class LinkDeepLinkForFolderViewModel(
             when (linkDeepLinkToFolder(deepLinkId, folderId)) {
                 LinkDeepLinkToFolder.Result.Linked,
                 LinkDeepLinkToFolder.Result.AlreadyLinked,
-                -> appNavigator.popBackStack()
+                -> {
+                    analyticsTracker.track(FolderLinkCompleted)
+                    appNavigator.popBackStack()
+                }
 
                 LinkDeepLinkToFolder.Result.NotFound -> {
                     snackBarDispatcher.show("Deeplink not found")
@@ -210,6 +237,24 @@ internal class LinkDeepLinkForFolderViewModel(
     private fun showLaunchError(link: String) {
         errorMessage.update {
             "No app found to handle this deep link: $link"
+        }
+    }
+
+    private fun trackLaunchResult(
+        result: LaunchDeepLink.Result,
+    ) {
+        when (result) {
+            is LaunchDeepLink.Result.Success -> {
+                analyticsTracker.track(
+                    DeeplinkLaunched(source = LaunchSource.LINK_FLOW),
+                )
+            }
+
+            is LaunchDeepLink.Result.Failure -> {
+                analyticsTracker.track(
+                    DeeplinkLaunchFailed(source = LaunchSource.LINK_FLOW),
+                )
+            }
         }
     }
 

@@ -21,11 +21,17 @@ kotlin {
     sourceSets {
         commonMain.dependencies {
             implementation(projects.feature.home.impl)
+            implementation(projects.feature.home.api)
             implementation(projects.feature.deeplink.impl)
+            implementation(projects.feature.deeplink.api)
             implementation(projects.feature.dataTransfer.impl)
+            implementation(projects.feature.dataTransfer.api)
             implementation(projects.feature.settings.impl)
+            implementation(projects.feature.settings.api)
             implementation(projects.library.purchase.api)
             implementation(projects.library.purchase.impl)
+            implementation(projects.library.analytics.api)
+            implementation(projects.library.analytics.impl)
 
             implementation(projects.core.designsystem)
             implementation(projects.core.navigation)

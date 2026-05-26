@@ -6,12 +6,14 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
+import dev.koga.deeplinklauncher.analytics.api.AnalyticsTracker
 import dev.koga.deeplinklauncher.coroutines.CoroutineDebouncer
 import dev.koga.deeplinklauncher.deeplink.api.application.EnrichDeepLinkForDetails
 import dev.koga.deeplinklauncher.deeplink.api.domain.model.DeepLink
 import dev.koga.deeplinklauncher.deeplink.api.domain.model.DeepLinkHandlerInfo
 import dev.koga.deeplinklauncher.deeplink.api.domain.model.DeepLinkMetadata
 import dev.koga.deeplinklauncher.deeplink.api.domain.model.Folder
+import dev.koga.deeplinklauncher.deeplink.api.domain.model.LaunchSource
 import dev.koga.deeplinklauncher.deeplink.api.domain.repository.DeepLinkRepository
 import dev.koga.deeplinklauncher.deeplink.api.domain.repository.FolderRepository
 import dev.koga.deeplinklauncher.deeplink.api.domain.usecase.AddDeepLinkToShortcuts
@@ -24,6 +26,15 @@ import dev.koga.deeplinklauncher.deeplink.api.domain.usecase.ShareDeepLink
 import dev.koga.deeplinklauncher.deeplink.api.domain.usecase.ValidateDeepLink
 import dev.koga.deeplinklauncher.deeplink.api.ui.model.DeepLinkDetailsModel
 import dev.koga.deeplinklauncher.deeplink.api.ui.navigation.DeepLinkRouteEntryPoint
+import dev.koga.deeplinklauncher.deeplink.impl.analytics.DeeplinkDeleted
+import dev.koga.deeplinklauncher.deeplink.impl.analytics.DeeplinkDuplicated
+import dev.koga.deeplinklauncher.deeplink.impl.analytics.DeeplinkLaunchFailed
+import dev.koga.deeplinklauncher.deeplink.impl.analytics.DeeplinkLaunched
+import dev.koga.deeplinklauncher.deeplink.impl.analytics.DeeplinkLinkCopied
+import dev.koga.deeplinklauncher.deeplink.impl.analytics.DeeplinkPinned
+import dev.koga.deeplinklauncher.deeplink.impl.analytics.DeeplinkShared
+import dev.koga.deeplinklauncher.deeplink.impl.analytics.FavoriteToggled
+import dev.koga.deeplinklauncher.deeplink.impl.analytics.track
 import dev.koga.deeplinklauncher.deeplink.impl.ui.deeplinkdetails.state.DeepLinkDetailsAction
 import dev.koga.deeplinklauncher.deeplink.impl.ui.deeplinkdetails.state.DeepLinkDetailsUiState
 import dev.koga.deeplinklauncher.deeplink.impl.ui.deeplinkdetails.state.DuplicateAction
@@ -59,6 +70,7 @@ internal class DeepLinkDetailsViewModel(
     private val validateDeepLink: ValidateDeepLink,
     private val coroutineDebouncer: CoroutineDebouncer,
     private val appNavigator: AppNavigator,
+    private val analyticsTracker: AnalyticsTracker,
 ) : ViewModel(), AppNavigator by appNavigator {
 
     private val route = savedStateHandle.toRoute<DeepLinkRouteEntryPoint.DeepLinkDetails>()
@@ -170,9 +182,14 @@ internal class DeepLinkDetailsViewModel(
                     id = deepLink.value.folder?.id.orEmpty(),
                 ),
             )
+
             LaunchAction.AddFolder -> appNavigator.navigate(DeepLinkRouteEntryPoint.AddFolder)
             is LaunchAction.ToggleFolder -> toggleFolder(action.folder)
-            LaunchAction.NotifyLinkCopied -> messageDispatcher.trySend("Link copied")
+            LaunchAction.NotifyLinkCopied -> {
+                analyticsTracker.track(DeeplinkLinkCopied)
+                messageDispatcher.trySend("Link copied")
+            }
+
             LaunchAction.AddToShortCut -> addToShortcut()
             is LaunchAction.SelectTargetPackage -> updateTargetPackage(action.packageName)
         }
@@ -227,34 +244,52 @@ internal class DeepLinkDetailsViewModel(
     }
 
     private fun toggleFavorite() {
+        val isFavorite = !deepLink.value.isFavorite
         deepLinkRepository.upsertDeepLink(
-            deepLink.value.copy(isFavorite = !deepLink.value.isFavorite),
+            deepLink.value.copy(isFavorite = isFavorite),
         )
+        analyticsTracker.track(FavoriteToggled(isFavorite = isFavorite))
     }
 
     private fun launch() {
         viewModelScope.launch {
-            launchDeepLink.launch(deepLink.value)
+            when (launchDeepLink.launch(deepLink.value)) {
+                is LaunchDeepLink.Result.Success -> {
+                    analyticsTracker.track(
+                        DeeplinkLaunched(source = LaunchSource.DETAILS),
+                    )
+                }
+
+                is LaunchDeepLink.Result.Failure -> {
+                    analyticsTracker.track(
+                        DeeplinkLaunchFailed(source = LaunchSource.DETAILS),
+                    )
+                }
+            }
         }
     }
 
     private fun delete() {
         viewModelScope.launch {
             deepLinkRepository.deleteDeepLink(deepLink.value.id)
+            analyticsTracker.track(DeeplinkDeleted)
             appNavigator.popBackStack()
         }
     }
 
     private fun share() {
+        analyticsTracker.track(DeeplinkShared)
         shareDeepLink(deepLink.value)
     }
 
     private fun pinToHomeScreen() {
         when (pinDeepLinkToHomeScreen(deepLink.value)) {
             PinDeepLinkToHomeScreen.Result.Requested -> {
+                analyticsTracker.track(DeeplinkPinned(result = "requested"))
             }
 
             PinDeepLinkToHomeScreen.Result.NotSupported -> {
+                analyticsTracker.track(DeeplinkPinned(result = "not_supported"))
                 messageDispatcher.trySend("Pinning shortcuts is not supported on this device")
             }
         }
@@ -311,6 +346,7 @@ internal class DeepLinkDetailsViewModel(
                 }
 
                 is DuplicateDeepLink.Result.Success -> {
+                    analyticsTracker.track(DeeplinkDuplicated(copyAllFields = copyAllFields))
                     appNavigator.popBackStack()
                     appNavigator.navigate(
                         route = DeepLinkRouteEntryPoint.DeepLinkDetails(

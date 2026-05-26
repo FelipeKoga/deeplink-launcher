@@ -12,7 +12,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import dev.koga.deeplinklauncher.analytics.api.AnalyticsTracker
 import dev.koga.deeplinklauncher.designsystem.DLLSnackbarHost
 import dev.koga.deeplinklauncher.designsystem.theme.DLLTheme
 import dev.koga.deeplinklauncher.home.impl.ui.navigation.HomeRoute
@@ -21,6 +23,9 @@ import dev.koga.deeplinklauncher.navigation.AppNavigator
 import dev.koga.deeplinklauncher.navigation.AppRoute
 import dev.koga.deeplinklauncher.preferences.model.AppTheme
 import dev.koga.deeplinklauncher.preferences.repository.PreferencesDataSource
+import dev.koga.deeplinklauncher.shared.analytics.ScreenViewed
+import dev.koga.deeplinklauncher.shared.analytics.resolveAnalyticsScreenName
+import dev.koga.deeplinklauncher.shared.analytics.track
 import dev.koga.deeplinklauncher.shared.anim.scaleInEnterTransition
 import dev.koga.deeplinklauncher.shared.anim.scaleInPopEnterTransition
 import dev.koga.deeplinklauncher.shared.anim.scaleOutExitTransition
@@ -34,8 +39,16 @@ fun App() {
     val appNavigator = koinInject<AppNavigator>()
     val appGraph = koinInject<AppGraph>()
     val snackBarDispatcher = koinInject<SnackBarDispatcher>()
+    val analyticsTracker = koinInject<AnalyticsTracker>()
     val isDarkTheme = isAppThemeInDarkTheme()
     val snackBarHostState = remember { SnackbarHostState() }
+    val currentBackStackEntry by navController.currentBackStackEntryAsState()
+
+    LaunchedEffect(currentBackStackEntry) {
+        currentBackStackEntry.resolveAnalyticsScreenName()?.let { screenName ->
+            analyticsTracker.track(ScreenViewed(screenName))
+        }
+    }
 
     LaunchedEffect(Unit) {
         appNavigator.destination.collect { route ->

@@ -11,6 +11,7 @@ sealed interface HomeAction {
     data class OnInputChanged(val text: String) : HomeAction
     data class OnSuggestionClicked(val suggestion: Suggestion) : HomeAction
     data class Navigate(val route: AppRoute) : HomeAction
+    data class TabSelected(val tab: HomeTabPage) : HomeAction
     data object OnOnboardingShown : HomeAction
     data object LaunchInputDeepLink : HomeAction
 }

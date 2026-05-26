@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
-import dev.koga.deeplinklauncher.designsystem.DLLSwitch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -16,6 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.koga.deeplinklauncher.designsystem.DLLModalBottomSheet
+import dev.koga.deeplinklauncher.designsystem.DLLSwitch
 import dev.koga.deeplinklauncher.designsystem.theme.DeepLinkTheme
 
 @OptIn(ExperimentalMaterial3Api::class)

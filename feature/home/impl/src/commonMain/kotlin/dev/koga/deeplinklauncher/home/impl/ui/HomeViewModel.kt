@@ -4,10 +4,12 @@ package dev.koga.deeplinklauncher.home.impl.ui
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import dev.koga.deeplinklauncher.analytics.api.AnalyticsTracker
 import dev.koga.deeplinklauncher.date.currentLocalDateTime
 import dev.koga.deeplinklauncher.deeplink.api.application.EnrichDeepLinksForList
 import dev.koga.deeplinklauncher.deeplink.api.domain.model.DeepLink
 import dev.koga.deeplinklauncher.deeplink.api.domain.model.Folder
+import dev.koga.deeplinklauncher.deeplink.api.domain.model.LaunchSource
 import dev.koga.deeplinklauncher.deeplink.api.domain.repository.DeepLinkRepository
 import dev.koga.deeplinklauncher.deeplink.api.domain.usecase.GetAutoSuggestionLinks
 import dev.koga.deeplinklauncher.deeplink.api.domain.usecase.GetDeepLinksAndFolderStream
@@ -15,6 +17,16 @@ import dev.koga.deeplinklauncher.deeplink.api.domain.usecase.LaunchDeepLink
 import dev.koga.deeplinklauncher.deeplink.api.ui.model.DeepLinkListItem
 import dev.koga.deeplinklauncher.deeplink.api.ui.navigation.DeepLinkRouteEntryPoint
 import dev.koga.deeplinklauncher.deeplink.uicomponent.DeepLinkInputState
+import dev.koga.deeplinklauncher.home.impl.analytics.DeeplinkCreated
+import dev.koga.deeplinklauncher.home.impl.analytics.DeeplinkDetailsOpened
+import dev.koga.deeplinklauncher.home.impl.analytics.DeeplinkLaunchFailed
+import dev.koga.deeplinklauncher.home.impl.analytics.DeeplinkLaunched
+import dev.koga.deeplinklauncher.home.impl.analytics.FavoriteToggled
+import dev.koga.deeplinklauncher.home.impl.analytics.HomeTab
+import dev.koga.deeplinklauncher.home.impl.analytics.HomeTabSelected
+import dev.koga.deeplinklauncher.home.impl.analytics.OnboardingCompleted
+import dev.koga.deeplinklauncher.home.impl.analytics.SearchUsed
+import dev.koga.deeplinklauncher.home.impl.analytics.track
 import dev.koga.deeplinklauncher.home.impl.ui.state.HomeUiState
 import dev.koga.deeplinklauncher.navigation.AppNavigator
 import dev.koga.deeplinklauncher.preferences.repository.PreferencesDataSource
@@ -40,6 +52,7 @@ class HomeViewModel(
     private val launchDeepLink: LaunchDeepLink,
     private val preferencesDataSource: PreferencesDataSource,
     private val appNavigator: AppNavigator,
+    private val analyticsTracker: AnalyticsTracker,
 ) : ViewModel() {
 
     private val searchInput = MutableStateFlow("")
@@ -97,13 +110,40 @@ class HomeViewModel(
         when (action) {
             is HomeAction.LaunchDeepLink -> launchDeepLink(action.deepLink)
             is HomeAction.ToggleFavorite -> toggleFavorite(action.deepLink)
-            is HomeAction.Search -> searchInput.update { action.text }
+            is HomeAction.Search -> onSearch(action.text)
             is HomeAction.OnInputChanged -> onDeepLinkTextChanged(action.text)
             is HomeAction.OnSuggestionClicked -> onDeepLinkTextChanged(action.suggestion.text)
             HomeAction.LaunchInputDeepLink -> launchDeepLink()
             HomeAction.OnOnboardingShown -> onboardingShown()
-            is HomeAction.Navigate -> appNavigator.navigate(action.route)
+            is HomeAction.Navigate -> navigate(action.route)
+            is HomeAction.TabSelected -> onTabSelected(action.tab)
         }
+    }
+
+    private fun onSearch(text: String) {
+        searchInput.update { text }
+        if (text.isNotBlank()) {
+            analyticsTracker.track(SearchUsed)
+        }
+    }
+
+    private fun onTabSelected(tab: HomeTabPage) {
+        analyticsTracker.track(
+            HomeTabSelected(
+                tab = when (tab) {
+                    HomeTabPage.HISTORY -> HomeTab.HISTORY
+                    HomeTabPage.FAVORITES -> HomeTab.FAVORITES
+                    HomeTabPage.FOLDERS -> HomeTab.FOLDERS
+                },
+            ),
+        )
+    }
+
+    private fun navigate(route: dev.koga.deeplinklauncher.navigation.AppRoute) {
+        if (route is DeepLinkRouteEntryPoint.DeepLinkDetails) {
+            analyticsTracker.track(DeeplinkDetailsOpened(entryPoint = "home"))
+        }
+        appNavigator.navigate(route)
     }
 
     private fun launchDeepLink() = viewModelScope.launch {
@@ -113,14 +153,21 @@ class HomeViewModel(
 
         if (deepLink != null) {
             when (launchDeepLink.launch(deepLink)) {
-                is LaunchDeepLink.Result.Success -> onBottomBarLaunchSuccess(deepLink.id)
-                is LaunchDeepLink.Result.Failure -> showLaunchError(link)
+                is LaunchDeepLink.Result.Success -> {
+                    trackLaunchResult(source = LaunchSource.INPUT_BAR)
+                    onBottomBarLaunchSuccess(deepLink.id)
+                }
+
+                is LaunchDeepLink.Result.Failure -> {
+                    trackLaunchFailed(source = LaunchSource.INPUT_BAR)
+                    showLaunchError(link)
+                }
             }
 
             return@launch
         }
 
-        when (launchDeepLink.launch(link)) {
+        when (val result = launchDeepLink.launch(link)) {
             is LaunchDeepLink.Result.Success -> {
                 val id = Uuid.random().toString()
                 deepLinkRepository.upsertDeepLink(
@@ -134,17 +181,46 @@ class HomeViewModel(
                         lastLaunchedAt = currentLocalDateTime,
                     ),
                 )
+                analyticsTracker.track(DeeplinkCreated(source = LaunchSource.INPUT_BAR))
+                trackLaunchResult(source = LaunchSource.INPUT_BAR)
                 onBottomBarLaunchSuccess(id)
             }
 
-            is LaunchDeepLink.Result.Failure -> showLaunchError(link)
+            is LaunchDeepLink.Result.Failure -> {
+                trackLaunchFailed(source = LaunchSource.INPUT_BAR)
+                showLaunchError(link)
+            }
         }
     }
 
     private fun launchDeepLink(deepLink: DeepLink) {
         viewModelScope.launch {
-            launchDeepLink.launch(deepLink)
+            when (launchDeepLink.launch(deepLink)) {
+                is LaunchDeepLink.Result.Success -> {
+                    trackLaunchResult(source = LaunchSource.LIST)
+                }
+
+                is LaunchDeepLink.Result.Failure -> {
+                    trackLaunchFailed(source = LaunchSource.LIST)
+                }
+            }
         }
+    }
+
+    private fun trackLaunchResult(
+        source: LaunchSource,
+    ) {
+        analyticsTracker.track(
+            DeeplinkLaunched(source = source),
+        )
+    }
+
+    private fun trackLaunchFailed(
+        source: LaunchSource,
+    ) {
+        analyticsTracker.track(
+            DeeplinkLaunchFailed(source = source),
+        )
     }
 
     private fun onBottomBarLaunchSuccess(deepLinkId: String) {
@@ -162,10 +238,12 @@ class HomeViewModel(
     }
 
     private fun toggleFavorite(deepLink: DeepLink) {
+        val isFavorite = !deepLink.isFavorite
         viewModelScope.launch {
             deepLinkRepository.upsertDeepLink(
-                deepLink.copy(isFavorite = !deepLink.isFavorite),
+                deepLink.copy(isFavorite = isFavorite),
             )
+            analyticsTracker.track(FavoriteToggled(isFavorite = isFavorite))
         }
     }
 
@@ -177,6 +255,7 @@ class HomeViewModel(
     private fun onboardingShown() {
         viewModelScope.launch {
             preferencesDataSource.setShouldHideOnboarding(true)
+            analyticsTracker.track(OnboardingCompleted)
         }
     }
 

@@ -6,7 +6,7 @@ import dev.koga.deeplinklauncher.deeplink.api.ui.model.DeepLinkIcon
 internal class GetDeepLinkHandlerIconImpl : GetDeepLinkHandlerIcon {
     override suspend fun invoke(
         link: String,
-        targetPackage: String?
+        targetPackage: String?,
     ): DeepLinkIcon? {
         return null
     }

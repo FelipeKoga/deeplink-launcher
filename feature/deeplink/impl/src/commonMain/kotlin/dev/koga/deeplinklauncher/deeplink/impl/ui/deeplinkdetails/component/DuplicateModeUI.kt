@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LocalTextStyle
-import dev.koga.deeplinklauncher.designsystem.DLLSwitch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -29,6 +28,7 @@ import compose.icons.tablericons.ArrowLeft
 import dev.koga.deeplinklauncher.deeplink.impl.ui.deeplinkdetails.state.DeepLinkDetailsUiState
 import dev.koga.deeplinklauncher.deeplink.impl.ui.deeplinkdetails.state.DuplicateAction
 import dev.koga.deeplinklauncher.designsystem.DLLHorizontalDivider
+import dev.koga.deeplinklauncher.designsystem.DLLSwitch
 import dev.koga.deeplinklauncher.designsystem.DLLTextField
 import dev.koga.deeplinklauncher.designsystem.button.DLLButton
 import dev.koga.deeplinklauncher.designsystem.button.DLLIconButton

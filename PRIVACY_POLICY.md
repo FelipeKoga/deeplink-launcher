@@ -1,6 +1,6 @@
 # Privacy Policy - DeepLink Launcher
 
-*Last Updated: January 29, 2024*
+*Last Updated: May 26, 2026*
 
 ## Introduction
 
@@ -10,11 +10,15 @@ This Privacy Policy informs users about our practices regarding the collection, 
 
 ## Information Collection and Use
 
-DeepLink Launcher does not collect personal information and operates entirely offline. All data is stored locally on the user's device. In case of collecting non-personal data such as error reports or analytics, these are used exclusively to improve the app experience and performance.
+DeepLink Launcher stores app data (deeplinks, folders, preferences) locally on your device. The app does not require an account.
+
+On **Android**, we use **Firebase Analytics** to collect anonymous usage data (such as which features are used and app navigation patterns) to improve the product. This data does not include the full content of your deeplinks — only non-identifying metadata such as URL scheme (e.g. `https`). We also use Firebase Crashlytics and Performance Monitoring for stability and performance improvements.
+
+On **iOS** and **Desktop**, analytics collection is not enabled in the current version.
 
 ## Use of Cookies and Tracking Technologies
 
-DeepLink Launcher does not use cookies or similar tracking technologies, aligning with our policy of not collecting personal information.
+DeepLink Launcher does not use cookies. On Android, Firebase Analytics may use device identifiers as described in [Google's Privacy Policy](https://policies.google.com/privacy).
 
 ## Changes to This Privacy Policy
 
@@ -24,4 +28,4 @@ Our Privacy Policy may undergo periodic updates. We recommend users to review th
 
 If you have any questions or suggestions about our Privacy Policy, please do not hesitate to contact Felipe Koga at kosloski.fkoga@gmail.com.
 
-This Privacy Policy is effective as of January 26, 2024.
+This Privacy Policy is effective as of May 26, 2026.

@@ -22,6 +22,8 @@ kotlin {
             implementation(projects.core.ui)
             implementation(projects.core.uiEvent)
 
+            implementation(projects.library.analytics.api)
+
             implementation(libs.koin.core)
             implementation(libs.koin.viewmodel)
             implementation(libs.sqldelight.coroutines.extensions)
