@@ -24,6 +24,7 @@ internal class GetDeepLinksAndFolderStreamImpl(
                 deepLinks = filterDeepLinks(deepLinks, normalizeQuery),
                 favorites = filterDeepLinks(deepLinks, normalizeQuery).filter(DeepLink::isFavorite),
                 folders = filterFolders(folders, normalizeQuery),
+                folderPreviewDeepLinks = deepLinks.filter { it.folder != null },
             )
         }
     }

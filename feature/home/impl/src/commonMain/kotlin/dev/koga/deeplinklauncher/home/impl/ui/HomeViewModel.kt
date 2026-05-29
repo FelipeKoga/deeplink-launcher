@@ -15,8 +15,10 @@ import dev.koga.deeplinklauncher.deeplink.api.domain.usecase.GetAutoSuggestionLi
 import dev.koga.deeplinklauncher.deeplink.api.domain.usecase.GetDeepLinksAndFolderStream
 import dev.koga.deeplinklauncher.deeplink.api.domain.usecase.LaunchDeepLink
 import dev.koga.deeplinklauncher.deeplink.api.ui.model.DeepLinkListItem
+import dev.koga.deeplinklauncher.deeplink.api.ui.model.FolderListItem
 import dev.koga.deeplinklauncher.deeplink.api.ui.navigation.DeepLinkRouteEntryPoint
 import dev.koga.deeplinklauncher.deeplink.uicomponent.DeepLinkInputState
+import dev.koga.deeplinklauncher.deeplink.uicomponent.MAX_FOLDER_PREVIEW_ICONS
 import dev.koga.deeplinklauncher.home.impl.analytics.DeeplinkCreated
 import dev.koga.deeplinklauncher.home.impl.analytics.DeeplinkDetailsOpened
 import dev.koga.deeplinklauncher.home.impl.analytics.DeeplinkLaunchFailed
@@ -69,11 +71,12 @@ class HomeViewModel(
     private val enrichedDataStream = dataStream.flatMapLatest { data ->
         flow {
             val deepLinks = enrichDeepLinksForList(data.deepLinks)
+            val folderPreviewItems = enrichDeepLinksForList(data.folderPreviewDeepLinks)
             emit(
                 EnrichedData(
                     deepLinks = deepLinks,
                     favorites = deepLinks.filter { it.deepLink.isFavorite },
-                    folders = data.folders,
+                    folders = buildFolderListItems(data.folders, folderPreviewItems),
                 ),
             )
         }
@@ -262,6 +265,26 @@ class HomeViewModel(
     private data class EnrichedData(
         val deepLinks: List<DeepLinkListItem>,
         val favorites: List<DeepLinkListItem>,
-        val folders: List<Folder>,
+        val folders: List<FolderListItem>,
     )
+
+    private companion object {
+        private fun buildFolderListItems(
+            folders: List<Folder>,
+            folderPreviewItems: List<DeepLinkListItem>,
+        ): List<FolderListItem> {
+            val iconsByFolderId = folderPreviewItems
+                .groupBy { it.deepLink.folder!!.id }
+                .mapValues { (_, items) ->
+                    items.take(MAX_FOLDER_PREVIEW_ICONS).map { it.icon }
+                }
+
+            return folders.map { folder ->
+                FolderListItem(
+                    folder = folder,
+                    previewIcons = iconsByFolderId[folder.id].orEmpty().toPersistentList(),
+                )
+            }
+        }
+    }
 }

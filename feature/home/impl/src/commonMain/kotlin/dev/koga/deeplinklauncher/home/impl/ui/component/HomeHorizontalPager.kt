@@ -1,41 +1,31 @@
 package dev.koga.deeplinklauncher.home.impl.ui.component
 
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.calculateEndPadding
 import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyGridScope
 import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
-import androidx.compose.material3.Icon
-import androidx.compose.material3.OutlinedCard
-import androidx.compose.material3.Text
 import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
-import compose.icons.TablerIcons
-import compose.icons.tablericons.Plus
 import dev.koga.deeplinklauncher.deeplink.api.domain.model.DeepLink
 import dev.koga.deeplinklauncher.deeplink.api.domain.model.Folder
 import dev.koga.deeplinklauncher.deeplink.api.ui.model.DeepLinkListItem
+import dev.koga.deeplinklauncher.deeplink.api.ui.model.FolderListItem
+import dev.koga.deeplinklauncher.deeplink.uicomponent.CreateFolderCard
 import dev.koga.deeplinklauncher.deeplink.uicomponent.DeepLinkCard
 import dev.koga.deeplinklauncher.deeplink.uicomponent.DeepLinkCardActionsPresets
 import dev.koga.deeplinklauncher.deeplink.uicomponent.FolderCard
-import dev.koga.deeplinklauncher.designsystem.theme.DeepLinkTheme
 import dev.koga.deeplinklauncher.ui.calculateWindowSizeSharedClass
 import kotlinx.collections.immutable.ImmutableList
 
@@ -115,7 +105,7 @@ fun HomeVerticalGridList(
 @Composable
 fun FoldersVerticalStaggeredGrid(
     modifier: Modifier = Modifier,
-    folders: ImmutableList<Folder>,
+    folders: ImmutableList<FolderListItem>,
     contentPadding: PaddingValues,
     onAdd: () -> Unit,
     onClick: (Folder) -> Unit,
@@ -132,50 +122,31 @@ fun FoldersVerticalStaggeredGrid(
         WindowWidthSizeClass.Expanded -> 3
         else -> 2
     }
-    val colors = DeepLinkTheme.colors
-    val shapes = DeepLinkTheme.shapes
 
     LazyVerticalGrid(
         columns = GridCells.Fixed(numberOfColumns),
         state = rememberLazyGridState(),
         modifier = modifier.fillMaxSize().padding(horizontal = 12.dp),
         contentPadding = padding,
-        horizontalArrangement = Arrangement.spacedBy(24.dp),
-        verticalArrangement = Arrangement.spacedBy(24.dp),
+        horizontalArrangement = Arrangement.spacedBy(12.dp),
+        verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
         item {
-            OutlinedCard(
+            CreateFolderCard(
                 onClick = onAdd,
-                shape = shapes.cardLarge,
-                border = BorderStroke(1.dp, colors.border.default),
-            ) {
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(184.dp),
-                    verticalArrangement = Arrangement.Center,
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                ) {
-                    Icon(
-                        imageVector = TablerIcons.Plus,
-                        contentDescription = null,
-                        modifier = Modifier.size(24.dp),
-                        tint = colors.text.primary,
-                    )
-                    Spacer(modifier = Modifier.height(8.dp))
-                    Text(
-                        text = "Create new folder",
-                        style = DeepLinkTheme.typography.title.card,
-                    )
-                }
-            }
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .animateItem(),
+            )
         }
 
-        items(folders.size, key = { folders[it].id }) { index ->
+        items(folders.size, key = { folders[it].folder.id }) { index ->
             FolderCard(
-                folder = folders[index],
-                onClick = { onClick(it) },
-                modifier = Modifier.animateItem(),
+                item = folders[index],
+                onClick = onClick,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .animateItem(),
             )
         }
     }

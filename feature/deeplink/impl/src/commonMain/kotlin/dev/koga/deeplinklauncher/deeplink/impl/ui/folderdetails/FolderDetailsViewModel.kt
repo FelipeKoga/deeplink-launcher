@@ -92,7 +92,7 @@ internal class FolderDetailsViewModel(
 
     init {
         viewModelScope.launch {
-            when (val loadedFolder = folder.first()) {
+            when (val loadedFolder = repository.getFolderByIdStream(folderId).first()) {
                 null -> appNavigator.popBackStack()
                 else -> {
                     form.update {

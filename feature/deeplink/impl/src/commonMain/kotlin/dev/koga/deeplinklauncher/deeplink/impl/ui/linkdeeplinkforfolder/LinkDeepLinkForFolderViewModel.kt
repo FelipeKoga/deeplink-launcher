@@ -128,7 +128,7 @@ internal class LinkDeepLinkForFolderViewModel(
 
     init {
         viewModelScope.launch {
-            if (folder.first() == null) {
+            if (folderRepository.getFolderByIdStream(folderId).first() == null) {
                 appNavigator.popBackStack()
             }
         }

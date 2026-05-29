@@ -20,8 +20,10 @@ internal class EnrichDeepLinksForListImpl(
                 DeepLinkListItem(
                     deepLink = deepLink,
                     icon = getDeepLinkHandlerIcon(deepLink.link, deepLink.targetPackage),
-                    handlerAppName = when (val handlerInfo =
-                        getDeepLinkHandlerInfo(deepLink.link, deepLink.targetPackage)) {
+                    handlerAppName = when (
+                        val handlerInfo =
+                            getDeepLinkHandlerInfo(deepLink.link, deepLink.targetPackage)
+                    ) {
                         is DeepLinkHandlerInfo.Available -> handlerInfo.appName
                         DeepLinkHandlerInfo.Unavailable -> null
                     },

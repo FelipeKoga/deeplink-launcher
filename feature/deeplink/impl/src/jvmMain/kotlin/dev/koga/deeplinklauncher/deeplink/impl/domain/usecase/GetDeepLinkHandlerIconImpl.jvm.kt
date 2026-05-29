@@ -4,5 +4,10 @@ import dev.koga.deeplinklauncher.deeplink.api.domain.usecase.GetDeepLinkHandlerI
 import dev.koga.deeplinklauncher.deeplink.api.ui.model.DeepLinkIcon
 
 internal class GetDeepLinkHandlerIconImpl : GetDeepLinkHandlerIcon {
-    override suspend fun invoke(link: String): DeepLinkIcon? = null
+    override suspend fun invoke(
+        link: String,
+        targetPackage: String?,
+    ): DeepLinkIcon? {
+        return null
+    }
 }

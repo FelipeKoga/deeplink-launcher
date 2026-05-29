@@ -11,5 +11,6 @@ public interface GetDeepLinksAndFolderStream {
         val deepLinks: List<DeepLink>,
         val favorites: List<DeepLink>,
         val folders: List<Folder>,
+        val folderPreviewDeepLinks: List<DeepLink>,
     )
 }
