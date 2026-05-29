@@ -3,8 +3,8 @@ android-targetSdk = "36"
 android-compileSdk = "36"
 android-minSdk = "26"
 
-android-majorVersion = "1"
-android-minorVersion = "15"
+android-majorVersion = "2"
+android-minorVersion = "0"
 android-patchVersion = "0"
 
 aboutlibraries = "13.2.1"
