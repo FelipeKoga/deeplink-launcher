@@ -57,6 +57,10 @@ jobs:
         with:
           REVENUECAT_API_KEY: ${{ secrets.REVENUECAT_API_KEY }}
 
+      - name: Create google-services.json
+        run: |
+          echo "${{ secrets.GOOGLE_SERVICES_JSON_BASE64 }}" | base64 --decode > androidApp/google-services.json
+
       - name: Grant execute permission for gradlew
         run: chmod +x ./gradlew
 
