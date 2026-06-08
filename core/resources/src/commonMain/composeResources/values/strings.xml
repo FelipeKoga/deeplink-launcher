@@ -4,4 +4,7 @@
         <item quantity="one">%1$d deeplink</item>
         <item quantity="other">%1$d deeplinks</item>
     </plurals>
+    <string name="folder_create_title">Create new folder</string>
+    <string name="folder_create_subtitle">Organize your deeplinks</string>
+    <string name="folder_empty">Empty</string>
 </resources>

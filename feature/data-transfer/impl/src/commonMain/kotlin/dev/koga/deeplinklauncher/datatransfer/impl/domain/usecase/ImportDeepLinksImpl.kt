@@ -1,13 +1,13 @@
 package dev.koga.deeplinklauncher.datatransfer.impl.domain.usecase
 
-import dev.koga.deeplinklauncher.datatransfer.domain.usecase.ImportDeepLinks
-import dev.koga.deeplinklauncher.datatransfer.impl.domain.dto.Payload
-import dev.koga.deeplinklauncher.datatransfer.impl.domain.dto.toModel
+import dev.koga.deeplinklauncher.datatransfer.api.domain.usecase.ImportDeepLinks
+import dev.koga.deeplinklauncher.datatransfer.impl.data.dto.Payload
+import dev.koga.deeplinklauncher.datatransfer.impl.data.dto.toModel
 import dev.koga.deeplinklauncher.date.currentLocalDateTime
-import dev.koga.deeplinklauncher.deeplink.api.model.DeepLink
-import dev.koga.deeplinklauncher.deeplink.api.repository.DeepLinkRepository
-import dev.koga.deeplinklauncher.deeplink.api.repository.FolderRepository
-import dev.koga.deeplinklauncher.deeplink.api.usecase.ValidateDeepLink
+import dev.koga.deeplinklauncher.deeplink.api.domain.model.DeepLink
+import dev.koga.deeplinklauncher.deeplink.api.domain.repository.DeepLinkRepository
+import dev.koga.deeplinklauncher.deeplink.api.domain.repository.FolderRepository
+import dev.koga.deeplinklauncher.deeplink.api.domain.usecase.ValidateDeepLink
 import dev.koga.deeplinklauncher.file.GetFileContent
 import dev.koga.deeplinklauncher.file.model.FileType
 import kotlinx.datetime.LocalDateTime
@@ -84,6 +84,7 @@ internal class ImportDeepLinksImpl(
                                 ?: databaseDeepLink.createdAt,
                             folder = folders.find { folder -> folder.id == newDeepLinkDto.folderId }
                                 ?: databaseDeepLink.folder,
+                            targetPackage = newDeepLinkDto.targetPackage ?: databaseDeepLink.targetPackage,
                         )
                     }
 

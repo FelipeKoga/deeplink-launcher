@@ -2,6 +2,7 @@
 
 plugins {
     alias(libs.plugins.deeplinkLauncher.composeMultiplatform)
+    alias(libs.plugins.stability.analyzer)
 }
 
 kotlin {
@@ -19,6 +20,9 @@ kotlin {
             implementation(projects.core.platform)
             implementation(projects.core.coroutines)
             implementation(projects.core.ui)
+            implementation(projects.core.uiEvent)
+
+            implementation(projects.library.analytics.api)
 
             implementation(libs.koin.core)
             implementation(libs.koin.viewmodel)
@@ -27,8 +31,14 @@ kotlin {
             implementation(libs.kotlinx.immutable)
 
             implementation(libs.compose.navigation)
+            implementation(libs.compose.runtime)
+
             implementation(libs.material3.windowSizeClass)
+            implementation(libs.haze)
+            implementation(libs.haze.materials)
+
             implementation(compose.components.uiToolingPreview)
+            implementation(compose.preview)
         }
 
         jvmMain.dependencies {

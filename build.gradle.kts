@@ -13,6 +13,8 @@ plugins {
     alias(libs.plugins.aboutLibraries) apply false
     alias(libs.plugins.androidTest) apply false
     alias(libs.plugins.baselineProfile) apply false
+    alias(libs.plugins.hotswan.compiler) apply false
+    alias(libs.plugins.stability.analyzer) apply false
 }
 
 buildscript {

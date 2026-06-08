@@ -3,9 +3,9 @@ package dev.koga.deeplinklauncher.designsystem.button
 import androidx.compose.material3.FilledIconButton
 import androidx.compose.material3.IconButtonColors
 import androidx.compose.material3.IconButtonDefaults
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import dev.koga.deeplinklauncher.designsystem.theme.DeepLinkTheme
 
 @Composable
 fun DLLFilledIconButton(
@@ -13,8 +13,8 @@ fun DLLFilledIconButton(
     onClick: () -> Unit,
     enabled: Boolean = true,
     colors: IconButtonColors = IconButtonDefaults.filledIconButtonColors(
-        containerColor = MaterialTheme.colorScheme.secondary,
-        contentColor = MaterialTheme.colorScheme.onSecondary,
+        containerColor = DeepLinkTheme.colors.button.secondaryBackground,
+        contentColor = DeepLinkTheme.colors.button.secondaryContent,
     ),
     content: @Composable () -> Unit,
 ) {

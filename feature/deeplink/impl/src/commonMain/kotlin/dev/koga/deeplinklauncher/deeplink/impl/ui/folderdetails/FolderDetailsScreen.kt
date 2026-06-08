@@ -3,6 +3,7 @@ package dev.koga.deeplinklauncher.deeplink.impl.ui.folderdetails
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -14,7 +15,6 @@ import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
 import androidx.compose.foundation.lazy.staggeredgrid.rememberLazyStaggeredGridState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
@@ -24,21 +24,26 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import compose.icons.TablerIcons
+import compose.icons.tablericons.Plus
 import compose.icons.tablericons.Trash
 import dev.koga.deeplinklauncher.deeplink.api.ui.navigation.DeepLinkRouteEntryPoint
 import dev.koga.deeplinklauncher.deeplink.impl.ui.folderdetails.component.DeleteFolderBottomSheet
 import dev.koga.deeplinklauncher.deeplink.impl.ui.folderdetails.component.EditableText
+import dev.koga.deeplinklauncher.deeplink.impl.ui.folderdetails.state.FolderDetailsAction
+import dev.koga.deeplinklauncher.deeplink.impl.ui.folderdetails.state.FolderDetailsUiState
 import dev.koga.deeplinklauncher.deeplink.uicomponent.DeepLinkCard
+import dev.koga.deeplinklauncher.deeplink.uicomponent.DeepLinkCardActionsPresets
 import dev.koga.deeplinklauncher.designsystem.DLLHorizontalDivider
 import dev.koga.deeplinklauncher.designsystem.DLLTopBar
 import dev.koga.deeplinklauncher.designsystem.DLLTopBarDefaults
+import dev.koga.deeplinklauncher.designsystem.button.DLLButton
 import dev.koga.deeplinklauncher.designsystem.button.DLLIconButton
-import dev.koga.deeplinklauncher.designsystem.theme.LocalDimensions
+import dev.koga.deeplinklauncher.designsystem.theme.DeepLinkTheme
 import dev.koga.deeplinklauncher.designsystem.utils.fullLineItem
 import dev.koga.deeplinklauncher.designsystem.utils.spacer
 import dev.koga.deeplinklauncher.navigation.AppNavigator
@@ -78,12 +83,15 @@ internal fun FolderDetailsUI(
     onNavigate: (AppRoute) -> Unit,
     onShowDeleteConfirmation: () -> Unit,
 ) {
+    val colors = DeepLinkTheme.colors
+
     Scaffold(
+        containerColor = colors.surface.background,
         topBar = {
             DLLTopBar(
                 title = {},
                 navigationIcon = {
-                    DLLTopBarDefaults.navigationIcon(
+                    DLLTopBarDefaults.NavigationIcon(
                         onClicked = { onNavigate(AppRoute.PopBackStack) },
                     )
                 },
@@ -118,7 +126,8 @@ internal fun FolderDetailsScreenContent(
     onAction: (FolderDetailsAction) -> Unit,
     onNavigate: (DeepLinkRouteEntryPoint) -> Unit,
 ) {
-    val dimensions = LocalDimensions.current
+    val dimensions = DeepLinkTheme.dimensions
+    val typography = DeepLinkTheme.typography
 
     val windowSizeClass = calculateWindowSizeSharedClass()
 
@@ -142,7 +151,7 @@ internal fun FolderDetailsScreenContent(
             Column(modifier = Modifier.padding(horizontal = 12.dp)) {
                 Text(
                     text = "Name",
-                    style = MaterialTheme.typography.labelSmall,
+                    style = typography.label.caption,
                 )
 
                 Spacer(modifier = Modifier.height(8.dp))
@@ -156,9 +165,7 @@ internal fun FolderDetailsScreenContent(
                 ) {
                     Text(
                         text = uiState.name,
-                        style = MaterialTheme.typography.headlineMedium.copy(
-                            fontWeight = FontWeight.Bold,
-                        ),
+                        style = typography.title.page,
                     )
                 }
 
@@ -166,7 +173,7 @@ internal fun FolderDetailsScreenContent(
 
                 Text(
                     text = "Description",
-                    style = MaterialTheme.typography.labelSmall,
+                    style = typography.label.caption,
                 )
 
                 Spacer(modifier = Modifier.height(8.dp))
@@ -179,9 +186,7 @@ internal fun FolderDetailsScreenContent(
                 ) {
                     Text(
                         text = uiState.description.ifEmpty { "--" },
-                        style = MaterialTheme.typography.bodyMedium.copy(
-                            fontWeight = FontWeight.Normal,
-                        ),
+                        style = typography.body.default,
                     )
                 }
             }
@@ -190,43 +195,70 @@ internal fun FolderDetailsScreenContent(
         fullLineItem {
             DLLHorizontalDivider(
                 modifier = Modifier.padding(vertical = dimensions.extraLarge),
-                thickness = .4.dp,
             )
         }
 
         fullLineItem {
-            Text(
-                text = if (uiState.deepLinks.isNotEmpty()) {
-                    "Deeplinks"
-                } else {
-                    "No Deeplinks vinculated to this folder"
-                },
+            Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(start = 12.dp),
-                style = MaterialTheme.typography.labelSmall.copy(
-                    fontWeight = FontWeight.Normal,
-                ),
-            )
+                    .padding(horizontal = 12.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween,
+            ) {
+                Text(
+                    text = when {
+                        !uiState.isDeepLinksLoaded -> "Deeplinks"
+                        uiState.deepLinks.isNotEmpty() -> "Deeplinks"
+                        else -> "No Deeplinks vinculated to this folder"
+                    },
+                    style = typography.label.caption,
+                )
+
+                DLLIconButton(
+                    onClick = { onAction(FolderDetailsAction.OpenLinkDeepLinkScreen) },
+                ) {
+                    Icon(
+                        imageVector = TablerIcons.Plus,
+                        contentDescription = "Link deeplink",
+                        modifier = Modifier.size(18.dp),
+                    )
+                }
+            }
+        }
+
+        if (uiState.isDeepLinksLoaded && uiState.deepLinks.isEmpty()) {
+            fullLineItem {
+                DLLButton(
+                    onClick = { onAction(FolderDetailsAction.OpenLinkDeepLinkScreen) },
+                    text = "Link deeplinks",
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 12.dp),
+                )
+            }
         }
 
         items(
             count = uiState.deepLinks.size,
-            key = { uiState.deepLinks[it].id },
+            key = { uiState.deepLinks[it].deepLink.id },
         ) { index ->
-            val deepLink = uiState.deepLinks[index]
+            val item = uiState.deepLinks[index]
+            val deepLink = item.deepLink
 
             DeepLinkCard(
                 modifier = Modifier
                     .padding(start = 12.dp, end = 12.dp, bottom = 12.dp)
                     .animateItem(),
-                deepLink = deepLink,
+                item = item,
                 onClick = {
                     onNavigate(
                         DeepLinkRouteEntryPoint.DeepLinkDetails(id = deepLink.id, showFolder = false),
                     )
                 },
-                onLaunch = { onAction(FolderDetailsAction.Launch(deepLink)) },
+                actions = DeepLinkCardActionsPresets.folderMember(
+                    onLaunch = { onAction(FolderDetailsAction.Launch(deepLink)) },
+                ),
                 showFolder = false,
             )
         }

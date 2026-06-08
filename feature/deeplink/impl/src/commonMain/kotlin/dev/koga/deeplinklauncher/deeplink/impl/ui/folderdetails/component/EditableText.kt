@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButtonDefaults
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -26,7 +25,7 @@ import compose.icons.tablericons.X
 import dev.koga.deeplinklauncher.designsystem.DLLTextField
 import dev.koga.deeplinklauncher.designsystem.button.DLLFilledIconButton
 import dev.koga.deeplinklauncher.designsystem.button.DLLIconButton
-import dev.koga.deeplinklauncher.designsystem.theme.LocalDimensions
+import dev.koga.deeplinklauncher.designsystem.theme.DeepLinkTheme
 
 @Composable
 internal fun EditableText(
@@ -37,7 +36,8 @@ internal fun EditableText(
     editButtonEnabled: Boolean = true,
     textContent: @Composable () -> Unit,
 ) {
-    val dimensions = LocalDimensions.current
+    val colors = DeepLinkTheme.colors
+    val dimensions = DeepLinkTheme.dimensions
 
     var inEditMode by rememberSaveable {
         mutableStateOf(false)
@@ -76,8 +76,8 @@ internal fun EditableText(
                                     modifier = Modifier.size(18.dp),
                                     enabled = editButtonEnabled,
                                     colors = IconButtonDefaults.filledIconButtonColors(
-                                        contentColor = MaterialTheme.colorScheme.onPrimary,
-                                        containerColor = MaterialTheme.colorScheme.primary,
+                                        contentColor = colors.button.primaryContent,
+                                        containerColor = colors.button.primaryBackground,
                                     ),
                                 ) {
                                     Icon(

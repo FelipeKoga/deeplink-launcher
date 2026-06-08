@@ -1,16 +1,22 @@
 package dev.koga.deeplinklauncher.deeplink.impl.ui.deeplinkdetails.state
 
-import dev.koga.deeplinklauncher.deeplink.api.model.Folder
+import dev.koga.deeplinklauncher.deeplink.api.domain.model.Folder
 
 internal sealed interface DeepLinkDetailsAction
 
 internal sealed interface LaunchAction : DeepLinkDetailsAction {
     data object Share : LaunchAction
+    data object PinToHomeScreen : LaunchAction
+    data object AddToShortCut : LaunchAction
     data object Launch : LaunchAction
     data object ToggleFavorite : LaunchAction
     data object Duplicate : LaunchAction
     data object Edit : LaunchAction
     data object NavigateToFolder : LaunchAction
+    data object AddFolder : LaunchAction
+    data class ToggleFolder(val folder: Folder) : LaunchAction
+    data object NotifyLinkCopied : LaunchAction
+    data class SelectTargetPackage(val packageName: String?) : LaunchAction
 }
 
 internal sealed interface DuplicateAction : DeepLinkDetailsAction {
@@ -26,4 +32,5 @@ internal sealed interface EditAction : DeepLinkDetailsAction {
     data class OnLinkChanged(val text: String) : EditAction
     data class ToggleFolder(val folder: Folder) : EditAction
     data object AddFolder : EditAction
+    data class SelectTargetPackage(val packageName: String?) : EditAction
 }

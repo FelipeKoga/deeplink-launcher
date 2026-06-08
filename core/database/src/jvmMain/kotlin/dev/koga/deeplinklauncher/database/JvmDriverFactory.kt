@@ -2,18 +2,23 @@ package dev.koga.deeplinklauncher.database
 
 import app.cash.sqldelight.db.SqlDriver
 import app.cash.sqldelight.driver.jdbc.sqlite.JdbcSqliteDriver
+import dev.koga.deeplinklauncher.platform.JvmAppDataDirectory
+import dev.koga.deeplinklauncher.platform.migrateFileIfNeeded
 import java.io.File
+import java.util.Properties
 
 class JvmDriverFactory : DriverFactory {
     override fun createDriver(databaseName: String): SqlDriver {
-        val userHome = System.getProperty("user.home")
-        val databasePath = File(userHome, "$databaseName.db")
-        val driver: SqlDriver = JdbcSqliteDriver("jdbc:sqlite:${databasePath.absolutePath}")
+        val appDir = JvmAppDataDirectory.resolve()
+        val databasePath = File(appDir, "$databaseName.db")
+        val legacyPath = File(System.getProperty("user.home"), "$databaseName.db")
 
-        if (!databasePath.exists()) {
-            DeepLinkLauncherDatabase.Schema.create(driver)
-        }
+        migrateFileIfNeeded(legacyFile = legacyPath, targetFile = databasePath)
 
-        return driver
+        return JdbcSqliteDriver(
+            url = "jdbc:sqlite:${databasePath.absolutePath}",
+            properties = Properties(),
+            schema = DeepLinkLauncherDatabase.Schema,
+        )
     }
 }

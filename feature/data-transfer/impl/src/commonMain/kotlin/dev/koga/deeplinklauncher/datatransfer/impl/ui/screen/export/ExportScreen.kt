@@ -15,9 +15,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -28,13 +26,14 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import dev.koga.deeplinklauncher.datatransfer.impl.ui.component.JSONBoxViewer
 import dev.koga.deeplinklauncher.designsystem.DLLHorizontalDivider
 import dev.koga.deeplinklauncher.designsystem.DLLSingleChoiceSegmentedButtonRow
 import dev.koga.deeplinklauncher.designsystem.DLLTopBar
 import dev.koga.deeplinklauncher.designsystem.DLLTopBarDefaults
+import dev.koga.deeplinklauncher.designsystem.button.DLLButton
+import dev.koga.deeplinklauncher.designsystem.theme.DeepLinkTheme
 import dev.koga.deeplinklauncher.file.model.FileType
 import dev.koga.deeplinklauncher.file.model.getByLabel
 import dev.koga.deeplinklauncher.file.model.label
@@ -72,10 +71,10 @@ fun ExportUI(
         topBar = {
             DLLTopBar(
                 title = {
-                    DLLTopBarDefaults.title("Export DeepLinks")
+                    DLLTopBarDefaults.Title("Export DeepLinks")
                 },
                 navigationIcon = {
-                    DLLTopBarDefaults.navigationIcon(onClicked = onBack)
+                    DLLTopBarDefaults.NavigationIcon(onClicked = onBack)
                 },
             )
         },
@@ -107,6 +106,8 @@ fun ExportContent(
     preview: ExportData,
     onChangeExportType: (FileType) -> Unit,
 ) {
+    val typography = DeepLinkTheme.typography
+
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -116,9 +117,7 @@ fun ExportContent(
     ) {
         Text(
             text = "Select the file type to export",
-            style = MaterialTheme.typography.titleMedium.copy(
-                fontWeight = FontWeight.Bold,
-            ),
+            style = typography.title.card,
         )
 
         Spacer(modifier = Modifier.height(16.dp))
@@ -136,9 +135,7 @@ fun ExportContent(
 
         Text(
             text = "Preview",
-            style = MaterialTheme.typography.titleMedium.copy(
-                fontWeight = FontWeight.Bold,
-            ),
+            style = typography.title.card,
         )
 
         Spacer(modifier = Modifier.height(8.dp))
@@ -183,16 +180,13 @@ fun ExportFooter(
     ) {
         DLLHorizontalDivider()
 
-        Button(
-            modifier = Modifier.fillMaxWidth().padding(24.dp),
+        DLLButton(
             onClick = export,
-        ) {
-            Text(
-                text = when (isPermissionGranted) {
-                    true -> "Export"
-                    false -> "Grant permission"
-                },
-            )
-        }
+            text = when (isPermissionGranted) {
+                true -> "Export"
+                false -> "Grant permission"
+            },
+            modifier = Modifier.fillMaxWidth().padding(24.dp),
+        )
     }
 }

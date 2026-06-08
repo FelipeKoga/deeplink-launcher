@@ -8,13 +8,9 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LocalTextStyle
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -32,14 +28,20 @@ import compose.icons.tablericons.ArrowLeft
 import dev.koga.deeplinklauncher.deeplink.impl.ui.deeplinkdetails.state.DeepLinkDetailsUiState
 import dev.koga.deeplinklauncher.deeplink.impl.ui.deeplinkdetails.state.DuplicateAction
 import dev.koga.deeplinklauncher.designsystem.DLLHorizontalDivider
+import dev.koga.deeplinklauncher.designsystem.DLLSwitch
 import dev.koga.deeplinklauncher.designsystem.DLLTextField
+import dev.koga.deeplinklauncher.designsystem.button.DLLButton
 import dev.koga.deeplinklauncher.designsystem.button.DLLIconButton
+import dev.koga.deeplinklauncher.designsystem.theme.DeepLinkTheme
 
 @Composable
 internal fun DuplicateModeUI(
     uiState: DeepLinkDetailsUiState.Duplicate,
     onAction: (DuplicateAction) -> Unit,
 ) {
+    val colors = DeepLinkTheme.colors
+    val typography = DeepLinkTheme.typography
+    val shapes = DeepLinkTheme.shapes
     var newLink by rememberSaveable { mutableStateOf(uiState.deepLink.link) }
     var copyAllFields by rememberSaveable { mutableStateOf(true) }
 
@@ -51,7 +53,7 @@ internal fun DuplicateModeUI(
                 label = "Enter new deeplink",
                 value = newLink,
                 onValueChange = { newLink = it },
-                modifier = Modifier.clip(RoundedCornerShape(12.dp)),
+                modifier = Modifier.clip(shapes.dialog),
                 keyboardOptions = KeyboardOptions.Default.copy(
                     imeAction = ImeAction.Done,
                 ),
@@ -66,9 +68,8 @@ internal fun DuplicateModeUI(
                 Text(
                     text = uiState.errorMessage.orEmpty(),
                     modifier = Modifier.padding(top = 8.dp),
-                    style = MaterialTheme.typography.labelMedium.copy(
-                        color = MaterialTheme.colorScheme.error,
-                        fontWeight = FontWeight.Bold,
+                    style = typography.label.error.copy(
+                        color = colors.text.error,
                     ),
                 )
             }
@@ -83,22 +84,20 @@ internal fun DuplicateModeUI(
                 Column {
                     Text(
                         text = "Copy all fields",
-                        style = MaterialTheme.typography.bodyMedium.copy(
-                            fontWeight = FontWeight.SemiBold,
-                            color = MaterialTheme.colorScheme.onSurface,
+                        style = typography.body.emphasis.copy(
+                            color = colors.text.primary,
                         ),
                     )
 
                     Text(
                         text = "All fields will be copied to the new deeplink",
-                        style = MaterialTheme.typography.labelSmall.copy(
-                            fontWeight = FontWeight.Normal,
-                            color = MaterialTheme.colorScheme.onSurface,
+                        style = typography.label.caption.copy(
+                            color = colors.text.primary,
                         ),
                     )
                 }
 
-                Switch(
+                DLLSwitch(
                     checked = copyAllFields,
                     onCheckedChange = { copyAllFields = it },
                 )
@@ -109,20 +108,14 @@ internal fun DuplicateModeUI(
 
         DLLHorizontalDivider()
 
-        Button(
+        DLLButton(
+            onClick = { onAction(DuplicateAction.Duplicate(newLink, copyAllFields)) },
+            text = "Duplicate",
             modifier = Modifier
                 .align(Alignment.CenterHorizontally)
                 .fillMaxWidth(0.5f)
                 .padding(24.dp),
-            onClick = { onAction(DuplicateAction.Duplicate(newLink, copyAllFields)) },
-        ) {
-            Text(
-                text = "Duplicate",
-                style = MaterialTheme.typography.labelMedium.copy(
-                    fontWeight = FontWeight.Bold,
-                ),
-            )
-        }
+        )
     }
 }
 
@@ -131,6 +124,8 @@ internal fun TopBar(
     modifier: Modifier = Modifier,
     onBack: () -> Unit,
 ) {
+    val colors = DeepLinkTheme.colors
+
     Row(
         modifier = modifier.fillMaxWidth().padding(horizontal = 12.dp, vertical = 8.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
@@ -142,7 +137,7 @@ internal fun TopBar(
             Icon(
                 imageVector = TablerIcons.ArrowLeft,
                 contentDescription = "Back",
-                tint = MaterialTheme.colorScheme.primary,
+                tint = colors.surface.primary,
             )
         }
     }

@@ -13,15 +13,12 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.AssistChip
 import androidx.compose.material3.AssistChipDefaults
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -30,17 +27,18 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import compose.icons.TablerIcons
 import compose.icons.tablericons.ArrowLeft
 import compose.icons.tablericons.Check
 import compose.icons.tablericons.Plus
-import compose.icons.tablericons.Trash
 import dev.koga.deeplinklauncher.deeplink.impl.ui.deeplinkdetails.state.DeepLinkDetailsUiState
 import dev.koga.deeplinklauncher.deeplink.impl.ui.deeplinkdetails.state.EditAction
 import dev.koga.deeplinklauncher.designsystem.DLLTextField
 import dev.koga.deeplinklauncher.designsystem.button.DLLIconButton
+import dev.koga.deeplinklauncher.designsystem.theme.DeepLinkTheme
+import dev.koga.deeplinklauncher.platform.Platform
+import dev.koga.deeplinklauncher.platform.currentPlatform
 
 @Composable
 internal fun EditModeUI(
@@ -49,6 +47,8 @@ internal fun EditModeUI(
     onAction: (EditAction) -> Unit,
     onShowDeleteConfirmation: () -> Unit,
 ) {
+    val colors = DeepLinkTheme.colors
+    val typography = DeepLinkTheme.typography
     val deepLink = uiState.deepLink
 
     Column(modifier = modifier) {
@@ -58,7 +58,7 @@ internal fun EditModeUI(
         )
 
         Column(
-            modifier = Modifier.verticalScroll(rememberScrollState()).padding(horizontal = 24.dp),
+            modifier = Modifier.padding(horizontal = 24.dp),
         ) {
             DeepLinkDetailsTextField(
                 text = deepLink.name.orEmpty(),
@@ -89,12 +89,31 @@ internal fun EditModeUI(
             ) {
                 Text(
                     text = uiState.errorMessage.orEmpty(),
-                    style = MaterialTheme.typography.labelMedium.copy(
-                        color = MaterialTheme.colorScheme.error,
-                        fontWeight = FontWeight.Bold,
+                    style = typography.label.error.copy(
+                        color = colors.text.error,
                     ),
                 )
             }
+
+            Spacer(modifier = Modifier.height(16.dp))
+        }
+
+        if (currentPlatform == Platform.ANDROID &&
+            shouldShowTargetAppPicker(uiState.availableHandlers, deepLink.targetPackage)
+        ) {
+            Text(
+                text = "Target app",
+                style = typography.label.chip.copy(color = colors.text.muted),
+                modifier = Modifier.padding(horizontal = 24.dp),
+            )
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            TargetAppPickerChips(
+                selectedPackage = deepLink.targetPackage,
+                availableHandlers = uiState.availableHandlers,
+                onSelectPackage = { onAction(EditAction.SelectTargetPackage(it)) },
+            )
 
             Spacer(modifier = Modifier.height(16.dp))
         }
@@ -117,13 +136,11 @@ internal fun EditModeUI(
                     label = {
                         Text(
                             text = "Add folder",
-                            style = MaterialTheme.typography.labelSmall.copy(
-                                fontWeight = FontWeight.SemiBold,
-                            ),
+                            style = typography.label.chip,
                         )
                     },
                     colors = AssistChipDefaults.assistChipColors(
-                        containerColor = MaterialTheme.colorScheme.surfaceContainerHighest,
+                        containerColor = colors.surface.elevated,
                     ),
                     border = null,
                     onClick = { onAction(EditAction.AddFolder) },
@@ -139,21 +156,19 @@ internal fun EditModeUI(
                     label = {
                         Text(
                             text = folder.name,
-                            style = MaterialTheme.typography.labelSmall.copy(
-                                fontWeight = FontWeight.SemiBold,
-                            ),
+                            style = typography.label.chip,
                         )
                     },
                     shape = CircleShape,
                     colors = FilterChipDefaults.filterChipColors(
-                        containerColor = MaterialTheme.colorScheme.surface,
-                        selectedContainerColor = MaterialTheme.colorScheme.primary,
-                        selectedLabelColor = MaterialTheme.colorScheme.onPrimary,
-                        selectedTrailingIconColor = MaterialTheme.colorScheme.onPrimary,
+                        containerColor = colors.surface.card,
+                        selectedContainerColor = colors.button.primaryBackground,
+                        selectedLabelColor = colors.button.primaryContent,
+                        selectedTrailingIconColor = colors.button.primaryContent,
                     ),
                     border = BorderStroke(
                         1.dp,
-                        color = MaterialTheme.colorScheme.surfaceContainerHighest,
+                        color = colors.surface.elevated,
                     ),
                     trailingIcon = {
                         if (selected) {
@@ -197,10 +212,10 @@ internal fun EditTopBar(
     onBack: () -> Unit,
     onDelete: () -> Unit,
 ) {
+    val colors = DeepLinkTheme.colors
+
     Row(
         modifier = modifier.fillMaxWidth().padding(horizontal = 12.dp, vertical = 8.dp),
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically,
     ) {
         DLLIconButton(
             onClick = onBack,
@@ -208,17 +223,7 @@ internal fun EditTopBar(
             Icon(
                 imageVector = TablerIcons.ArrowLeft,
                 contentDescription = "Back",
-                tint = MaterialTheme.colorScheme.primary,
-            )
-        }
-
-        DLLIconButton(
-            onClick = onDelete,
-        ) {
-            Icon(
-                imageVector = TablerIcons.Trash,
-                contentDescription = "Delete deeplink",
-                tint = MaterialTheme.colorScheme.primary,
+                tint = colors.surface.primary,
             )
         }
     }

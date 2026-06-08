@@ -12,6 +12,7 @@ kotlin {
             implementation(projects.feature.settings.api)
             implementation(projects.feature.dataTransfer.api)
             implementation(projects.library.purchase.api)
+            implementation(projects.library.analytics.api)
 
             implementation(projects.core.preferences)
             implementation(projects.core.designsystem)
@@ -30,6 +31,7 @@ kotlin {
             implementation(libs.compose.navigation)
 
             implementation(compose.components.uiToolingPreview)
+            implementation(compose.preview)
         }
     }
 }

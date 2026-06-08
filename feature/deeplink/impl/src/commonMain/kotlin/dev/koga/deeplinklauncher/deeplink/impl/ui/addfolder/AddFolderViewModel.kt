@@ -3,8 +3,12 @@ package dev.koga.deeplinklauncher.deeplink.impl.ui.addfolder
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import dev.koga.deeplinklauncher.deeplink.api.model.Folder
-import dev.koga.deeplinklauncher.deeplink.api.repository.FolderRepository
+import dev.koga.deeplinklauncher.analytics.api.AnalyticsTracker
+import dev.koga.deeplinklauncher.deeplink.api.domain.model.Folder
+import dev.koga.deeplinklauncher.deeplink.api.domain.repository.FolderRepository
+import dev.koga.deeplinklauncher.deeplink.impl.analytics.FolderCreated
+import dev.koga.deeplinklauncher.deeplink.impl.analytics.track
+import dev.koga.deeplinklauncher.deeplink.impl.ui.addfolder.state.AddFolderUiState
 import dev.koga.deeplinklauncher.navigation.AppNavigator
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
@@ -17,6 +21,7 @@ internal class AddFolderViewModel(
     private val savedStateHandle: SavedStateHandle,
     private val repository: FolderRepository,
     private val appNavigator: AppNavigator,
+    private val analyticsTracker: AnalyticsTracker,
 ) : ViewModel() {
     private val name = savedStateHandle.getStateFlow("name", "")
     private val description = savedStateHandle.getStateFlow("description", "")
@@ -56,6 +61,7 @@ internal class AddFolderViewModel(
         )
 
         repository.upsertFolder(folder)
+        analyticsTracker.track(FolderCreated)
         appNavigator.popBackStack()
     }
 }

@@ -21,6 +21,7 @@ kotlin {
         }
 
         jvmMain.dependencies {
+            implementation(projects.core.platform)
             implementation(libs.sqldelight.jvm)
         }
 

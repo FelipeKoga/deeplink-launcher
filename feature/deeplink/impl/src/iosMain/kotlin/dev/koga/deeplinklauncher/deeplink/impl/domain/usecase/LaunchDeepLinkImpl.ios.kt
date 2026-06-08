@@ -1,0 +1,36 @@
+package dev.koga.deeplinklauncher.deeplink.impl.domain.usecase
+
+import dev.koga.deeplinklauncher.date.currentLocalDateTime
+import dev.koga.deeplinklauncher.deeplink.api.domain.model.DeepLink
+import dev.koga.deeplinklauncher.deeplink.api.domain.repository.DeepLinkRepository
+import dev.koga.deeplinklauncher.deeplink.api.domain.usecase.LaunchDeepLink
+import platform.Foundation.NSURL
+import platform.UIKit.UIApplication
+
+internal class LaunchDeepLinkImpl(
+    private val repository: DeepLinkRepository,
+) : LaunchDeepLink {
+
+    private val application = UIApplication.sharedApplication
+
+    override suspend fun launch(url: String): LaunchDeepLink.Result {
+        val nsurl = NSURL(string = url)
+
+        return if (application.canOpenURL(nsurl)) {
+            application.openURL(
+                url = nsurl,
+                options = emptyMap<Any?, Any>(),
+                completionHandler = {},
+            )
+
+            LaunchDeepLink.Result.Success(url)
+        } else {
+            LaunchDeepLink.Result.Failure(IllegalArgumentException("Cannot open URL"))
+        }
+    }
+
+    override suspend fun launch(deepLink: DeepLink): LaunchDeepLink.Result {
+        repository.upsertDeepLink(deepLink.copy(lastLaunchedAt = currentLocalDateTime))
+        return launch(deepLink.link)
+    }
+}

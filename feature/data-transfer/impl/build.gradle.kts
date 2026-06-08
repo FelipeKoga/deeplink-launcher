@@ -18,6 +18,7 @@ kotlin {
             implementation(projects.core.designsystem)
             implementation(projects.core.navigation)
             implementation(projects.core.uiEvent)
+            implementation(projects.library.analytics.api)
 
             implementation(libs.kotlinx.coroutines.core)
             implementation(libs.kotlinx.immutable)
@@ -31,6 +32,7 @@ kotlin {
             implementation(libs.compose.navigation)
 
             implementation(compose.components.uiToolingPreview)
+            implementation(compose.preview)
         }
     }
 }

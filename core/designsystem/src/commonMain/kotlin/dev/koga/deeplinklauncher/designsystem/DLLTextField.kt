@@ -1,11 +1,9 @@
 package dev.koga.deeplinklauncher.designsystem
 
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.LocalTextStyle
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldColors
@@ -25,18 +23,22 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.TextFieldValue
-import androidx.compose.ui.unit.dp
+import dev.koga.deeplinklauncher.designsystem.theme.DeepLinkTheme
 
-val defaultTextFieldColors: TextFieldColors
-    @Composable get() = TextFieldDefaults.colors(
-        focusedIndicatorColor = Color.Transparent,
-        unfocusedIndicatorColor = Color.Transparent,
-        disabledIndicatorColor = Color.Transparent,
-        errorIndicatorColor = Color.Transparent,
-    )
+object DLLTextFieldDefaults {
+    val colors: TextFieldColors
+        @Composable get() = TextFieldDefaults.colors(
+            focusedIndicatorColor = Color.Transparent,
+            unfocusedIndicatorColor = Color.Transparent,
+            disabledIndicatorColor = Color.Transparent,
+            errorIndicatorColor = Color.Transparent,
+        )
+}
+
+private val defaultTextFieldColors: TextFieldColors
+    @Composable get() = DLLTextFieldDefaults.colors
 
 @Composable
 fun DLLTextField(
@@ -57,6 +59,9 @@ fun DLLTextField(
     textStyle: TextStyle = LocalTextStyle.current,
     leadingIcon: @Composable (() -> Unit)? = null,
 ) {
+    val themeColors = DeepLinkTheme.colors
+    val typography = DeepLinkTheme.typography
+    val shapes = DeepLinkTheme.shapes
     var isFocused by remember { mutableStateOf(false) }
     var textFieldValue by remember {
         mutableStateOf(TextFieldValue(text = value))
@@ -82,15 +87,14 @@ fun DLLTextField(
                 isFocused = focusState.isFocused
             }
             .fillMaxWidth()
-            .clip(RoundedCornerShape(24.dp)),
+            .clip(shapes.field),
         readOnly = readOnly,
         textStyle = textStyle,
         label = {
             Text(
                 text = label,
-                style = MaterialTheme.typography.labelMedium.copy(
-                    fontWeight = FontWeight.SemiBold,
-                    color = MaterialTheme.colorScheme.secondary,
+                style = typography.label.field.copy(
+                    color = themeColors.text.secondary,
                 ),
             )
         },

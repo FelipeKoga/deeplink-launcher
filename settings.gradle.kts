@@ -9,6 +9,9 @@ pluginManagement {
         mavenCentral()
     }
 }
+plugins {
+    id("org.gradle.toolchains.foojay-resolver-convention") version "1.0.0"
+}
 
 dependencyResolutionManagement {
     repositories {
@@ -35,6 +38,8 @@ include(
     ":library:device-bridge:impl",
     ":library:purchase:api",
     ":library:purchase:impl",
+    ":library:analytics:api",
+    ":library:analytics:impl",
     ":core:file",
     ":core:date",
     ":core:resources",

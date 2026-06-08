@@ -12,6 +12,7 @@ plugins {
     alias(libs.plugins.composeCompiler)
     alias(libs.plugins.baselineProfile)
     alias(libs.plugins.aboutLibraries)
+    alias(libs.plugins.hotswan.compiler)
 }
 
 val keystoreProperties = Properties()
@@ -85,6 +86,7 @@ dependencies {
     implementation(libs.billing)
     implementation(libs.revenuecat.core)
     implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.analytics)
     implementation(libs.firebase.crashlytics)
     implementation(libs.firebase.perf)
     implementation(libs.compose.runtime)

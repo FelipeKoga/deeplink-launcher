@@ -1,9 +1,9 @@
 package dev.koga.deeplinklauncher.datatransfer.impl.di
 
-import dev.koga.deeplinklauncher.datatransfer.domain.usecase.ExportDeepLinks
-import dev.koga.deeplinklauncher.datatransfer.domain.usecase.GetDeepLinksJsonPreview
-import dev.koga.deeplinklauncher.datatransfer.domain.usecase.GetDeepLinksPlainTextPreview
-import dev.koga.deeplinklauncher.datatransfer.domain.usecase.ImportDeepLinks
+import dev.koga.deeplinklauncher.datatransfer.api.domain.usecase.ExportDeepLinks
+import dev.koga.deeplinklauncher.datatransfer.api.domain.usecase.GetDeepLinksJsonPreview
+import dev.koga.deeplinklauncher.datatransfer.api.domain.usecase.GetDeepLinksPlainTextPreview
+import dev.koga.deeplinklauncher.datatransfer.api.domain.usecase.ImportDeepLinks
 import dev.koga.deeplinklauncher.datatransfer.impl.domain.usecase.ExportDeepLinksImpl
 import dev.koga.deeplinklauncher.datatransfer.impl.domain.usecase.GetDeepLinksJsonPreviewImpl
 import dev.koga.deeplinklauncher.datatransfer.impl.domain.usecase.GetDeepLinksPlainTextPreviewImpl

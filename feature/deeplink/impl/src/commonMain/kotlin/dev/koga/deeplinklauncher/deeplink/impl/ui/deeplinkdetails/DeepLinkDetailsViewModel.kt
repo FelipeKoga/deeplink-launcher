@@ -1,19 +1,40 @@
+@file:OptIn(ExperimentalCoroutinesApi::class)
+
 package dev.koga.deeplinklauncher.deeplink.impl.ui.deeplinkdetails
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
+import dev.koga.deeplinklauncher.analytics.api.AnalyticsTracker
 import dev.koga.deeplinklauncher.coroutines.CoroutineDebouncer
-import dev.koga.deeplinklauncher.deeplink.api.model.DeepLink
-import dev.koga.deeplinklauncher.deeplink.api.model.Folder
-import dev.koga.deeplinklauncher.deeplink.api.repository.DeepLinkRepository
-import dev.koga.deeplinklauncher.deeplink.api.repository.FolderRepository
+import dev.koga.deeplinklauncher.deeplink.api.application.EnrichDeepLinkForDetails
+import dev.koga.deeplinklauncher.deeplink.api.domain.model.DeepLink
+import dev.koga.deeplinklauncher.deeplink.api.domain.model.DeepLinkHandlerInfo
+import dev.koga.deeplinklauncher.deeplink.api.domain.model.DeepLinkMetadata
+import dev.koga.deeplinklauncher.deeplink.api.domain.model.Folder
+import dev.koga.deeplinklauncher.deeplink.api.domain.model.LaunchSource
+import dev.koga.deeplinklauncher.deeplink.api.domain.repository.DeepLinkRepository
+import dev.koga.deeplinklauncher.deeplink.api.domain.repository.FolderRepository
+import dev.koga.deeplinklauncher.deeplink.api.domain.usecase.AddDeepLinkToShortcuts
+import dev.koga.deeplinklauncher.deeplink.api.domain.usecase.DuplicateDeepLink
+import dev.koga.deeplinklauncher.deeplink.api.domain.usecase.GetDeepLinkHandlers
+import dev.koga.deeplinklauncher.deeplink.api.domain.usecase.LaunchDeepLink
+import dev.koga.deeplinklauncher.deeplink.api.domain.usecase.LinkDeepLinkToFolder
+import dev.koga.deeplinklauncher.deeplink.api.domain.usecase.PinDeepLinkToHomeScreen
+import dev.koga.deeplinklauncher.deeplink.api.domain.usecase.ShareDeepLink
+import dev.koga.deeplinklauncher.deeplink.api.domain.usecase.ValidateDeepLink
+import dev.koga.deeplinklauncher.deeplink.api.ui.model.DeepLinkDetailsModel
 import dev.koga.deeplinklauncher.deeplink.api.ui.navigation.DeepLinkRouteEntryPoint
-import dev.koga.deeplinklauncher.deeplink.api.usecase.DuplicateDeepLink
-import dev.koga.deeplinklauncher.deeplink.api.usecase.LaunchDeepLink
-import dev.koga.deeplinklauncher.deeplink.api.usecase.ShareDeepLink
-import dev.koga.deeplinklauncher.deeplink.api.usecase.ValidateDeepLink
+import dev.koga.deeplinklauncher.deeplink.impl.analytics.DeeplinkDeleted
+import dev.koga.deeplinklauncher.deeplink.impl.analytics.DeeplinkDuplicated
+import dev.koga.deeplinklauncher.deeplink.impl.analytics.DeeplinkLaunchFailed
+import dev.koga.deeplinklauncher.deeplink.impl.analytics.DeeplinkLaunched
+import dev.koga.deeplinklauncher.deeplink.impl.analytics.DeeplinkLinkCopied
+import dev.koga.deeplinklauncher.deeplink.impl.analytics.DeeplinkPinned
+import dev.koga.deeplinklauncher.deeplink.impl.analytics.DeeplinkShared
+import dev.koga.deeplinklauncher.deeplink.impl.analytics.FavoriteToggled
+import dev.koga.deeplinklauncher.deeplink.impl.analytics.track
 import dev.koga.deeplinklauncher.deeplink.impl.ui.deeplinkdetails.state.DeepLinkDetailsAction
 import dev.koga.deeplinklauncher.deeplink.impl.ui.deeplinkdetails.state.DeepLinkDetailsUiState
 import dev.koga.deeplinklauncher.deeplink.impl.ui.deeplinkdetails.state.DuplicateAction
@@ -21,10 +42,15 @@ import dev.koga.deeplinklauncher.deeplink.impl.ui.deeplinkdetails.state.EditActi
 import dev.koga.deeplinklauncher.deeplink.impl.ui.deeplinkdetails.state.LaunchAction
 import dev.koga.deeplinklauncher.navigation.AppNavigator
 import kotlinx.collections.immutable.toPersistentList
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -33,12 +59,18 @@ internal class DeepLinkDetailsViewModel(
     savedStateHandle: SavedStateHandle,
     folderRepository: FolderRepository,
     private val deepLinkRepository: DeepLinkRepository,
+    private val enrichDeepLinkForDetails: EnrichDeepLinkForDetails,
     private val launchDeepLink: LaunchDeepLink,
+    private val getDeepLinkHandlers: GetDeepLinkHandlers,
     private val shareDeepLink: ShareDeepLink,
+    private val pinDeepLinkToHomeScreen: PinDeepLinkToHomeScreen,
+    private val addDeepLinkToShortcuts: AddDeepLinkToShortcuts,
     private val duplicateDeepLink: DuplicateDeepLink,
+    private val linkDeepLinkToFolder: LinkDeepLinkToFolder,
     private val validateDeepLink: ValidateDeepLink,
     private val coroutineDebouncer: CoroutineDebouncer,
     private val appNavigator: AppNavigator,
+    private val analyticsTracker: AnalyticsTracker,
 ) : ViewModel(), AppNavigator by appNavigator {
 
     private val route = savedStateHandle.toRoute<DeepLinkRouteEntryPoint.DeepLinkDetails>()
@@ -60,6 +92,9 @@ internal class DeepLinkDetailsViewModel(
     private val deepLinkErrorMessage = MutableStateFlow<String?>(null)
     private val mode = MutableStateFlow(Mode.LAUNCH)
 
+    private val messageDispatcher = Channel<String>(Channel.UNLIMITED)
+    val messages = messageDispatcher.receiveAsFlow()
+
     val uiState = combine(
         folders,
         deepLink,
@@ -67,24 +102,62 @@ internal class DeepLinkDetailsViewModel(
         deepLinkErrorMessage,
         mode,
     ) { folders, deepLink, duplicateErrorMessage, deepLinkErrorMessage, mode ->
-        when (mode) {
-            Mode.LAUNCH -> DeepLinkDetailsUiState.Launch(deepLink)
-            Mode.EDIT -> DeepLinkDetailsUiState.Edit(
-                deepLink = deepLink,
-                folders = folders.toPersistentList(),
-                errorMessage = deepLinkErrorMessage,
-            )
+        UiStateInput(
+            folders = folders,
+            deepLink = deepLink,
+            duplicateErrorMessage = duplicateErrorMessage,
+            deepLinkErrorMessage = deepLinkErrorMessage,
+            mode = mode,
+        )
+    }.flatMapLatest { input ->
+        when (input.mode) {
+            Mode.LAUNCH -> flow {
+                val handlers = getDeepLinkHandlers(input.deepLink.link)
+                emit(
+                    DeepLinkDetailsUiState.Launch(
+                        details = enrichDeepLinkForDetails(input.deepLink),
+                        showFolder = route.showFolder,
+                        folders = input.folders.toPersistentList(),
+                        availableHandlers = handlers.toPersistentList(),
+                    ),
+                )
+            }
 
-            Mode.DUPLICATE -> DeepLinkDetailsUiState.Duplicate(
-                deepLink = deepLink,
-                errorMessage = duplicateErrorMessage,
-            )
+            Mode.EDIT -> flow {
+                val handlers = getDeepLinkHandlers(input.deepLink.link)
+                emit(
+                    DeepLinkDetailsUiState.Edit(
+                        deepLink = input.deepLink,
+                        folders = input.folders.toPersistentList(),
+                        errorMessage = input.deepLinkErrorMessage,
+                        availableHandlers = handlers.toPersistentList(),
+                    ),
+                )
+            }
+
+            Mode.DUPLICATE -> flow {
+                emit(
+                    DeepLinkDetailsUiState.Duplicate(
+                        deepLink = input.deepLink,
+                        errorMessage = input.duplicateErrorMessage,
+                    ),
+                )
+            }
         }
     }.stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(),
         initialValue = DeepLinkDetailsUiState.Launch(
-            deepLink = deepLink.value,
+            details = DeepLinkDetailsModel(
+                deepLink = deepLink.value,
+                metadata = DeepLinkMetadata(
+                    scheme = null,
+                    host = null,
+                    path = null,
+                    query = null,
+                ),
+                handlerInfo = DeepLinkHandlerInfo.Unavailable,
+            ),
         ),
     )
 
@@ -102,12 +175,23 @@ internal class DeepLinkDetailsViewModel(
             LaunchAction.Edit -> mode.update { Mode.EDIT }
             LaunchAction.Launch -> launch()
             LaunchAction.Share -> share()
+            LaunchAction.PinToHomeScreen -> pinToHomeScreen()
             LaunchAction.ToggleFavorite -> toggleFavorite()
             LaunchAction.NavigateToFolder -> appNavigator.navigate(
                 DeepLinkRouteEntryPoint.FolderDetails(
                     id = deepLink.value.folder?.id.orEmpty(),
                 ),
             )
+
+            LaunchAction.AddFolder -> appNavigator.navigate(DeepLinkRouteEntryPoint.AddFolder)
+            is LaunchAction.ToggleFolder -> toggleFolder(action.folder)
+            LaunchAction.NotifyLinkCopied -> {
+                analyticsTracker.track(DeeplinkLinkCopied)
+                messageDispatcher.trySend("Link copied")
+            }
+
+            LaunchAction.AddToShortCut -> addToShortcut()
+            is LaunchAction.SelectTargetPackage -> updateTargetPackage(action.packageName)
         }
     }
 
@@ -125,6 +209,7 @@ internal class DeepLinkDetailsViewModel(
             is EditAction.OnLinkChanged -> updateLink(action.text)
             is EditAction.OnNameChanged -> updateName(action.text)
             is EditAction.ToggleFolder -> toggleFolder(action.folder)
+            is EditAction.SelectTargetPackage -> updateTargetPackage(action.packageName)
             EditAction.Delete -> delete()
             EditAction.Back -> mode.update { Mode.LAUNCH }
         }
@@ -154,33 +239,88 @@ internal class DeepLinkDetailsViewModel(
         }
     }
 
+    private fun updateTargetPackage(targetPackage: String?) {
+        viewModelScope.launch {
+            deepLinkRepository.upsertDeepLink(deepLink.value.copy(targetPackage = targetPackage))
+        }
+    }
+
     private fun toggleFavorite() {
-        deepLinkRepository.upsertDeepLink(
-            deepLink.value.copy(isFavorite = !deepLink.value.isFavorite),
-        )
+        viewModelScope.launch {
+            val isFavorite = !deepLink.value.isFavorite
+            deepLinkRepository.upsertDeepLink(
+                deepLink.value.copy(isFavorite = isFavorite),
+            )
+            analyticsTracker.track(FavoriteToggled(isFavorite = isFavorite))
+        }
     }
 
     private fun launch() {
         viewModelScope.launch {
-            launchDeepLink.launch(deepLink.value)
+            when (launchDeepLink.launch(deepLink.value)) {
+                is LaunchDeepLink.Result.Success -> {
+                    analyticsTracker.track(
+                        DeeplinkLaunched(source = LaunchSource.DETAILS),
+                    )
+                }
+
+                is LaunchDeepLink.Result.Failure -> {
+                    analyticsTracker.track(
+                        DeeplinkLaunchFailed(source = LaunchSource.DETAILS),
+                    )
+                }
+            }
         }
     }
 
     private fun delete() {
         viewModelScope.launch {
             deepLinkRepository.deleteDeepLink(deepLink.value.id)
+            analyticsTracker.track(DeeplinkDeleted)
             appNavigator.popBackStack()
         }
     }
 
     private fun share() {
+        analyticsTracker.track(DeeplinkShared)
         shareDeepLink(deepLink.value)
     }
 
+    private fun pinToHomeScreen() {
+        when (pinDeepLinkToHomeScreen(deepLink.value)) {
+            PinDeepLinkToHomeScreen.Result.Requested -> {
+                analyticsTracker.track(DeeplinkPinned(result = "requested"))
+            }
+
+            PinDeepLinkToHomeScreen.Result.NotSupported -> {
+                analyticsTracker.track(DeeplinkPinned(result = "not_supported"))
+                messageDispatcher.trySend("Pinning shortcuts is not supported on this device")
+            }
+        }
+    }
+
+    private fun addToShortcut() {
+        when (addDeepLinkToShortcuts(deepLink.value)) {
+            AddDeepLinkToShortcuts.Result.Added -> {
+            }
+
+            AddDeepLinkToShortcuts.Result.NotSupported -> {
+                messageDispatcher.trySend("App shortcuts are not supported on this device")
+            }
+        }
+    }
+
     private fun toggleFolder(folder: Folder) {
-        deepLinkRepository.upsertDeepLink(
-            deepLink.value.copy(folder = folder.takeIf { folder.id != deepLink.value.folder?.id }),
-        )
+        if (folder.id == deepLink.value.folder?.id) {
+            viewModelScope.launch {
+                deepLinkRepository.upsertDeepLink(deepLink.value.copy(folder = null))
+            }
+            return
+        }
+
+        viewModelScope.launch {
+            linkDeepLinkToFolder(deepLink.value.id, folder.id)
+        }
     }
 
     private fun duplicate(
@@ -212,6 +352,7 @@ internal class DeepLinkDetailsViewModel(
                 }
 
                 is DuplicateDeepLink.Result.Success -> {
+                    analyticsTracker.track(DeeplinkDuplicated(copyAllFields = copyAllFields))
                     appNavigator.popBackStack()
                     appNavigator.navigate(
                         route = DeepLinkRouteEntryPoint.DeepLinkDetails(
@@ -223,6 +364,14 @@ internal class DeepLinkDetailsViewModel(
             }
         }
     }
+
+    private data class UiStateInput(
+        val folders: List<Folder>,
+        val deepLink: DeepLink,
+        val duplicateErrorMessage: String?,
+        val deepLinkErrorMessage: String?,
+        val mode: Mode,
+    )
 
     private enum class Mode {
         LAUNCH,

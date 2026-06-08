@@ -3,7 +3,6 @@ package dev.koga.deeplinklauncher.designsystem
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarColors
@@ -11,29 +10,30 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.font.FontWeight
 import compose.icons.TablerIcons
 import compose.icons.tablericons.ArrowLeft
 import dev.koga.deeplinklauncher.designsystem.button.DLLIconButton
+import dev.koga.deeplinklauncher.designsystem.theme.DeepLinkTheme
 
 object DLLTopBarDefaults {
 
     @Composable
-    fun title(
+    fun Title(
         text: String,
         modifier: Modifier = Modifier,
     ) {
+        val colors = DeepLinkTheme.colors
         Text(
             modifier = modifier,
             text = text,
-            style = MaterialTheme.typography.titleMedium.copy(
-                fontWeight = FontWeight.Bold,
+            style = DeepLinkTheme.typography.title.topBar.copy(
+                color = colors.text.primary,
             ),
         )
     }
 
     @Composable
-    fun navigationIcon(
+    fun NavigationIcon(
         onClicked: () -> Unit,
         modifier: Modifier = Modifier,
     ) {
@@ -58,8 +58,8 @@ fun DLLTopBar(
     actions: @Composable (RowScope.() -> Unit) = {},
     scrollBehavior: TopAppBarScrollBehavior? = null,
     colors: TopAppBarColors = TopAppBarDefaults.topAppBarColors(
-        containerColor = MaterialTheme.colorScheme.background,
-        scrolledContainerColor = MaterialTheme.colorScheme.background,
+        containerColor = DeepLinkTheme.colors.surface.background,
+        scrolledContainerColor = DeepLinkTheme.colors.surface.background,
     ),
 ) {
     TopAppBar(

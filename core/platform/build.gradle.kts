@@ -17,5 +17,8 @@ kotlin {
             implementation(libs.kotlinx.serialization.json)
             implementation(libs.koin.core)
         }
+        jvmTest.dependencies {
+            implementation(libs.junit)
+        }
     }
 }

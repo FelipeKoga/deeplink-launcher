@@ -4,7 +4,6 @@ import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -13,14 +12,20 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import dev.koga.deeplinklauncher.analytics.api.AnalyticsTracker
+import dev.koga.deeplinklauncher.designsystem.DLLSnackbarHost
 import dev.koga.deeplinklauncher.designsystem.theme.DLLTheme
-import dev.koga.deeplinklauncher.home.navigation.HomeRoute
+import dev.koga.deeplinklauncher.home.impl.ui.navigation.HomeRoute
 import dev.koga.deeplinklauncher.navigation.AppGraph
 import dev.koga.deeplinklauncher.navigation.AppNavigator
 import dev.koga.deeplinklauncher.navigation.AppRoute
 import dev.koga.deeplinklauncher.preferences.model.AppTheme
 import dev.koga.deeplinklauncher.preferences.repository.PreferencesDataSource
+import dev.koga.deeplinklauncher.shared.analytics.ScreenViewed
+import dev.koga.deeplinklauncher.shared.analytics.resolveAnalyticsScreenName
+import dev.koga.deeplinklauncher.shared.analytics.track
 import dev.koga.deeplinklauncher.shared.anim.scaleInEnterTransition
 import dev.koga.deeplinklauncher.shared.anim.scaleInPopEnterTransition
 import dev.koga.deeplinklauncher.shared.anim.scaleOutExitTransition
@@ -34,8 +39,16 @@ fun App() {
     val appNavigator = koinInject<AppNavigator>()
     val appGraph = koinInject<AppGraph>()
     val snackBarDispatcher = koinInject<SnackBarDispatcher>()
+    val analyticsTracker = koinInject<AnalyticsTracker>()
     val isDarkTheme = isAppThemeInDarkTheme()
     val snackBarHostState = remember { SnackbarHostState() }
+    val currentBackStackEntry by navController.currentBackStackEntryAsState()
+
+    LaunchedEffect(currentBackStackEntry) {
+        currentBackStackEntry.resolveAnalyticsScreenName()?.let { screenName ->
+            analyticsTracker.track(ScreenViewed(screenName))
+        }
+    }
 
     LaunchedEffect(Unit) {
         appNavigator.destination.collect { route ->
@@ -61,7 +74,7 @@ fun App() {
     ) {
         Scaffold(
             snackbarHost = {
-                SnackbarHost(snackBarHostState)
+                DLLSnackbarHost(snackBarHostState)
             },
         ) {
             NavHost(
@@ -85,9 +98,9 @@ fun isAppThemeInDarkTheme(
 ): Boolean {
     val isSystemDarkTheme = isSystemInDarkTheme()
 
-    val preferences by preferencesDataSource.preferencesStream.collectAsStateWithLifecycle(preferencesDataSource.preferences)
+    val preferences by preferencesDataSource.preferencesStream.collectAsStateWithLifecycle(initialValue = null)
 
-    return when (preferences.appTheme) {
+    return when (preferences?.appTheme ?: AppTheme.AUTO) {
         AppTheme.LIGHT -> false
         AppTheme.DARK -> true
         AppTheme.AUTO -> isSystemDarkTheme
