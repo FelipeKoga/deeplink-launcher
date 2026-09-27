@@ -22,7 +22,6 @@ data class DeepLinkColors(
     val surface: SurfaceColors,
     val border: BorderColors,
     val button: ButtonColors,
-    val chip: ChipColors,
     val category: CategoryColors,
     val status: StatusColors,
     val accent: AccentColors,
@@ -64,17 +63,6 @@ data class ButtonColors(
     val textDestructiveContent: Color,
     val destructiveBackground: Color,
     val destructiveContent: Color,
-)
-
-@Immutable
-data class ChipColors(
-    val background: Color,
-    val content: Color,
-    val border: Color,
-    val destructiveContent: Color,
-    val destructiveBorder: Color,
-    val accentContent: Color,
-    val destructiveBackground: Color,
 )
 
 @Immutable
@@ -124,15 +112,6 @@ val LightDeepLinkColors = DeepLinkColors(
         textDestructiveContent = Color(0xFF7F1D1D),
         destructiveBackground = Color(0xFFFEF2F2),
         destructiveContent = Color(0xFF7F1D1D),
-    ),
-    chip = ChipColors(
-        background = Color(0xFFF4F4F5),
-        content = Color(0xFF18181B),
-        border = Color(0xFFF4F4F5),
-        destructiveContent = Color(0xFF7F1D1D),
-        destructiveBorder = Color(0xFFFECACA),
-        destructiveBackground = Color(0xFFFECACA),
-        accentContent = Color(0xFFFFB300),
     ),
     category = CategoryColors(
         webLink = CategoryChipColors(
@@ -205,15 +184,6 @@ val DarkDeepLinkColors = DeepLinkColors(
         textDestructiveContent = Color(0xFFFECACA),
         destructiveBackground = Color(0xFF450A0A),
         destructiveContent = Color(0xFFFECACA),
-    ),
-    chip = ChipColors(
-        background = Color(0xFF27272A),
-        content = Color(0xFFFAFAFA),
-        border = Color(0xFF27272A),
-        destructiveContent = Color(0xFFFECACA),
-        destructiveBorder = Color(0xFF450A0A),
-        accentContent = Color(0xFFFFB300),
-        destructiveBackground = Color(0xFF450A0A),
     ),
     category = CategoryColors(
         webLink = CategoryChipColors(
