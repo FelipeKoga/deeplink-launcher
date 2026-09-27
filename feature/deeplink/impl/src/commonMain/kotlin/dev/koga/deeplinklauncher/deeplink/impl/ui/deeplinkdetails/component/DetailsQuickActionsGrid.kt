@@ -45,6 +45,7 @@ import org.jetbrains.compose.resources.painterResource
 @Composable
 internal fun DetailsQuickActions(
     isFavorite: Boolean,
+    isShortcut: Boolean,
     onAction: (LaunchAction) -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -91,7 +92,10 @@ internal fun DetailsQuickActions(
             QuickAction(
                 label = "Shortcut",
                 painter = rememberVectorPainter(TablerIcons.Bolt),
-                onClick = { onAction(LaunchAction.AddToShortCut) },
+                checked = isShortcut,
+                checkedTint = colors.button.primaryContent,
+                checkedBackground = colors.button.primaryBackground,
+                onClick = { onAction(LaunchAction.ToggleShortcut) },
             )
         }
     }

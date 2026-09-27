@@ -18,6 +18,7 @@ internal sealed interface DeepLinkDetailsUiState {
         val showFolder: Boolean = true,
         val folders: ImmutableList<Folder> = persistentListOf(),
         val availableHandlers: ImmutableList<DeepLinkHandler> = persistentListOf(),
+        val isShortcut: Boolean = false,
     ) : DeepLinkDetailsUiState {
         override val deepLink: DeepLink
             get() = details.deepLink
