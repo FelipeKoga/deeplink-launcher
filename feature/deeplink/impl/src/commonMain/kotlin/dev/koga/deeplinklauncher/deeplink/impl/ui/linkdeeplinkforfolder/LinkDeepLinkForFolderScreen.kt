@@ -32,6 +32,7 @@ import dev.koga.deeplinklauncher.deeplink.impl.ui.linkdeeplinkforfolder.state.Li
 import dev.koga.deeplinklauncher.deeplink.uicomponent.DeepLinkCard
 import dev.koga.deeplinklauncher.deeplink.uicomponent.DeepLinkCardActionsPresets
 import dev.koga.deeplinklauncher.deeplink.uicomponent.DeepLinkLaunchBottomBar
+import dev.koga.deeplinklauncher.deeplink.uicomponent.rememberDeepLinkCardPainters
 import dev.koga.deeplinklauncher.designsystem.DLLHorizontalDivider
 import dev.koga.deeplinklauncher.designsystem.DLLTextField
 import dev.koga.deeplinklauncher.designsystem.DLLTopBar
@@ -130,6 +131,7 @@ internal fun LinkDeepLinkForFolderContent(
     val colors = DeepLinkTheme.colors
     val typography = DeepLinkTheme.typography
     val dimensions = DeepLinkTheme.dimensions
+    val painters = rememberDeepLinkCardPainters()
 
     LazyColumn(
         modifier = modifier,
@@ -191,6 +193,7 @@ internal fun LinkDeepLinkForFolderContent(
                         onAction(LinkDeepLinkForFolderAction.DeepLinkSelected(item.deepLink.id))
                     },
                     actions = DeepLinkCardActionsPresets.linkPicker,
+                    painters = painters,
                 )
             }
         }
