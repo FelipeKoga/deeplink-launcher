@@ -33,6 +33,7 @@ import dev.koga.deeplinklauncher.deeplink.impl.ui.deeplinkdetails.component.reme
 import dev.koga.deeplinklauncher.deeplink.impl.ui.deeplinkdetails.delete.DeepLinkDeleteConfirmationDialog
 import dev.koga.deeplinklauncher.deeplink.impl.ui.deeplinkdetails.state.DeepLinkDetailsAction
 import dev.koga.deeplinklauncher.deeplink.impl.ui.deeplinkdetails.state.DeepLinkDetailsUiState
+import dev.koga.deeplinklauncher.deeplink.impl.ui.deeplinkdetails.state.DuplicateAction
 import dev.koga.deeplinklauncher.deeplink.impl.ui.deeplinkdetails.state.EditAction
 import dev.koga.deeplinklauncher.designsystem.DLLSnackbarHost
 import dev.koga.deeplinklauncher.designsystem.theme.DeepLinkTheme
@@ -72,7 +73,11 @@ internal fun DeepLinkDetailsBottomSheet(
     NavigationBackHandler(
         state = rememberNavigationEventState(currentInfo = NavigationEventInfo.None),
     ) {
-        sheetState.dismiss()
+        when (uiState) {
+            is DeepLinkDetailsUiState.Launch -> sheetState.dismiss()
+            is DeepLinkDetailsUiState.Edit -> viewModel.onAction(EditAction.Back)
+            is DeepLinkDetailsUiState.Duplicate -> viewModel.onAction(DuplicateAction.Back)
+        }
     }
 
     WindowlessBottomSheet(
