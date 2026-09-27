@@ -7,6 +7,11 @@ import dev.koga.deeplinklauncher.deeplink.api.domain.usecase.GetDeepLinkHandlerI
 import dev.koga.deeplinklauncher.deeplink.api.domain.usecase.GetDeepLinkHandlerInfo
 import dev.koga.deeplinklauncher.deeplink.api.ui.model.DeepLinkListItem
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.IO
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.currentCoroutineContext
+import kotlinx.coroutines.ensureActive
 import kotlinx.coroutines.withContext
 
 internal class EnrichDeepLinksForListImpl(
@@ -15,19 +20,36 @@ internal class EnrichDeepLinksForListImpl(
 ) : EnrichDeepLinksForList {
 
     override suspend fun invoke(links: List<DeepLink>): List<DeepLinkListItem> =
-        withContext(Dispatchers.Default) {
-            links.map { deepLink ->
-                DeepLinkListItem(
-                    deepLink = deepLink,
-                    icon = getDeepLinkHandlerIcon(deepLink.link, deepLink.targetPackage),
-                    handlerAppName = when (
-                        val handlerInfo =
-                            getDeepLinkHandlerInfo(deepLink.link, deepLink.targetPackage)
-                    ) {
-                        is DeepLinkHandlerInfo.Available -> handlerInfo.appName
-                        DeepLinkHandlerInfo.Unavailable -> null
-                    },
-                )
+        withContext(enrichDispatcher) {
+            if (links.size < PARALLEL_THRESHOLD) {
+                links.map { enrich(it) }
+            } else {
+                links
+                    .chunked((links.size + PARALLELISM - 1) / PARALLELISM)
+                    .map { chunk -> async { chunk.map { enrich(it) } } }
+                    .awaitAll()
+                    .flatten()
             }
         }
+
+    private suspend fun enrich(deepLink: DeepLink): DeepLinkListItem {
+        currentCoroutineContext().ensureActive()
+        return DeepLinkListItem(
+            deepLink = deepLink,
+            icon = getDeepLinkHandlerIcon(deepLink.link, deepLink.targetPackage),
+            handlerAppName = when (
+                val handlerInfo = getDeepLinkHandlerInfo(deepLink.link, deepLink.targetPackage)
+            ) {
+                is DeepLinkHandlerInfo.Available -> handlerInfo.appName
+                DeepLinkHandlerInfo.Unavailable -> null
+            },
+        )
+    }
+
+    private companion object {
+        const val PARALLELISM = 4
+        const val PARALLEL_THRESHOLD = 16
+
+        val enrichDispatcher = Dispatchers.IO.limitedParallelism(PARALLELISM)
+    }
 }

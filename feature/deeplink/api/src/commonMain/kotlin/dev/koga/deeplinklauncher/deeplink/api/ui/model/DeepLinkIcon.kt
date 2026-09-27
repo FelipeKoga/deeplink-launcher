@@ -1,6 +1,6 @@
 package dev.koga.deeplinklauncher.deeplink.api.ui.model
 
-import kotlin.jvm.JvmInline
-
-@JvmInline
-public value class DeepLinkIcon(public val byteArray: ByteArray)
+public class DeepLinkIcon(public val id: Long, public val byteArray: ByteArray) {
+    override fun equals(other: Any?): Boolean = other is DeepLinkIcon && other.id == id
+    override fun hashCode(): Int = id.hashCode()
+}

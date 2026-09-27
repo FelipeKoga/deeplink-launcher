@@ -1,29 +1,17 @@
 package dev.koga.deeplinklauncher.deeplink.impl.domain.usecase
 
-import android.content.Context
-import android.util.LruCache
 import dev.koga.deeplinklauncher.deeplink.api.domain.usecase.GetDeepLinkHandlerIcon
 import dev.koga.deeplinklauncher.deeplink.api.ui.model.DeepLinkIcon
-import dev.koga.deeplinklauncher.deeplink.impl.platform.android.handlerCacheKey
-import dev.koga.deeplinklauncher.deeplink.impl.platform.android.resolveHandlerIcon
+import dev.koga.deeplinklauncher.deeplink.impl.platform.android.AndroidHandlerResolver
 
 internal class GetDeepLinkHandlerIconImpl(
-    private val context: Context,
+    private val resolver: AndroidHandlerResolver,
 ) : GetDeepLinkHandlerIcon {
-    private val cache = LruCache<String, ByteArray>(CACHE_SIZE)
 
     override suspend fun invoke(
         link: String,
         targetPackage: String?,
     ): DeepLinkIcon? {
-        val key = handlerCacheKey(link, targetPackage)
-        cache.get(key)?.let { return DeepLinkIcon(it) }
-        val icon = context.resolveHandlerIcon(link, targetPackage) ?: return null
-        cache.put(key, icon)
-        return DeepLinkIcon(icon)
-    }
-
-    companion object {
-        private const val CACHE_SIZE = 128
+        return resolver.resolve(link, targetPackage)?.icon
     }
 }
