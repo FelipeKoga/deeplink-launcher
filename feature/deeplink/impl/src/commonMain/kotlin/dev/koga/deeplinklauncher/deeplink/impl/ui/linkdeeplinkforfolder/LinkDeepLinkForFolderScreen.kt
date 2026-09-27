@@ -22,7 +22,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.chrisbanes.haze.HazeState
-import dev.chrisbanes.haze.hazeEffect
 import dev.chrisbanes.haze.hazeSource
 import dev.chrisbanes.haze.materials.ExperimentalHazeMaterialsApi
 import dev.chrisbanes.haze.materials.HazeMaterials
@@ -40,6 +39,7 @@ import dev.koga.deeplinklauncher.designsystem.DLLTopBarDefaults
 import dev.koga.deeplinklauncher.designsystem.theme.DeepLinkTheme
 import dev.koga.deeplinklauncher.navigation.AppNavigator
 import dev.koga.deeplinklauncher.navigation.AppRoute
+import dev.koga.deeplinklauncher.ui.barHazeEffect
 
 @Composable
 internal fun LinkDeepLinkForFolderScreen(
@@ -90,7 +90,7 @@ internal fun LinkDeepLinkForFolderUI(
                         onClicked = { onNavigate(AppRoute.PopBackStack) },
                     )
                 },
-                modifier = Modifier.hazeEffect(
+                modifier = Modifier.barHazeEffect(
                     state = hazeState,
                     style = HazeMaterials.regular(
                         containerColor = colors.surface.background,
