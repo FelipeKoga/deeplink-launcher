@@ -15,9 +15,15 @@ import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.produceState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.compose.LocalLifecycleOwner
+import androidx.lifecycle.repeatOnLifecycle
+import dev.koga.deeplinklauncher.date.currentLocalDateTime
 import dev.koga.deeplinklauncher.deeplink.api.domain.model.DeepLink
 import dev.koga.deeplinklauncher.deeplink.api.domain.model.Folder
 import dev.koga.deeplinklauncher.deeplink.api.ui.model.DeepLinkListItem
@@ -26,14 +32,21 @@ import dev.koga.deeplinklauncher.deeplink.uicomponent.CreateFolderCard
 import dev.koga.deeplinklauncher.deeplink.uicomponent.DeepLinkCard
 import dev.koga.deeplinklauncher.deeplink.uicomponent.DeepLinkCardActionsPresets
 import dev.koga.deeplinklauncher.deeplink.uicomponent.FolderCard
+import dev.koga.deeplinklauncher.deeplink.uicomponent.rememberDeepLinkCardPainters
 import dev.koga.deeplinklauncher.ui.calculateWindowSizeSharedClass
 import kotlinx.collections.immutable.ImmutableList
+import kotlinx.coroutines.delay
+import kotlinx.datetime.LocalDateTime
+import kotlinx.datetime.LocalTime
+import kotlin.time.Clock
+
+private const val CURRENT_TIME_REFRESH_INTERVAL_MS = 60_000L
 
 @Composable
 fun DeepLinksLazyColumn(
     modifier: Modifier = Modifier,
     listState: LazyGridState,
-    deepLinks: List<DeepLinkListItem>,
+    deepLinks: ImmutableList<DeepLinkListItem>,
     contentPadding: PaddingValues,
     onClick: (DeepLink) -> Unit,
     onLaunch: (DeepLink) -> Unit,
@@ -46,6 +59,9 @@ fun DeepLinksLazyColumn(
         top = contentPadding.calculateTopPadding() + 12.dp,
         bottom = contentPadding.calculateBottomPadding() + 12.dp,
     )
+
+    val painters = rememberDeepLinkCardPainters()
+    val now = rememberCurrentTime()
 
     HomeVerticalGridList(
         modifier = modifier,
@@ -68,9 +84,32 @@ fun DeepLinksLazyColumn(
                     onToggleFavorite = { onToggleFavorite(deepLink) },
                 ),
                 onFolderClicked = { onFolderClicked(deepLink.folder!!) },
+                painters = painters,
+                now = now,
             )
         }
     }
+}
+
+@Composable
+private fun rememberCurrentTime(): LocalDateTime {
+    val lifecycleOwner = LocalLifecycleOwner.current
+    val currentTime by produceState(initialValue = currentMinute(), lifecycleOwner) {
+        lifecycleOwner.repeatOnLifecycle(Lifecycle.State.RESUMED) {
+            while (true) {
+                value = currentMinute()
+                delay(
+                    CURRENT_TIME_REFRESH_INTERVAL_MS -
+                        Clock.System.now().toEpochMilliseconds() % CURRENT_TIME_REFRESH_INTERVAL_MS,
+                )
+            }
+        }
+    }
+    return currentTime
+}
+
+private fun currentMinute(): LocalDateTime = currentLocalDateTime.let {
+    LocalDateTime(it.date, LocalTime(it.hour, it.minute))
 }
 
 @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)

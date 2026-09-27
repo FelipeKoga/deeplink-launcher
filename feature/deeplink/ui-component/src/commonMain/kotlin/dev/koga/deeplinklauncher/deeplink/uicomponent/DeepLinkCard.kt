@@ -10,9 +10,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Star
-import androidx.compose.material.icons.rounded.StarOutline
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -20,9 +17,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import compose.icons.TablerIcons
-import compose.icons.tablericons.ExternalLink
-import compose.icons.tablericons.Folder
+import dev.koga.deeplinklauncher.date.currentLocalDateTime
 import dev.koga.deeplinklauncher.date.formatRelativeToNow
 import dev.koga.deeplinklauncher.deeplink.api.ui.formatting.truncatedLink
 import dev.koga.deeplinklauncher.deeplink.api.ui.model.DeepLinkListItem
@@ -30,6 +25,7 @@ import dev.koga.deeplinklauncher.designsystem.DLLOutlinedCard
 import dev.koga.deeplinklauncher.designsystem.button.DLLIconButton
 import dev.koga.deeplinklauncher.designsystem.button.DLLOutlinedIconButton
 import dev.koga.deeplinklauncher.designsystem.theme.DeepLinkTheme
+import kotlinx.datetime.LocalDateTime
 
 @Composable
 fun DeepLinkCard(
@@ -39,6 +35,8 @@ fun DeepLinkCard(
     modifier: Modifier = Modifier,
     showFolder: Boolean = true,
     onFolderClicked: () -> Unit = {},
+    painters: DeepLinkCardPainters = rememberDeepLinkCardPainters(),
+    now: LocalDateTime = currentLocalDateTime,
 ) {
     DLLOutlinedCard(
         onClick = onClick,
@@ -54,6 +52,8 @@ fun DeepLinkCard(
                 item = item,
                 showFolder = showFolder,
                 onFolderClicked = onFolderClicked,
+                painters = painters,
+                now = now,
                 modifier = Modifier.weight(1f),
             )
 
@@ -63,6 +63,7 @@ fun DeepLinkCard(
                 DeepLinkCardTrailingActions(
                     item = item,
                     actions = actions,
+                    painters = painters,
                 )
             }
         }
@@ -74,13 +75,15 @@ internal fun DeepLinkCardContent(
     item: DeepLinkListItem,
     showFolder: Boolean,
     onFolderClicked: () -> Unit,
+    painters: DeepLinkCardPainters,
+    now: LocalDateTime,
     modifier: Modifier = Modifier,
 ) {
     val colors = DeepLinkTheme.colors
     val typography = DeepLinkTheme.typography
     val deepLink = item.deepLink
     val displayTitle = deepLink.name?.takeIf { it.isNotBlank() } ?: deepLink.truncatedLink()
-    val timestamp = (deepLink.lastLaunchedAt ?: deepLink.createdAt).formatRelativeToNow()
+    val timestamp = (deepLink.lastLaunchedAt ?: deepLink.createdAt).formatRelativeToNow(now)
 
     Row(
         modifier = modifier,
@@ -89,6 +92,7 @@ internal fun DeepLinkCardContent(
         DeepLinkHandlerIcon(
             icon = item.icon,
             modifier = Modifier.size(40.dp),
+            fallbackPainter = painters.linkFallback,
         )
 
         Spacer(modifier = Modifier.width(12.dp))
@@ -125,7 +129,7 @@ internal fun DeepLinkCardContent(
                         horizontalArrangement = Arrangement.spacedBy(4.dp),
                     ) {
                         Icon(
-                            imageVector = TablerIcons.Folder,
+                            painter = painters.folder,
                             contentDescription = null,
                             modifier = Modifier.size(14.dp),
                             tint = colors.text.muted,
@@ -160,6 +164,7 @@ internal fun DeepLinkCardContent(
 private fun DeepLinkCardTrailingActions(
     item: DeepLinkListItem,
     actions: DeepLinkCardActions,
+    painters: DeepLinkCardPainters,
 ) {
     val colors = DeepLinkTheme.colors
     val deepLink = item.deepLink
@@ -171,11 +176,7 @@ private fun DeepLinkCardTrailingActions(
         actions.onToggleFavorite?.let { onToggleFavorite ->
             DLLIconButton(onClick = onToggleFavorite) {
                 Icon(
-                    imageVector = if (deepLink.isFavorite) {
-                        Icons.Rounded.Star
-                    } else {
-                        Icons.Rounded.StarOutline
-                    },
+                    painter = if (deepLink.isFavorite) painters.star else painters.starOutline,
                     contentDescription = null,
                     modifier = Modifier.size(20.dp),
                     tint = if (deepLink.isFavorite) {
@@ -190,7 +191,7 @@ private fun DeepLinkCardTrailingActions(
         actions.onLaunch?.let { onLaunch ->
             DLLOutlinedIconButton(onClick = onLaunch) {
                 Icon(
-                    imageVector = TablerIcons.ExternalLink,
+                    painter = painters.launch,
                     contentDescription = null,
                     modifier = Modifier.size(16.dp),
                 )
