@@ -64,6 +64,7 @@ internal fun LaunchModeUI(
 
         DetailsQuickActions(
             isFavorite = uiState.deepLink.isFavorite,
+            isShortcut = uiState.isShortcut,
             onAction = onAction,
         )
 

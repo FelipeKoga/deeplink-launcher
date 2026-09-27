@@ -1,18 +1,28 @@
-package dev.koga.deeplinklauncher.deeplink.impl.domain.usecase
+package dev.koga.deeplinklauncher.deeplink.impl.domain.manager
 
 import android.content.Context
 import androidx.core.content.pm.ShortcutInfoCompat
 import androidx.core.content.pm.ShortcutManagerCompat
 import androidx.core.os.persistableBundleOf
+import dev.koga.deeplinklauncher.deeplink.api.domain.manager.DeepLinkShortcutManager
 import dev.koga.deeplinklauncher.deeplink.api.domain.model.DeepLink
-import dev.koga.deeplinklauncher.deeplink.api.domain.usecase.AddDeepLinkToShortcuts
 import dev.koga.deeplinklauncher.deeplink.impl.platform.android.createDeepLinkViewIntent
 import dev.koga.deeplinklauncher.deeplink.impl.platform.android.resolveShortcutIconCompat
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
-internal class AddDeepLinkToShortcutsImpl(
+internal class DeepLinkShortcutManagerImpl(
     private val context: Context,
-) : AddDeepLinkToShortcuts {
-    override fun invoke(deepLink: DeepLink): AddDeepLinkToShortcuts.Result {
+) : DeepLinkShortcutManager {
+
+    override suspend fun isAdded(deepLinkId: String): Boolean = withContext(Dispatchers.IO) {
+        ShortcutManagerCompat.getShortcuts(context, ShortcutManagerCompat.FLAG_MATCH_DYNAMIC)
+            .any { it.id == deepLinkId }
+    }
+
+    override suspend fun add(
+        deepLink: DeepLink,
+    ): DeepLinkShortcutManager.AddResult = withContext(Dispatchers.IO) {
         val shortLabel = (deepLink.name?.takeIf { it.isNotBlank() } ?: deepLink.link)
             .take(MAX_SHORT_LABEL_LENGTH)
         val longLabel = (deepLink.description?.takeIf { it.isNotBlank() } ?: shortLabel)
@@ -35,12 +45,16 @@ internal class AddDeepLinkToShortcutsImpl(
 
         val added = ShortcutManagerCompat.pushDynamicShortcut(context, shortcut)
 
-        val a = ShortcutManagerCompat.getShortcuts(context, ShortcutManagerCompat.FLAG_MATCH_DYNAMIC)
-
-        return if (added) {
-            AddDeepLinkToShortcuts.Result.Added
+        if (added) {
+            DeepLinkShortcutManager.AddResult.Added
         } else {
-            AddDeepLinkToShortcuts.Result.NotSupported
+            DeepLinkShortcutManager.AddResult.NotSupported
+        }
+    }
+
+    override suspend fun remove(deepLinkId: String) {
+        withContext(Dispatchers.IO) {
+            ShortcutManagerCompat.removeDynamicShortcuts(context, listOf(deepLinkId))
         }
     }
 
