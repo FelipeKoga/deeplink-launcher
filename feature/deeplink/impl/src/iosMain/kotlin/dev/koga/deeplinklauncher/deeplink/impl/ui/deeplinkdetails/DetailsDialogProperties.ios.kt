@@ -8,6 +8,7 @@ internal actual fun detailsDialogProperties(): DialogProperties = DialogProperti
     dismissOnBackPress = true,
     dismissOnClickOutside = false,
     usePlatformDefaultWidth = false,
+    usePlatformInsets = false,
     scrimColor = Color.Transparent,
 )
 
