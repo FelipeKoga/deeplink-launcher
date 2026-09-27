@@ -6,6 +6,7 @@ import androidx.navigation.compose.dialog
 import dev.koga.deeplinklauncher.deeplink.api.ui.navigation.DeepLinkRouteEntryPoint
 import dev.koga.deeplinklauncher.deeplink.impl.ui.addfolder.AddFolderBottomSheet
 import dev.koga.deeplinklauncher.deeplink.impl.ui.deeplinkdetails.DeepLinkDetailsBottomSheet
+import dev.koga.deeplinklauncher.deeplink.impl.ui.deeplinkdetails.detailsDialogProperties
 import dev.koga.deeplinklauncher.deeplink.impl.ui.folderdetails.FolderDetailsScreen
 import dev.koga.deeplinklauncher.deeplink.impl.ui.linkdeeplinkforfolder.LinkDeepLinkForFolderScreen
 import dev.koga.deeplinklauncher.navigation.AppNavigator
@@ -17,7 +18,9 @@ internal class DeepLinkNavigationGraph(
     private val appNavigator: AppNavigator,
 ) : NavigationGraph {
     override fun register(navGraphBuilder: NavGraphBuilder) = with(navGraphBuilder) {
-        dialog<DeepLinkRouteEntryPoint.DeepLinkDetails> {
+        dialog<DeepLinkRouteEntryPoint.DeepLinkDetails>(
+            dialogProperties = detailsDialogProperties(),
+        ) {
             DeepLinkDetailsBottomSheet(
                 viewModel = koinViewModel(),
             )

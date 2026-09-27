@@ -32,6 +32,7 @@ kotlin {
 
             implementation(libs.compose.navigation)
             implementation(libs.compose.runtime)
+            implementation(libs.navigationevent.compose)
 
             implementation(libs.material3.windowSizeClass)
             implementation(libs.haze)
