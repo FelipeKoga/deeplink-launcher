@@ -118,6 +118,14 @@ internal fun EditModeUI(
             Spacer(modifier = Modifier.height(16.dp))
         }
 
+        Text(
+            text = "Folder",
+            style = typography.label.chip.copy(color = colors.text.muted),
+            modifier = Modifier.padding(horizontal = 24.dp),
+        )
+
+        Spacer(modifier = Modifier.height(8.dp))
+
         LazyRow(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(12.dp),
