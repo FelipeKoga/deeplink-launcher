@@ -1,6 +1,7 @@
 package dev.koga.deeplinklauncher.deeplink.impl.domain.manager
 
 import android.content.Context
+import android.content.pm.ShortcutManager
 import androidx.core.content.pm.ShortcutInfoCompat
 import androidx.core.content.pm.ShortcutManagerCompat
 import androidx.core.os.persistableBundleOf
@@ -64,6 +65,13 @@ internal class DeepLinkShortcutManagerImpl(
             .setIntent(intent)
             .setExtras(persistableBundleOf("deeplink" to deepLink.link))
             .build()
+    }
+
+    override suspend fun enable(deepLinkIds: List<String>) {
+        if (deepLinkIds.isEmpty()) return
+        withContext(Dispatchers.IO) {
+            context.getSystemService(ShortcutManager::class.java).enableShortcuts(deepLinkIds)
+        }
     }
 
     override suspend fun disable(deepLinkIds: List<String>) {
