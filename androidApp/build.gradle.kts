@@ -12,7 +12,12 @@ plugins {
     alias(libs.plugins.composeCompiler)
     alias(libs.plugins.baselineProfile)
     alias(libs.plugins.aboutLibraries)
-    alias(libs.plugins.hotswan.compiler)
+}
+
+val hotSwanEnabled = providers.gradleProperty("hotswan").orNull?.toBoolean()
+    ?: gradle.startParameter.taskNames.all { it.contains("debug", ignoreCase = true) }
+if (hotSwanEnabled) {
+    apply(plugin = libs.plugins.hotswan.compiler.get().pluginId)
 }
 
 val keystoreProperties = Properties()
