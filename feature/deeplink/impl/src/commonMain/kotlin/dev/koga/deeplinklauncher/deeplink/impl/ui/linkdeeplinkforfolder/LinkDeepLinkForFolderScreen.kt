@@ -22,7 +22,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.chrisbanes.haze.HazeState
-import dev.chrisbanes.haze.hazeEffect
 import dev.chrisbanes.haze.hazeSource
 import dev.chrisbanes.haze.materials.ExperimentalHazeMaterialsApi
 import dev.chrisbanes.haze.materials.HazeMaterials
@@ -32,6 +31,7 @@ import dev.koga.deeplinklauncher.deeplink.impl.ui.linkdeeplinkforfolder.state.Li
 import dev.koga.deeplinklauncher.deeplink.uicomponent.DeepLinkCard
 import dev.koga.deeplinklauncher.deeplink.uicomponent.DeepLinkCardActionsPresets
 import dev.koga.deeplinklauncher.deeplink.uicomponent.DeepLinkLaunchBottomBar
+import dev.koga.deeplinklauncher.deeplink.uicomponent.rememberDeepLinkCardPainters
 import dev.koga.deeplinklauncher.designsystem.DLLHorizontalDivider
 import dev.koga.deeplinklauncher.designsystem.DLLTextField
 import dev.koga.deeplinklauncher.designsystem.DLLTopBar
@@ -39,6 +39,7 @@ import dev.koga.deeplinklauncher.designsystem.DLLTopBarDefaults
 import dev.koga.deeplinklauncher.designsystem.theme.DeepLinkTheme
 import dev.koga.deeplinklauncher.navigation.AppNavigator
 import dev.koga.deeplinklauncher.navigation.AppRoute
+import dev.koga.deeplinklauncher.ui.barHazeEffect
 
 @Composable
 internal fun LinkDeepLinkForFolderScreen(
@@ -89,7 +90,7 @@ internal fun LinkDeepLinkForFolderUI(
                         onClicked = { onNavigate(AppRoute.PopBackStack) },
                     )
                 },
-                modifier = Modifier.hazeEffect(
+                modifier = Modifier.barHazeEffect(
                     state = hazeState,
                     style = HazeMaterials.regular(
                         containerColor = colors.surface.background,
@@ -130,6 +131,7 @@ internal fun LinkDeepLinkForFolderContent(
     val colors = DeepLinkTheme.colors
     val typography = DeepLinkTheme.typography
     val dimensions = DeepLinkTheme.dimensions
+    val painters = rememberDeepLinkCardPainters()
 
     LazyColumn(
         modifier = modifier,
@@ -191,6 +193,7 @@ internal fun LinkDeepLinkForFolderContent(
                         onAction(LinkDeepLinkForFolderAction.DeepLinkSelected(item.deepLink.id))
                     },
                     actions = DeepLinkCardActionsPresets.linkPicker,
+                    painters = painters,
                 )
             }
         }
