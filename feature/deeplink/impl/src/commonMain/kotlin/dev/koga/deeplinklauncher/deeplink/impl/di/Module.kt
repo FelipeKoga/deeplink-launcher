@@ -14,6 +14,7 @@ import dev.koga.deeplinklauncher.deeplink.impl.data.repository.DeepLinkRepositor
 import dev.koga.deeplinklauncher.deeplink.impl.data.repository.FolderRepositoryImpl
 import dev.koga.deeplinklauncher.deeplink.impl.domain.usecase.DuplicateDeepLinkImpl
 import dev.koga.deeplinklauncher.deeplink.impl.domain.usecase.GetAutoSuggestionLinksImpl
+import dev.koga.deeplinklauncher.deeplink.impl.domain.usecase.GetDeepLinkFromClipboard
 import dev.koga.deeplinklauncher.deeplink.impl.domain.usecase.GetDeepLinksAndFolderStreamImpl
 import dev.koga.deeplinklauncher.deeplink.impl.domain.usecase.LinkDeepLinkToFolderImpl
 import dev.koga.deeplinklauncher.deeplink.impl.ui.addfolder.AddFolderViewModel
@@ -33,6 +34,7 @@ public val deepLinkModule: Module = module {
     singleOf(::FolderRepositoryImpl) bind FolderRepository::class
     singleOf(::DuplicateDeepLinkImpl) bind DuplicateDeepLink::class
     singleOf(::GetAutoSuggestionLinksImpl) bind GetAutoSuggestionLinks::class
+    singleOf(::GetDeepLinkFromClipboard)
     singleOf(::GetDeepLinksAndFolderStreamImpl) bind GetDeepLinksAndFolderStream::class
     singleOf(::LinkDeepLinkToFolderImpl) bind LinkDeepLinkToFolder::class
     singleOf(::EnrichDeepLinksForListImpl) bind EnrichDeepLinksForList::class
