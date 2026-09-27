@@ -38,6 +38,7 @@ import dev.koga.deeplinklauncher.deeplink.impl.ui.folderdetails.state.FolderDeta
 import dev.koga.deeplinklauncher.deeplink.impl.ui.folderdetails.state.FolderDetailsUiState
 import dev.koga.deeplinklauncher.deeplink.uicomponent.DeepLinkCard
 import dev.koga.deeplinklauncher.deeplink.uicomponent.DeepLinkCardActionsPresets
+import dev.koga.deeplinklauncher.deeplink.uicomponent.rememberDeepLinkCardPainters
 import dev.koga.deeplinklauncher.designsystem.DLLHorizontalDivider
 import dev.koga.deeplinklauncher.designsystem.DLLTopBar
 import dev.koga.deeplinklauncher.designsystem.DLLTopBarDefaults
@@ -130,6 +131,7 @@ internal fun FolderDetailsScreenContent(
     val typography = DeepLinkTheme.typography
 
     val windowSizeClass = calculateWindowSizeSharedClass()
+    val painters = rememberDeepLinkCardPainters()
 
     val numberOfColumns = when (windowSizeClass.widthSizeClass) {
         WindowWidthSizeClass.Medium -> 2
@@ -260,6 +262,7 @@ internal fun FolderDetailsScreenContent(
                     onLaunch = { onAction(FolderDetailsAction.Launch(deepLink)) },
                 ),
                 showFolder = false,
+                painters = painters,
             )
         }
 

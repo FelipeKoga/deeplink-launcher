@@ -14,6 +14,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.decodeToImageBitmap
+import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.unit.dp
 import compose.icons.TablerIcons
 import compose.icons.tablericons.Link
@@ -24,6 +26,7 @@ import dev.koga.deeplinklauncher.designsystem.theme.DeepLinkTheme
 fun DeepLinkHandlerIcon(
     icon: DeepLinkIcon?,
     modifier: Modifier = Modifier,
+    fallbackPainter: Painter = rememberVectorPainter(TablerIcons.Link),
 ) {
     val colors = DeepLinkTheme.colors
     val shapes = DeepLinkTheme.shapes
@@ -51,7 +54,7 @@ fun DeepLinkHandlerIcon(
             )
         } else {
             Icon(
-                imageVector = TablerIcons.Link,
+                painter = fallbackPainter,
                 contentDescription = null,
                 modifier = Modifier
                     .fillMaxSize()

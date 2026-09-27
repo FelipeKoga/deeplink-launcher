@@ -7,6 +7,7 @@ import dev.koga.deeplinklauncher.deeplink.api.domain.repository.FolderRepository
 import dev.koga.deeplinklauncher.deeplink.api.domain.usecase.GetDeepLinksAndFolderStream
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.distinctUntilChanged
 
 internal class GetDeepLinksAndFolderStreamImpl(
     private val repository: DeepLinkRepository,
@@ -17,12 +18,13 @@ internal class GetDeepLinksAndFolderStreamImpl(
         val normalizeQuery = query.trim()
 
         return combine(
-            repository.getDeepLinksStream(),
-            folderRepository.getFoldersStream(),
+            repository.getDeepLinksStream().distinctUntilChanged(),
+            folderRepository.getFoldersStream().distinctUntilChanged(),
         ) { deepLinks, folders ->
+            val filteredDeepLinks = filterDeepLinks(deepLinks, normalizeQuery)
             GetDeepLinksAndFolderStream.Result(
-                deepLinks = filterDeepLinks(deepLinks, normalizeQuery),
-                favorites = filterDeepLinks(deepLinks, normalizeQuery).filter(DeepLink::isFavorite),
+                deepLinks = filteredDeepLinks,
+                favorites = filteredDeepLinks.filter(DeepLink::isFavorite),
                 folders = filterFolders(folders, normalizeQuery),
                 folderPreviewDeepLinks = deepLinks.filter { it.folder != null },
             )
