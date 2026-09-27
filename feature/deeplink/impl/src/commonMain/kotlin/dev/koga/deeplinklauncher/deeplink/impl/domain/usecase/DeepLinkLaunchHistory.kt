@@ -10,6 +10,6 @@ import kotlinx.coroutines.withContext
 
 internal suspend fun DeepLinkRepository.recordLaunch(deepLink: DeepLink) {
     withContext(Dispatchers.IO + NonCancellable) {
-        upsertDeepLink(deepLink.copy(lastLaunchedAt = currentLocalDateTime))
+        updateLastLaunchedAt(deepLink.id, currentLocalDateTime)
     }
 }

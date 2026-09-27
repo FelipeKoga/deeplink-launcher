@@ -26,6 +26,9 @@ upsertDeeplink:
 INSERT OR REPLACE INTO deeplink (id, link, name, description, createdAt, lastLaunchedAt, isFavorite, folderId, targetPackage)
 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);
 
+updateLastLaunchedAt:
+UPDATE deeplink SET lastLaunchedAt = ? WHERE id = ?;
+
 getDeepLinkByLink:
 SELECT d.*, f.*
 FROM deeplink d
