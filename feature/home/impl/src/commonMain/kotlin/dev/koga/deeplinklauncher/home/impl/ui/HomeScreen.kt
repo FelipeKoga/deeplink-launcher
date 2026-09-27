@@ -117,6 +117,7 @@ internal fun HomeUI(
                 launch = { onAction(HomeAction.LaunchInputDeepLink) },
                 onSuggestionClicked = { onAction(HomeAction.OnSuggestionClicked(it)) },
                 onValueChange = { onAction(HomeAction.OnInputChanged(it)) },
+                onExpandedChange = { onAction(HomeAction.OnInputExpandedChanged(it)) },
             )
         },
     ) {
