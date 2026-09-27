@@ -18,6 +18,7 @@ import dev.koga.deeplinklauncher.deeplink.api.domain.model.Folder
 import dev.koga.deeplinklauncher.deeplink.api.domain.model.LaunchSource
 import dev.koga.deeplinklauncher.deeplink.api.domain.repository.DeepLinkRepository
 import dev.koga.deeplinklauncher.deeplink.api.domain.repository.FolderRepository
+import dev.koga.deeplinklauncher.deeplink.api.domain.usecase.DeleteDeepLink
 import dev.koga.deeplinklauncher.deeplink.api.domain.usecase.DuplicateDeepLink
 import dev.koga.deeplinklauncher.deeplink.api.domain.usecase.GetDeepLinkHandlers
 import dev.koga.deeplinklauncher.deeplink.api.domain.usecase.LaunchDeepLink
@@ -75,6 +76,7 @@ internal class DeepLinkDetailsViewModel(
     private val pinDeepLinkToHomeScreen: PinDeepLinkToHomeScreen,
     private val shortcutManager: DeepLinkShortcutManager,
     private val duplicateDeepLink: DuplicateDeepLink,
+    private val deleteDeepLink: DeleteDeepLink,
     private val linkDeepLinkToFolder: LinkDeepLinkToFolder,
     private val validateDeepLink: ValidateDeepLink,
     private val coroutineDebouncer: CoroutineDebouncer,
@@ -306,7 +308,7 @@ internal class DeepLinkDetailsViewModel(
 
     private fun delete() {
         viewModelScope.launch {
-            deepLinkRepository.deleteDeepLink(deepLink.value.id)
+            deleteDeepLink(deepLink.value.id)
             analyticsTracker.track(DeeplinkDeleted)
             appNavigator.popBackStack()
         }

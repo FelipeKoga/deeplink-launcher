@@ -12,4 +12,6 @@ internal class DeepLinkShortcutManagerImpl : DeepLinkShortcutManager {
     override suspend fun update(deepLink: DeepLink) = Unit
 
     override suspend fun remove(deepLinkId: String) = Unit
+
+    override suspend fun disable(deepLinkIds: List<String>) = Unit
 }

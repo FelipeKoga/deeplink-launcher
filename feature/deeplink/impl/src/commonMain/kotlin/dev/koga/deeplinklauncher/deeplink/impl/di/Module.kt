@@ -4,6 +4,8 @@ import dev.koga.deeplinklauncher.deeplink.api.application.EnrichDeepLinkForDetai
 import dev.koga.deeplinklauncher.deeplink.api.application.EnrichDeepLinksForList
 import dev.koga.deeplinklauncher.deeplink.api.domain.repository.DeepLinkRepository
 import dev.koga.deeplinklauncher.deeplink.api.domain.repository.FolderRepository
+import dev.koga.deeplinklauncher.deeplink.api.domain.usecase.DeleteAllDeepLinks
+import dev.koga.deeplinklauncher.deeplink.api.domain.usecase.DeleteDeepLink
 import dev.koga.deeplinklauncher.deeplink.api.domain.usecase.DuplicateDeepLink
 import dev.koga.deeplinklauncher.deeplink.api.domain.usecase.GetAutoSuggestionLinks
 import dev.koga.deeplinklauncher.deeplink.api.domain.usecase.GetDeepLinksAndFolderStream
@@ -12,6 +14,8 @@ import dev.koga.deeplinklauncher.deeplink.impl.application.EnrichDeepLinkForDeta
 import dev.koga.deeplinklauncher.deeplink.impl.application.EnrichDeepLinksForListImpl
 import dev.koga.deeplinklauncher.deeplink.impl.data.repository.DeepLinkRepositoryImpl
 import dev.koga.deeplinklauncher.deeplink.impl.data.repository.FolderRepositoryImpl
+import dev.koga.deeplinklauncher.deeplink.impl.domain.usecase.DeleteAllDeepLinksImpl
+import dev.koga.deeplinklauncher.deeplink.impl.domain.usecase.DeleteDeepLinkImpl
 import dev.koga.deeplinklauncher.deeplink.impl.domain.usecase.DuplicateDeepLinkImpl
 import dev.koga.deeplinklauncher.deeplink.impl.domain.usecase.GetAutoSuggestionLinksImpl
 import dev.koga.deeplinklauncher.deeplink.impl.domain.usecase.GetDeepLinkFromClipboard
@@ -33,6 +37,8 @@ public val deepLinkModule: Module = module {
     singleOf(::DeepLinkRepositoryImpl) bind DeepLinkRepository::class
     singleOf(::FolderRepositoryImpl) bind FolderRepository::class
     singleOf(::DuplicateDeepLinkImpl) bind DuplicateDeepLink::class
+    singleOf(::DeleteDeepLinkImpl) bind DeleteDeepLink::class
+    singleOf(::DeleteAllDeepLinksImpl) bind DeleteAllDeepLinks::class
     singleOf(::GetAutoSuggestionLinksImpl) bind GetAutoSuggestionLinks::class
     singleOf(::GetDeepLinkFromClipboard)
     singleOf(::GetDeepLinksAndFolderStreamImpl) bind GetDeepLinksAndFolderStream::class
