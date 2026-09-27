@@ -19,12 +19,14 @@ import dev.koga.deeplinklauncher.deeplink.impl.domain.usecase.LaunchDeepLinkImpl
 import dev.koga.deeplinklauncher.deeplink.impl.domain.usecase.PinDeepLinkToHomeScreenImpl
 import dev.koga.deeplinklauncher.deeplink.impl.domain.usecase.ShareDeepLinkImpl
 import dev.koga.deeplinklauncher.deeplink.impl.domain.usecase.ValidateDeepLinkImpl
+import dev.koga.deeplinklauncher.deeplink.impl.platform.android.AndroidHandlerResolver
 import org.koin.core.module.Module
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.bind
 import org.koin.dsl.module
 
 internal actual val platformModule: Module = module {
+    singleOf(::AndroidHandlerResolver)
     singleOf(::GetDeepLinkMetadataImpl) bind GetDeepLinkMetadata::class
     singleOf(::GetDeepLinkHandlerInfoImpl) bind GetDeepLinkHandlerInfo::class
     singleOf(::GetDeepLinkHandlerIconImpl) bind GetDeepLinkHandlerIcon::class
