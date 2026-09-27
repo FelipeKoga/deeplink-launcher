@@ -8,10 +8,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHostState
-import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -24,18 +22,22 @@ import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.flowWithLifecycle
+import androidx.navigationevent.NavigationEventInfo
+import androidx.navigationevent.compose.NavigationBackHandler
+import androidx.navigationevent.compose.rememberNavigationEventState
 import dev.koga.deeplinklauncher.deeplink.impl.ui.deeplinkdetails.component.DuplicateModeUI
 import dev.koga.deeplinklauncher.deeplink.impl.ui.deeplinkdetails.component.EditModeUI
 import dev.koga.deeplinklauncher.deeplink.impl.ui.deeplinkdetails.component.LaunchModeUI
+import dev.koga.deeplinklauncher.deeplink.impl.ui.deeplinkdetails.component.WindowlessBottomSheet
+import dev.koga.deeplinklauncher.deeplink.impl.ui.deeplinkdetails.component.rememberWindowlessBottomSheetState
 import dev.koga.deeplinklauncher.deeplink.impl.ui.deeplinkdetails.delete.DeepLinkDeleteConfirmationDialog
 import dev.koga.deeplinklauncher.deeplink.impl.ui.deeplinkdetails.state.DeepLinkDetailsAction
 import dev.koga.deeplinklauncher.deeplink.impl.ui.deeplinkdetails.state.DeepLinkDetailsUiState
 import dev.koga.deeplinklauncher.deeplink.impl.ui.deeplinkdetails.state.EditAction
-import dev.koga.deeplinklauncher.designsystem.DLLModalBottomSheet
 import dev.koga.deeplinklauncher.designsystem.DLLSnackbarHost
+import dev.koga.deeplinklauncher.designsystem.theme.DeepLinkTheme
 import kotlinx.coroutines.flow.collectLatest
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun DeepLinkDetailsBottomSheet(
     viewModel: DeepLinkDetailsViewModel,
@@ -65,11 +67,19 @@ internal fun DeepLinkDetailsBottomSheet(
             }
     }
 
-    DLLModalBottomSheet(
-        onDismiss = { viewModel.popBackStack() },
-        sheetState = rememberModalBottomSheetState(
-            skipPartiallyExpanded = true,
-        ),
+    val sheetState = rememberWindowlessBottomSheetState()
+
+    NavigationBackHandler(
+        state = rememberNavigationEventState(currentInfo = NavigationEventInfo.None),
+    ) {
+        sheetState.dismiss()
+    }
+
+    WindowlessBottomSheet(
+        state = sheetState,
+        onDismissed = { viewModel.popBackStack() },
+        containerColor = DeepLinkTheme.colors.surface.card,
+        contentReady = uiState.deepLink.id.isNotEmpty(),
     ) {
         Box(modifier = Modifier.fillMaxWidth()) {
             DeepLinkDetailsUI(

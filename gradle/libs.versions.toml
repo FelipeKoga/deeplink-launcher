@@ -17,6 +17,7 @@ billing = "8.3.0"
 buildkonfig = "0.17.1"
 composerules = "0.0.26"
 compose-navigation = "2.9.2"
+navigationevent = "1.0.1"
 compose-multiplatform = "1.10.3"
 compose-runtime = "1.10.3"
 composeIcons = "1.1.1"
@@ -69,6 +70,7 @@ compose-compiler-plugin = { group = "org.jetbrains.kotlin", name = "compose-comp
 compose-gradlePlugin = { group = "org.jetbrains.compose", name = "compose-gradle-plugin", version.ref = "compose-multiplatform" }
 compose-navigation = { module = "org.jetbrains.androidx.navigation:navigation-compose", version.ref = "compose-navigation" }
 compose-runtime = { module = "androidx.compose.runtime:runtime", version.ref = "compose-runtime" }
+navigationevent-compose = { module = "org.jetbrains.androidx.navigationevent:navigationevent-compose", version.ref = "navigationevent" }
 composeIcons-tablerIcons = { module = "br.com.devsrsouza.compose.icons:tabler-icons", version.ref = "composeIcons" }
 composerules = { module = "com.twitter.compose.rules:detekt", version.ref = "composerules" }
 androidx-lifecycle-runtime-compose = { module = "org.jetbrains.androidx.lifecycle:lifecycle-runtime-compose", version.ref = "androidx-lifecycle" }

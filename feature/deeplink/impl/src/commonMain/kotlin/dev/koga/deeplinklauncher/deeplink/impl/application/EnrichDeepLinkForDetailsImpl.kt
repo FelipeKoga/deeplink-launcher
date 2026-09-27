@@ -6,18 +6,22 @@ import dev.koga.deeplinklauncher.deeplink.api.domain.usecase.GetDeepLinkHandlerI
 import dev.koga.deeplinklauncher.deeplink.api.domain.usecase.GetDeepLinkHandlerInfo
 import dev.koga.deeplinklauncher.deeplink.api.domain.usecase.GetDeepLinkMetadata
 import dev.koga.deeplinklauncher.deeplink.api.ui.model.DeepLinkDetailsModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.IO
+import kotlinx.coroutines.withContext
 
 internal class EnrichDeepLinkForDetailsImpl(
     private val getDeepLinkHandlerIcon: GetDeepLinkHandlerIcon,
     private val getDeepLinkMetadata: GetDeepLinkMetadata,
     private val getDeepLinkHandlerInfo: GetDeepLinkHandlerInfo,
 ) : EnrichDeepLinkForDetails {
-    override suspend fun invoke(deepLink: DeepLink): DeepLinkDetailsModel {
-        return DeepLinkDetailsModel(
-            deepLink = deepLink,
-            icon = getDeepLinkHandlerIcon(deepLink.link, deepLink.targetPackage),
-            metadata = getDeepLinkMetadata(deepLink.link),
-            handlerInfo = getDeepLinkHandlerInfo(deepLink.link, deepLink.targetPackage),
-        )
-    }
+    override suspend fun invoke(deepLink: DeepLink): DeepLinkDetailsModel =
+        withContext(Dispatchers.IO) {
+            DeepLinkDetailsModel(
+                deepLink = deepLink,
+                icon = getDeepLinkHandlerIcon(deepLink.link, deepLink.targetPackage),
+                metadata = getDeepLinkMetadata(deepLink.link),
+                handlerInfo = getDeepLinkHandlerInfo(deepLink.link, deepLink.targetPackage),
+            )
+        }
 }
