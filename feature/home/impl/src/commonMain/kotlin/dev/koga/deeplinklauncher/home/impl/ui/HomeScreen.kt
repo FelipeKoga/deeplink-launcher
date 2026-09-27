@@ -17,7 +17,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.chrisbanes.haze.HazeState
-import dev.chrisbanes.haze.hazeEffect
 import dev.chrisbanes.haze.hazeSource
 import dev.chrisbanes.haze.materials.ExperimentalHazeMaterialsApi
 import dev.chrisbanes.haze.materials.HazeMaterials
@@ -31,6 +30,7 @@ import dev.koga.deeplinklauncher.home.impl.ui.navigation.HomeRoute
 import dev.koga.deeplinklauncher.home.impl.ui.state.HomeUiState
 import dev.koga.deeplinklauncher.navigation.AppNavigator
 import dev.koga.deeplinklauncher.settings.api.ui.navigation.SettingsRouteEntryPoint
+import dev.koga.deeplinklauncher.ui.barHazeEffect
 
 @Composable
 fun HomeScreen(
@@ -94,7 +94,7 @@ internal fun HomeUI(
                 },
                 onSearch = { onAction(HomeAction.Search(it)) },
                 pagerState = pagerState,
-                modifier = Modifier.hazeEffect(
+                modifier = Modifier.barHazeEffect(
                     state = hazeState,
                     style = HazeMaterials.regular(
                         containerColor = colors.surface.background,
@@ -106,7 +106,7 @@ internal fun HomeUI(
             DeepLinkLaunchBottomBar(
                 modifier = Modifier
                     .clip(shapes.sheet)
-                    .hazeEffect(
+                    .barHazeEffect(
                         state = hazeState,
                         style = HazeMaterials.regular(
                             containerColor = colors.surface.elevated,
