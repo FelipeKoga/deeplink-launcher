@@ -48,12 +48,21 @@ android {
         }
     }
 
+    // Release signing is optional so that debug builds, tests and code analysis
+    // configure without secrets. Release builds stay unsigned when keys are missing.
+    val releaseSigningKeys = listOf("KEYSTORE_FILE_NAME", "KEYSTORE_PASSWORD", "KEYSTORE_ALIAS", "KEY_PASSWORD")
+        .associateWith { getSigningKey(it, keystoreProperties) }
+
     signingConfigs {
-        create("release") {
-            storeFile = file(getSigningKey("KEYSTORE_FILE_NAME", keystoreProperties))
-            storePassword = getSigningKey("KEYSTORE_PASSWORD", keystoreProperties)
-            keyAlias = getSigningKey("KEYSTORE_ALIAS", keystoreProperties)
-            keyPassword = getSigningKey("KEY_PASSWORD", keystoreProperties)
+        if (releaseSigningKeys.values.all { !it.isNullOrEmpty() }) {
+            create("release") {
+                storeFile = file(releaseSigningKeys.getValue("KEYSTORE_FILE_NAME")!!)
+                storePassword = releaseSigningKeys.getValue("KEYSTORE_PASSWORD")
+                keyAlias = releaseSigningKeys.getValue("KEYSTORE_ALIAS")
+                keyPassword = releaseSigningKeys.getValue("KEY_PASSWORD")
+            }
+        } else {
+            logger.info("Release signing keys not found; release builds will be unsigned.")
         }
     }
 
@@ -65,7 +74,7 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
-            signingConfig = signingConfigs.getByName("release")
+            signingConfigs.findByName("release")?.let { signingConfig = it }
         }
     }
 }
@@ -94,7 +103,7 @@ dependencies {
     baselineProfile(projects.baselineprofile)
 }
 
-fun getSigningKey(secretKey: String, fallbackProps: Properties): String =
+fun getSigningKey(secretKey: String, fallbackProps: Properties): String? =
     if (!System.getenv(secretKey).isNullOrEmpty()) {
         System.getenv(secretKey)
     } else {

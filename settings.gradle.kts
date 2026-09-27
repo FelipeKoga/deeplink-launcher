@@ -1,6 +1,9 @@
 @file:Suppress("UnstableApiUsage")
 
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
+
+rootProject.name = "deeplink-launcher"
+
 pluginManagement {
     includeBuild("build-logic")
     repositories {
