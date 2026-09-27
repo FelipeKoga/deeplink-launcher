@@ -10,4 +10,6 @@ internal class DeepLinkShortcutManagerImpl : DeepLinkShortcutManager {
         DeepLinkShortcutManager.AddResult.NotSupported
 
     override suspend fun remove(deepLinkId: String) = Unit
+
+    override suspend fun disable(deepLinkIds: List<String>) = Unit
 }
