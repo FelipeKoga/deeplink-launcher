@@ -1,7 +1,6 @@
 package dev.koga.deeplinklauncher.deeplink.impl.domain.usecase
 
 import android.content.Context
-import dev.koga.deeplinklauncher.date.currentLocalDateTime
 import dev.koga.deeplinklauncher.deeplink.api.domain.model.DeepLink
 import dev.koga.deeplinklauncher.deeplink.api.domain.repository.DeepLinkRepository
 import dev.koga.deeplinklauncher.deeplink.api.domain.usecase.LaunchDeepLink
@@ -16,11 +15,8 @@ internal class LaunchDeepLinkImpl(
         return launch(url, targetPackage = null)
     }
 
-    override suspend fun launch(deepLink: DeepLink): LaunchDeepLink.Result {
-        repository.upsertDeepLink(deepLink.copy(lastLaunchedAt = currentLocalDateTime))
-
-        return launch(deepLink.link, deepLink.targetPackage)
-    }
+    override suspend fun launch(deepLink: DeepLink): LaunchDeepLink.Result =
+        launch(deepLink.link, deepLink.targetPackage).also { repository.recordLaunch(deepLink) }
 
     private suspend fun launch(
         url: String,
