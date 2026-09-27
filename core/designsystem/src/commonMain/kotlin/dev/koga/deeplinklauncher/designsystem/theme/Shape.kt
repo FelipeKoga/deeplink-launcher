@@ -14,6 +14,7 @@ data class DeepLinkShapes(
     val cardLarge: Shape = RoundedCornerShape(24.dp),
     val field: Shape = RoundedCornerShape(24.dp),
     val dialog: Shape = RoundedCornerShape(12.dp),
+    val action: Shape = RoundedCornerShape(12.dp),
     val chip: Shape = CircleShape,
     val sheet: Shape = RoundedCornerShape(topStart = 12.dp, topEnd = 12.dp),
     val icon: Shape = RoundedCornerShape(8.dp),
