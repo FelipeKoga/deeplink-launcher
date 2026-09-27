@@ -12,7 +12,6 @@ import dev.koga.deeplinklauncher.deeplink.api.domain.usecase.ShareDeepLink
 import dev.koga.deeplinklauncher.deeplink.api.domain.usecase.ValidateDeepLink
 import dev.koga.deeplinklauncher.deeplink.impl.domain.manager.DeepLinkTargetStateManagerImpl
 import dev.koga.deeplinklauncher.deeplink.impl.domain.usecase.AddDeepLinkToShortcutsImpl
-import dev.koga.deeplinklauncher.deeplink.impl.domain.usecase.GetDeepLinkFromClipboard
 import dev.koga.deeplinklauncher.deeplink.impl.domain.usecase.GetDeepLinkHandlerIconImpl
 import dev.koga.deeplinklauncher.deeplink.impl.domain.usecase.GetDeepLinkHandlerInfoImpl
 import dev.koga.deeplinklauncher.deeplink.impl.domain.usecase.GetDeepLinkHandlersImpl
@@ -21,6 +20,7 @@ import dev.koga.deeplinklauncher.deeplink.impl.domain.usecase.LaunchDeepLinkImpl
 import dev.koga.deeplinklauncher.deeplink.impl.domain.usecase.PinDeepLinkToHomeScreenImpl
 import dev.koga.deeplinklauncher.deeplink.impl.domain.usecase.ShareDeepLinkImpl
 import dev.koga.deeplinklauncher.deeplink.impl.domain.usecase.ValidateDeepLinkImpl
+import dev.koga.deeplinklauncher.deeplink.impl.platform.ClipboardTextReader
 import kotlinx.coroutines.Dispatchers
 import org.koin.core.module.Module
 import org.koin.core.module.dsl.singleOf
@@ -37,7 +37,7 @@ internal actual val platformModule: Module = module {
     singleOf(::ShareDeepLinkImpl) bind ShareDeepLink::class
     singleOf(::PinDeepLinkToHomeScreenImpl) bind PinDeepLinkToHomeScreen::class
     singleOf(::AddDeepLinkToShortcutsImpl) bind AddDeepLinkToShortcuts::class
-    singleOf(::GetDeepLinkFromClipboard)
+    singleOf(::ClipboardTextReader)
 
     single {
         DeepLinkTargetStateManagerImpl(
