@@ -157,4 +157,4 @@ internal fun resolveTargetAppLabel(
 internal fun shouldShowTargetAppPicker(
     availableHandlers: ImmutableList<DeepLinkHandler>,
     targetPackage: String?,
-): Boolean = availableHandlers.size >= 1 || targetPackage != null
+): Boolean = availableHandlers.size >= 2 || targetPackage != null
