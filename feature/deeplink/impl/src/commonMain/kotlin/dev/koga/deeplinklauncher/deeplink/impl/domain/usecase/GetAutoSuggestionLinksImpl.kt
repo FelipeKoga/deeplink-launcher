@@ -7,6 +7,10 @@ import dev.koga.deeplinklauncher.deeplink.api.domain.repository.DeepLinkReposito
 import dev.koga.deeplinklauncher.deeplink.api.domain.usecase.GetAutoSuggestionLinks
 import dev.koga.deeplinklauncher.deeplink.api.domain.usecase.GetDeepLinkMetadata
 import dev.koga.deeplinklauncher.preferences.repository.PreferencesDataSource
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.IO
+import kotlinx.coroutines.withContext
+import kotlin.concurrent.Volatile
 
 internal class GetAutoSuggestionLinksImpl(
     private val repository: DeepLinkRepository,
@@ -15,9 +19,13 @@ internal class GetAutoSuggestionLinksImpl(
     private val getDeepLinkFromClipboard: GetDeepLinkFromClipboard,
 ) : GetAutoSuggestionLinks {
 
+    @Volatile
     private var cachedIndex: MetadataIndex? = null
 
-    override operator fun invoke(link: String): List<Suggestion> {
+    override suspend operator fun invoke(link: String): List<Suggestion> =
+        withContext(Dispatchers.IO) { getSuggestions(link) }
+
+    private fun getSuggestions(link: String): List<Suggestion> {
         if (preferencesDataSource.preferences?.shouldDisableDeepLinkSuggestions == true) {
             return listOf()
         }

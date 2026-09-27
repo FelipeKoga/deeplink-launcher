@@ -44,6 +44,7 @@ import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -64,12 +65,15 @@ class HomeViewModel(
     private val searchInput = MutableStateFlow("")
     private val launchInput = MutableStateFlow("")
     private val errorMessage = MutableStateFlow<String?>(null)
+    private val inputExpanded = MutableStateFlow(false)
+
     private val suggestions = combine(
         launchInput,
+        inputExpanded,
         preferencesDataSource.preferencesStream,
-    ) { input, _ ->
-        getAutoSuggestionLinks(input)
-    }
+    ) { input, expanded, _ ->
+        if (expanded) getAutoSuggestionLinks(input) else emptyList()
+    }.onStart { emit(emptyList()) }
     private val dataStream = searchInput.flatMapLatest { getDeepLinksAndFolderStream(it) }
 
     private var previousItemsById: Map<String, DeepLinkListItem> = emptyMap()
@@ -140,6 +144,7 @@ class HomeViewModel(
             is HomeAction.Search -> onSearch(action.text)
             is HomeAction.OnInputChanged -> onDeepLinkTextChanged(action.text)
             is HomeAction.OnSuggestionClicked -> onDeepLinkTextChanged(action.suggestion.text)
+            is HomeAction.OnInputExpandedChanged -> inputExpanded.value = action.expanded
             HomeAction.LaunchInputDeepLink -> launchDeepLink()
             HomeAction.OnOnboardingShown -> onboardingShown()
             is HomeAction.Navigate -> navigate(action.route)
