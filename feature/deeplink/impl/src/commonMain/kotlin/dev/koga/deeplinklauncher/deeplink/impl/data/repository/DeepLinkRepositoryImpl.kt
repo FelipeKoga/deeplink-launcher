@@ -13,6 +13,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import kotlinx.datetime.LocalDateTime
 
 internal class DeepLinkRepositoryImpl(
     private val database: DeepLinkLauncherDatabase,
@@ -74,6 +75,10 @@ internal class DeepLinkRepositoryImpl(
                 targetPackage = deepLink.targetPackage,
             )
         }
+    }
+
+    override fun updateLastLaunchedAt(id: String, lastLaunchedAt: LocalDateTime) {
+        database.deepLinkQueries.updateLastLaunchedAt(lastLaunchedAt = lastLaunchedAt, id = id)
     }
 
     override fun deleteDeepLink(id: String) {
