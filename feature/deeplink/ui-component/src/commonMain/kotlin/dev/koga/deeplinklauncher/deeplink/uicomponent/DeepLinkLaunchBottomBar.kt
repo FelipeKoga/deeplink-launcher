@@ -123,6 +123,7 @@ public fun DeepLinkLaunchBottomBar(
                         IconButton(
                             onClick = {
                                 isExpanded = false
+                                currentOnExpandedChange(false)
                                 focusManager.clearFocus()
                                 onValueChange("")
                             },
