@@ -72,7 +72,7 @@ internal fun HomeTopBar(
                     ) {
                         Icon(
                             imageVector = TablerIcons.Search,
-                            contentDescription = "settings",
+                            contentDescription = "Search",
                         )
                     }
 
@@ -81,7 +81,7 @@ internal fun HomeTopBar(
                     ) {
                         Icon(
                             imageVector = TablerIcons.Settings,
-                            contentDescription = "settings",
+                            contentDescription = "Settings",
                         )
                     }
                 },
