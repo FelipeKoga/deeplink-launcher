@@ -2,4 +2,7 @@ appId: dev.koga.deeplinklauncher.android
 ---
 - clearState
 - launchApp
+- extendedWaitUntil:
+    visible: "Got it!"
+    timeout: 30000
 - tapOn: "Got it!"
