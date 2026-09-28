@@ -14,8 +14,12 @@ plugins {
     alias(libs.plugins.aboutLibraries)
 }
 
+val hotSwanNeutralTasks = setOf("clean", "help", "tasks")
 val hotSwanEnabled = providers.gradleProperty("hotswan").orNull?.toBoolean()
-    ?: gradle.startParameter.taskNames.all { it.contains("debug", ignoreCase = true) }
+    ?: gradle.startParameter.taskNames
+        .map { it.substringAfterLast(':') }
+        .filterNot { it in hotSwanNeutralTasks }
+        .all { it.contains("debug", ignoreCase = true) || it == "captureAllPreviews" }
 if (hotSwanEnabled) {
     apply(plugin = libs.plugins.hotswan.compiler.get().pluginId)
 }
@@ -32,6 +36,7 @@ android {
 
     defaultConfig.targetSdk = libs.versions.android.targetSdk.get().toInt()
     defaultConfig {
+        applicationId = "dev.koga.deeplinklauncher.android"
         compileSdk = libs.versions.android.compileSdk.get().toInt()
         minSdk = libs.versions.android.minSdk.get().toInt()
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
