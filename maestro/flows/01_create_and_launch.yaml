@@ -1,0 +1,11 @@
+appId: dev.koga.deeplinklauncher.android
+name: "Create a deeplink from the input bar and launch it from its details"
+---
+- runFlow: ../subflows/start_clean.yaml
+- runFlow:
+    file: ../subflows/create_deeplink.yaml
+    env:
+      LINK: "https://www.google.com"
+- assertVisible: "https://www.google.com"
+- tapOn: "https://www.google.com"
+- assertVisible: "More actions"

@@ -1,0 +1,13 @@
+appId: dev.koga.deeplinklauncher.android
+name: "Add and remove a deeplink from the app shortcuts"
+---
+- runFlow: ../subflows/start_clean.yaml
+- runFlow:
+    file: ../subflows/create_deeplink.yaml
+    env:
+      LINK: "https://www.shortcut-test.com"
+- tapOn: "https://www.shortcut-test.com"
+- tapOn: "Shortcut"
+- assertVisible: "Added to app shortcuts"
+- tapOn: "Shortcut"
+- assertVisible: "Removed from app shortcuts"

@@ -1,0 +1,36 @@
+appId: dev.koga.deeplinklauncher.android
+name: "Change the app theme in Settings"
+---
+- runFlow: ../subflows/start_clean.yaml
+- tapOn: "Settings"
+- assertVisible: "Theme"
+- assertVisible: "Suggestions"
+- assertVisible: "Export"
+- assertVisible: "Import"
+- assertVisible: "Delete data"
+- tapOn: "Theme"
+- assertVisible:
+    checked: true
+    containsDescendants:
+      - text: "Auto"
+- tapOn: "Dark"
+- assertVisible:
+    checked: true
+    containsDescendants:
+      - text: "Dark"
+- assertNotVisible:
+    checked: true
+    containsDescendants:
+      - text: "Auto"
+- back
+- tapOn: "Theme"
+- assertVisible:
+    checked: true
+    containsDescendants:
+      - text: "Dark"
+- tapOn: "Auto"
+- assertVisible:
+    checked: true
+    containsDescendants:
+      - text: "Auto"
+- back

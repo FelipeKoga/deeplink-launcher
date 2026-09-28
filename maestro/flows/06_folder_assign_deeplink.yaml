@@ -1,0 +1,26 @@
+appId: dev.koga.deeplinklauncher.android
+name: "Assign a deeplink to a folder in edit mode"
+---
+- runFlow: ../subflows/start_clean.yaml
+- tapOn: "Folders"
+- tapOn: "Create new folder"
+- tapOn: "Name"
+- inputText: "QA Folder"
+- tapOn: "Save"
+- assertVisible: "QA Folder"
+- tapOn: "History"
+- runFlow:
+    file: ../subflows/create_deeplink.yaml
+    env:
+      LINK: "https://www.example-folder.com"
+- tapOn: "https://www.example-folder.com"
+- tapOn: "More actions"
+- tapOn: "Edit"
+- assertVisible: "Folder"
+- tapOn: "QA Folder"
+- tapOn: "Back"
+- assertVisible: "QA Folder"
+- back
+- tapOn: "Folders"
+- tapOn: "QA Folder"
+- assertVisible: "https://www.example-folder.com"

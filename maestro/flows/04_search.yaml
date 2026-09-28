@@ -1,0 +1,26 @@
+appId: dev.koga.deeplinklauncher.android
+name: "Search deeplinks from the top bar"
+---
+- runFlow: ../subflows/start_clean.yaml
+- runFlow:
+    file: ../subflows/create_deeplink.yaml
+    env:
+      LINK: "https://www.google.com"
+- runFlow:
+    file: ../subflows/create_deeplink.yaml
+    env:
+      LINK: "https://www.github.com"
+- tapOn: "Search"
+- tapOn: "Search for deeplinks and folders"
+- inputText: "github"
+- extendedWaitUntil:
+    notVisible: "https://www.google.com"
+    timeout: 5000
+- assertVisible: "https://www.github.com"
+- tapOn: "Clear"
+- extendedWaitUntil:
+    visible: "https://www.google.com"
+    timeout: 5000
+- assertVisible: "https://www.github.com"
+- tapOn: "Back"
+- assertVisible: "Search"

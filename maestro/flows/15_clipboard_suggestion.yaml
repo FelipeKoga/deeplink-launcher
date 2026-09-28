@@ -1,0 +1,30 @@
+appId: dev.koga.deeplinklauncher.android
+name: "Suggest the clipboard only when it holds a deeplink"
+---
+- runFlow: ../subflows/start_clean.yaml
+- runFlow:
+    file: ../subflows/create_deeplink.yaml
+    env:
+      LINK: "https://www.clipboard-test.com"
+- tapOn: "https://www.clipboard-test.com"
+- assertVisible: "More actions"
+- tapOn: "Copy deep link"
+- extendedWaitUntil:
+    notVisible: "Copied"
+    timeout: 10000
+- back
+- extendedWaitUntil:
+    notVisible: "More actions"
+    timeout: 5000
+- tapOn: "Type your deeplink here..."
+- assertVisible:
+    text: "https://www.clipboard-test.com"
+    below: "Deeplink from clipboard"
+- inputText: "notalink"
+- longPressOn: "notalink"
+- tapOn: "Select all"
+- tapOn: "Copy"
+- tapOn: "Clear"
+- tapOn: "Type your deeplink here..."
+- assertVisible: "https://"
+- assertNotVisible: "Deeplink from clipboard"

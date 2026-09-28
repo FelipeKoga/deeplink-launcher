@@ -1,0 +1,26 @@
+appId: dev.koga.deeplinklauncher.android
+name: "Delete all deeplinks from Settings"
+---
+- runFlow: ../subflows/start_clean.yaml
+- runFlow:
+    file: ../subflows/create_deeplink.yaml
+    env:
+      LINK: "https://www.delete-test-1.com"
+- runFlow:
+    file: ../subflows/create_deeplink.yaml
+    env:
+      LINK: "https://www.delete-test-2.com"
+- assertVisible: "https://www.delete-test-1.com"
+- tapOn: "Settings"
+- tapOn: "Delete data"
+- assertVisible: "This action cannot be undone"
+- assertVisible: "Delete deeplinks only"
+- assertVisible: "Delete folders only"
+- assertVisible: "Delete all"
+- tapOn: "Delete deeplinks only"
+- back
+- tapOn: "History"
+- extendedWaitUntil:
+    notVisible: "https://www.delete-test-1.com"
+    timeout: 5000
+- assertNotVisible: "https://www.delete-test-2.com"

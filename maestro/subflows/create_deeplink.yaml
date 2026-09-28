@@ -1,0 +1,18 @@
+appId: dev.koga.deeplinklauncher.android
+---
+- tapOn: "Type your deeplink here..."
+- inputText: ${LINK}
+- tapOn: "Launch"
+- back
+- extendedWaitUntil:
+    visible: "More actions"
+    timeout: 15000
+- back
+- extendedWaitUntil:
+    notVisible: "More actions"
+    timeout: 5000
+- runFlow:
+    when:
+      visible: "Clear"
+    commands:
+      - tapOn: "Clear"

@@ -1,0 +1,29 @@
+appId: dev.koga.deeplinklauncher.android
+name: "Launching a deeplink moves it to the top of History"
+---
+- runFlow: ../subflows/start_clean.yaml
+- runFlow:
+    file: ../subflows/create_deeplink.yaml
+    env:
+      LINK: "https://www.first.com"
+- runFlow:
+    file: ../subflows/create_deeplink.yaml
+    env:
+      LINK: "https://www.second.com"
+- assertVisible:
+    text: "https://www.second.com"
+    above:
+      text: "https://www.first.com"
+- tapOn: "https://www.first.com"
+- tapOn: "Launch"
+- back
+- extendedWaitUntil:
+    visible: "More actions"
+    timeout: 15000
+- back
+- extendedWaitUntil:
+    visible:
+      text: "https://www.first.com"
+      above:
+        text: "https://www.second.com"
+    timeout: 5000

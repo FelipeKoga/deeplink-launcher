@@ -1,0 +1,34 @@
+appId: dev.koga.deeplinklauncher.android
+name: "Disabling suggestions in Settings hides them in the input bar"
+---
+- runFlow: ../subflows/start_clean.yaml
+- runFlow:
+    file: ../subflows/create_deeplink.yaml
+    env:
+      LINK: "https://www.suggestion-test.com"
+- tapOn: "Type your deeplink here..."
+- assertVisible: "https://"
+- tapOn: "Clear"
+- tapOn: "Settings"
+- tapOn: "Suggestions"
+- tapOn:
+    checked: true
+- assertNotVisible:
+    checked: true
+- back
+- back
+- tapOn: "Type your deeplink here..."
+- assertVisible: "Clear"
+- assertNotVisible: "https://"
+- tapOn: "Clear"
+- tapOn: "Settings"
+- tapOn: "Suggestions"
+- tapOn:
+    rightOf: "Enable suggestions"
+    below: "When you are typing a deeplink.*"
+- assertVisible:
+    checked: true
+- back
+- back
+- tapOn: "Type your deeplink here..."
+- assertVisible: "https://"
