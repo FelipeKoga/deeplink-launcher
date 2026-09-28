@@ -8,6 +8,7 @@ import dev.koga.deeplinklauncher.database.SelectFoldersWithDeeplinkCount
 import dev.koga.deeplinklauncher.deeplink.api.domain.model.DeepLink
 import dev.koga.deeplinklauncher.deeplink.api.domain.model.Folder
 import dev.koga.deeplinklauncher.deeplink.api.domain.repository.FolderRepository
+import dev.koga.deeplinklauncher.deeplink.api.domain.repository.FolderRepository.InsertResult
 import dev.koga.deeplinklauncher.deeplink.api.domain.repository.FolderRepository.WriteResult
 import dev.koga.deeplinklauncher.deeplink.impl.data.mapper.toDomain
 import kotlinx.coroutines.Dispatchers
@@ -60,14 +61,14 @@ internal class FolderRepositoryImpl(
             ?.toDomain()
     }
 
-    override suspend fun insert(folder: Folder): WriteResult = write {
+    override suspend fun insert(folder: Folder): InsertResult = write {
         database.transactionWithResult {
             if (isNameUsedByOther(name = folder.name, id = folder.id)) {
-                return@transactionWithResult WriteResult.NameAlreadyExists
+                return@transactionWithResult InsertResult.NameAlreadyExists
             }
 
             queries.insertFolder(id = folder.id, name = folder.name, description = folder.description)
-            WriteResult.Success
+            InsertResult.Success
         }
     }
 

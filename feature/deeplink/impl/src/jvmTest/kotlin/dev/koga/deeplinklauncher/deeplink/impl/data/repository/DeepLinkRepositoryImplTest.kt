@@ -2,6 +2,7 @@ package dev.koga.deeplinklauncher.deeplink.impl.data.repository
 
 import dev.koga.deeplinklauncher.deeplink.api.domain.model.DeepLink
 import dev.koga.deeplinklauncher.deeplink.api.domain.model.Folder
+import dev.koga.deeplinklauncher.deeplink.api.domain.repository.DeepLinkRepository.InsertResult
 import dev.koga.deeplinklauncher.deeplink.api.domain.repository.DeepLinkRepository.WriteResult
 import dev.koga.deeplinklauncher.deeplink.api.domain.repository.FolderRepository
 import kotlinx.coroutines.test.runTest
@@ -49,7 +50,7 @@ class DeepLinkRepositoryImplTest {
 
         val result = repository.insert(deepLink(id = "b", link = "demo://one", name = "copy"))
 
-        assertEquals(WriteResult.LinkAlreadyExists, result)
+        assertEquals(InsertResult.LinkAlreadyExists, result)
         assertEquals("original", repository.getDeepLinkById("a")?.name)
         assertNull(repository.getDeepLinkById("b"))
     }
@@ -117,7 +118,7 @@ class DeepLinkRepositoryImplTest {
 
         val result = folders.insert(Folder(id = "f2", name = "Work", description = null))
 
-        assertEquals(FolderRepository.WriteResult.NameAlreadyExists, result)
+        assertEquals(FolderRepository.InsertResult.NameAlreadyExists, result)
         assertNull(folders.getFolderById("f2"))
     }
 
@@ -148,8 +149,10 @@ class DeepLinkRepositoryImplTest {
             )
         }
 
-        assertEquals(listOf("demo://local"), repository.getDeepLinks().map { it.link })
+        // The folder and demo://new were written before the failing insert; both must be gone.
+        assertNull(repository.getDeepLinkByLink("demo://new"))
         assertTrue(folders.getFolders().isEmpty())
+        assertEquals(listOf("demo://local"), repository.getDeepLinks().map { it.link })
     }
 
     @Test

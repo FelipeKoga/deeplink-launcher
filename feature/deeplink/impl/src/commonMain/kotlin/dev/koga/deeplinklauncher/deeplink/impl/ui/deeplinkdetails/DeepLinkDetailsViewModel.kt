@@ -260,7 +260,7 @@ internal class DeepLinkDetailsViewModel(
                 return@debounce
             }
 
-            when (deepLinkRepository.updateLink(id = deepLink.value.id, link = link)) {
+            when (deepLinkRepository.updateLink(id = route.id, link = link)) {
                 DeepLinkRepository.WriteResult.LinkAlreadyExists ->
                     deepLinkErrorMessage.update { "Link already exists" }
 
@@ -272,21 +272,21 @@ internal class DeepLinkDetailsViewModel(
 
     private fun updateName(name: String) {
         coroutineDebouncer.debounce(viewModelScope, "name") {
-            deepLinkRepository.updateName(id = deepLink.value.id, name = name)
+            deepLinkRepository.updateName(id = route.id, name = name)
             refreshShortcut(deepLink.value.copy(name = name))
         }
     }
 
     private fun updateDescription(description: String) {
         coroutineDebouncer.debounce(viewModelScope, "description") {
-            deepLinkRepository.updateDescription(id = deepLink.value.id, description = description)
+            deepLinkRepository.updateDescription(id = route.id, description = description)
             refreshShortcut(deepLink.value.copy(description = description))
         }
     }
 
     private fun updateTargetPackage(targetPackage: String?) {
         viewModelScope.launch {
-            deepLinkRepository.updateTargetPackage(id = deepLink.value.id, targetPackage = targetPackage)
+            deepLinkRepository.updateTargetPackage(id = route.id, targetPackage = targetPackage)
             refreshShortcut(deepLink.value.copy(targetPackage = targetPackage))
         }
     }
@@ -298,7 +298,7 @@ internal class DeepLinkDetailsViewModel(
     private fun toggleFavorite() {
         viewModelScope.launch {
             val isFavorite = !deepLink.value.isFavorite
-            deepLinkRepository.setFavorite(id = deepLink.value.id, isFavorite = isFavorite)
+            deepLinkRepository.setFavorite(id = route.id, isFavorite = isFavorite)
             analyticsTracker.track(FavoriteToggled(isFavorite = isFavorite))
         }
     }
@@ -376,7 +376,7 @@ internal class DeepLinkDetailsViewModel(
     private fun toggleFolder(folder: Folder) {
         if (folder.id == deepLink.value.folder?.id) {
             viewModelScope.launch {
-                deepLinkRepository.setFolder(id = deepLink.value.id, folderId = null)
+                deepLinkRepository.setFolder(id = route.id, folderId = null)
             }
             return
         }

@@ -216,14 +216,13 @@ class HomeViewModel(
                 // The link was typed into the input bar, so it can already exist if it was
                 // saved in the meantime; open that record instead of failing.
                 val id = when (deepLinkRepository.insert(newDeepLink)) {
-                    DeepLinkRepository.WriteResult.Success -> {
+                    DeepLinkRepository.InsertResult.Success -> {
                         analyticsTracker.track(DeeplinkCreated(source = LaunchSource.INPUT_BAR))
                         newDeepLink.id
                     }
 
-                    DeepLinkRepository.WriteResult.LinkAlreadyExists,
-                    DeepLinkRepository.WriteResult.NotFound,
-                    -> deepLinkRepository.getDeepLinkByLink(link)?.id ?: return@launch
+                    DeepLinkRepository.InsertResult.LinkAlreadyExists ->
+                        deepLinkRepository.getDeepLinkByLink(link)?.id ?: return@launch
                 }
                 trackLaunchResult(source = LaunchSource.INPUT_BAR)
                 onBottomBarLaunchSuccess(id)

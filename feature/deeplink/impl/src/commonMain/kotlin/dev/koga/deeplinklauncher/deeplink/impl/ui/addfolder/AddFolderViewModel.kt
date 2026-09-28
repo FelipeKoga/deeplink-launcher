@@ -65,15 +65,13 @@ internal class AddFolderViewModel(
 
         viewModelScope.launch {
             when (repository.insert(folder)) {
-                FolderRepository.WriteResult.Success -> {
+                FolderRepository.InsertResult.Success -> {
                     analyticsTracker.track(FolderCreated)
                     appNavigator.popBackStack()
                 }
 
-                FolderRepository.WriteResult.NameAlreadyExists ->
+                FolderRepository.InsertResult.NameAlreadyExists ->
                     snackBarDispatcher.show("A folder named \"${folder.name}\" already exists")
-
-                FolderRepository.WriteResult.NotFound -> Unit
             }
         }
     }

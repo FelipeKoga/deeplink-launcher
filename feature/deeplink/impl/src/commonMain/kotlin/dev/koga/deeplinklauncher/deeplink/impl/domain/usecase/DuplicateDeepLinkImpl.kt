@@ -49,9 +49,8 @@ internal class DuplicateDeepLinkImpl(
         )
 
         return when (repository.insert(duplicatedDeepLink)) {
-            DeepLinkRepository.WriteResult.Success -> DuplicateDeepLink.Result.Success(duplicatedDeepLink)
-            DeepLinkRepository.WriteResult.LinkAlreadyExists -> DuplicateDeepLink.Result.Error.LinkAlreadyExists
-            DeepLinkRepository.WriteResult.NotFound -> error("insert never reports NotFound")
+            DeepLinkRepository.InsertResult.Success -> DuplicateDeepLink.Result.Success(duplicatedDeepLink)
+            DeepLinkRepository.InsertResult.LinkAlreadyExists -> DuplicateDeepLink.Result.Error.LinkAlreadyExists
         }
     }
 }

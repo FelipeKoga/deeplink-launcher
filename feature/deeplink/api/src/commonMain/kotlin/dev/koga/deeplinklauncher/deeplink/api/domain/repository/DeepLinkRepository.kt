@@ -18,7 +18,7 @@ public interface DeepLinkRepository {
     public fun getDeepLinkByLink(link: String): DeepLink?
 
     /** Inserts [deepLink]. Its [DeepLink.folder] is stored by id; the folder itself is not written. */
-    public suspend fun insert(deepLink: DeepLink): WriteResult
+    public suspend fun insert(deepLink: DeepLink): InsertResult
 
     /** Changes the link of [id]. Rejected, without changes, if another deeplink already uses [link]. */
     public suspend fun updateLink(id: String, link: String): WriteResult
@@ -43,6 +43,11 @@ public interface DeepLinkRepository {
      * - A new deeplink whose id is taken by a different local record gets a new id.
      */
     public suspend fun importAll(folders: List<Folder>, deepLinks: List<DeepLink>)
+
+    public sealed interface InsertResult {
+        public data object Success : InsertResult
+        public data object LinkAlreadyExists : InsertResult
+    }
 
     public sealed interface WriteResult {
         public data object Success : WriteResult

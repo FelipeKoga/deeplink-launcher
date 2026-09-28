@@ -10,6 +10,7 @@ import dev.koga.deeplinklauncher.database.SelectAllDeeplinks
 import dev.koga.deeplinklauncher.deeplink.api.domain.model.DeepLink
 import dev.koga.deeplinklauncher.deeplink.api.domain.model.Folder
 import dev.koga.deeplinklauncher.deeplink.api.domain.repository.DeepLinkRepository
+import dev.koga.deeplinklauncher.deeplink.api.domain.repository.DeepLinkRepository.InsertResult
 import dev.koga.deeplinklauncher.deeplink.api.domain.repository.DeepLinkRepository.WriteResult
 import dev.koga.deeplinklauncher.deeplink.impl.data.mapper.toDomain
 import kotlinx.coroutines.Dispatchers
@@ -65,14 +66,14 @@ internal class DeepLinkRepositoryImpl(
             ?.let(GetDeepLinkByLink::toDomain)
     }
 
-    override suspend fun insert(deepLink: DeepLink): WriteResult = write {
+    override suspend fun insert(deepLink: DeepLink): InsertResult = write {
         database.transactionWithResult {
             if (isLinkUsedByOther(link = deepLink.link, id = deepLink.id)) {
-                return@transactionWithResult WriteResult.LinkAlreadyExists
+                return@transactionWithResult InsertResult.LinkAlreadyExists
             }
 
             insertRow(deepLink, id = deepLink.id, folderId = deepLink.folder?.id)
-            WriteResult.Success
+            InsertResult.Success
         }
     }
 
