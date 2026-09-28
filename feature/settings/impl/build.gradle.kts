@@ -31,6 +31,7 @@ kotlin {
             implementation(libs.compose.navigation)
 
             implementation(compose.preview)
+            implementation(libs.roborazzi.annotations)
         }
     }
 }
