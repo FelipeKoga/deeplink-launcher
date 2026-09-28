@@ -1,6 +1,7 @@
 package dev.koga.deeplinklauncher.deeplink.impl.domain.manager
 
 import android.content.Context
+import android.content.pm.ShortcutManager
 import androidx.core.content.pm.ShortcutInfoCompat
 import androidx.core.content.pm.ShortcutManagerCompat
 import androidx.core.os.persistableBundleOf
@@ -66,8 +67,23 @@ internal class DeepLinkShortcutManagerImpl(
             .build()
     }
 
+    override suspend fun enable(deepLinkIds: List<String>) {
+        if (deepLinkIds.isEmpty()) return
+        withContext(Dispatchers.IO) {
+            context.getSystemService(ShortcutManager::class.java).enableShortcuts(deepLinkIds)
+        }
+    }
+
+    override suspend fun disable(deepLinkIds: List<String>) {
+        if (deepLinkIds.isEmpty()) return
+        withContext(Dispatchers.IO) {
+            ShortcutManagerCompat.disableShortcuts(context, deepLinkIds, DELETED_MESSAGE)
+        }
+    }
+
     companion object {
         private const val MAX_SHORT_LABEL_LENGTH = 25
         private const val MAX_LONG_LABEL_LENGTH = 256
+        private const val DELETED_MESSAGE = "This deeplink was deleted"
     }
 }

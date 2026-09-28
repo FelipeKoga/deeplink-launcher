@@ -4,6 +4,7 @@ import dev.koga.deeplinklauncher.datatransfer.api.domain.usecase.ImportDeepLinks
 import dev.koga.deeplinklauncher.datatransfer.impl.data.dto.Payload
 import dev.koga.deeplinklauncher.datatransfer.impl.data.dto.toModel
 import dev.koga.deeplinklauncher.date.currentLocalDateTime
+import dev.koga.deeplinklauncher.deeplink.api.domain.manager.DeepLinkShortcutManager
 import dev.koga.deeplinklauncher.deeplink.api.domain.model.DeepLink
 import dev.koga.deeplinklauncher.deeplink.api.domain.repository.DeepLinkRepository
 import dev.koga.deeplinklauncher.deeplink.api.domain.repository.FolderRepository
@@ -21,6 +22,7 @@ internal class ImportDeepLinksImpl(
     private val deepLinkRepository: DeepLinkRepository,
     private val folderRepository: FolderRepository,
     private val validateDeepLink: ValidateDeepLink,
+    private val shortcutManager: DeepLinkShortcutManager,
 ) : ImportDeepLinks {
 
     @OptIn(ExperimentalSerializationApi::class)
@@ -91,6 +93,8 @@ internal class ImportDeepLinksImpl(
                     (newDeepLinks + updatedDeepLinks).forEach {
                         deepLinkRepository.upsertDeepLink(it)
                     }
+
+                    shortcutManager.enable(newDeepLinks.map(DeepLink::id))
                 }
 
                 FileType.TXT -> {

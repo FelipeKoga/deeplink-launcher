@@ -33,6 +33,7 @@ internal class PinDeepLinkToHomeScreenImpl(
             .setIntent(intent)
             .build()
 
+        shortcutManager.enableShortcuts(listOf(deepLink.id))
         shortcutManager.requestPinShortcut(shortcut, null)
 
         return PinDeepLinkToHomeScreen.Result.Requested
