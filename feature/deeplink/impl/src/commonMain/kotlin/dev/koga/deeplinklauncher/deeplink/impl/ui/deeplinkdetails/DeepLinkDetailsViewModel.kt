@@ -10,6 +10,7 @@ import dev.koga.deeplinklauncher.analytics.api.AnalyticsTracker
 import dev.koga.deeplinklauncher.coroutines.CoroutineDebouncer
 import dev.koga.deeplinklauncher.deeplink.api.application.EnrichDeepLinkForDetails
 import dev.koga.deeplinklauncher.deeplink.api.domain.model.DeepLink
+import dev.koga.deeplinklauncher.deeplink.api.domain.model.DeepLinkHandler
 import dev.koga.deeplinklauncher.deeplink.api.domain.model.DeepLinkHandlerInfo
 import dev.koga.deeplinklauncher.deeplink.api.domain.model.DeepLinkMetadata
 import dev.koga.deeplinklauncher.deeplink.api.domain.model.Folder
@@ -41,15 +42,21 @@ import dev.koga.deeplinklauncher.deeplink.impl.ui.deeplinkdetails.state.Duplicat
 import dev.koga.deeplinklauncher.deeplink.impl.ui.deeplinkdetails.state.EditAction
 import dev.koga.deeplinklauncher.deeplink.impl.ui.deeplinkdetails.state.LaunchAction
 import dev.koga.deeplinklauncher.navigation.AppNavigator
+import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
@@ -92,12 +99,19 @@ internal class DeepLinkDetailsViewModel(
     private val deepLinkErrorMessage = MutableStateFlow<String?>(null)
     private val mode = MutableStateFlow(Mode.LAUNCH)
 
+    private val loadedDeepLink = deepLink.filter { it.id.isNotEmpty() }
+
+    private val handlers = loadedDeepLink
+        .map { it.link }
+        .distinctUntilChanged()
+        .mapLatest { getDeepLinkHandlers(it).toPersistentList() }
+
     private val messageDispatcher = Channel<String>(Channel.UNLIMITED)
     val messages = messageDispatcher.receiveAsFlow()
 
     val uiState = combine(
         folders,
-        deepLink,
+        loadedDeepLink,
         duplicateErrorMessage,
         deepLinkErrorMessage,
         mode,
@@ -109,28 +123,28 @@ internal class DeepLinkDetailsViewModel(
             deepLinkErrorMessage = deepLinkErrorMessage,
             mode = mode,
         )
+    }.combine(handlers) { input, handlers ->
+        input.copy(availableHandlers = handlers)
     }.flatMapLatest { input ->
         when (input.mode) {
             Mode.LAUNCH -> flow {
-                val handlers = getDeepLinkHandlers(input.deepLink.link)
                 emit(
                     DeepLinkDetailsUiState.Launch(
                         details = enrichDeepLinkForDetails(input.deepLink),
                         showFolder = route.showFolder,
                         folders = input.folders.toPersistentList(),
-                        availableHandlers = handlers.toPersistentList(),
+                        availableHandlers = input.availableHandlers,
                     ),
                 )
             }
 
             Mode.EDIT -> flow {
-                val handlers = getDeepLinkHandlers(input.deepLink.link)
                 emit(
                     DeepLinkDetailsUiState.Edit(
                         deepLink = input.deepLink,
                         folders = input.folders.toPersistentList(),
                         errorMessage = input.deepLinkErrorMessage,
-                        availableHandlers = handlers.toPersistentList(),
+                        availableHandlers = input.availableHandlers,
                     ),
                 )
             }
@@ -371,6 +385,7 @@ internal class DeepLinkDetailsViewModel(
         val duplicateErrorMessage: String?,
         val deepLinkErrorMessage: String?,
         val mode: Mode,
+        val availableHandlers: ImmutableList<DeepLinkHandler> = persistentListOf(),
     )
 
     private enum class Mode {
