@@ -201,10 +201,10 @@ internal class LinkDeepLinkForFolderViewModel(
         }
     }
 
-    private fun insertDeepLinkWithFolder(link: String) {
+    private suspend fun insertDeepLinkWithFolder(link: String) {
         val currentFolder = folder.value ?: return
 
-        deepLinkRepository.upsertDeepLink(
+        deepLinkRepository.insert(
             DeepLink(
                 id = Uuid.random().toString(),
                 link = link,

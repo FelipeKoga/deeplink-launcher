@@ -19,15 +19,52 @@ FROM deeplink d
 LEFT JOIN folder f ON d.folderId = f.id
 ORDER BY d.lastLaunchedAt DESC, d.createdAt DESC, d.name ASC;
 
+selectAllDeeplinkIds:
+SELECT id FROM deeplink;
+
 deleteDeeplinkById:
 DELETE FROM deeplink WHERE id = ?;
 
-upsertDeeplink:
-INSERT OR REPLACE INTO deeplink (id, link, name, description, createdAt, lastLaunchedAt, isFavorite, folderId, targetPackage)
+insertDeeplink:
+INSERT INTO deeplink (id, link, name, description, createdAt, lastLaunchedAt, isFavorite, folderId, targetPackage)
 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);
 
+countDeeplinksById:
+SELECT COUNT(*) FROM deeplink WHERE id = ?;
+
+countOtherDeeplinksWithLink:
+SELECT COUNT(*) FROM deeplink WHERE link = :link AND id != :id;
+
+updateLink:
+UPDATE deeplink SET link = :link WHERE id = :id;
+
+updateName:
+UPDATE deeplink SET name = :name WHERE id = :id;
+
+updateDescription:
+UPDATE deeplink SET description = :description WHERE id = :id;
+
+updateTargetPackage:
+UPDATE deeplink SET targetPackage = :targetPackage WHERE id = :id;
+
+updateFavorite:
+UPDATE deeplink SET isFavorite = :isFavorite WHERE id = :id;
+
+updateFolder:
+UPDATE deeplink SET folderId = :folderId WHERE id = :id;
+
 updateLastLaunchedAt:
-UPDATE deeplink SET lastLaunchedAt = ? WHERE id = ?;
+UPDATE deeplink SET lastLaunchedAt = :lastLaunchedAt WHERE id = :id;
+
+updateImportedFields:
+UPDATE deeplink
+SET name = :name,
+    description = :description,
+    createdAt = :createdAt,
+    isFavorite = :isFavorite,
+    folderId = :folderId,
+    targetPackage = :targetPackage
+WHERE id = :id;
 
 getDeepLinkByLink:
 SELECT d.*, f.*

@@ -6,132 +6,110 @@ import dev.koga.deeplinklauncher.datatransfer.impl.data.dto.toModel
 import dev.koga.deeplinklauncher.date.currentLocalDateTime
 import dev.koga.deeplinklauncher.deeplink.api.domain.manager.DeepLinkShortcutManager
 import dev.koga.deeplinklauncher.deeplink.api.domain.model.DeepLink
+import dev.koga.deeplinklauncher.deeplink.api.domain.model.Folder
 import dev.koga.deeplinklauncher.deeplink.api.domain.repository.DeepLinkRepository
-import dev.koga.deeplinklauncher.deeplink.api.domain.repository.FolderRepository
 import dev.koga.deeplinklauncher.deeplink.api.domain.usecase.ValidateDeepLink
 import dev.koga.deeplinklauncher.file.GetFileContent
 import dev.koga.deeplinklauncher.file.model.FileType
+import kotlinx.coroutines.CancellationException
 import kotlinx.datetime.LocalDateTime
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 
+/**
+ * Parses, validates and maps the whole file before writing anything, then hands the
+ * result to [DeepLinkRepository.importAll], which applies it in a single transaction.
+ * A malformed entry therefore leaves the database untouched.
+ */
 internal class ImportDeepLinksImpl(
     private val getFileContent: GetFileContent,
     private val deepLinkRepository: DeepLinkRepository,
-    private val folderRepository: FolderRepository,
     private val validateDeepLink: ValidateDeepLink,
     private val shortcutManager: DeepLinkShortcutManager,
 ) : ImportDeepLinks {
 
-    @OptIn(ExperimentalSerializationApi::class)
     override suspend operator fun invoke(
         filePath: String,
         fileType: FileType,
     ): ImportDeepLinks.Result {
         return try {
             val fileContents = getFileContent(filePath)
-            when (fileType) {
-                FileType.JSON -> {
-                    val json = Json {
-                        ignoreUnknownKeys = true
-                        allowTrailingComma = true
-                    }
-
-                    val importExportDto = json.decodeFromString<Payload>(fileContents)
-
-                    val deepLinksFromDto = importExportDto.deepLinks
-
-                    val invalidDeepLinks = deepLinksFromDto.filter {
-                        !validateDeepLink.isValid(it.link)
-                    }
-
-                    if (invalidDeepLinks.isNotEmpty()) {
-                        return ImportDeepLinks.Result.Error.InvalidDeepLinksFound(
-                            invalidDeepLinks.map { it.link },
-                        )
-                    }
-
-                    val folders = importExportDto.folders
-                        ?.map(Payload.Folder::toModel)
-                        ?: emptyList()
-
-                    folders.forEach {
-                        folderRepository.upsertFolder(it)
-                    }
-
-                    val databaseDeepLinks = deepLinksFromDto.mapNotNull {
-                        deepLinkRepository.getDeepLinkByLink(it.link)
-                    }
-
-                    val newDeepLinks = deepLinksFromDto.filter {
-                        databaseDeepLinks.none { databaseDeepLink -> databaseDeepLink.link == it.link }
-                    }.map {
-                        it.toModel(folders.find { folder -> folder.id == it.folderId })
-                    }
-
-                    val updatedDeepLinks = deepLinksFromDto.mapNotNull { newDeepLinkDto ->
-                        val databaseDeepLink = databaseDeepLinks.find { databaseDeepLink ->
-                            databaseDeepLink.link == newDeepLinkDto.link
-                        } ?: return@mapNotNull null
-
-                        databaseDeepLink.copy(
-                            id = databaseDeepLink.id,
-                            name = newDeepLinkDto.name ?: databaseDeepLink.name,
-                            description = newDeepLinkDto.description
-                                ?: databaseDeepLink.description,
-                            isFavorite = newDeepLinkDto.isFavorite ?: databaseDeepLink.isFavorite,
-                            createdAt = newDeepLinkDto.createdAt?.let { LocalDateTime.parse(it) }
-                                ?: databaseDeepLink.createdAt,
-                            folder = folders.find { folder -> folder.id == newDeepLinkDto.folderId }
-                                ?: databaseDeepLink.folder,
-                            targetPackage = newDeepLinkDto.targetPackage ?: databaseDeepLink.targetPackage,
-                        )
-                    }
-
-                    (newDeepLinks + updatedDeepLinks).forEach {
-                        deepLinkRepository.upsertDeepLink(it)
-                    }
-
-                    shortcutManager.enable(newDeepLinks.map(DeepLink::id))
-                }
-
-                FileType.TXT -> {
-                    val deepLinksTexts = fileContents.split("\n")
-
-                    val databaseDeepLinks = deepLinksTexts.mapNotNull {
-                        deepLinkRepository.getDeepLinkByLink(it)
-                    }
-
-                    val newDeepLinksTexts = deepLinksTexts.filter {
-                        databaseDeepLinks.none { databaseDeepLink -> databaseDeepLink.link == it }
-                    }
-
-                    val invalidDeepLinks = newDeepLinksTexts.filter {
-                        !validateDeepLink.isValid(it)
-                    }
-
-                    if (invalidDeepLinks.isNotEmpty()) {
-                        return ImportDeepLinks.Result.Error.InvalidDeepLinksFound(
-                            invalidDeepLinks,
-                        )
-                    }
-
-                    newDeepLinksTexts
-                        .map { text -> text.toDeepLink() }
-                        .forEach { deepLinkRepository.upsertDeepLink(it) }
-                }
+            val plan = when (fileType) {
+                FileType.JSON -> planJson(fileContents)
+                FileType.TXT -> planText(fileContents)
             }
 
-            ImportDeepLinks.Result.Success
+            when (plan) {
+                is Plan.Invalid -> ImportDeepLinks.Result.Error.InvalidDeepLinksFound(plan.links)
+                is Plan.Apply -> {
+                    deepLinkRepository.importAll(folders = plan.folders, deepLinks = plan.deepLinks)
+                    if (plan.newDeepLinkIds.isNotEmpty()) shortcutManager.enable(plan.newDeepLinkIds)
+                    ImportDeepLinks.Result.Success
+                }
+            }
+        } catch (e: CancellationException) {
+            throw e
         } catch (e: Exception) {
             ImportDeepLinks.Result.Error.Unknown
         }
     }
 
+    @OptIn(ExperimentalSerializationApi::class)
+    private fun planJson(fileContents: String): Plan {
+        val json = Json {
+            ignoreUnknownKeys = true
+            allowTrailingComma = true
+        }
+        val payload = json.decodeFromString<Payload>(fileContents)
+
+        val invalidLinks = payload.deepLinks.map { it.link }.filterNot(validateDeepLink::isValid)
+        if (invalidLinks.isNotEmpty()) return Plan.Invalid(invalidLinks)
+
+        val folders = payload.folders.orEmpty().map(Payload.Folder::toModel)
+        val foldersById = folders.associateBy(Folder::id)
+
+        val newDeepLinkIds = mutableListOf<String>()
+        val deepLinks = payload.deepLinks.map { dto ->
+            val existing = deepLinkRepository.getDeepLinkByLink(dto.link)
+            val folder = dto.folderId?.let(foldersById::get)
+
+            if (existing == null) {
+                dto.toModel(folder).also { newDeepLinkIds += it.id }
+            } else {
+                // Fields missing from the file keep their local value.
+                existing.copy(
+                    name = dto.name ?: existing.name,
+                    description = dto.description ?: existing.description,
+                    isFavorite = dto.isFavorite ?: existing.isFavorite,
+                    createdAt = dto.createdAt?.let(LocalDateTime::parse) ?: existing.createdAt,
+                    folder = folder ?: existing.folder,
+                    targetPackage = dto.targetPackage ?: existing.targetPackage,
+                )
+            }
+        }
+
+        return Plan.Apply(folders = folders, deepLinks = deepLinks, newDeepLinkIds = newDeepLinkIds)
+    }
+
+    private fun planText(fileContents: String): Plan {
+        val links = fileContents.lineSequence()
+            .map(String::trim)
+            .filter(String::isNotEmpty)
+            .distinct()
+            .toList()
+
+        val newLinks = links.filter { deepLinkRepository.getDeepLinkByLink(it) == null }
+
+        val invalidLinks = newLinks.filterNot(validateDeepLink::isValid)
+        if (invalidLinks.isNotEmpty()) return Plan.Invalid(invalidLinks)
+
+        return Plan.Apply(folders = emptyList(), deepLinks = newLinks.map { it.toDeepLink() })
+    }
+
     @OptIn(ExperimentalUuidApi::class)
-    internal fun String.toDeepLink(): DeepLink {
+    private fun String.toDeepLink(): DeepLink {
         return DeepLink(
             id = Uuid.random().toString(),
             createdAt = currentLocalDateTime,
@@ -141,5 +119,14 @@ internal class ImportDeepLinksImpl(
             isFavorite = false,
             folder = null,
         )
+    }
+
+    private sealed interface Plan {
+        data class Invalid(val links: List<String>) : Plan
+        data class Apply(
+            val folders: List<Folder>,
+            val deepLinks: List<DeepLink>,
+            val newDeepLinkIds: List<String> = emptyList(),
+        ) : Plan
     }
 }

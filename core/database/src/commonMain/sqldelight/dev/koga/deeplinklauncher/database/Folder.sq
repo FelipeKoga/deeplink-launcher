@@ -13,9 +13,21 @@ GROUP BY f.id;
 selectAllFoldersIds:
 SELECT id FROM folder;
 
-upsertFolder:
-INSERT OR REPLACE INTO folder (id, name, description)
+insertFolder:
+INSERT INTO folder (id, name, description)
 VALUES (?, ?, ?);
+
+updateFolder:
+UPDATE folder SET name = :name, description = :description WHERE id = :id;
+
+countFoldersById:
+SELECT COUNT(*) FROM folder WHERE id = ?;
+
+countOtherFoldersWithName:
+SELECT COUNT(*) FROM folder WHERE name = :name AND id != :id;
+
+getFolderIdByName:
+SELECT id FROM folder WHERE name = ?;
 
 deleteFolderById:
 DELETE FROM folder WHERE id = ?;
@@ -24,7 +36,8 @@ getFolderById:
 SELECT f.*, COUNT(d.id) AS deeplinkCount
 FROM folder f
 LEFT JOIN deeplink d ON f.id = d.folderId
-WHERE f.id = ?;
+WHERE f.id = ?
+GROUP BY f.id;
 
 getFolderDeepLinks:
 SELECT d.*, f.*
@@ -35,6 +48,9 @@ ORDER BY d.lastLaunchedAt DESC, d.createdAt DESC, d.name ASC;
 
 removeFolderFromDeeplinks:
 UPDATE deeplink SET folderId = NULL WHERE folderId = ?;
+
+removeAllFoldersFromDeeplinks:
+UPDATE deeplink SET folderId = NULL WHERE folderId IS NOT NULL;
 
 deleteAllFolders:
 DELETE FROM folder;

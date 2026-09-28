@@ -10,9 +10,11 @@ import dev.koga.deeplinklauncher.deeplink.impl.analytics.FolderCreated
 import dev.koga.deeplinklauncher.deeplink.impl.analytics.track
 import dev.koga.deeplinklauncher.deeplink.impl.ui.addfolder.state.AddFolderUiState
 import dev.koga.deeplinklauncher.navigation.AppNavigator
+import dev.koga.deeplinklauncher.uievent.SnackBarDispatcher
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 
@@ -21,6 +23,7 @@ internal class AddFolderViewModel(
     private val savedStateHandle: SavedStateHandle,
     private val repository: FolderRepository,
     private val appNavigator: AppNavigator,
+    private val snackBarDispatcher: SnackBarDispatcher,
     private val analyticsTracker: AnalyticsTracker,
 ) : ViewModel() {
     private val name = savedStateHandle.getStateFlow("name", "")
@@ -60,8 +63,18 @@ internal class AddFolderViewModel(
             description = description.value,
         )
 
-        repository.upsertFolder(folder)
-        analyticsTracker.track(FolderCreated)
-        appNavigator.popBackStack()
+        viewModelScope.launch {
+            when (repository.insert(folder)) {
+                FolderRepository.WriteResult.Success -> {
+                    analyticsTracker.track(FolderCreated)
+                    appNavigator.popBackStack()
+                }
+
+                FolderRepository.WriteResult.NameAlreadyExists ->
+                    snackBarDispatcher.show("A folder named \"${folder.name}\" already exists")
+
+                FolderRepository.WriteResult.NotFound -> Unit
+            }
+        }
     }
 }

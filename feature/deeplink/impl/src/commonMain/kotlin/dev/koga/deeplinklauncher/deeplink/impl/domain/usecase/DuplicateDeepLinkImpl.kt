@@ -48,8 +48,10 @@ internal class DuplicateDeepLinkImpl(
             targetPackage = if (copyAllFields) deepLink.targetPackage else null,
         )
 
-        repository.upsertDeepLink(duplicatedDeepLink)
-
-        return DuplicateDeepLink.Result.Success(duplicatedDeepLink)
+        return when (repository.insert(duplicatedDeepLink)) {
+            DeepLinkRepository.WriteResult.Success -> DuplicateDeepLink.Result.Success(duplicatedDeepLink)
+            DeepLinkRepository.WriteResult.LinkAlreadyExists -> DuplicateDeepLink.Result.Error.LinkAlreadyExists
+            DeepLinkRepository.WriteResult.NotFound -> error("insert never reports NotFound")
+        }
     }
 }

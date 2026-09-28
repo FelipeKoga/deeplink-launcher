@@ -22,7 +22,6 @@ val dataTransferModule = module {
     singleOf(::ImportDeepLinksImpl) bind ImportDeepLinks::class
     singleOf(::GetDeepLinksJsonPreviewImpl) bind GetDeepLinksJsonPreview::class
     singleOf(::GetDeepLinksPlainTextPreviewImpl) bind GetDeepLinksPlainTextPreview::class
-    singleOf(::ImportDeepLinksImpl) bind ImportDeepLinks::class
     singleOf(::DataTransferNavigationGraph) bind NavigationGraph::class
 
     viewModelOf(::ImportViewModel)

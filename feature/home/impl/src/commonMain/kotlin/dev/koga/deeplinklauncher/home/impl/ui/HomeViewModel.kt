@@ -204,19 +204,27 @@ class HomeViewModel(
 
         when (val result = launchDeepLink.launch(link)) {
             is LaunchDeepLink.Result.Success -> {
-                val id = Uuid.random().toString()
-                deepLinkRepository.upsertDeepLink(
-                    DeepLink(
-                        id = id,
-                        link = link,
-                        name = null,
-                        description = null,
-                        folder = null,
-                        isFavorite = false,
-                        lastLaunchedAt = currentLocalDateTime,
-                    ),
+                val newDeepLink = DeepLink(
+                    id = Uuid.random().toString(),
+                    link = link,
+                    name = null,
+                    description = null,
+                    folder = null,
+                    isFavorite = false,
+                    lastLaunchedAt = currentLocalDateTime,
                 )
-                analyticsTracker.track(DeeplinkCreated(source = LaunchSource.INPUT_BAR))
+                // The link was typed into the input bar, so it can already exist if it was
+                // saved in the meantime; open that record instead of failing.
+                val id = when (deepLinkRepository.insert(newDeepLink)) {
+                    DeepLinkRepository.WriteResult.Success -> {
+                        analyticsTracker.track(DeeplinkCreated(source = LaunchSource.INPUT_BAR))
+                        newDeepLink.id
+                    }
+
+                    DeepLinkRepository.WriteResult.LinkAlreadyExists,
+                    DeepLinkRepository.WriteResult.NotFound,
+                    -> deepLinkRepository.getDeepLinkByLink(link)?.id ?: return@launch
+                }
                 trackLaunchResult(source = LaunchSource.INPUT_BAR)
                 onBottomBarLaunchSuccess(id)
             }
@@ -275,9 +283,7 @@ class HomeViewModel(
     private fun toggleFavorite(deepLink: DeepLink) {
         val isFavorite = !deepLink.isFavorite
         viewModelScope.launch {
-            deepLinkRepository.upsertDeepLink(
-                deepLink.copy(isFavorite = isFavorite),
-            )
+            deepLinkRepository.setFavorite(id = deepLink.id, isFavorite = isFavorite)
             analyticsTracker.track(FavoriteToggled(isFavorite = isFavorite))
         }
     }

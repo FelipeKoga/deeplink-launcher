@@ -255,43 +255,50 @@ internal class DeepLinkDetailsViewModel(
         deepLinkErrorMessage.update { null }
 
         coroutineDebouncer.debounce(viewModelScope, "link") {
-            saveDeepLink(deepLink.value.copy(link = link))
-
             if (!validateDeepLink.isValid(link)) {
                 deepLinkErrorMessage.update { "Invalid deeplink" }
+                return@debounce
+            }
+
+            when (deepLinkRepository.updateLink(id = deepLink.value.id, link = link)) {
+                DeepLinkRepository.WriteResult.LinkAlreadyExists ->
+                    deepLinkErrorMessage.update { "Link already exists" }
+
+                DeepLinkRepository.WriteResult.Success -> refreshShortcut(deepLink.value.copy(link = link))
+                DeepLinkRepository.WriteResult.NotFound -> Unit
             }
         }
     }
 
     private fun updateName(name: String) {
         coroutineDebouncer.debounce(viewModelScope, "name") {
-            saveDeepLink(deepLink.value.copy(name = name))
+            deepLinkRepository.updateName(id = deepLink.value.id, name = name)
+            refreshShortcut(deepLink.value.copy(name = name))
         }
     }
 
     private fun updateDescription(description: String) {
         coroutineDebouncer.debounce(viewModelScope, "description") {
-            saveDeepLink(deepLink.value.copy(description = description))
+            deepLinkRepository.updateDescription(id = deepLink.value.id, description = description)
+            refreshShortcut(deepLink.value.copy(description = description))
         }
     }
 
     private fun updateTargetPackage(targetPackage: String?) {
         viewModelScope.launch {
-            saveDeepLink(deepLink.value.copy(targetPackage = targetPackage))
+            deepLinkRepository.updateTargetPackage(id = deepLink.value.id, targetPackage = targetPackage)
+            refreshShortcut(deepLink.value.copy(targetPackage = targetPackage))
         }
     }
 
-    private suspend fun saveDeepLink(updated: DeepLink) {
-        deepLinkRepository.upsertDeepLink(updated)
+    private suspend fun refreshShortcut(updated: DeepLink) {
         if (validateDeepLink.isValid(updated.link)) shortcutManager.update(updated)
     }
 
     private fun toggleFavorite() {
         viewModelScope.launch {
             val isFavorite = !deepLink.value.isFavorite
-            deepLinkRepository.upsertDeepLink(
-                deepLink.value.copy(isFavorite = isFavorite),
-            )
+            deepLinkRepository.setFavorite(id = deepLink.value.id, isFavorite = isFavorite)
             analyticsTracker.track(FavoriteToggled(isFavorite = isFavorite))
         }
     }
@@ -369,7 +376,7 @@ internal class DeepLinkDetailsViewModel(
     private fun toggleFolder(folder: Folder) {
         if (folder.id == deepLink.value.folder?.id) {
             viewModelScope.launch {
-                deepLinkRepository.upsertDeepLink(deepLink.value.copy(folder = null))
+                deepLinkRepository.setFolder(id = deepLink.value.id, folderId = null)
             }
             return
         }

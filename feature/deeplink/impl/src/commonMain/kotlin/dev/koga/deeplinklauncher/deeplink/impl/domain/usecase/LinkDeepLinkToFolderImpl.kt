@@ -12,14 +12,14 @@ internal class LinkDeepLinkToFolderImpl(
     override suspend fun invoke(deepLinkId: String, folderId: String): LinkDeepLinkToFolder.Result {
         val deepLink = deepLinkRepository.getDeepLinkById(deepLinkId)
             ?: return LinkDeepLinkToFolder.Result.NotFound
-        val folder = folderRepository.getFolderById(folderId)
+        folderRepository.getFolderById(folderId)
             ?: return LinkDeepLinkToFolder.Result.NotFound
 
         if (deepLink.folder?.id == folderId) {
             return LinkDeepLinkToFolder.Result.AlreadyLinked
         }
 
-        deepLinkRepository.upsertDeepLink(deepLink.copy(folder = folder))
+        deepLinkRepository.setFolder(id = deepLinkId, folderId = folderId)
         return LinkDeepLinkToFolder.Result.Linked
     }
 }

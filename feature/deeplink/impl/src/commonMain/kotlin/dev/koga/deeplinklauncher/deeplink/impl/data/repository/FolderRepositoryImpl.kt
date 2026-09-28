@@ -8,19 +8,22 @@ import dev.koga.deeplinklauncher.database.SelectFoldersWithDeeplinkCount
 import dev.koga.deeplinklauncher.deeplink.api.domain.model.DeepLink
 import dev.koga.deeplinklauncher.deeplink.api.domain.model.Folder
 import dev.koga.deeplinklauncher.deeplink.api.domain.repository.FolderRepository
+import dev.koga.deeplinklauncher.deeplink.api.domain.repository.FolderRepository.WriteResult
 import dev.koga.deeplinklauncher.deeplink.impl.data.mapper.toDomain
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.withContext
 
 internal class FolderRepositoryImpl(
     private val database: DeepLinkLauncherDatabase,
 ) : FolderRepository {
 
+    private val queries get() = database.folderQueries
+
     override fun getFoldersStream(): Flow<List<Folder>> {
-        return database
-            .folderQueries
+        return queries
             .selectFoldersWithDeeplinkCount()
             .asFlow()
             .mapToList(Dispatchers.IO)
@@ -28,16 +31,14 @@ internal class FolderRepositoryImpl(
     }
 
     override fun getFolders(): List<Folder> {
-        return database
-            .folderQueries
+        return queries
             .selectFoldersWithDeeplinkCount()
             .executeAsList()
             .map(SelectFoldersWithDeeplinkCount::toDomain)
     }
 
     override fun getFolderDeepLinksStream(id: String): Flow<List<DeepLink>> {
-        return database
-            .folderQueries
+        return queries
             .getFolderDeepLinks(id)
             .asFlow()
             .mapToList(Dispatchers.IO)
@@ -45,7 +46,7 @@ internal class FolderRepositoryImpl(
     }
 
     override fun getFolderByIdStream(id: String): Flow<Folder?> {
-        return database.folderQueries
+        return queries
             .getFolderById(id)
             .asFlow()
             .mapToList(Dispatchers.IO)
@@ -53,35 +54,56 @@ internal class FolderRepositoryImpl(
     }
 
     override fun getFolderById(id: String): Folder? {
-        return database.folderQueries
+        return queries
             .getFolderById(id)
             .executeAsOneOrNull()
             ?.toDomain()
     }
 
-    override fun upsertFolder(folder: Folder) {
-        database.folderQueries.upsertFolder(
-            id = folder.id,
-            name = folder.name,
-            description = folder.description,
-        )
-    }
-
-    override fun deleteFolder(id: String) {
-        database.transaction {
-            database.folderQueries.removeFolderFromDeeplinks(id)
-            database.folderQueries.deleteFolderById(id)
-        }
-    }
-
-    override fun deleteAll() {
-        database.transaction {
-            val folders = database.folderQueries.selectAllFoldersIds().executeAsList()
-            folders.forEach { folderId ->
-                database.folderQueries.removeFolderFromDeeplinks(folderId)
+    override suspend fun insert(folder: Folder): WriteResult = write {
+        database.transactionWithResult {
+            if (isNameUsedByOther(name = folder.name, id = folder.id)) {
+                return@transactionWithResult WriteResult.NameAlreadyExists
             }
 
-            database.folderQueries.deleteAllFolders()
+            queries.insertFolder(id = folder.id, name = folder.name, description = folder.description)
+            WriteResult.Success
         }
     }
+
+    override suspend fun update(id: String, name: String, description: String?): WriteResult = write {
+        database.transactionWithResult {
+            when {
+                queries.countFoldersById(id).executeAsOne() == 0L -> WriteResult.NotFound
+                isNameUsedByOther(name = name, id = id) -> WriteResult.NameAlreadyExists
+                else -> {
+                    queries.updateFolder(name = name, description = description, id = id)
+                    WriteResult.Success
+                }
+            }
+        }
+    }
+
+    override suspend fun delete(id: String) {
+        write {
+            database.transaction {
+                queries.removeFolderFromDeeplinks(id)
+                queries.deleteFolderById(id)
+            }
+        }
+    }
+
+    override suspend fun deleteAll() {
+        write {
+            database.transaction {
+                queries.removeAllFoldersFromDeeplinks()
+                queries.deleteAllFolders()
+            }
+        }
+    }
+
+    private fun isNameUsedByOther(name: String, id: String): Boolean =
+        queries.countOtherFoldersWithName(name = name, id = id).executeAsOne() > 0
+
+    private suspend fun <T> write(block: () -> T): T = withContext(Dispatchers.IO) { block() }
 }

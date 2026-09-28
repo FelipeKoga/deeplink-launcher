@@ -21,6 +21,7 @@ import dev.koga.deeplinklauncher.deeplink.impl.analytics.track
 import dev.koga.deeplinklauncher.deeplink.impl.ui.folderdetails.state.FolderDetailsAction
 import dev.koga.deeplinklauncher.deeplink.impl.ui.folderdetails.state.FolderDetailsUiState
 import dev.koga.deeplinklauncher.navigation.AppNavigator
+import dev.koga.deeplinklauncher.uievent.SnackBarDispatcher
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -42,6 +43,7 @@ internal class FolderDetailsViewModel(
     private val enrichDeepLinksForList: EnrichDeepLinksForList,
     private val launchDeepLink: LaunchDeepLink,
     private val appNavigator: AppNavigator,
+    private val snackBarDispatcher: SnackBarDispatcher,
     private val analyticsTracker: AnalyticsTracker,
 ) : ViewModel() {
     private val folderId = savedStateHandle.toRoute<DeepLinkRouteEntryPoint.FolderDetails>().id
@@ -102,13 +104,22 @@ internal class FolderDetailsViewModel(
                         )
                     }
 
+                    var reportedConflict: String? = null
                     form.onEach { state ->
-                        repository.upsertFolder(
-                            loadedFolder.copy(
-                                name = state.name,
-                                description = state.description.ifBlank { null },
-                            ),
+                        val result = repository.update(
+                            id = loadedFolder.id,
+                            name = state.name,
+                            description = state.description.ifBlank { null },
                         )
+                        // A name taken by another folder is not saved; tell the user once per name.
+                        if (result == FolderRepository.WriteResult.NameAlreadyExists) {
+                            if (reportedConflict != state.name) {
+                                snackBarDispatcher.show("A folder named \"${state.name}\" already exists")
+                            }
+                            reportedConflict = state.name
+                        } else {
+                            reportedConflict = null
+                        }
                     }.launchIn(this)
                 }
             }
@@ -126,9 +137,11 @@ internal class FolderDetailsViewModel(
     }
 
     private fun delete() {
-        repository.deleteFolder(folderId)
-        analyticsTracker.track(FolderDeleted)
-        appNavigator.popBackStack()
+        viewModelScope.launch {
+            repository.delete(folderId)
+            analyticsTracker.track(FolderDeleted)
+            appNavigator.popBackStack()
+        }
     }
 
     private fun updateName(value: String) {
