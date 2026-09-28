@@ -12,6 +12,7 @@ internal fun DetailsQuickActionsGridPreview() {
     DLLPreviewTheme {
         DetailsQuickActions(
             isFavorite = false,
+            isShortcut = false,
             onAction = {},
         )
     }
@@ -20,10 +21,11 @@ internal fun DetailsQuickActionsGridPreview() {
 @Preview
 @PreviewLightDark
 @Composable
-internal fun DetailsQuickActionsGridFavoritePreview() {
+internal fun DetailsQuickActionsGridActivePreview() {
     DLLPreviewTheme {
         DetailsQuickActions(
             isFavorite = true,
+            isShortcut = true,
             onAction = {},
         )
     }

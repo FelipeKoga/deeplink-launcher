@@ -9,6 +9,7 @@ import androidx.navigation.toRoute
 import dev.koga.deeplinklauncher.analytics.api.AnalyticsTracker
 import dev.koga.deeplinklauncher.coroutines.CoroutineDebouncer
 import dev.koga.deeplinklauncher.deeplink.api.application.EnrichDeepLinkForDetails
+import dev.koga.deeplinklauncher.deeplink.api.domain.manager.DeepLinkShortcutManager
 import dev.koga.deeplinklauncher.deeplink.api.domain.model.DeepLink
 import dev.koga.deeplinklauncher.deeplink.api.domain.model.DeepLinkHandler
 import dev.koga.deeplinklauncher.deeplink.api.domain.model.DeepLinkHandlerInfo
@@ -17,7 +18,6 @@ import dev.koga.deeplinklauncher.deeplink.api.domain.model.Folder
 import dev.koga.deeplinklauncher.deeplink.api.domain.model.LaunchSource
 import dev.koga.deeplinklauncher.deeplink.api.domain.repository.DeepLinkRepository
 import dev.koga.deeplinklauncher.deeplink.api.domain.repository.FolderRepository
-import dev.koga.deeplinklauncher.deeplink.api.domain.usecase.AddDeepLinkToShortcuts
 import dev.koga.deeplinklauncher.deeplink.api.domain.usecase.DuplicateDeepLink
 import dev.koga.deeplinklauncher.deeplink.api.domain.usecase.GetDeepLinkHandlers
 import dev.koga.deeplinklauncher.deeplink.api.domain.usecase.LaunchDeepLink
@@ -61,6 +61,8 @@ import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 
 internal class DeepLinkDetailsViewModel(
     savedStateHandle: SavedStateHandle,
@@ -71,7 +73,7 @@ internal class DeepLinkDetailsViewModel(
     private val getDeepLinkHandlers: GetDeepLinkHandlers,
     private val shareDeepLink: ShareDeepLink,
     private val pinDeepLinkToHomeScreen: PinDeepLinkToHomeScreen,
-    private val addDeepLinkToShortcuts: AddDeepLinkToShortcuts,
+    private val shortcutManager: DeepLinkShortcutManager,
     private val duplicateDeepLink: DuplicateDeepLink,
     private val linkDeepLinkToFolder: LinkDeepLinkToFolder,
     private val validateDeepLink: ValidateDeepLink,
@@ -98,6 +100,8 @@ internal class DeepLinkDetailsViewModel(
     private val duplicateErrorMessage = MutableStateFlow<String?>(null)
     private val deepLinkErrorMessage = MutableStateFlow<String?>(null)
     private val mode = MutableStateFlow(Mode.LAUNCH)
+    private val isShortcut = MutableStateFlow(false)
+    private val shortcutMutex = Mutex()
 
     private val loadedDeepLink = deepLink.filter { it.id.isNotEmpty() }
 
@@ -158,6 +162,8 @@ internal class DeepLinkDetailsViewModel(
                 )
             }
         }
+    }.combine(isShortcut) { state, isShortcut ->
+        if (state is DeepLinkDetailsUiState.Launch) state.copy(isShortcut = isShortcut) else state
     }.stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(),
@@ -174,6 +180,12 @@ internal class DeepLinkDetailsViewModel(
             ),
         ),
     )
+
+    init {
+        viewModelScope.launch {
+            shortcutMutex.withLock { isShortcut.value = shortcutManager.isAdded(route.id) }
+        }
+    }
 
     fun onAction(action: DeepLinkDetailsAction) {
         when (action) {
@@ -204,7 +216,7 @@ internal class DeepLinkDetailsViewModel(
                 messageDispatcher.trySend("Link copied")
             }
 
-            LaunchAction.AddToShortCut -> addToShortcut()
+            LaunchAction.ToggleShortcut -> toggleShortcut()
             is LaunchAction.SelectTargetPackage -> updateTargetPackage(action.packageName)
         }
     }
@@ -233,7 +245,7 @@ internal class DeepLinkDetailsViewModel(
         deepLinkErrorMessage.update { null }
 
         coroutineDebouncer.debounce(viewModelScope, "link") {
-            deepLinkRepository.upsertDeepLink(deepLink.value.copy(link = link))
+            saveDeepLink(deepLink.value.copy(link = link))
 
             if (!validateDeepLink.isValid(link)) {
                 deepLinkErrorMessage.update { "Invalid deeplink" }
@@ -243,20 +255,25 @@ internal class DeepLinkDetailsViewModel(
 
     private fun updateName(name: String) {
         coroutineDebouncer.debounce(viewModelScope, "name") {
-            deepLinkRepository.upsertDeepLink(deepLink.value.copy(name = name))
+            saveDeepLink(deepLink.value.copy(name = name))
         }
     }
 
     private fun updateDescription(description: String) {
         coroutineDebouncer.debounce(viewModelScope, "description") {
-            deepLinkRepository.upsertDeepLink(deepLink.value.copy(description = description))
+            saveDeepLink(deepLink.value.copy(description = description))
         }
     }
 
     private fun updateTargetPackage(targetPackage: String?) {
         viewModelScope.launch {
-            deepLinkRepository.upsertDeepLink(deepLink.value.copy(targetPackage = targetPackage))
+            saveDeepLink(deepLink.value.copy(targetPackage = targetPackage))
         }
+    }
+
+    private suspend fun saveDeepLink(updated: DeepLink) {
+        deepLinkRepository.upsertDeepLink(updated)
+        if (validateDeepLink.isValid(updated.link)) shortcutManager.update(updated)
     }
 
     private fun toggleFavorite() {
@@ -313,13 +330,28 @@ internal class DeepLinkDetailsViewModel(
         }
     }
 
-    private fun addToShortcut() {
-        when (addDeepLinkToShortcuts(deepLink.value)) {
-            AddDeepLinkToShortcuts.Result.Added -> {
-            }
+    private fun toggleShortcut() {
+        val deepLink = deepLink.value
+        viewModelScope.launch {
+            shortcutMutex.withLock {
+                if (isShortcut.value) {
+                    shortcutManager.remove(deepLink.id)
+                    isShortcut.value = false
+                    messageDispatcher.trySend("Removed from app shortcuts")
+                } else if (!validateDeepLink.isValid(deepLink.link)) {
+                    messageDispatcher.trySend("Invalid deeplink")
+                } else {
+                    when (shortcutManager.add(deepLink)) {
+                        DeepLinkShortcutManager.AddResult.Added -> {
+                            isShortcut.value = true
+                            messageDispatcher.trySend("Added to app shortcuts")
+                        }
 
-            AddDeepLinkToShortcuts.Result.NotSupported -> {
-                messageDispatcher.trySend("App shortcuts are not supported on this device")
+                        DeepLinkShortcutManager.AddResult.NotSupported -> {
+                            messageDispatcher.trySend("App shortcuts are not supported on this device")
+                        }
+                    }
+                }
             }
         }
     }
