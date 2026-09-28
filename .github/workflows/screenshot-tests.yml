@@ -65,8 +65,14 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          run_id=$(gh run list --repo "$GITHUB_REPOSITORY" --workflow screenshot-baseline.yml --branch main \
-            --status success --limit 1 --json databaseId --jq '.[0].databaseId // empty')
+          if ! run_id=$(gh run list --repo "$GITHUB_REPOSITORY" --workflow screenshot-baseline.yml --branch main \
+            --status success --limit 1 --json databaseId --jq '.[0].databaseId // empty' 2>"$RUNNER_TEMP/baseline-error.log"); then
+            if ! grep -q "HTTP 404" "$RUNNER_TEMP/baseline-error.log"; then
+              cat "$RUNNER_TEMP/baseline-error.log"
+              exit 1
+            fi
+            run_id=""
+          fi
           if [ -z "$run_id" ]; then
             echo "::warning::No screenshot baseline recorded on main yet, every screenshot counts as added."
             echo "found=false" >> "$GITHUB_OUTPUT"
