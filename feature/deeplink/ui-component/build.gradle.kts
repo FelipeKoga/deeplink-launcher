@@ -1,7 +1,7 @@
 
 
 plugins {
-    alias(libs.plugins.deeplinkLauncher.composeMultiplatform)
+    alias(libs.plugins.deeplinkLauncher.screenshotTesting)
 }
 
 kotlin {
