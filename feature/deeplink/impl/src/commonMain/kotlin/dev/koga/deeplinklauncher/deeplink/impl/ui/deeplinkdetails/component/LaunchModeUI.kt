@@ -33,11 +33,6 @@ internal fun LaunchModeUI(
 ) {
     val clipboardManager = LocalClipboardManager.current
 
-    fun copyLink() {
-        clipboardManager.setText(AnnotatedString(uiState.deepLink.link))
-        onAction(LaunchAction.NotifyLinkCopied)
-    }
-
     Column(
         modifier = modifier
             .fillMaxWidth()
@@ -53,7 +48,10 @@ internal fun LaunchModeUI(
 
         DetailsDeepLinkInfo(
             uiState = uiState,
-            onCopyLink = ::copyLink,
+            onCopyLink = {
+                clipboardManager.setText(AnnotatedString(uiState.deepLink.link))
+                onAction(LaunchAction.NotifyLinkCopied)
+            },
             onFolderClick = { onAction(LaunchAction.NavigateToFolder) },
             onToggleFolder = { onAction(LaunchAction.ToggleFolder(it)) },
             onAddFolder = { onAction(LaunchAction.AddFolder) },
