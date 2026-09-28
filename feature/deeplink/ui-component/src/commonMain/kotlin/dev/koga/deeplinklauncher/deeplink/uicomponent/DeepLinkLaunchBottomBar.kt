@@ -25,6 +25,7 @@ import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -58,13 +59,17 @@ public fun DeepLinkLaunchBottomBar(
     onValueChange: (String) -> Unit,
     launch: () -> Unit,
     onSuggestionClicked: (Suggestion) -> Unit,
+    onExpandedChange: (Boolean) -> Unit = {},
 ) {
     val focusRequester = remember { FocusRequester() }
     val focusManager = LocalFocusManager.current
-    var isFocused by rememberSaveable { mutableStateOf(false) }
+    var isExpanded by rememberSaveable { mutableStateOf(false) }
 
-    val showSuggestions by remember(isFocused, state.suggestions) {
-        derivedStateOf { isFocused && state.suggestions.isNotEmpty() }
+    val currentOnExpandedChange by rememberUpdatedState(onExpandedChange)
+    LaunchedEffect(isExpanded) { currentOnExpandedChange(isExpanded) }
+
+    val showSuggestions by remember(isExpanded, state.suggestions) {
+        derivedStateOf { isExpanded && state.suggestions.isNotEmpty() }
     }
 
     var visible by remember { mutableStateOf(false) }
@@ -89,8 +94,8 @@ public fun DeepLinkLaunchBottomBar(
                     .weight(1f)
                     .focusRequester(focusRequester)
                     .onFocusChanged {
-                        if (!isFocused) {
-                            isFocused = it.isFocused
+                        if (!isExpanded) {
+                            isExpanded = it.isFocused
                         }
                     },
                 value = state.text,
@@ -113,11 +118,12 @@ public fun DeepLinkLaunchBottomBar(
                 ),
                 trailingIcon = {
                     AnimatedVisibility(
-                        visible = isFocused,
+                        visible = isExpanded,
                     ) {
                         IconButton(
                             onClick = {
-                                isFocused = false
+                                isExpanded = false
+                                currentOnExpandedChange(false)
                                 focusManager.clearFocus()
                                 onValueChange("")
                             },
