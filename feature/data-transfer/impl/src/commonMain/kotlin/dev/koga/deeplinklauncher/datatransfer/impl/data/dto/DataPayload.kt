@@ -46,7 +46,7 @@ internal fun Payload.Folder.toModel() = Folder(
 )
 
 internal fun Payload.DeepLink.toModel(folder: Folder?) = DeepLink(
-    id = id ?: Uuid.random().toString(),
+    id = id?.takeIf(String::isNotEmpty) ?: Uuid.random().toString(),
     createdAt = createdAt?.let { LocalDateTime.parse(it) } ?: Clock.System.now().toLocalDateTime(
         TimeZone.currentSystemDefault(),
     ),
