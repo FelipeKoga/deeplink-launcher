@@ -9,5 +9,7 @@ internal class DeepLinkShortcutManagerImpl : DeepLinkShortcutManager {
     override suspend fun add(deepLink: DeepLink): DeepLinkShortcutManager.AddResult =
         DeepLinkShortcutManager.AddResult.NotSupported
 
+    override suspend fun update(deepLink: DeepLink) = Unit
+
     override suspend fun remove(deepLinkId: String) = Unit
 }

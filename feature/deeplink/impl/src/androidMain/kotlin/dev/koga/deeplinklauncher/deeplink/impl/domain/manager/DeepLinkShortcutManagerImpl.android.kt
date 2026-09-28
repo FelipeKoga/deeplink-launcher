@@ -23,6 +23,28 @@ internal class DeepLinkShortcutManagerImpl(
     override suspend fun add(
         deepLink: DeepLink,
     ): DeepLinkShortcutManager.AddResult = withContext(Dispatchers.IO) {
+        val added = ShortcutManagerCompat.pushDynamicShortcut(context, buildShortcut(deepLink))
+
+        if (added) {
+            DeepLinkShortcutManager.AddResult.Added
+        } else {
+            DeepLinkShortcutManager.AddResult.NotSupported
+        }
+    }
+
+    override suspend fun update(deepLink: DeepLink) {
+        withContext(Dispatchers.IO) {
+            ShortcutManagerCompat.updateShortcuts(context, listOf(buildShortcut(deepLink)))
+        }
+    }
+
+    override suspend fun remove(deepLinkId: String) {
+        withContext(Dispatchers.IO) {
+            ShortcutManagerCompat.removeDynamicShortcuts(context, listOf(deepLinkId))
+        }
+    }
+
+    private fun buildShortcut(deepLink: DeepLink): ShortcutInfoCompat {
         val shortLabel = (deepLink.name?.takeIf { it.isNotBlank() } ?: deepLink.link)
             .take(MAX_SHORT_LABEL_LENGTH)
         val longLabel = (deepLink.description?.takeIf { it.isNotBlank() } ?: shortLabel)
@@ -31,7 +53,7 @@ internal class DeepLinkShortcutManagerImpl(
         val intent = context.createDeepLinkViewIntent(deepLink.link, deepLink.targetPackage)
         val shortcutIcon = context.resolveShortcutIconCompat(intent)
 
-        val shortcut = ShortcutInfoCompat.Builder(context, deepLink.id)
+        return ShortcutInfoCompat.Builder(context, deepLink.id)
             .setShortLabel(shortLabel)
             .setLongLabel(longLabel)
             .apply {
@@ -42,20 +64,6 @@ internal class DeepLinkShortcutManagerImpl(
             .setIntent(intent)
             .setExtras(persistableBundleOf("deeplink" to deepLink.link))
             .build()
-
-        val added = ShortcutManagerCompat.pushDynamicShortcut(context, shortcut)
-
-        if (added) {
-            DeepLinkShortcutManager.AddResult.Added
-        } else {
-            DeepLinkShortcutManager.AddResult.NotSupported
-        }
-    }
-
-    override suspend fun remove(deepLinkId: String) {
-        withContext(Dispatchers.IO) {
-            ShortcutManagerCompat.removeDynamicShortcuts(context, listOf(deepLinkId))
-        }
     }
 
     companion object {

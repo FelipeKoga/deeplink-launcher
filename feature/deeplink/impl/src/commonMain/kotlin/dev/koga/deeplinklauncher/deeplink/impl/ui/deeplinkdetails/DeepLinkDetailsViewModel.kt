@@ -245,7 +245,7 @@ internal class DeepLinkDetailsViewModel(
         deepLinkErrorMessage.update { null }
 
         coroutineDebouncer.debounce(viewModelScope, "link") {
-            deepLinkRepository.upsertDeepLink(deepLink.value.copy(link = link))
+            saveDeepLink(deepLink.value.copy(link = link))
 
             if (!validateDeepLink.isValid(link)) {
                 deepLinkErrorMessage.update { "Invalid deeplink" }
@@ -255,20 +255,25 @@ internal class DeepLinkDetailsViewModel(
 
     private fun updateName(name: String) {
         coroutineDebouncer.debounce(viewModelScope, "name") {
-            deepLinkRepository.upsertDeepLink(deepLink.value.copy(name = name))
+            saveDeepLink(deepLink.value.copy(name = name))
         }
     }
 
     private fun updateDescription(description: String) {
         coroutineDebouncer.debounce(viewModelScope, "description") {
-            deepLinkRepository.upsertDeepLink(deepLink.value.copy(description = description))
+            saveDeepLink(deepLink.value.copy(description = description))
         }
     }
 
     private fun updateTargetPackage(targetPackage: String?) {
         viewModelScope.launch {
-            deepLinkRepository.upsertDeepLink(deepLink.value.copy(targetPackage = targetPackage))
+            saveDeepLink(deepLink.value.copy(targetPackage = targetPackage))
         }
+    }
+
+    private suspend fun saveDeepLink(updated: DeepLink) {
+        deepLinkRepository.upsertDeepLink(updated)
+        if (validateDeepLink.isValid(updated.link)) shortcutManager.update(updated)
     }
 
     private fun toggleFavorite() {
@@ -333,6 +338,8 @@ internal class DeepLinkDetailsViewModel(
                     shortcutManager.remove(deepLink.id)
                     isShortcut.value = false
                     messageDispatcher.trySend("Removed from app shortcuts")
+                } else if (!validateDeepLink.isValid(deepLink.link)) {
+                    messageDispatcher.trySend("Invalid deeplink")
                 } else {
                     when (shortcutManager.add(deepLink)) {
                         DeepLinkShortcutManager.AddResult.Added -> {
