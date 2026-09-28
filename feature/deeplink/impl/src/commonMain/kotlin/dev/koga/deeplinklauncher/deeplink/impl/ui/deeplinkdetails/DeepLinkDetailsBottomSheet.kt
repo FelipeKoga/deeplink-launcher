@@ -24,6 +24,9 @@ import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.flowWithLifecycle
+import androidx.navigationevent.NavigationEventInfo
+import androidx.navigationevent.compose.NavigationBackHandler
+import androidx.navigationevent.compose.rememberNavigationEventState
 import dev.koga.deeplinklauncher.deeplink.impl.ui.deeplinkdetails.component.DuplicateModeUI
 import dev.koga.deeplinklauncher.deeplink.impl.ui.deeplinkdetails.component.EditModeUI
 import dev.koga.deeplinklauncher.deeplink.impl.ui.deeplinkdetails.component.LaunchModeUI
@@ -42,6 +45,7 @@ internal fun DeepLinkDetailsBottomSheet(
 ) {
     val lifecycleOwner = LocalLifecycleOwner.current
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val handlesBack by viewModel.handlesBack.collectAsStateWithLifecycle()
     val snackBarHostState = remember { SnackbarHostState() }
 
     var showDeleteConfirmation by rememberSaveable { mutableStateOf(false) }
@@ -71,6 +75,13 @@ internal fun DeepLinkDetailsBottomSheet(
             skipPartiallyExpanded = true,
         ),
     ) {
+        NavigationBackHandler(
+            state = rememberNavigationEventState(currentInfo = NavigationEventInfo.None),
+            isBackEnabled = handlesBack,
+        ) {
+            viewModel.onBackPressed()
+        }
+
         Box(modifier = Modifier.fillMaxWidth()) {
             DeepLinkDetailsUI(
                 uiState = uiState,

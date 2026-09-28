@@ -112,6 +112,10 @@ internal class DeepLinkDetailsViewModel(
         .distinctUntilChanged()
         .mapLatest { getDeepLinkHandlers(it).toPersistentList() }
 
+    val handlesBack = mode
+        .map { it != Mode.LAUNCH }
+        .stateIn(viewModelScope, SharingStarted.Eagerly, false)
+
     private val messageDispatcher = Channel<String>(Channel.UNLIMITED)
     val messages = messageDispatcher.receiveAsFlow()
 
@@ -189,6 +193,10 @@ internal class DeepLinkDetailsViewModel(
         }
     }
 
+    fun onBackPressed() {
+        mode.update { Mode.LAUNCH }
+    }
+
     fun onAction(action: DeepLinkDetailsAction) {
         when (action) {
             is EditAction -> onEditAction(action)
@@ -226,7 +234,7 @@ internal class DeepLinkDetailsViewModel(
     private fun onDuplicateAction(action: DuplicateAction) {
         when (action) {
             is DuplicateAction.Duplicate -> duplicate(action.newLink, action.copyAllFields)
-            DuplicateAction.Back -> mode.update { Mode.LAUNCH }
+            DuplicateAction.Back -> onBackPressed()
         }
     }
 
@@ -239,7 +247,7 @@ internal class DeepLinkDetailsViewModel(
             is EditAction.ToggleFolder -> toggleFolder(action.folder)
             is EditAction.SelectTargetPackage -> updateTargetPackage(action.packageName)
             EditAction.Delete -> delete()
-            EditAction.Back -> mode.update { Mode.LAUNCH }
+            EditAction.Back -> onBackPressed()
         }
     }
 
