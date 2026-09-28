@@ -5,6 +5,7 @@ package dev.koga.deeplinklauncher.home.impl.ui
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dev.koga.deeplinklauncher.analytics.api.AnalyticsTracker
+import dev.koga.deeplinklauncher.coroutines.startNowThenWhileSubscribed
 import dev.koga.deeplinklauncher.date.currentLocalDateTime
 import dev.koga.deeplinklauncher.deeplink.api.application.EnrichDeepLinksForList
 import dev.koga.deeplinklauncher.deeplink.api.domain.model.DeepLink
@@ -32,13 +33,16 @@ import dev.koga.deeplinklauncher.home.impl.analytics.track
 import dev.koga.deeplinklauncher.home.impl.ui.state.HomeUiState
 import dev.koga.deeplinklauncher.navigation.AppNavigator
 import dev.koga.deeplinklauncher.preferences.repository.PreferencesDataSource
+import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.toPersistentList
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
@@ -68,19 +72,39 @@ class HomeViewModel(
     }
     private val dataStream = searchInput.flatMapLatest { getDeepLinksAndFolderStream(it) }
 
+    private var previousItemsById: Map<String, DeepLinkListItem> = emptyMap()
+    private var previousFoldersById: Map<String, FolderListItem> = emptyMap()
+    private var hasCompletedFullPass = false
+
     private val enrichedDataStream = dataStream.flatMapLatest { data ->
         flow {
+            val folderPreviewCandidates =
+                selectFolderPreviewCandidates(data.folderPreviewDeepLinks)
+
+            var folderPreviewItems: List<DeepLinkListItem>? = null
+
+            if (!hasCompletedFullPass && data.deepLinks.size > FIRST_PAINT_ITEM_COUNT) {
+                val headLinks = (
+                    data.deepLinks.take(FIRST_PAINT_ITEM_COUNT) +
+                        data.favorites.take(FIRST_PAINT_ITEM_COUNT)
+                    ).distinctBy { it.id }
+                val head = enrichDeepLinksForList(headLinks).associateBy { it.deepLink.id }
+                val items = data.deepLinks.map { head[it.id] ?: DeepLinkListItem(deepLink = it) }
+                val pendingPreviews = folderPreviewCandidates
+                    .map { head[it.id] ?: DeepLinkListItem(deepLink = it) }
+                emit(buildEnrichedData(items, data.folders, pendingPreviews))
+
+                val enrichedPreviews = enrichDeepLinksForList(folderPreviewCandidates)
+                folderPreviewItems = enrichedPreviews
+                emit(buildEnrichedData(items, data.folders, enrichedPreviews))
+            }
+
+            val previews = folderPreviewItems ?: enrichDeepLinksForList(folderPreviewCandidates)
             val deepLinks = enrichDeepLinksForList(data.deepLinks)
-            val folderPreviewItems = enrichDeepLinksForList(data.folderPreviewDeepLinks)
-            emit(
-                EnrichedData(
-                    deepLinks = deepLinks,
-                    favorites = deepLinks.filter { it.deepLink.isFavorite },
-                    folders = buildFolderListItems(data.folders, folderPreviewItems),
-                ),
-            )
+            emit(buildEnrichedData(deepLinks, data.folders, previews))
+            hasCompletedFullPass = true
         }
-    }
+    }.flowOn(Dispatchers.Default)
 
     private val deepLinkInputState =
         combine(launchInput, errorMessage, suggestions, ::DeepLinkInputState)
@@ -98,14 +122,14 @@ class HomeViewModel(
         HomeUiState(
             deepLinkInputState = deepLinkInputState,
             searchInput = searchInput,
-            deepLinks = enrichedData.deepLinks.toPersistentList(),
-            favorites = enrichedData.favorites.toPersistentList(),
-            folders = enrichedData.folders.toPersistentList(),
+            deepLinks = enrichedData.deepLinks,
+            favorites = enrichedData.favorites,
+            folders = enrichedData.folders,
             showOnboarding = showOnboarding,
         )
     }.stateIn(
         scope = viewModelScope,
-        started = SharingStarted.WhileSubscribed(stopTimeoutMillis = 5_000),
+        started = SharingStarted.startNowThenWhileSubscribed(),
         initialValue = HomeUiState(),
     )
 
@@ -262,22 +286,52 @@ class HomeViewModel(
         }
     }
 
+    private fun buildEnrichedData(
+        items: List<DeepLinkListItem>,
+        folders: List<Folder>,
+        folderPreviewItems: List<DeepLinkListItem>,
+    ): EnrichedData {
+        val deepLinks = items.reuseUnchanged(previousItemsById) { it.deepLink.id }
+        previousItemsById = deepLinks.associateBy { it.deepLink.id }
+
+        val folderItems = buildFolderListItems(folders, folderPreviewItems)
+            .reuseUnchanged(previousFoldersById) { it.folder.id }
+        previousFoldersById = folderItems.associateBy { it.folder.id }
+
+        return EnrichedData(
+            deepLinks = deepLinks.toPersistentList(),
+            favorites = deepLinks.filter { it.deepLink.isFavorite }.toPersistentList(),
+            folders = folderItems.toPersistentList(),
+        )
+    }
+
     private data class EnrichedData(
-        val deepLinks: List<DeepLinkListItem>,
-        val favorites: List<DeepLinkListItem>,
-        val folders: List<FolderListItem>,
+        val deepLinks: ImmutableList<DeepLinkListItem>,
+        val favorites: ImmutableList<DeepLinkListItem>,
+        val folders: ImmutableList<FolderListItem>,
     )
 
     private companion object {
+        private const val FIRST_PAINT_ITEM_COUNT = 40
+
+        private fun <T> List<T>.reuseUnchanged(
+            previous: Map<String, T>,
+            id: (T) -> String,
+        ): List<T> = map { item -> previous[id(item)]?.takeIf { it == item } ?: item }
+
+        private fun selectFolderPreviewCandidates(links: List<DeepLink>): List<DeepLink> =
+            links
+                .groupBy { it.folder?.id }
+                .values
+                .flatMap { it.take(MAX_FOLDER_PREVIEW_ICONS) }
+
         private fun buildFolderListItems(
             folders: List<Folder>,
             folderPreviewItems: List<DeepLinkListItem>,
         ): List<FolderListItem> {
             val iconsByFolderId = folderPreviewItems
                 .groupBy { it.deepLink.folder!!.id }
-                .mapValues { (_, items) ->
-                    items.take(MAX_FOLDER_PREVIEW_ICONS).map { it.icon }
-                }
+                .mapValues { (_, items) -> items.map { it.icon } }
 
             return folders.map { folder ->
                 FolderListItem(
