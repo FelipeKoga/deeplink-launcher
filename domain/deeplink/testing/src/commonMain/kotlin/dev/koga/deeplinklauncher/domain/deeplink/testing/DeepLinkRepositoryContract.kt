@@ -14,14 +14,8 @@ import kotlin.test.assertNotEquals
 import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
-/**
- * Behavior every [DeepLinkRepository]/[FolderRepository] pair must have. Extended by the
- * SQL implementation's tests and by the fake's tests, so fakes used in feature tests
- * cannot drift from production behavior.
- */
 public abstract class DeepLinkRepositoryContract {
 
-    /** Returns a fresh, empty pair of repositories backed by the same storage. */
     protected abstract fun createRepositories(): Pair<DeepLinkRepository, FolderRepository>
 
     private val repositories by lazy { createRepositories() }
@@ -198,8 +192,6 @@ public abstract class DeepLinkRepositoryContract {
 
     @Test
     public fun importResultDoesNotDependOnTheOrderOfFolders(): Unit = runTest {
-        // Locally: L1 "Work". The file renamed L1 to "Home" and created a new "Work" (F2),
-        // listed before L1.
         folders.insert(Folder(id = "L1", name = "Work", description = null))
 
         deepLinks.importAll(
@@ -221,7 +213,6 @@ public abstract class DeepLinkRepositoryContract {
         folders.insert(Folder(id = "L9", name = "Home", description = null))
         deepLinks.insert(deepLink(id = "x", link = "demo://x", folder = Folder("L1", "Work", null)))
 
-        // The file maps its L1 onto the local "Home" by name and says nothing about x's folder.
         deepLinks.importAll(
             folders = listOf(Folder("L1", "Home", null)),
             deepLinks = listOf(deepLink(id = "x", link = "demo://x")),

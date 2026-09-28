@@ -19,8 +19,6 @@ if (rootDir.resolve("keystore.properties").exists()) {
     keystoreProperties.load(File(rootDir, "keystore.properties").inputStream())
 }
 
-
-
 android {
     namespace = "dev.koga.deeplinklauncher.android"
 
@@ -48,8 +46,6 @@ android {
         }
     }
 
-    // Release signing is optional so that debug builds, tests and code analysis
-    // configure without secrets. Release builds stay unsigned when keys are missing.
     val releaseSigningKeys = listOf("KEYSTORE_FILE_NAME", "KEYSTORE_PASSWORD", "KEYSTORE_ALIAS", "KEY_PASSWORD")
         .associateWith { getSigningKey(it, keystoreProperties) }
 

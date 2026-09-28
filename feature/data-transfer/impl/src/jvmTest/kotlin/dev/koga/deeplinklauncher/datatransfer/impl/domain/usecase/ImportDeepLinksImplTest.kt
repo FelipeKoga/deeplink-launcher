@@ -111,7 +111,6 @@ class ImportDeepLinksImplTest {
         override suspend fun disable(deepLinkIds: List<String>) = Unit
     }
 
-    /** Records the single importAll call; every other write fails the test. */
     private class RecordingRepository : DeepLinkRepository {
         var imported: Pair<List<Folder>, List<DeepLink>>? = null
 

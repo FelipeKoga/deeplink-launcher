@@ -122,8 +122,6 @@ internal class FolderDetailsViewModel(
         }
     }
 
-    // The form holds the saved values: each edit is written first and shown only if it was
-    // accepted, so a rejected name never hides an unsaved description or vice versa.
     private fun updateName(value: String) {
         viewModelScope.launch {
             val saved = form.value

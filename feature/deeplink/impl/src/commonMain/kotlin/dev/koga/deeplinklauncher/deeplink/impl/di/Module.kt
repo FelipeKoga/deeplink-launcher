@@ -13,7 +13,6 @@ import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.bind
 import org.koin.dsl.module
 
-/** Deeplink screens. The domain they use is bound by deepLinkDomainModule. */
 public val deepLinkModule: Module = module {
     singleOf(::EnrichDeepLinkForDetails)
 

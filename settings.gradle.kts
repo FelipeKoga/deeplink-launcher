@@ -24,7 +24,6 @@ dependencyResolutionManagement {
     }
 }
 
-
 include(
     ":androidApp",
     ":desktopApp",

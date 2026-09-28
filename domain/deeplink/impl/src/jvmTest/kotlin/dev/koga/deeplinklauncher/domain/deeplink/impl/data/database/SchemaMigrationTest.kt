@@ -6,10 +6,6 @@ import dev.koga.deeplinklauncher.domain.deeplink.impl.data.repository.DeepLinkRe
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-/**
- * The schema moved from :core:database to this module. Existing installs must keep
- * the same schema version and migrate exactly as before.
- */
 class SchemaMigrationTest {
 
     @Test
@@ -20,7 +16,6 @@ class SchemaMigrationTest {
     @Test
     fun `a version 1 database migrates and keeps its rows`() {
         val driver = JdbcSqliteDriver(JdbcSqliteDriver.IN_MEMORY)
-        // Tables as shipped in schema version 1 (before targetPackage).
         driver.execute(null, "CREATE TABLE folder (id TEXT PRIMARY KEY, name TEXT UNIQUE NOT NULL, description TEXT)", 0)
         driver.execute(
             null,

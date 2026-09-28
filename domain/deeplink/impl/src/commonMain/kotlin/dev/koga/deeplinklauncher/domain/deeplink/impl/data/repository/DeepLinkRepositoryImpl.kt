@@ -155,7 +155,6 @@ internal class DeepLinkRepositoryImpl(
                             description = deepLink.description,
                             createdAt = deepLink.createdAt,
                             isFavorite = deepLink.isFavorite.toLong(),
-                            // No folder in the file keeps the local one.
                             folderId = importedFolderId ?: existing.folderId,
                             targetPackage = deepLink.targetPackage,
                             id = existing.id,
@@ -169,13 +168,6 @@ internal class DeepLinkRepositoryImpl(
         }
     }
 
-    /**
-     * Returns, for each imported folder id, the local folder id that now holds it.
-     *
-     * Two passes so the result does not depend on the order of [folders]: first folders
-     * whose id already exists locally are updated (when their name is free), then the
-     * rest are merged by name or inserted against the state after those renames.
-     */
     private fun importFolders(folders: List<Folder>): Map<String, String> {
         val result = mutableMapOf<String, String>()
         val deferred = mutableListOf<Folder>()

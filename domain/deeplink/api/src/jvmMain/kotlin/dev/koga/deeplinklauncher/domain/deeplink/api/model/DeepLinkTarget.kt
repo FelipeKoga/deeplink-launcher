@@ -17,6 +17,5 @@ public sealed interface DeepLinkTarget {
         val platform: Platform,
     ) : DeepLinkTarget
 
-    /** Device platform, owned by the domain so consumers never see device-bridge types. */
     public enum class Platform { ANDROID, IOS }
 }

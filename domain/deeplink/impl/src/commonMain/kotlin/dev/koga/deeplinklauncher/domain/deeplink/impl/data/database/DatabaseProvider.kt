@@ -14,15 +14,10 @@ internal class DatabaseProvider(
     )
 
     private companion object {
-        /** Existing installs store their data under this name; do not change it. */
         private const val DATABASE_NAME = "dll-db"
     }
 }
 
-/**
- * Wraps [driver] with the column adapters used in production. Tests use it with an
- * in-memory driver so they exercise the same adapters as the app.
- */
 internal fun createDeepLinkLauncherDatabase(driver: SqlDriver): DeepLinkLauncherDatabase =
     DeepLinkLauncherDatabase(
         driver = driver,

@@ -14,13 +14,6 @@ import kotlinx.datetime.LocalDateTime
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 
-/**
- * In-memory deeplink storage with the same observable behavior as the SQL implementation:
- * link and folder-name uniqueness, deeplinks referencing folders by id, atomic writes.
- * Every write replaces one immutable [State] at once, so observers never see a state
- * between two tables, like SQL notifying after a transaction.
- * [DeepLinkRepositoryContract] keeps both implementations in sync.
- */
 public class FakeDeepLinkStore {
     private val state = MutableStateFlow(State())
 
@@ -137,7 +130,6 @@ public class FakeDeepLinkStore {
             state.update { s -> import(s, folders, deepLinks) }
         }
 
-        /** Mirrors DeepLinkRepositoryImpl.importAll: two-pass folder resolution, then deeplinks. */
         private fun import(initial: State, folders: List<Folder>, deepLinks: List<DeepLink>): State {
             var s = initial
             val folderIds = mutableMapOf<String, String>()

@@ -3,8 +3,6 @@ plugins {
     alias(libs.plugins.kotlinSerialization)
 }
 
-// Contract of the deeplink domain: models, repositories and ports shared by every
-// screen feature. No UI, navigation or vendor types (docs/MODULARIZATION.md).
 kotlin {
     explicitApi()
 

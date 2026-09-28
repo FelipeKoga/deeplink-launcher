@@ -13,7 +13,6 @@ import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.coroutines.ensureActive
 import kotlinx.coroutines.withContext
 
-/** Maps deeplinks to list items with their handler icon and app name, for every screen that lists links. */
 public class EnrichDeepLinksForList(
     private val getDeepLinkHandlerIcon: GetDeepLinkHandlerIcon,
     private val getDeepLinkHandlerInfo: GetDeepLinkHandlerInfo,

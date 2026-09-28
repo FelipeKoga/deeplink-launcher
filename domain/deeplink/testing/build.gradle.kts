@@ -2,8 +2,6 @@ plugins {
     alias(libs.plugins.deeplinkLauncher.multiplatform)
 }
 
-// Test doubles owned by the deeplink domain, plus the contract suite that both the
-// fakes and the SQL implementation must pass. Only test source sets depend on it.
 kotlin {
     explicitApi()
 

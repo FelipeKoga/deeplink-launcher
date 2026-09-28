@@ -2,8 +2,6 @@ plugins {
     alias(libs.plugins.deeplinkLauncher.multiplatform)
 }
 
-// Product-agnostic SQLite infrastructure: platform drivers and column adapters.
-// Schemas live with the domain that owns them (e.g. :domain:deeplink:impl).
 kotlin {
     sourceSets {
         commonMain.dependencies {

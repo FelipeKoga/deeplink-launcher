@@ -11,7 +11,6 @@ import kotlin.test.assertFailsWith
 import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
-/** Runs the shared contract against SQLite, plus checks that need a real database. */
 class DeepLinkRepositoryImplTest : DeepLinkRepositoryContract() {
 
     private val db = InMemoryDatabase()
@@ -35,7 +34,6 @@ class DeepLinkRepositoryImplTest : DeepLinkRepositoryContract() {
             )
         }
 
-        // The folder and demo://new were written before the failing insert; both must be gone.
         assertNull(deepLinks.getDeepLinkByLink("demo://new"))
         assertTrue(folders.getFolders().isEmpty())
         assertEquals(listOf("demo://local"), deepLinks.getDeepLinks().map { it.link })

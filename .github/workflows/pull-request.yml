@@ -44,8 +44,6 @@ jobs:
           REVENUECAT_API_KEY: ${{ secrets.REVENUECAT_API_KEY }}
 
       - name: Run Unit tests
-        # Repository, contract, migration and import tests live in jvmTest (the SQLite JDBC
-        # driver is JVM-only); device-bridge is a plain JVM module.
         run: ./gradlew testDebugUnitTest jvmTest :library:device-bridge:impl:test
 
   run-code-analysis:

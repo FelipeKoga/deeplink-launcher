@@ -3,8 +3,6 @@ plugins {
     alias(libs.plugins.sqlDelight)
 }
 
-// Implementation of the deeplink domain: SQLDelight schema and repositories,
-// platform actuals of the ports and their DI bindings. Only :shared depends on it.
 kotlin {
     explicitApi()
 
@@ -37,8 +35,6 @@ kotlin {
     }
 }
 
-// Same database name, package and schema location as before the move out of
-// :core:database, so existing installs keep their data and migrations.
 sqldelight {
     databases {
         create(name = "DeepLinkLauncherDatabase") {

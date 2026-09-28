@@ -18,11 +18,6 @@ import kotlinx.serialization.json.Json
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 
-/**
- * Parses, validates and maps the whole file before writing anything, then hands the
- * result to [DeepLinkRepository.importAll], which applies it in a single transaction.
- * A malformed entry therefore leaves the database untouched.
- */
 internal class ImportDeepLinksImpl(
     private val getFileContent: GetFileContent,
     private val deepLinkRepository: DeepLinkRepository,
@@ -78,8 +73,6 @@ internal class ImportDeepLinksImpl(
             if (existing == null) {
                 dto.toModel(folder).also { newDeepLinkIds += it.id }
             } else {
-                // Fields missing from the file keep their local value. The folder is only set
-                // when the file assigns one; importAll keeps the local folder otherwise.
                 existing.copy(
                     name = dto.name ?: existing.name,
                     description = dto.description ?: existing.description,

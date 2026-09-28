@@ -8,7 +8,6 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
 
-/** Home's search over deeplinks and folders. Home is its only consumer, so it lives here. */
 internal class GetDeepLinksAndFolderStream(
     private val repository: DeepLinkRepository,
     private val folderRepository: FolderRepository,

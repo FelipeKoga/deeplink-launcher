@@ -21,7 +21,6 @@ import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.bind
 import org.koin.dsl.module
 
-/** Bindings of the deeplink domain. Screens register their own module in the feature. */
 public val deepLinkDomainModule: Module = module {
     single { DatabaseProvider(get()).create() }
 
