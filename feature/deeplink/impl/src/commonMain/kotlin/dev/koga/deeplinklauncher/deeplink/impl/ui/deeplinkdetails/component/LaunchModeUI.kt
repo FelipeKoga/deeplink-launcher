@@ -45,6 +45,8 @@ internal fun LaunchModeUI(
     ) {
         DetailsHeader(
             uiState = uiState,
+            onEdit = { onAction(LaunchAction.Edit) },
+            onDelete = onShowDeleteConfirmation,
         )
 
         Spacer(modifier = Modifier.height(12.dp))
@@ -63,7 +65,6 @@ internal fun LaunchModeUI(
         DetailsQuickActions(
             isFavorite = uiState.deepLink.isFavorite,
             onAction = onAction,
-            onShowDeleteConfirmation = onShowDeleteConfirmation,
         )
 
         Spacer(modifier = Modifier.height(12.dp))

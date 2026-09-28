@@ -83,8 +83,6 @@ Source: `core/designsystem/.../theme/Colors.kt`
 
 ### `button` — `primaryBackground`/`primaryContent`, `secondaryBackground`/`secondaryContent`, `textContent`/`textDestructiveContent`, `destructiveBackground`/`destructiveContent`
 
-### `chip` — `background`/`content`/`border`, `destructiveContent`/`destructiveBorder`, `accentContent`
-
 ### `status` — `errorBackground`/`errorContent`, `successBackground`/`successContent`
 
 ### `accent` — `favorite` (`#FFB300`)
@@ -102,7 +100,6 @@ Source: `core/designsystem/.../theme/Colors.kt`
 | Accent icon / link | `surface.primary` |
 | Delete flow | `button.destructiveBackground` + `button.destructiveContent` |
 | Destructive text action | `button.textDestructiveContent` |
-| Destructive chip | `chip.destructiveContent` + `chip.destructiveBorder` |
 
 **Light mode:** `surface.background` == `surface.card` (both white). Use `surface.elevated` or borders for separation.
 
@@ -157,6 +154,7 @@ Source: `core/designsystem/.../theme/Shape.kt`
 | `cardLarge` | Larger cards, e.g. folder grid (24 dp) |
 | `field` | Text fields, segmented controls (24 dp) |
 | `dialog` | Dialogs, code blocks, detail panels (12 dp) |
+| `action` | Quick action tiles (12 dp) |
 | `chip` | Pill/circular chips |
 | `sheet` | Bottom bar / sheet top corners (12 dp) |
 | `tab` | Tab row top corners (8 dp) |
@@ -180,7 +178,6 @@ Source: `core/designsystem/.../theme/Shape.kt`
 | `DLLSingleChoiceSegmentedButtonRow` | Segmented control |
 | `DLLButton` | Primary / Secondary / Destructive variants (theme-driven) |
 | `DLLTextButton` | Default / Destructive variants (theme-driven) |
-| `DLLOutlinedChip` | Outlined action chip; Default / Destructive / Accent variants |
 | `DLLOutlinedCard` | Outlined card with theme border/shape |
 | `DLLSearchBar` | Docked search bar |
 | `DLLSnackbarHost` | Themed snackbar host |
@@ -198,14 +195,11 @@ Source: `core/designsystem/.../theme/Shape.kt`
 
 Text button variants: `Default` | `Destructive`
 
-Outlined chip variants: `Default` | `Destructive` | `Accent` (e.g. favorite)
-
 ```kotlin
 DLLButton(onClick = { }, text = "Save")
 DLLButton(onClick = { }, text = "Delete", variant = DLLButtonVariant.Destructive)
 DLLTextButton(onClick = { }, text = "Cancel")
 DLLTextButton(onClick = { }, text = "Delete deeplinks only", variant = DLLTextButtonVariant.Destructive)
-DLLOutlinedChip(label = "Delete", icon = TrashIcon, variant = DLLOutlinedChipVariant.Destructive, onClick = { })
 ```
 
 New UI reused in 2+ features → add here, wired to `DeepLinkTheme`.
@@ -253,7 +247,7 @@ New UI reused in 2+ features → add here, wired to `DeepLinkTheme`.
 core/designsystem/.../designsystem/
 ├── theme/Colors.kt, Typography.kt, Font.kt, DLLTheme.kt, DLLPreviewTheme.kt, Shape.kt, Dimensions.kt
 ├── DLLTopBar.kt, DLLTextField.kt, DLLModalBottomSheet.kt, DLLSmallChip.kt, DLLAssistChip.kt
-├── DLLOutlinedCard.kt, DLLOutlinedChip.kt, DLLSearchBar.kt, DLLSnackbar.kt, DLLListItem.kt, DLLCodeBlock.kt
+├── DLLOutlinedCard.kt, DLLSearchBar.kt, DLLSnackbar.kt, DLLListItem.kt, DLLCodeBlock.kt
 ├── DLLSingleChoiceSegmentedButtonRow.kt, DLLHorizontalDivider.kt
 ├── button/DLLButton.kt, DLLTextButton.kt, DLLIconButton.kt, DLLFilledIconButton.kt, DLLOutlineIconButton.kt
 ├── dialog/DLLDialog.kt, DLLConfirmationDialog.kt

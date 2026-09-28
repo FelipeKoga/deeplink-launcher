@@ -13,7 +13,6 @@ internal fun DetailsQuickActionsGridPreview() {
         DetailsQuickActions(
             isFavorite = false,
             onAction = {},
-            onShowDeleteConfirmation = {},
         )
     }
 }
@@ -26,7 +25,6 @@ internal fun DetailsQuickActionsGridFavoritePreview() {
         DetailsQuickActions(
             isFavorite = true,
             onAction = {},
-            onShowDeleteConfirmation = {},
         )
     }
 }
