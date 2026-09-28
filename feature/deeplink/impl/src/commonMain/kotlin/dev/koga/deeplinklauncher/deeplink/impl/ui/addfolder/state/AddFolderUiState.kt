@@ -4,4 +4,5 @@ internal data class AddFolderUiState(
     val name: String,
     val description: String,
     val isSubmitEnabled: Boolean,
+    val nameError: String? = null,
 )

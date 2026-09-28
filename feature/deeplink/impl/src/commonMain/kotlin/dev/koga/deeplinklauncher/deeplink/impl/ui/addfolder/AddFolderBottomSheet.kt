@@ -69,6 +69,14 @@ internal fun AddFolderBottomSheetContent(
             label = "Name",
         )
 
+        uiState.nameError?.let { error ->
+            Spacer(modifier = Modifier.height(4.dp))
+            Text(
+                text = error,
+                style = typography.label.error.copy(color = colors.text.error),
+            )
+        }
+
         Spacer(modifier = Modifier.height(12.dp))
 
         DLLTextField(

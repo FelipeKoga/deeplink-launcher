@@ -144,7 +144,7 @@ internal class DeepLinkRepositoryImpl(
                 val folderIds = importFolders(folders)
 
                 deepLinks.forEach { deepLink ->
-                    val folderId = deepLink.folder?.id?.let { importedId ->
+                    val importedFolderId = deepLink.folder?.id?.let { importedId ->
                         folderIds[importedId] ?: importedId.takeIf(::folderExists)
                     }
                     val existing = queries.getDeepLinkByLink(deepLink.link).executeAsOneOrNull()
@@ -155,54 +155,62 @@ internal class DeepLinkRepositoryImpl(
                             description = deepLink.description,
                             createdAt = deepLink.createdAt,
                             isFavorite = deepLink.isFavorite.toLong(),
-                            folderId = folderId,
+                            // No folder in the file keeps the local one.
+                            folderId = importedFolderId ?: existing.folderId,
                             targetPackage = deepLink.targetPackage,
                             id = existing.id,
                         )
                     } else {
                         val id = deepLink.id.takeUnless(::exists) ?: Uuid.random().toString()
-                        insertRow(deepLink, id = id, folderId = folderId)
+                        insertRow(deepLink, id = id, folderId = importedFolderId)
                     }
                 }
             }
         }
     }
 
-    /** Returns, for each imported folder id, the local folder id that now holds it. */
-    private fun importFolders(folders: List<Folder>): Map<String, String> =
-        folders.associate { folder ->
-            val sameNameId = folderQueries.getFolderIdByName(folder.name).executeAsOneOrNull()
-            when {
-                sameNameId != null -> {
-                    if (sameNameId == folder.id) {
-                        folderQueries.updateFolder(
-                            name = folder.name,
-                            description = folder.description,
-                            id = folder.id,
-                        )
-                    }
-                    folder.id to sameNameId
-                }
+    /**
+     * Returns, for each imported folder id, the local folder id that now holds it.
+     *
+     * Two passes so the result does not depend on the order of [folders]: first folders
+     * whose id already exists locally are updated (when their name is free), then the
+     * rest are merged by name or inserted against the state after those renames.
+     */
+    private fun importFolders(folders: List<Folder>): Map<String, String> {
+        val result = mutableMapOf<String, String>()
+        val deferred = mutableListOf<Folder>()
 
+        folders.forEach { folder ->
+            val nameOwner = folderIdByName(folder.name)
+            if (folderExists(folder.id) && (nameOwner == null || nameOwner == folder.id)) {
+                folderQueries.updateFolder(name = folder.name, description = folder.description, id = folder.id)
+                result[folder.id] = folder.id
+            } else {
+                deferred += folder
+            }
+        }
+
+        deferred.forEach { folder ->
+            val nameOwner = folderIdByName(folder.name)
+            result[folder.id] = when {
+                nameOwner != null -> nameOwner
                 folderExists(folder.id) -> {
-                    folderQueries.updateFolder(
-                        name = folder.name,
-                        description = folder.description,
-                        id = folder.id,
-                    )
-                    folder.id to folder.id
+                    folderQueries.updateFolder(name = folder.name, description = folder.description, id = folder.id)
+                    folder.id
                 }
 
                 else -> {
-                    folderQueries.insertFolder(
-                        id = folder.id,
-                        name = folder.name,
-                        description = folder.description,
-                    )
-                    folder.id to folder.id
+                    folderQueries.insertFolder(id = folder.id, name = folder.name, description = folder.description)
+                    folder.id
                 }
             }
         }
+
+        return result
+    }
+
+    private fun folderIdByName(name: String): String? =
+        folderQueries.getFolderIdByName(name).executeAsOneOrNull()
 
     private fun insertRow(deepLink: DeepLink, id: String, folderId: String?) {
         queries.insertDeeplink(

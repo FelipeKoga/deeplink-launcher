@@ -38,7 +38,9 @@ public interface DeepLinkRepository {
      * Applies an import in a single transaction: either everything is written or nothing is.
      *
      * - A folder whose name already belongs to another local folder is merged into that folder.
-     * - A deeplink whose link already exists updates the existing record and keeps its local id.
+     * - A deeplink whose link already exists updates the existing record and keeps its local id;
+     *   if the imported deeplink has no folder, the record keeps its current folder.
+     * - Folder ids of the imported deeplinks refer to [folders] (or to existing local folders).
      * - A new deeplink whose id is taken by a different local record gets a new id.
      */
     public suspend fun importAll(folders: List<Folder>, deepLinks: List<DeepLink>)

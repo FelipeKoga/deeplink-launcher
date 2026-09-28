@@ -9,7 +9,7 @@ Analytics is **product-oriented** — it tracks funnels, activation, retention, 
 - `library:analytics:api` — generic `AnalyticsTracker` interface with a single `logEvent(name, parameters)` method
 - `library:analytics:impl` — `FirebaseAnalyticsTracker` (Android), `NoOpAnalyticsTracker` (iOS/JVM)
 - **Product events** live in feature modules (`feature/*/impl/analytics/`) and `shared/analytics/` for app-level events (`app_open`, `screen_view`)
-- `LaunchSource` enum lives in `feature:deeplink:api` and is reused by home/deeplink events
+- `LaunchSource` enum lives in `domain:deeplink:api` (`dev.koga.deeplinklauncher.domain.deeplink.api.model`) and is reused by home/deeplink events
 - Events are fired from **ViewModels** after business outcomes, not from Compose recompositions
 - **Screen views** are centralized in `shared/App.kt` via type-safe route resolution (`AppRoute.analyticsScreenName` + `resolveAnalyticsScreenName()`)
 - `app_open` is tracked once in `AppInitializer` after Koin startup

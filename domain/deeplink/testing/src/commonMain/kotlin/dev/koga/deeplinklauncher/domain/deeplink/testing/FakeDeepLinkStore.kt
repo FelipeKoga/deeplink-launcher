@@ -8,7 +8,7 @@ import dev.koga.deeplinklauncher.domain.deeplink.api.repository.DeepLinkReposito
 import dev.koga.deeplinklauncher.domain.deeplink.api.repository.FolderRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 import kotlinx.datetime.LocalDateTime
 import kotlin.uuid.ExperimentalUuidApi
@@ -16,188 +16,230 @@ import kotlin.uuid.Uuid
 
 /**
  * In-memory deeplink storage with the same observable behavior as the SQL implementation:
- * link and folder-name uniqueness, deeplinks referencing folders by id, atomic imports.
+ * link and folder-name uniqueness, deeplinks referencing folders by id, atomic writes.
+ * Every write replaces one immutable [State] at once, so observers never see a state
+ * between two tables, like SQL notifying after a transaction.
  * [DeepLinkRepositoryContract] keeps both implementations in sync.
  */
 public class FakeDeepLinkStore {
-    private val rows = MutableStateFlow<Map<String, Row>>(emptyMap())
-    private val folderRows = MutableStateFlow<Map<String, Folder>>(emptyMap())
+    private val state = MutableStateFlow(State())
 
     public val deepLinkRepository: DeepLinkRepository = FakeDeepLinkRepository()
     public val folderRepository: FolderRepository = FakeFolderRepository()
 
     private data class Row(val deepLink: DeepLink, val folderId: String?)
 
-    private fun Row.resolve(folders: Map<String, Folder>): DeepLink = deepLink.copy(
-        folder = folderId?.let { id ->
-            val folder = folders[id]
-            Folder(id = id, name = folder?.name.orEmpty(), description = folder?.description)
-        },
-    )
-
-    private fun Map<String, Row>.resolved(folders: Map<String, Folder>): List<DeepLink> =
-        values.map { it.resolve(folders) }.sortedWith(
-            compareByDescending<DeepLink> { it.lastLaunchedAt }
-                .thenByDescending { it.createdAt }
-                .thenBy { it.name },
+    private data class State(
+        val rows: Map<String, Row> = emptyMap(),
+        val folders: Map<String, Folder> = emptyMap(),
+    ) {
+        fun resolve(row: Row): DeepLink = row.deepLink.copy(
+            folder = row.folderId?.let { id ->
+                val folder = folders[id]
+                Folder(id = id, name = folder?.name.orEmpty(), description = folder?.description)
+            },
         )
 
-    private fun Map<String, Folder>.withCounts(rows: Map<String, Row>): List<Folder> =
-        values.map { folder -> folder.copy(deepLinkCount = rows.values.count { it.folderId == folder.id }) }
+        fun deepLinks(filter: (Row) -> Boolean = { true }): List<DeepLink> =
+            rows.values.filter(filter).map(::resolve).sortedWith(
+                compareByDescending<DeepLink> { it.lastLaunchedAt }
+                    .thenByDescending { it.createdAt }
+                    .thenBy { it.name },
+            )
 
-    private fun updateRow(id: String, transform: (Row) -> Row) {
-        rows.update { current -> current[id]?.let { current + (id to transform(it)) } ?: current }
+        fun foldersWithCounts(): List<Folder> =
+            folders.values.map { folder -> folder.copy(deepLinkCount = rows.values.count { it.folderId == folder.id }) }
+
+        fun rowByLink(link: String): Row? = rows.values.firstOrNull { it.deepLink.link == link }
+
+        fun folderIdByName(name: String): String? = folders.values.firstOrNull { it.name == name }?.id
+
+        fun updateRow(id: String, transform: (Row) -> Row): State =
+            rows[id]?.let { copy(rows = rows + (id to transform(it))) } ?: this
     }
 
     private inner class FakeDeepLinkRepository : DeepLinkRepository {
-        override fun getDeepLinksStream(): Flow<List<DeepLink>> =
-            combine(rows, folderRows) { rows, folders -> rows.resolved(folders) }
+        override fun getDeepLinksStream(): Flow<List<DeepLink>> = state.map { it.deepLinks() }
 
-        override fun getDeepLinks(): List<DeepLink> = rows.value.resolved(folderRows.value)
+        override fun getDeepLinks(): List<DeepLink> = state.value.deepLinks()
 
         override fun getDeepLinkByIdStream(id: String): Flow<DeepLink?> =
-            combine(rows, folderRows) { rows, folders -> rows[id]?.resolve(folders) }
+            state.map { s -> s.rows[id]?.let(s::resolve) }
 
-        override fun getDeepLinkById(id: String): DeepLink? = rows.value[id]?.resolve(folderRows.value)
+        override fun getDeepLinkById(id: String): DeepLink? = state.value.let { s -> s.rows[id]?.let(s::resolve) }
 
         override fun getDeepLinkByLink(link: String): DeepLink? =
-            rows.value.values.firstOrNull { it.deepLink.link == link }?.resolve(folderRows.value)
+            state.value.let { s -> s.rowByLink(link)?.let(s::resolve) }
 
         override suspend fun insert(deepLink: DeepLink): DeepLinkRepository.InsertResult {
-            if (rows.value.values.any { it.deepLink.link == deepLink.link && it.deepLink.id != deepLink.id }) {
-                return DeepLinkRepository.InsertResult.LinkAlreadyExists
+            var result: DeepLinkRepository.InsertResult = DeepLinkRepository.InsertResult.Success
+            state.update { s ->
+                val owner = s.rowByLink(deepLink.link)
+                if (owner != null && owner.deepLink.id != deepLink.id) {
+                    result = DeepLinkRepository.InsertResult.LinkAlreadyExists
+                    return@update s
+                }
+                check(deepLink.id !in s.rows) { "Duplicate id ${deepLink.id}" }
+                result = DeepLinkRepository.InsertResult.Success
+                s.copy(rows = s.rows + (deepLink.id to Row(deepLink.copy(folder = null), deepLink.folder?.id)))
             }
-            check(deepLink.id !in rows.value) { "Duplicate id ${deepLink.id}" }
-            rows.update { it + (deepLink.id to Row(deepLink.copy(folder = null), deepLink.folder?.id)) }
-            return DeepLinkRepository.InsertResult.Success
+            return result
         }
 
-        override suspend fun updateLink(id: String, link: String): DeepLinkRepository.WriteResult = when {
-            id !in rows.value -> DeepLinkRepository.WriteResult.NotFound
-            rows.value.values.any { it.deepLink.link == link && it.deepLink.id != id } ->
-                DeepLinkRepository.WriteResult.LinkAlreadyExists
+        override suspend fun updateLink(id: String, link: String): DeepLinkRepository.WriteResult {
+            var result: DeepLinkRepository.WriteResult = DeepLinkRepository.WriteResult.Success
+            state.update { s ->
+                val owner = s.rowByLink(link)
+                when {
+                    id !in s.rows -> s.also { result = DeepLinkRepository.WriteResult.NotFound }
+                    owner != null && owner.deepLink.id != id ->
+                        s.also { result = DeepLinkRepository.WriteResult.LinkAlreadyExists }
 
-            else -> {
-                updateRow(id) { it.copy(deepLink = it.deepLink.copy(link = link)) }
-                DeepLinkRepository.WriteResult.Success
+                    else -> s.updateRow(id) { it.copy(deepLink = it.deepLink.copy(link = link)) }
+                        .also { result = DeepLinkRepository.WriteResult.Success }
+                }
             }
+            return result
         }
 
         override suspend fun updateName(id: String, name: String?) =
-            updateRow(id) { it.copy(deepLink = it.deepLink.copy(name = name)) }
+            state.update { s -> s.updateRow(id) { it.copy(deepLink = it.deepLink.copy(name = name)) } }
 
         override suspend fun updateDescription(id: String, description: String?) =
-            updateRow(id) { it.copy(deepLink = it.deepLink.copy(description = description)) }
+            state.update { s -> s.updateRow(id) { it.copy(deepLink = it.deepLink.copy(description = description)) } }
 
         override suspend fun updateTargetPackage(id: String, targetPackage: String?) =
-            updateRow(id) { it.copy(deepLink = it.deepLink.copy(targetPackage = targetPackage)) }
+            state.update { s -> s.updateRow(id) { it.copy(deepLink = it.deepLink.copy(targetPackage = targetPackage)) } }
 
         override suspend fun setFavorite(id: String, isFavorite: Boolean) =
-            updateRow(id) { it.copy(deepLink = it.deepLink.copy(isFavorite = isFavorite)) }
+            state.update { s -> s.updateRow(id) { it.copy(deepLink = it.deepLink.copy(isFavorite = isFavorite)) } }
 
         override suspend fun setFolder(id: String, folderId: String?) =
-            updateRow(id) { it.copy(folderId = folderId) }
+            state.update { s -> s.updateRow(id) { it.copy(folderId = folderId) } }
 
         override suspend fun recordLaunch(id: String, launchedAt: LocalDateTime) =
-            updateRow(id) { it.copy(deepLink = it.deepLink.copy(lastLaunchedAt = launchedAt)) }
+            state.update { s -> s.updateRow(id) { it.copy(deepLink = it.deepLink.copy(lastLaunchedAt = launchedAt)) } }
 
         override suspend fun delete(id: String) {
-            rows.update { it - id }
+            state.update { s -> s.copy(rows = s.rows - id) }
         }
 
         override suspend fun deleteAll(): List<String> {
-            val ids = rows.value.keys.toList()
-            rows.value = emptyMap()
+            var ids = emptyList<String>()
+            state.update { s ->
+                ids = s.rows.keys.toList()
+                s.copy(rows = emptyMap())
+            }
             return ids
         }
 
         override suspend fun importAll(folders: List<Folder>, deepLinks: List<DeepLink>) {
-            // Build the new state first and publish it at once: all or nothing.
-            val newFolders = folderRows.value.toMutableMap()
-            val folderIds = folders.associate { folder ->
-                val sameName = newFolders.values.firstOrNull { it.name == folder.name }
-                when {
-                    sameName != null -> folder.id to sameName.id.also {
-                        if (sameName.id == folder.id) newFolders[folder.id] = folder.copy(deepLinkCount = 0)
-                    }
+            state.update { s -> import(s, folders, deepLinks) }
+        }
 
-                    else -> {
-                        newFolders[folder.id] = folder.copy(deepLinkCount = 0)
-                        folder.id to folder.id
-                    }
-                }
+        /** Mirrors DeepLinkRepositoryImpl.importAll: two-pass folder resolution, then deeplinks. */
+        private fun import(initial: State, folders: List<Folder>, deepLinks: List<DeepLink>): State {
+            var s = initial
+            val folderIds = mutableMapOf<String, String>()
+            val deferred = mutableListOf<Folder>()
+
+            fun putFolder(folder: Folder) {
+                s = s.copy(folders = s.folders + (folder.id to folder.copy(deepLinkCount = 0)))
             }
 
-            val newRows = rows.value.toMutableMap()
-            deepLinks.forEach { deepLink ->
-                val folderId = deepLink.folder?.id?.let { folderIds[it] ?: it.takeIf(newFolders::containsKey) }
-                val existing = newRows.values.firstOrNull { it.deepLink.link == deepLink.link }
-                if (existing != null) {
-                    newRows[existing.deepLink.id] = existing.copy(
-                        deepLink = existing.deepLink.copy(
-                            name = deepLink.name,
-                            description = deepLink.description,
-                            createdAt = deepLink.createdAt,
-                            isFavorite = deepLink.isFavorite,
-                            targetPackage = deepLink.targetPackage,
-                        ),
-                        folderId = folderId,
-                    )
+            folders.forEach { folder ->
+                val nameOwner = s.folderIdByName(folder.name)
+                if (folder.id in s.folders && (nameOwner == null || nameOwner == folder.id)) {
+                    putFolder(folder)
+                    folderIds[folder.id] = folder.id
                 } else {
-                    val id = deepLink.id.takeUnless(newRows::containsKey) ?: Uuid.random().toString()
-                    newRows[id] = Row(deepLink.copy(id = id, folder = null), folderId)
+                    deferred += folder
                 }
             }
+            deferred.forEach { folder ->
+                val nameOwner = s.folderIdByName(folder.name)
+                folderIds[folder.id] = nameOwner ?: folder.id.also { putFolder(folder) }
+            }
 
-            folderRows.value = newFolders
-            rows.value = newRows
+            deepLinks.forEach { deepLink ->
+                val importedFolderId = deepLink.folder?.id?.let { folderIds[it] ?: it.takeIf(s.folders::containsKey) }
+                val existing = s.rowByLink(deepLink.link)
+                s = if (existing != null) {
+                    s.updateRow(existing.deepLink.id) {
+                        Row(
+                            deepLink = it.deepLink.copy(
+                                name = deepLink.name,
+                                description = deepLink.description,
+                                createdAt = deepLink.createdAt,
+                                isFavorite = deepLink.isFavorite,
+                                targetPackage = deepLink.targetPackage,
+                            ),
+                            folderId = importedFolderId ?: it.folderId,
+                        )
+                    }
+                } else {
+                    val id = deepLink.id.takeUnless(s.rows::containsKey) ?: Uuid.random().toString()
+                    s.copy(rows = s.rows + (id to Row(deepLink.copy(id = id, folder = null), importedFolderId)))
+                }
+            }
+            return s
         }
     }
 
     private inner class FakeFolderRepository : FolderRepository {
-        override fun getFoldersStream(): Flow<List<Folder>> =
-            combine(folderRows, rows) { folders, rows -> folders.withCounts(rows) }
+        override fun getFoldersStream(): Flow<List<Folder>> = state.map { it.foldersWithCounts() }
 
-        override fun getFolders(): List<Folder> = folderRows.value.withCounts(rows.value)
+        override fun getFolders(): List<Folder> = state.value.foldersWithCounts()
 
         override fun getFolderDeepLinksStream(id: String): Flow<List<DeepLink>> =
-            combine(rows, folderRows) { rows, folders ->
-                rows.filterValues { it.folderId == id }.resolved(folders)
-            }
+            state.map { s -> s.deepLinks { it.folderId == id } }
 
         override fun getFolderByIdStream(id: String): Flow<Folder?> =
-            combine(folderRows, rows) { folders, rows -> folders.withCounts(rows).firstOrNull { it.id == id } }
+            state.map { s -> s.foldersWithCounts().firstOrNull { it.id == id } }
 
         override fun getFolderById(id: String): Folder? = getFolders().firstOrNull { it.id == id }
 
         override suspend fun insert(folder: Folder): FolderRepository.InsertResult {
-            if (folderRows.value.values.any { it.name == folder.name && it.id != folder.id }) {
-                return FolderRepository.InsertResult.NameAlreadyExists
+            var result: FolderRepository.InsertResult = FolderRepository.InsertResult.Success
+            state.update { s ->
+                val owner = s.folderIdByName(folder.name)
+                if (owner != null && owner != folder.id) {
+                    result = FolderRepository.InsertResult.NameAlreadyExists
+                    return@update s
+                }
+                check(folder.id !in s.folders) { "Duplicate id ${folder.id}" }
+                result = FolderRepository.InsertResult.Success
+                s.copy(folders = s.folders + (folder.id to folder.copy(deepLinkCount = 0)))
             }
-            folderRows.update { it + (folder.id to folder.copy(deepLinkCount = 0)) }
-            return FolderRepository.InsertResult.Success
+            return result
         }
 
-        override suspend fun update(id: String, name: String, description: String?): FolderRepository.WriteResult =
-            when {
-                id !in folderRows.value -> FolderRepository.WriteResult.NotFound
-                folderRows.value.values.any { it.name == name && it.id != id } ->
-                    FolderRepository.WriteResult.NameAlreadyExists
-
-                else -> {
-                    folderRows.update { it + (id to it.getValue(id).copy(name = name, description = description)) }
-                    FolderRepository.WriteResult.Success
+        override suspend fun update(id: String, name: String, description: String?): FolderRepository.WriteResult {
+            var result: FolderRepository.WriteResult = FolderRepository.WriteResult.Success
+            state.update { s ->
+                val owner = s.folderIdByName(name)
+                when {
+                    id !in s.folders -> s.also { result = FolderRepository.WriteResult.NotFound }
+                    owner != null && owner != id -> s.also { result = FolderRepository.WriteResult.NameAlreadyExists }
+                    else -> s.copy(
+                        folders = s.folders + (id to s.folders.getValue(id).copy(name = name, description = description)),
+                    ).also { result = FolderRepository.WriteResult.Success }
                 }
             }
+            return result
+        }
 
         override suspend fun delete(id: String) {
-            rows.update { current -> current.mapValues { (_, row) -> if (row.folderId == id) row.copy(folderId = null) else row } }
-            folderRows.update { it - id }
+            state.update { s ->
+                State(
+                    rows = s.rows.mapValues { (_, row) -> if (row.folderId == id) row.copy(folderId = null) else row },
+                    folders = s.folders - id,
+                )
+            }
         }
 
         override suspend fun deleteAll() {
-            rows.update { current -> current.mapValues { (_, row) -> row.copy(folderId = null) } }
-            folderRows.value = emptyMap()
+            state.update { s -> State(rows = s.rows.mapValues { (_, row) -> row.copy(folderId = null) }) }
         }
     }
 }

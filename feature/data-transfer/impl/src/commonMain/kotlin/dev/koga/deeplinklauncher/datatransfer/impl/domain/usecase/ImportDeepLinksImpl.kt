@@ -78,13 +78,14 @@ internal class ImportDeepLinksImpl(
             if (existing == null) {
                 dto.toModel(folder).also { newDeepLinkIds += it.id }
             } else {
-                // Fields missing from the file keep their local value.
+                // Fields missing from the file keep their local value. The folder is only set
+                // when the file assigns one; importAll keeps the local folder otherwise.
                 existing.copy(
                     name = dto.name ?: existing.name,
                     description = dto.description ?: existing.description,
                     isFavorite = dto.isFavorite ?: existing.isFavorite,
                     createdAt = dto.createdAt?.let(LocalDateTime::parse) ?: existing.createdAt,
-                    folder = folder ?: existing.folder,
+                    folder = folder,
                     targetPackage = dto.targetPackage ?: existing.targetPackage,
                 )
             }

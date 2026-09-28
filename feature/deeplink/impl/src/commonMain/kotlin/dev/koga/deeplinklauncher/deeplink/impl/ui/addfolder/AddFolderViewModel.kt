@@ -10,7 +10,7 @@ import dev.koga.deeplinklauncher.deeplink.impl.ui.addfolder.state.AddFolderUiSta
 import dev.koga.deeplinklauncher.domain.deeplink.api.model.Folder
 import dev.koga.deeplinklauncher.domain.deeplink.api.repository.FolderRepository
 import dev.koga.deeplinklauncher.navigation.AppNavigator
-import dev.koga.deeplinklauncher.uievent.SnackBarDispatcher
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
@@ -23,20 +23,22 @@ internal class AddFolderViewModel(
     private val savedStateHandle: SavedStateHandle,
     private val repository: FolderRepository,
     private val appNavigator: AppNavigator,
-    private val snackBarDispatcher: SnackBarDispatcher,
     private val analyticsTracker: AnalyticsTracker,
 ) : ViewModel() {
     private val name = savedStateHandle.getStateFlow("name", "")
     private val description = savedStateHandle.getStateFlow("description", "")
+    private val nameError = MutableStateFlow<String?>(null)
 
     val uiState = combine(
         name,
         description,
-    ) { name, description ->
+        nameError,
+    ) { name, description, nameError ->
         AddFolderUiState(
             name = name,
             description = description,
             isSubmitEnabled = name.isNotBlank(),
+            nameError = nameError,
         )
     }.stateIn(
         scope = viewModelScope,
@@ -50,6 +52,7 @@ internal class AddFolderViewModel(
 
     fun onNameChanged(text: String) {
         savedStateHandle["name"] = text
+        nameError.value = null
     }
 
     fun onDescriptionChanged(text: String) {
@@ -71,7 +74,7 @@ internal class AddFolderViewModel(
                 }
 
                 FolderRepository.InsertResult.NameAlreadyExists ->
-                    snackBarDispatcher.show("A folder named \"${folder.name}\" already exists")
+                    nameError.value = "A folder with this name already exists"
             }
         }
     }

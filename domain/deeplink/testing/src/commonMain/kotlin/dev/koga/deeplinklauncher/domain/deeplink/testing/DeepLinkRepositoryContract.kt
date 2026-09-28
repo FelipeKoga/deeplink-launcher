@@ -197,6 +197,40 @@ public abstract class DeepLinkRepositoryContract {
     }
 
     @Test
+    public fun importResultDoesNotDependOnTheOrderOfFolders(): Unit = runTest {
+        // Locally: L1 "Work". The file renamed L1 to "Home" and created a new "Work" (F2),
+        // listed before L1.
+        folders.insert(Folder(id = "L1", name = "Work", description = null))
+
+        deepLinks.importAll(
+            folders = listOf(Folder("F2", "Work", null), Folder("L1", "Home", null)),
+            deepLinks = listOf(
+                deepLink(id = "a", link = "demo://in-f2", folder = Folder("F2", "Work", null)),
+                deepLink(id = "b", link = "demo://in-l1", folder = Folder("L1", "Home", null)),
+            ),
+        )
+
+        assertEquals(setOf("Work", "Home"), folders.getFolders().map { it.name }.toSet())
+        assertEquals("Work", deepLinks.getDeepLinkByLink("demo://in-f2")?.folder?.name)
+        assertEquals("Home", deepLinks.getDeepLinkByLink("demo://in-l1")?.folder?.name)
+    }
+
+    @Test
+    public fun importWithoutAFolderKeepsTheLocalFolderOfAnExistingLink(): Unit = runTest {
+        folders.insert(Folder(id = "L1", name = "Work", description = null))
+        folders.insert(Folder(id = "L9", name = "Home", description = null))
+        deepLinks.insert(deepLink(id = "x", link = "demo://x", folder = Folder("L1", "Work", null)))
+
+        // The file maps its L1 onto the local "Home" by name and says nothing about x's folder.
+        deepLinks.importAll(
+            folders = listOf(Folder("L1", "Home", null)),
+            deepLinks = listOf(deepLink(id = "x", link = "demo://x")),
+        )
+
+        assertEquals("L1", deepLinks.getDeepLinkById("x")?.folder?.id)
+    }
+
+    @Test
     public fun importingTheSameDataTwiceIsIdempotent(): Unit = runTest {
         val folder = Folder(id = "f", name = "Work", description = "d")
         val data = listOf(

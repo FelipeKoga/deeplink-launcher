@@ -21,7 +21,6 @@ import dev.koga.deeplinklauncher.domain.deeplink.api.model.LaunchSource
 import dev.koga.deeplinklauncher.domain.deeplink.api.repository.FolderRepository
 import dev.koga.deeplinklauncher.domain.deeplink.api.usecase.LaunchDeepLink
 import dev.koga.deeplinklauncher.navigation.AppNavigator
-import dev.koga.deeplinklauncher.uievent.SnackBarDispatcher
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -31,8 +30,6 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -43,7 +40,6 @@ internal class FolderDetailsViewModel(
     private val enrichDeepLinksForList: EnrichDeepLinksForList,
     private val launchDeepLink: LaunchDeepLink,
     private val appNavigator: AppNavigator,
-    private val snackBarDispatcher: SnackBarDispatcher,
     private val analyticsTracker: AnalyticsTracker,
 ) : ViewModel() {
     private val folderId = savedStateHandle.toRoute<DeepLinkRouteEntryPoint.FolderDetails>().id
@@ -103,24 +99,6 @@ internal class FolderDetailsViewModel(
                             description = loadedFolder.description.orEmpty(),
                         )
                     }
-
-                    var reportedConflict: String? = null
-                    form.onEach { state ->
-                        val result = repository.update(
-                            id = loadedFolder.id,
-                            name = state.name,
-                            description = state.description.ifBlank { null },
-                        )
-                        // A name taken by another folder is not saved; tell the user once per name.
-                        if (result == FolderRepository.WriteResult.NameAlreadyExists) {
-                            if (reportedConflict != state.name) {
-                                snackBarDispatcher.show("A folder named \"${state.name}\" already exists")
-                            }
-                            reportedConflict = state.name
-                        } else {
-                            reportedConflict = null
-                        }
-                    }.launchIn(this)
                 }
             }
         }
@@ -144,12 +122,30 @@ internal class FolderDetailsViewModel(
         }
     }
 
+    // The form holds the saved values: each edit is written first and shown only if it was
+    // accepted, so a rejected name never hides an unsaved description or vice versa.
     private fun updateName(value: String) {
-        form.update { it.copy(name = value) }
+        viewModelScope.launch {
+            val saved = form.value
+            when (repository.update(id = folderId, name = value, description = saved.description.ifBlank { null })) {
+                FolderRepository.WriteResult.Success -> form.update { it.copy(name = value, nameError = null) }
+                FolderRepository.WriteResult.NameAlreadyExists ->
+                    form.update { it.copy(nameError = "A folder named \"$value\" already exists") }
+
+                FolderRepository.WriteResult.NotFound -> appNavigator.popBackStack()
+            }
+        }
     }
 
     private fun updateDescription(value: String) {
-        form.update { it.copy(description = value) }
+        viewModelScope.launch {
+            val saved = form.value
+            when (repository.update(id = folderId, name = saved.name, description = value.ifBlank { null })) {
+                FolderRepository.WriteResult.Success -> form.update { it.copy(description = value) }
+                FolderRepository.WriteResult.NameAlreadyExists -> Unit
+                FolderRepository.WriteResult.NotFound -> appNavigator.popBackStack()
+            }
+        }
     }
 
     private fun launch(deepLink: DeepLink) {

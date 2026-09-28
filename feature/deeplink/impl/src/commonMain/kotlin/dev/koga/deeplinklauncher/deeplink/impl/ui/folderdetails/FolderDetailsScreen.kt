@@ -129,6 +129,7 @@ internal fun FolderDetailsScreenContent(
 ) {
     val dimensions = DeepLinkTheme.dimensions
     val typography = DeepLinkTheme.typography
+    val colors = DeepLinkTheme.colors
 
     val windowSizeClass = calculateWindowSizeSharedClass()
     val painters = rememberDeepLinkCardPainters()
@@ -168,6 +169,14 @@ internal fun FolderDetailsScreenContent(
                     Text(
                         text = uiState.name,
                         style = typography.title.page,
+                    )
+                }
+
+                uiState.nameError?.let { error ->
+                    Spacer(modifier = Modifier.height(4.dp))
+                    Text(
+                        text = error,
+                        style = typography.label.error.copy(color = colors.text.error),
                     )
                 }
 

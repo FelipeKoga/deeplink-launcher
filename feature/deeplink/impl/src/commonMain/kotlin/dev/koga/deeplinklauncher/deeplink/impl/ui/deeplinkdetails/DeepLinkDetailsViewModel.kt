@@ -194,6 +194,7 @@ internal class DeepLinkDetailsViewModel(
     }
 
     fun onBackPressed() {
+        deepLinkErrorMessage.update { null }
         mode.update { Mode.LAUNCH }
     }
 
@@ -208,7 +209,10 @@ internal class DeepLinkDetailsViewModel(
     private fun onLaunchAction(action: LaunchAction) {
         when (action) {
             LaunchAction.Duplicate -> mode.update { Mode.DUPLICATE }
-            LaunchAction.Edit -> mode.update { Mode.EDIT }
+            LaunchAction.Edit -> {
+                deepLinkErrorMessage.update { null }
+                mode.update { Mode.EDIT }
+            }
             LaunchAction.Launch -> launch()
             LaunchAction.Share -> share()
             LaunchAction.PinToHomeScreen -> pinToHomeScreen()
