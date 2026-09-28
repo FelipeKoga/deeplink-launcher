@@ -3,8 +3,8 @@ package dev.koga.deeplinklauncher.settings.impl.ui.deletedata
 import androidx.lifecycle.ViewModel
 import dev.koga.deeplinklauncher.analytics.api.AnalyticsTracker
 import dev.koga.deeplinklauncher.coroutines.AppCoroutineScope
-import dev.koga.deeplinklauncher.deeplink.api.domain.repository.FolderRepository
-import dev.koga.deeplinklauncher.deeplink.api.domain.usecase.DeleteAllDeepLinks
+import dev.koga.deeplinklauncher.domain.deeplink.api.repository.FolderRepository
+import dev.koga.deeplinklauncher.domain.deeplink.api.usecase.DeleteAllDeepLinks
 import dev.koga.deeplinklauncher.settings.impl.analytics.DataDeleted
 import dev.koga.deeplinklauncher.settings.impl.analytics.track
 import kotlinx.coroutines.launch

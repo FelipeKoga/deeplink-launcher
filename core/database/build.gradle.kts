@@ -1,19 +1,16 @@
-
-
 plugins {
     alias(libs.plugins.deeplinkLauncher.multiplatform)
-    alias(libs.plugins.kotlinSerialization)
-    alias(libs.plugins.sqlDelight)
 }
 
+// Product-agnostic SQLite infrastructure: platform drivers and column adapters.
+// Schemas live with the domain that owns them (e.g. :domain:deeplink:impl).
 kotlin {
     sourceSets {
         commonMain.dependencies {
+            api(libs.sqldelight.runtime)
             implementation(libs.kotlinx.coroutines.core)
-            implementation(libs.kotlinx.serialization.json)
             implementation(libs.kotlinx.datetime)
             implementation(libs.koin.core)
-            implementation(libs.sqldelight.coroutines.extensions)
         }
 
         androidMain.dependencies {
@@ -30,13 +27,4 @@ kotlin {
             implementation(libs.stately)
         }
     }
-}
-
-sqldelight {
-    databases {
-        create(name = "DeepLinkLauncherDatabase") {
-            packageName.set("dev.koga.deeplinklauncher.database")
-        }
-    }
-    linkSqlite = true
 }

@@ -1,8 +1,7 @@
 package dev.koga.deeplinklauncher.deeplink.impl.ui.linkdeeplinkforfolder.state
 
-import dev.koga.deeplinklauncher.deeplink.api.domain.model.DeepLink
-import dev.koga.deeplinklauncher.deeplink.api.domain.model.Suggestion
-
+import dev.koga.deeplinklauncher.domain.deeplink.api.model.DeepLink
+import dev.koga.deeplinklauncher.domain.deeplink.api.model.Suggestion
 internal sealed interface LinkDeepLinkForFolderAction {
     data class QueryChanged(val text: String) : LinkDeepLinkForFolderAction
     data class DeepLinkSelected(val deepLinkId: String) : LinkDeepLinkForFolderAction

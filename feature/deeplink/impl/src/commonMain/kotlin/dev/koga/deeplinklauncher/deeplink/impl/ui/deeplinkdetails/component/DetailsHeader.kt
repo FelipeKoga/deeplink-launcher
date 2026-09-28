@@ -30,7 +30,7 @@ import compose.icons.tablericons.Pencil
 import compose.icons.tablericons.Trash
 import dev.koga.deeplinklauncher.date.format
 import dev.koga.deeplinklauncher.deeplink.impl.ui.deeplinkdetails.state.DeepLinkDetailsUiState
-import dev.koga.deeplinklauncher.deeplink.uicomponent.DeepLinkHandlerIcon
+import dev.koga.deeplinklauncher.deeplink.ui.DeepLinkHandlerIcon
 import dev.koga.deeplinklauncher.designsystem.button.DLLIconButton
 import dev.koga.deeplinklauncher.designsystem.theme.DeepLinkTheme
 

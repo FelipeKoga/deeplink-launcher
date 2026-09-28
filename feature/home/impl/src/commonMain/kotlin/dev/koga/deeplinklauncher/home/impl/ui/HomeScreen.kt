@@ -21,7 +21,7 @@ import dev.chrisbanes.haze.hazeSource
 import dev.chrisbanes.haze.materials.ExperimentalHazeMaterialsApi
 import dev.chrisbanes.haze.materials.HazeMaterials
 import dev.koga.deeplinklauncher.deeplink.api.ui.navigation.DeepLinkRouteEntryPoint
-import dev.koga.deeplinklauncher.deeplink.uicomponent.DeepLinkLaunchBottomBar
+import dev.koga.deeplinklauncher.deeplink.ui.DeepLinkLaunchBottomBar
 import dev.koga.deeplinklauncher.designsystem.theme.DeepLinkTheme
 import dev.koga.deeplinklauncher.home.impl.ui.component.DeepLinksLazyColumn
 import dev.koga.deeplinklauncher.home.impl.ui.component.FoldersVerticalStaggeredGrid

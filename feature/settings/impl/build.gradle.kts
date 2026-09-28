@@ -8,7 +8,7 @@ plugins {
 kotlin {
     sourceSets {
         commonMain.dependencies {
-            implementation(projects.feature.deeplink.api)
+            implementation(projects.domain.deeplink.api)
             implementation(projects.feature.settings.api)
             implementation(projects.feature.dataTransfer.api)
             implementation(projects.library.purchase.api)

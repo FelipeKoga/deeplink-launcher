@@ -10,7 +10,8 @@ kotlin {
         commonMain.dependencies {
             implementation(projects.feature.home.api)
             implementation(projects.feature.deeplink.api)
-            implementation(projects.feature.deeplink.uiComponent)
+            implementation(projects.feature.deeplink.ui)
+            implementation(projects.domain.deeplink.api)
             implementation(projects.feature.settings.api)
 
             implementation(projects.core.preferences)

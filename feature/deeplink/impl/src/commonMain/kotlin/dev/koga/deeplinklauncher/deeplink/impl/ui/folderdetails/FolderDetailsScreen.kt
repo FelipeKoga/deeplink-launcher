@@ -36,9 +36,9 @@ import dev.koga.deeplinklauncher.deeplink.impl.ui.folderdetails.component.Delete
 import dev.koga.deeplinklauncher.deeplink.impl.ui.folderdetails.component.EditableText
 import dev.koga.deeplinklauncher.deeplink.impl.ui.folderdetails.state.FolderDetailsAction
 import dev.koga.deeplinklauncher.deeplink.impl.ui.folderdetails.state.FolderDetailsUiState
-import dev.koga.deeplinklauncher.deeplink.uicomponent.DeepLinkCard
-import dev.koga.deeplinklauncher.deeplink.uicomponent.DeepLinkCardActionsPresets
-import dev.koga.deeplinklauncher.deeplink.uicomponent.rememberDeepLinkCardPainters
+import dev.koga.deeplinklauncher.deeplink.ui.DeepLinkCard
+import dev.koga.deeplinklauncher.deeplink.ui.DeepLinkCardActionsPresets
+import dev.koga.deeplinklauncher.deeplink.ui.rememberDeepLinkCardPainters
 import dev.koga.deeplinklauncher.designsystem.DLLHorizontalDivider
 import dev.koga.deeplinklauncher.designsystem.DLLTopBar
 import dev.koga.deeplinklauncher.designsystem.DLLTopBarDefaults

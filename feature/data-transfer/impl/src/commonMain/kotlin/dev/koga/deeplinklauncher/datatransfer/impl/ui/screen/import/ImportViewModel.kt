@@ -7,8 +7,8 @@ import dev.koga.deeplinklauncher.analytics.api.AnalyticsTracker
 import dev.koga.deeplinklauncher.datatransfer.api.domain.usecase.ImportDeepLinks
 import dev.koga.deeplinklauncher.datatransfer.impl.analytics.DataImported
 import dev.koga.deeplinklauncher.datatransfer.impl.analytics.track
-import dev.koga.deeplinklauncher.deeplink.api.domain.repository.DeepLinkRepository
-import dev.koga.deeplinklauncher.deeplink.api.domain.repository.FolderRepository
+import dev.koga.deeplinklauncher.domain.deeplink.api.repository.DeepLinkRepository
+import dev.koga.deeplinklauncher.domain.deeplink.api.repository.FolderRepository
 import dev.koga.deeplinklauncher.file.GetFileRealPath
 import dev.koga.deeplinklauncher.file.model.FileType
 import dev.koga.deeplinklauncher.navigation.AppNavigator

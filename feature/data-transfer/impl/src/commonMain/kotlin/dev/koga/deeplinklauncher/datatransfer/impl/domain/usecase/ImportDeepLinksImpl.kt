@@ -4,11 +4,11 @@ import dev.koga.deeplinklauncher.datatransfer.api.domain.usecase.ImportDeepLinks
 import dev.koga.deeplinklauncher.datatransfer.impl.data.dto.Payload
 import dev.koga.deeplinklauncher.datatransfer.impl.data.dto.toModel
 import dev.koga.deeplinklauncher.date.currentLocalDateTime
-import dev.koga.deeplinklauncher.deeplink.api.domain.manager.DeepLinkShortcutManager
-import dev.koga.deeplinklauncher.deeplink.api.domain.model.DeepLink
-import dev.koga.deeplinklauncher.deeplink.api.domain.model.Folder
-import dev.koga.deeplinklauncher.deeplink.api.domain.repository.DeepLinkRepository
-import dev.koga.deeplinklauncher.deeplink.api.domain.usecase.ValidateDeepLink
+import dev.koga.deeplinklauncher.domain.deeplink.api.manager.DeepLinkShortcutManager
+import dev.koga.deeplinklauncher.domain.deeplink.api.model.DeepLink
+import dev.koga.deeplinklauncher.domain.deeplink.api.model.Folder
+import dev.koga.deeplinklauncher.domain.deeplink.api.repository.DeepLinkRepository
+import dev.koga.deeplinklauncher.domain.deeplink.api.usecase.ValidateDeepLink
 import dev.koga.deeplinklauncher.file.GetFileContent
 import dev.koga.deeplinklauncher.file.model.FileType
 import kotlinx.coroutines.CancellationException

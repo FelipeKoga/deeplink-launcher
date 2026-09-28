@@ -1,8 +1,8 @@
 package dev.koga.deeplinklauncher.deeplink.impl.ui.preview
 
-import dev.koga.deeplinklauncher.deeplink.api.domain.model.DeepLink
-import dev.koga.deeplinklauncher.deeplink.api.domain.model.DeepLinkHandler
-import dev.koga.deeplinklauncher.deeplink.api.domain.model.Folder
+import dev.koga.deeplinklauncher.domain.deeplink.api.model.DeepLink
+import dev.koga.deeplinklauncher.domain.deeplink.api.model.DeepLinkHandler
+import dev.koga.deeplinklauncher.domain.deeplink.api.model.Folder
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 

@@ -1,11 +1,10 @@
 package dev.koga.deeplinklauncher.deeplink.impl.application
 
-import dev.koga.deeplinklauncher.deeplink.api.domain.model.DeepLink
-import dev.koga.deeplinklauncher.deeplink.api.domain.model.DeepLinkHandlerInfo
-import dev.koga.deeplinklauncher.deeplink.api.domain.model.DeepLinkMetadata
-import dev.koga.deeplinklauncher.deeplink.api.ui.model.DeepLinkIcon
-import dev.koga.deeplinklauncher.deeplink.uicomponent.formatting.truncateDeepLinkMiddle
-
+import dev.koga.deeplinklauncher.deeplink.ui.formatting.truncateDeepLinkMiddle
+import dev.koga.deeplinklauncher.domain.deeplink.api.model.DeepLink
+import dev.koga.deeplinklauncher.domain.deeplink.api.model.DeepLinkHandlerInfo
+import dev.koga.deeplinklauncher.domain.deeplink.api.model.DeepLinkIcon
+import dev.koga.deeplinklauncher.domain.deeplink.api.model.DeepLinkMetadata
 internal data class DeepLinkDetailsModel(
     val deepLink: DeepLink,
     val metadata: DeepLinkMetadata,

@@ -2,9 +2,9 @@ package dev.koga.deeplinklauncher.deeplink.impl.ui.deeplinkdetails.component
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.PreviewLightDark
-import dev.koga.deeplinklauncher.deeplink.api.domain.model.DeepLinkHandlerInfo
-import dev.koga.deeplinklauncher.deeplink.api.domain.model.DeepLinkMetadata
 import dev.koga.deeplinklauncher.designsystem.theme.DLLPreviewTheme
+import dev.koga.deeplinklauncher.domain.deeplink.api.model.DeepLinkHandlerInfo
+import dev.koga.deeplinklauncher.domain.deeplink.api.model.DeepLinkMetadata
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 private val previewMetadata = DeepLinkMetadata(

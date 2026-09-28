@@ -3,11 +3,11 @@ package dev.koga.deeplinklauncher.deeplink.impl.ui.deeplinkdetails.component
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.tooling.preview.PreviewScreenSizes
-import dev.koga.deeplinklauncher.deeplink.api.domain.model.DeepLink
 import dev.koga.deeplinklauncher.deeplink.impl.ui.deeplinkdetails.state.DeepLinkDetailsUiState
 import dev.koga.deeplinklauncher.deeplink.impl.ui.preview.previewFavoriteDeepLink
 import dev.koga.deeplinklauncher.deeplink.impl.ui.preview.previewNotFavoriteDeepLink
 import dev.koga.deeplinklauncher.designsystem.theme.DLLPreviewTheme
+import dev.koga.deeplinklauncher.domain.deeplink.api.model.DeepLink
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Preview

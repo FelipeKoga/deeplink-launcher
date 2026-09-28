@@ -1,8 +1,8 @@
 package dev.koga.deeplinklauncher.home.impl.ui.component.targets
 
 import dev.koga.deeplinklauncher.analytics.api.AnalyticsTracker
-import dev.koga.deeplinklauncher.deeplink.api.domain.manager.DeepLinkTargetStateManager
-import dev.koga.deeplinklauncher.deeplink.api.domain.model.DeepLinkTarget
+import dev.koga.deeplinklauncher.domain.deeplink.api.manager.DeepLinkTargetStateManager
+import dev.koga.deeplinklauncher.domain.deeplink.api.model.DeepLinkTarget
 import dev.koga.deeplinklauncher.home.impl.analytics.LaunchTargetSelected
 import dev.koga.deeplinklauncher.home.impl.analytics.track
 import kotlinx.coroutines.CoroutineScope

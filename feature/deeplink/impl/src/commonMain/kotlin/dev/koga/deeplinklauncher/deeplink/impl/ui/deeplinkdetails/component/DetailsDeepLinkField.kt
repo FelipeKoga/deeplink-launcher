@@ -46,11 +46,11 @@ import compose.icons.TablerIcons
 import compose.icons.tablericons.ChevronRight
 import compose.icons.tablericons.Copy
 import compose.icons.tablericons.Plus
-import dev.koga.deeplinklauncher.deeplink.api.domain.model.DeepLinkMetadata
-import dev.koga.deeplinklauncher.deeplink.api.domain.model.Folder
 import dev.koga.deeplinklauncher.deeplink.impl.ui.deeplinkdetails.state.DeepLinkDetailsUiState
 import dev.koga.deeplinklauncher.designsystem.DLLHorizontalDivider
 import dev.koga.deeplinklauncher.designsystem.theme.DeepLinkTheme
+import dev.koga.deeplinklauncher.domain.deeplink.api.model.DeepLinkMetadata
+import dev.koga.deeplinklauncher.domain.deeplink.api.model.Folder
 import dev.koga.deeplinklauncher.platform.Platform
 import dev.koga.deeplinklauncher.platform.currentPlatform
 import kotlinx.collections.immutable.ImmutableList

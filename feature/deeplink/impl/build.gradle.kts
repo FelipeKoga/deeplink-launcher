@@ -11,10 +11,10 @@ kotlin {
     sourceSets {
         commonMain.dependencies {
             implementation(projects.feature.deeplink.api)
-            implementation(projects.feature.deeplink.uiComponent)
+            implementation(projects.feature.deeplink.ui)
+            implementation(projects.domain.deeplink.api)
             implementation(projects.core.preferences)
             implementation(projects.core.date)
-            implementation(projects.core.database)
             implementation(projects.core.designsystem)
             implementation(projects.core.navigation)
             implementation(projects.core.platform)
@@ -26,7 +26,6 @@ kotlin {
 
             implementation(libs.koin.core)
             implementation(libs.koin.viewmodel)
-            implementation(libs.sqldelight.coroutines.extensions)
             implementation(libs.kotlinx.coroutines.core)
             implementation(libs.kotlinx.immutable)
 
@@ -40,14 +39,6 @@ kotlin {
 
             implementation(compose.components.uiToolingPreview)
             implementation(compose.preview)
-        }
-
-        jvmMain.dependencies {
-            implementation(projects.library.deviceBridge.api)
-        }
-
-        jvmTest.dependencies {
-            implementation(libs.sqldelight.jvm)
         }
     }
 }

@@ -9,6 +9,8 @@ import dev.koga.deeplinklauncher.coroutines.di.coroutinesModule
 import dev.koga.deeplinklauncher.database.di.databaseModule
 import dev.koga.deeplinklauncher.datatransfer.impl.di.dataTransferModule
 import dev.koga.deeplinklauncher.deeplink.impl.di.deepLinkModule
+import dev.koga.deeplinklauncher.deeplink.ui.di.deepLinkUiModule
+import dev.koga.deeplinklauncher.domain.deeplink.impl.di.deepLinkDomainModule
 import dev.koga.deeplinklauncher.file.di.fileModule
 import dev.koga.deeplinklauncher.home.impl.di.homeModule
 import dev.koga.deeplinklauncher.navigation.di.navigationModule
@@ -34,6 +36,8 @@ object AppInitializer {
             modules(
                 appModule,
                 analyticsModule,
+                deepLinkDomainModule,
+                deepLinkUiModule,
                 deepLinkModule,
                 preferencesModule,
                 purchaseModule,

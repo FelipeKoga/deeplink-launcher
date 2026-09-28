@@ -5,8 +5,7 @@ import compose.icons.TablerIcons
 import compose.icons.tablericons.BrandAndroid
 import compose.icons.tablericons.BrandApple
 import compose.icons.tablericons.DeviceDesktop
-import dev.koga.deeplinklauncher.deeplink.api.domain.model.DeepLinkTarget
-
+import dev.koga.deeplinklauncher.domain.deeplink.api.model.DeepLinkTarget
 data class DeepLinkTargetsUiState(
     val selected: Option = DeepLinkTarget.Desktop.toUiState(),
     val targets: List<Option> = listOf(selected),

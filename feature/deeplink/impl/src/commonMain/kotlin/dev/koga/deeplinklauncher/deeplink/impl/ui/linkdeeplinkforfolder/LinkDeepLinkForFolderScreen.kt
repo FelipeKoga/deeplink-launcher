@@ -28,10 +28,10 @@ import dev.chrisbanes.haze.materials.HazeMaterials
 import dev.koga.deeplinklauncher.deeplink.impl.ui.folderdetails.component.LinkDeepLinkToFolderBottomSheet
 import dev.koga.deeplinklauncher.deeplink.impl.ui.linkdeeplinkforfolder.state.LinkDeepLinkForFolderAction
 import dev.koga.deeplinklauncher.deeplink.impl.ui.linkdeeplinkforfolder.state.LinkDeepLinkForFolderUiState
-import dev.koga.deeplinklauncher.deeplink.uicomponent.DeepLinkCard
-import dev.koga.deeplinklauncher.deeplink.uicomponent.DeepLinkCardActionsPresets
-import dev.koga.deeplinklauncher.deeplink.uicomponent.DeepLinkLaunchBottomBar
-import dev.koga.deeplinklauncher.deeplink.uicomponent.rememberDeepLinkCardPainters
+import dev.koga.deeplinklauncher.deeplink.ui.DeepLinkCard
+import dev.koga.deeplinklauncher.deeplink.ui.DeepLinkCardActionsPresets
+import dev.koga.deeplinklauncher.deeplink.ui.DeepLinkLaunchBottomBar
+import dev.koga.deeplinklauncher.deeplink.ui.rememberDeepLinkCardPainters
 import dev.koga.deeplinklauncher.designsystem.DLLHorizontalDivider
 import dev.koga.deeplinklauncher.designsystem.DLLTextField
 import dev.koga.deeplinklauncher.designsystem.DLLTopBar

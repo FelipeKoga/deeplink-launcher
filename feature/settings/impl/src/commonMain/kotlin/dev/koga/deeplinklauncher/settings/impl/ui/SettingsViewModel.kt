@@ -3,7 +3,7 @@ package dev.koga.deeplinklauncher.settings.impl.ui
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dev.koga.deeplinklauncher.analytics.api.AnalyticsTracker
-import dev.koga.deeplinklauncher.deeplink.api.domain.usecase.LaunchDeepLink
+import dev.koga.deeplinklauncher.domain.deeplink.api.usecase.LaunchDeepLink
 import dev.koga.deeplinklauncher.navigation.AppNavigator
 import dev.koga.deeplinklauncher.purchase.api.PurchaseApi
 import dev.koga.deeplinklauncher.settings.impl.analytics.ExternalLinkOpened

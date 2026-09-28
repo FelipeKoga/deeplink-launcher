@@ -1,6 +1,7 @@
 # Modularization Guide
 
 This document defines how the DeepLink Launcher codebase is organized at the Gradle module and package level.
+The reasoning behind it is in [reviews/2026-09-27-capability-vs-feature.md](reviews/2026-09-27-capability-vs-feature.md).
 
 ## Module types
 
@@ -8,143 +9,137 @@ This document defines how the DeepLink Launcher codebase is organized at the Gra
 |------|---------------------|----------------|
 | App shell | `:androidApp`, `:desktopApp` | Platform entry points |
 | Composition root | `:shared` | Koin wiring, `AppGraph`, `App.kt` |
-| Feature API | `:feature:<name>:api` | Minimum public contracts |
-| Feature impl | `:feature:<name>:impl` | Full feature implementation |
-| Feature UI (optional) | `:feature:<name>:ui-component` | Reusable Compose widgets shared across features |
-| Library | `:library:<name>:api\|impl` | External integrations (device-bridge, purchase) |
-| Core | `:core:*` | Shared infrastructure (design system, navigation, database, etc.) |
+| Domain api | `:domain:<name>:api` | Contract of a bounded context shared by several features: models, repositories, ports |
+| Domain impl | `:domain:<name>:impl` | Schema, repositories, platform actuals of the ports, DI bindings |
+| Domain testing | `:domain:<name>:testing` | Fakes owned by the domain and the contract suite they share with the real implementation |
+| Feature api | `:feature:<name>:api` | Navigation entry points (routes) of the feature's screens, nothing else |
+| Feature impl | `:feature:<name>:impl` | Screens, ViewModels, navigation graph, screen-only logic |
+| Feature ui (optional) | `:feature:<name>:ui` | Compose widgets and list mappers other features embed |
+| Library | `:library:<name>:api\|impl` | External integrations (device-bridge, purchase, analytics) |
+| Core | `:core:*` | Product-agnostic infrastructure (design system, navigation, SQLite drivers, etc.) |
+
+## Feature or domain?
+
+Ask, for every piece of code:
+
+1. Is it a screen or a flow of screens? → `:feature:<name>:impl`, with its routes in `:feature:<name>:api`.
+2. Is it data or a rule used only by one feature's screens? → keep it `internal` in that feature's impl.
+3. Is it data or a rule used by two or more features, by something without a screen (widget, extension,
+   worker), or does it need one owner for its invariants and schema? → `:domain:<name>`.
+4. Is it a widget or mapper of a domain entity embedded by two or more features? → `:feature:<owner>:ui`.
+5. Does it talk to an external SDK or process? → `:library:<name>`.
+6. Would any product need it? → `:core:<name>`.
+
+A domain module has no screens, no navigation and no Compose. Feature routes never live in a domain module.
 
 ## api vs impl
 
-### api — keep it minimal
+### Domain api: contracts of the bounded context
 
-The api module exposes only what other modules need at compile time:
+- Models (`model`), repositories (`repository`), use cases and ports (`usecase`, `manager`)
+- Repository writes are commands scoped to one record (see `DeepLinkRepository`), never whole-entity upserts
+- No UI models, formatting, routes or vendor types; `explicitApi()`
 
-- Domain models (`domain.model`)
-- Repository interfaces (`domain.repository`)
-- Use case interfaces (`domain.usecase`)
-- Serializable navigation routes (`ui.navigation`)
+Interfaces exist where there is a real substitution: platform actuals, fakes used by other modules.
+Logic with a single common implementation that only one module uses stays a concrete `internal` class.
 
-The api module must **not** contain:
+### Domain impl
 
-- Implementations, mappers, or DTOs
-- ViewModels, screens, or Compose UI
-- DI modules
-- Presentation logic
+- `data/` — SQLDelight schema (`src/commonMain/sqldelight`), repositories, mappers, database setup
+- `usecase/`, `manager/` — implementations of the ports, per platform where needed
+- `platform/` — platform helpers (Android intents, clipboard)
+- `di/` — Koin module (`deepLinkDomainModule`) plus per-platform bindings
 
-Use `explicitApi()` and mark public API with `public`.
+Only `:shared` depends on a domain impl.
 
-### impl — everything else
+### Domain testing
 
-- `data/` — repository implementations, mappers, DTOs, datasources
-- `domain/` — use case implementations, internal managers
-- `ui/` — screens, ViewModels, components, navigation graphs
-- `platform/` — platform-specific helpers (e.g. Android utilities)
-- `di/` — Koin modules
+- In-memory fakes with the same observable behavior as the real implementation (`FakeDeepLinkStore`)
+- An abstract contract suite (`DeepLinkRepositoryContract`) that both the fake and the SQL implementation extend
+- Depended on only from test source sets
 
-### ui-component (when needed)
+### Feature api — routes only
 
-Create a separate ui-component module when Compose widgets are reused by multiple features without pulling in impl:
+A feature api contains the serializable routes other modules navigate to. Domain types come from the
+domain api; presentation types stay in the feature.
 
-- Depends only on `feature:api`, `core:designsystem`, and `core:resources`
-- Package: `dev.koga.deeplinklauncher.<feature>.uicomponent`
+### Feature impl — everything else of the screens
+
+- `ui/` — screens, ViewModels, components, navigation graph
+- `application/` — screen models and screen-only enrichment
+- `di/` — Koin module
 
 ## Package structure
 
-Root package mirrors the Gradle module name.
-
-### Feature API
+Root package mirrors the Gradle module name:
 
 ```
-dev.koga.deeplinklauncher.<feature>.api
-├── domain/
-│   ├── model/
-│   ├── repository/
-│   └── usecase/
-└── ui/
-    └── navigation/
-```
-
-### Feature impl
-
-```
-dev.koga.deeplinklauncher.<feature>.impl
-├── data/
-│   ├── repository/
-│   ├── mapper/
-│   └── dto/              (internal)
-├── domain/
-│   └── usecase/
-├── ui/
-│   ├── navigation/
-│   └── <screen>/
-│       ├── <Screen>.kt
-│       ├── <Screen>ViewModel.kt
-│       ├── state/
-│       └── component/
-├── platform/
-└── di/
+dev.koga.deeplinklauncher.domain.<name>.api       model/ repository/ usecase/ manager/
+dev.koga.deeplinklauncher.domain.<name>.impl      data/ usecase/ manager/ platform/ di/
+dev.koga.deeplinklauncher.domain.<name>.testing
+dev.koga.deeplinklauncher.<feature>.api           ui/navigation/
+dev.koga.deeplinklauncher.<feature>.impl          ui/ application/ di/
+dev.koga.deeplinklauncher.<feature>.ui            model/ formatting/ di/
 ```
 
 ## Dependency rules
 
 ```
-┌─────────────────────────────────────────┐
-│  feature:<name>:api                     │
-│  Public contracts only                  │
-└──────────────────┬──────────────────────┘
-                   │ consumed by
-┌──────────────────▼──────────────────────┐
-│  feature:<name>:impl                    │
-│  data + domain + ui + di                │
-└──────────────────┬──────────────────────┘
-                   │ wired by
-┌──────────────────▼──────────────────────┐
-│  :shared                                │
-│  Depends on all feature impl modules    │
-└─────────────────────────────────────────┘
+:shared ──► feature:*:impl ──► feature:*:api, feature:*:ui (other features)
+   │              │
+   │              └──────────► domain:*:api ◄── feature:*:ui
+   │                                ▲
+   └──────► domain:*:impl ──────────┘
+                 │
+                 └──────────► core:* (drivers, date, preferences)
 ```
 
-- Feature `impl` → own `api` + other features' `api` + `core`
-- Feature `impl` **never** → another feature's `impl`
-- Only `:shared` → all feature `impl` modules
-- `api` **never** → `impl`
-- `ui-component` → feature `api` + core UI modules only
+- Feature `impl` → own `api`/`ui` + other features' `api`/`ui` + `domain:*:api` + `core` + `library:*:api`
+- Feature `impl` **never** → another `impl` (feature or domain)
+- Feature `api` → `core:navigation` only
+- Feature `ui` → `domain:*:api` + core UI modules only
+- Domain `api` → `core` only; never Compose, navigation or `library` types
+- Domain `impl` → own `api` + `core` + `library:*:api`
+- `testing` modules only from test source sets
+- Only `:shared` → `impl` modules
 
 ## Navigation and DI wiring
 
 1. Each feature api exposes serializable route types under `ui.navigation`.
 2. Each feature impl provides a `*NavigationGraph` implementing `NavigationGraph` from `core:navigation`.
-3. Each feature impl registers Koin bindings in `di/Module.kt`.
-4. `:shared` collects all `NavigationGraph` instances into `AppGraph` and loads all Koin modules.
+3. Each domain impl, feature impl and feature ui registers Koin bindings in `di/Module.kt`.
+4. `:shared` loads all Koin modules and collects all `NavigationGraph` instances into `AppGraph`.
 
 ## Visibility conventions
 
 | Type | Visibility |
 |------|------------|
 | api contracts | `public` |
-| Screens, ViewModels, mappers | `internal` |
+| Screens, ViewModels, mappers, repository implementations | `internal` |
 | NavigationGraph, Koin module | `public` (consumed by `:shared`) |
 
 ## Adding a new feature
 
-1. Create `:feature:<name>:api` with `explicitApi()` and only contracts.
-2. Create `:feature:<name>:impl` with data/domain/ui/di packages.
-3. Register the module in `settings.gradle.kts`.
-4. Add Koin module and `NavigationGraph` to `:shared`.
-5. Depend on other features through their `api` modules only.
+1. Create `:feature:<name>:api` with `explicitApi()` and only routes.
+2. Create `:feature:<name>:impl` with ui/di packages.
+3. If the feature needs data that other features also use, use or extend a `:domain:*` module instead of
+   putting it in the feature.
+4. Register the modules in `settings.gradle.kts`, the Koin module and `NavigationGraph` in `:shared`.
 
-## Current features
+## Current modules
 
-| Feature | api | impl | ui-component |
-|---------|-----|------|--------------|
-| deeplink | models, repositories, use cases, routes | SQLDelight repos, detail screens, platform use cases | DeepLinkCard, FolderCard |
-| home | route entry point | home screen, tabs, onboarding | — |
-| settings | route entry point | theme, delete data, products, licenses | — |
-| data-transfer | import/export use cases, route | import/export screens | — |
+| Module | Contents |
+|--------|----------|
+| `domain:deeplink:api` | `DeepLink`, `Folder`, repositories, launch/handler/shortcut ports, deeplink use cases, device targets (JVM) |
+| `domain:deeplink:impl` | SQLDelight schema (`dll-db`), repositories, Android/iOS/JVM actuals |
+| `domain:deeplink:testing` | `FakeDeepLinkStore`, `DeepLinkRepositoryContract` |
+| `feature:deeplink:{api,impl,ui}` | deeplink details, folder screens; `DeepLinkCard`, `FolderCard`, list mapping |
+| `feature:home:{api,impl}` | home screen, tabs, search, onboarding |
+| `feature:settings:{api,impl}` | theme, delete data, products, licenses |
+| `feature:data-transfer:{api,impl}` | import/export screens and use cases |
 
 ## Future improvements
 
-- Enforce ViewModels to depend on use cases instead of repositories directly
-- Add Detekt architecture rules to validate module dependency boundaries
-- Evaluate automated checks for api surface minimization
+- Enforce these dependency rules with a build check (see the modularization study, §6.8)
+- Consolidate the deeplink ports (handler resolver, parser, shortcuts)
+- `abiValidation` on api modules; detekt currently does not analyze KMP source sets

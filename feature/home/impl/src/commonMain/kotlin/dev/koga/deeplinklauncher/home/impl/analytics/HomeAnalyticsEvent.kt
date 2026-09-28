@@ -1,8 +1,7 @@
 package dev.koga.deeplinklauncher.home.impl.analytics
 
 import dev.koga.deeplinklauncher.analytics.api.AnalyticsTracker
-import dev.koga.deeplinklauncher.deeplink.api.domain.model.LaunchSource
-
+import dev.koga.deeplinklauncher.domain.deeplink.api.model.LaunchSource
 internal sealed interface HomeAnalyticsEvent {
     val name: String
 

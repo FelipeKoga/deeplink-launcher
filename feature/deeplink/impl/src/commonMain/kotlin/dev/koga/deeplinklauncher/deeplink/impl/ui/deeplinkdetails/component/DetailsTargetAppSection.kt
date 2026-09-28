@@ -29,8 +29,8 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import compose.icons.TablerIcons
 import compose.icons.tablericons.ChevronRight
-import dev.koga.deeplinklauncher.deeplink.api.domain.model.DeepLinkHandler
 import dev.koga.deeplinklauncher.designsystem.theme.DeepLinkTheme
+import dev.koga.deeplinklauncher.domain.deeplink.api.model.DeepLinkHandler
 import dev.koga.deeplinklauncher.platform.Platform
 import dev.koga.deeplinklauncher.platform.currentPlatform
 import kotlinx.collections.immutable.ImmutableList

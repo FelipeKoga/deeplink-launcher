@@ -17,8 +17,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import compose.icons.TablerIcons
 import compose.icons.tablericons.Check
-import dev.koga.deeplinklauncher.deeplink.api.domain.model.DeepLinkHandler
 import dev.koga.deeplinklauncher.designsystem.theme.DeepLinkTheme
+import dev.koga.deeplinklauncher.domain.deeplink.api.model.DeepLinkHandler
 import kotlinx.collections.immutable.ImmutableList
 
 @Composable

@@ -4,11 +4,11 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dev.koga.deeplinklauncher.analytics.api.AnalyticsTracker
-import dev.koga.deeplinklauncher.deeplink.api.domain.model.Folder
-import dev.koga.deeplinklauncher.deeplink.api.domain.repository.FolderRepository
 import dev.koga.deeplinklauncher.deeplink.impl.analytics.FolderCreated
 import dev.koga.deeplinklauncher.deeplink.impl.analytics.track
 import dev.koga.deeplinklauncher.deeplink.impl.ui.addfolder.state.AddFolderUiState
+import dev.koga.deeplinklauncher.domain.deeplink.api.model.Folder
+import dev.koga.deeplinklauncher.domain.deeplink.api.repository.FolderRepository
 import dev.koga.deeplinklauncher.navigation.AppNavigator
 import dev.koga.deeplinklauncher.uievent.SnackBarDispatcher
 import kotlinx.coroutines.flow.SharingStarted

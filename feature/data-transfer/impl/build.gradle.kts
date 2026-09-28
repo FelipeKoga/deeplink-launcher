@@ -10,7 +10,7 @@ kotlin {
     sourceSets {
         commonMain.dependencies {
             implementation(projects.feature.dataTransfer.api)
-            implementation(projects.feature.deeplink.api)
+            implementation(projects.domain.deeplink.api)
 
             implementation(projects.core.file)
             implementation(projects.core.date)

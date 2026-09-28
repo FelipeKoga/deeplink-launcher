@@ -1,9 +1,9 @@
 package dev.koga.deeplinklauncher.home.impl.domain
 
-import dev.koga.deeplinklauncher.deeplink.api.domain.model.DeepLink
-import dev.koga.deeplinklauncher.deeplink.api.domain.model.Folder
-import dev.koga.deeplinklauncher.deeplink.api.domain.repository.DeepLinkRepository
-import dev.koga.deeplinklauncher.deeplink.api.domain.repository.FolderRepository
+import dev.koga.deeplinklauncher.domain.deeplink.api.model.DeepLink
+import dev.koga.deeplinklauncher.domain.deeplink.api.model.Folder
+import dev.koga.deeplinklauncher.domain.deeplink.api.repository.DeepLinkRepository
+import dev.koga.deeplinklauncher.domain.deeplink.api.repository.FolderRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged

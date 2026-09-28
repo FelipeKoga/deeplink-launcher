@@ -100,6 +100,7 @@ native-driver = { module = "app.cash.sqldelight:native-driver", version.ref = "n
 revenuecat-core = { module = "com.revenuecat.purchases:purchases-kmp-core", version.ref = "purchases-kmp" }
 splashscreen = { module = "androidx.core:core-splashscreen", version.ref = "splashcreen" }
 sqldelight-android-driver = { module = "app.cash.sqldelight:android-driver", version.ref = "sqlDelight" }
+sqldelight-runtime = { module = "app.cash.sqldelight:runtime", version.ref = "sqlDelight" }
 sqldelight-coroutines-extensions = { module = "app.cash.sqldelight:coroutines-extensions", version.ref = "sqlDelight" }
 sqldelight-jvm = { module = "app.cash.sqldelight:sqlite-driver", version.ref = "sqlDelight" }
 stately = { module = "co.touchlab:stately-common", version.ref = "stately" }

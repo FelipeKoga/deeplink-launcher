@@ -1,7 +1,6 @@
 package dev.koga.deeplinklauncher.deeplink.impl.ui.deeplinkdetails.state
 
-import dev.koga.deeplinklauncher.deeplink.api.domain.model.Folder
-
+import dev.koga.deeplinklauncher.domain.deeplink.api.model.Folder
 internal sealed interface DeepLinkDetailsAction
 
 internal sealed interface LaunchAction : DeepLinkDetailsAction {

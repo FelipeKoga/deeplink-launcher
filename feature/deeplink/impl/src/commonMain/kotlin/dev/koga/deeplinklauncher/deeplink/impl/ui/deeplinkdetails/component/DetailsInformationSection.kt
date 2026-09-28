@@ -16,12 +16,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import dev.koga.deeplinklauncher.deeplink.api.domain.model.DeepLinkHandlerInfo
-import dev.koga.deeplinklauncher.deeplink.api.domain.model.DeepLinkMetadata
-import dev.koga.deeplinklauncher.deeplink.api.ui.model.DeepLinkIcon
-import dev.koga.deeplinklauncher.deeplink.uicomponent.DeepLinkHandlerIcon
+import dev.koga.deeplinklauncher.deeplink.ui.DeepLinkHandlerIcon
 import dev.koga.deeplinklauncher.designsystem.DLLHorizontalDivider
 import dev.koga.deeplinklauncher.designsystem.theme.DeepLinkTheme
+import dev.koga.deeplinklauncher.domain.deeplink.api.model.DeepLinkHandlerInfo
+import dev.koga.deeplinklauncher.domain.deeplink.api.model.DeepLinkIcon
+import dev.koga.deeplinklauncher.domain.deeplink.api.model.DeepLinkMetadata
 
 @Composable
 internal fun DetailsInformationContent(
