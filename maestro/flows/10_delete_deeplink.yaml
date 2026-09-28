@@ -1,0 +1,22 @@
+appId: dev.koga.deeplinklauncher.android
+name: "Delete a deeplink from the details menu"
+---
+- runFlow: ../subflows/start_clean.yaml
+- runFlow:
+    file: ../subflows/create_deeplink.yaml
+    env:
+      LINK: "https://www.to-delete.com"
+- runFlow:
+    file: ../subflows/create_deeplink.yaml
+    env:
+      LINK: "https://www.to-keep.com"
+- tapOn: "https://www.to-delete.com"
+- tapOn: "More actions"
+- tapOn: "Delete"
+- assertVisible: "Delete DeepLink"
+- assertVisible: "Are you sure you want to delete this deeplink?"
+- tapOn: "Delete"
+- extendedWaitUntil:
+    notVisible: "https://www.to-delete.com"
+    timeout: 5000
+- assertVisible: "https://www.to-keep.com"

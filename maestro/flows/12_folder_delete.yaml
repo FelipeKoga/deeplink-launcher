@@ -1,0 +1,17 @@
+appId: dev.koga.deeplinklauncher.android
+name: "Delete a folder from its details"
+---
+- runFlow: ../subflows/start_clean.yaml
+- tapOn: "Folders"
+- tapOn: "Create new folder"
+- tapOn: "Name"
+- inputText: "Temporary Folder"
+- tapOn: "Save"
+- assertVisible: "Temporary Folder"
+- tapOn: "Temporary Folder"
+- tapOn: "Delete"
+- assertVisible: "Delete folder"
+- tapOn: "Delete"
+- extendedWaitUntil:
+    notVisible: "Temporary Folder"
+    timeout: 5000

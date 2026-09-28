@@ -1,0 +1,26 @@
+appId: dev.koga.deeplinklauncher.android
+name: "Duplicate a deeplink with a new link"
+---
+- runFlow: ../subflows/start_clean.yaml
+- runFlow:
+    file: ../subflows/create_deeplink.yaml
+    env:
+      LINK: "https://www.original.com"
+- tapOn: "https://www.original.com"
+- tapOn: "Duplicate"
+- assertVisible: "Copy all fields"
+- tapOn: "Enter new deeplink"
+- repeat:
+    times: 30
+    commands:
+      - pressKey: Remote Dpad Right
+- eraseText: 60
+- inputText: "https://www.duplicated.com"
+- hideKeyboard
+- tapOn: "Duplicate"
+- extendedWaitUntil:
+    visible: "https://www.duplicated.com"
+    timeout: 5000
+- back
+- assertVisible: "https://www.original.com"
+- assertVisible: "https://www.duplicated.com"

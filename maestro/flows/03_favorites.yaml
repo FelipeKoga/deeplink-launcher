@@ -1,0 +1,19 @@
+appId: dev.koga.deeplinklauncher.android
+name: "Favorite and unfavorite a deeplink from the details quick actions"
+---
+- runFlow: ../subflows/start_clean.yaml
+- runFlow:
+    file: ../subflows/create_deeplink.yaml
+    env:
+      LINK: "https://www.favorite-test.com"
+- tapOn: "https://www.favorite-test.com"
+- tapOn: "Favorite"
+- back
+- tapOn: "Favorites"
+- assertVisible: "https://www.favorite-test.com"
+- tapOn: "https://www.favorite-test.com"
+- tapOn: "Favorite"
+- back
+- extendedWaitUntil:
+    notVisible: "https://www.favorite-test.com"
+    timeout: 5000

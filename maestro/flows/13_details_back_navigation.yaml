@@ -1,0 +1,23 @@
+appId: dev.koga.deeplinklauncher.android
+name: "Back returns to the details from Edit and Duplicate, then closes the sheet"
+---
+- runFlow: ../subflows/start_clean.yaml
+- runFlow:
+    file: ../subflows/create_deeplink.yaml
+    env:
+      LINK: "https://www.back-test.com"
+- tapOn: "https://www.back-test.com"
+- tapOn: "More actions"
+- tapOn: "Edit"
+- assertVisible: "Name"
+- back
+- assertVisible: "More actions"
+- tapOn: "Duplicate"
+- assertVisible: "Copy all fields"
+- back
+- assertVisible: "More actions"
+- back
+- extendedWaitUntil:
+    notVisible: "More actions"
+    timeout: 5000
+- assertVisible: "https://www.back-test.com"

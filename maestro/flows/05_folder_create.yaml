@@ -1,0 +1,13 @@
+appId: dev.koga.deeplinklauncher.android
+name: "Create a folder"
+---
+- runFlow: ../subflows/start_clean.yaml
+- tapOn: "Folders"
+- tapOn: "Create new folder"
+- assertVisible: "Add folder"
+- tapOn: "Name"
+- inputText: "My Folder"
+- tapOn: "Description"
+- inputText: "Folder used by the tests"
+- tapOn: "Save"
+- assertVisible: "My Folder"
