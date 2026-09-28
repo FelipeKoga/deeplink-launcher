@@ -6,6 +6,7 @@ import dev.koga.deeplinklauncher.deeplink.api.domain.repository.DeepLinkReposito
 import dev.koga.deeplinklauncher.deeplink.api.domain.usecase.DeleteAllDeepLinks
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
+import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.withContext
 
 internal class DeleteAllDeepLinksImpl(
@@ -14,9 +15,10 @@ internal class DeleteAllDeepLinksImpl(
 ) : DeleteAllDeepLinks {
 
     override suspend fun invoke() {
-        val ids = withContext(Dispatchers.IO) {
-            repository.getDeepLinks().map(DeepLink::id).also { repository.deleteAll() }
+        withContext(Dispatchers.IO + NonCancellable) {
+            val ids = repository.getDeepLinks().map(DeepLink::id)
+            repository.deleteAll()
+            shortcutManager.disable(ids)
         }
-        shortcutManager.disable(ids)
     }
 }
