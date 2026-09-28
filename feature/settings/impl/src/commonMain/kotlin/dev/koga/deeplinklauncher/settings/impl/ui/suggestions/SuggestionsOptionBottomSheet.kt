@@ -25,45 +25,57 @@ fun SuggestionsOptionBottomSheet(
     onDismissRequest: () -> Unit,
 ) {
     val enabled by viewModel.enabled.collectAsStateWithLifecycle()
-    val typography = DeepLinkTheme.typography
 
     DLLModalBottomSheet(onDismiss = onDismissRequest) {
-        Column(
-            modifier = Modifier.fillMaxWidth().padding(24.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
+        SuggestionsOptionBottomSheetContent(
+            enabled = enabled,
+            onEnabledChange = viewModel::update,
+        )
+    }
+}
+
+@Composable
+internal fun SuggestionsOptionBottomSheetContent(
+    enabled: Boolean,
+    onEnabledChange: (Boolean) -> Unit,
+) {
+    val typography = DeepLinkTheme.typography
+
+    Column(
+        modifier = Modifier.fillMaxWidth().padding(24.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+    ) {
+        Text(
+            text = "Suggestions",
+            style = typography.title.sheet,
+        )
+
+        Spacer(modifier = Modifier.height(12.dp))
+
+        Text(
+            text = "When you are typing a deeplink, suggestions will be shown below the input" +
+                " based on the deeplinks you already launched.",
+            style = typography.body.default,
+        )
+
+        Spacer(modifier = Modifier.height(24.dp))
+
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
         ) {
             Text(
-                text = "Suggestions",
-                style = typography.title.sheet,
-            )
-
-            Spacer(modifier = Modifier.height(12.dp))
-
-            Text(
-                text = "When you are typing a deeplink, suggestions will be shown below the input" +
-                    " based on the deeplinks you already launched.",
-                style = typography.body.default,
+                text = "Enable suggestions",
+                style = typography.label.fieldHeader,
+                modifier = Modifier.weight(1f),
             )
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                Text(
-                    text = "Enable suggestions",
-                    style = typography.label.fieldHeader,
-                    modifier = Modifier.weight(1f),
-                )
-
-                Spacer(modifier = Modifier.height(24.dp))
-
-                DLLSwitch(
-                    checked = enabled,
-                    onCheckedChange = viewModel::update,
-                )
-            }
+            DLLSwitch(
+                checked = enabled,
+                onCheckedChange = onEnabledChange,
+            )
         }
     }
 }

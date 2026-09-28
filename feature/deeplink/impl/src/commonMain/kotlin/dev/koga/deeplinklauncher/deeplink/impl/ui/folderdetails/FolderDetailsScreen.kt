@@ -31,6 +31,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import compose.icons.TablerIcons
 import compose.icons.tablericons.Plus
 import compose.icons.tablericons.Trash
+import dev.koga.deeplinklauncher.date.currentLocalDateTime
 import dev.koga.deeplinklauncher.deeplink.api.ui.navigation.DeepLinkRouteEntryPoint
 import dev.koga.deeplinklauncher.deeplink.impl.ui.folderdetails.component.DeleteFolderBottomSheet
 import dev.koga.deeplinklauncher.deeplink.impl.ui.folderdetails.component.EditableText
@@ -50,6 +51,7 @@ import dev.koga.deeplinklauncher.designsystem.utils.spacer
 import dev.koga.deeplinklauncher.navigation.AppNavigator
 import dev.koga.deeplinklauncher.navigation.AppRoute
 import dev.koga.deeplinklauncher.ui.calculateWindowSizeSharedClass
+import kotlinx.datetime.LocalDateTime
 
 @Composable
 internal fun FolderDetailsScreen(
@@ -83,6 +85,7 @@ internal fun FolderDetailsUI(
     onAction: (FolderDetailsAction) -> Unit,
     onNavigate: (AppRoute) -> Unit,
     onShowDeleteConfirmation: () -> Unit,
+    now: () -> LocalDateTime = { currentLocalDateTime },
 ) {
     val colors = DeepLinkTheme.colors
 
@@ -115,6 +118,7 @@ internal fun FolderDetailsUI(
             uiState = uiState,
             onAction = onAction,
             onNavigate = onNavigate,
+            now = now,
         )
     }
 }
@@ -126,6 +130,7 @@ internal fun FolderDetailsScreenContent(
     uiState: FolderDetailsUiState,
     onAction: (FolderDetailsAction) -> Unit,
     onNavigate: (DeepLinkRouteEntryPoint) -> Unit,
+    now: () -> LocalDateTime = { currentLocalDateTime },
 ) {
     val dimensions = DeepLinkTheme.dimensions
     val typography = DeepLinkTheme.typography
@@ -263,6 +268,7 @@ internal fun FolderDetailsScreenContent(
                 ),
                 showFolder = false,
                 painters = painters,
+                now = now(),
             )
         }
 

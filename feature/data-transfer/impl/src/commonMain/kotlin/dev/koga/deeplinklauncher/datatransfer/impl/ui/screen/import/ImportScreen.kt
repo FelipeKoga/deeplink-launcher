@@ -35,6 +35,7 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import com.darkrockstudios.libraries.mpfilepicker.FilePicker
 import dev.koga.deeplinklauncher.datatransfer.impl.ui.component.JSONBoxViewer
+import dev.koga.deeplinklauncher.date.currentLocalDateTime
 import dev.koga.deeplinklauncher.designsystem.DLLHorizontalDivider
 import dev.koga.deeplinklauncher.designsystem.DLLSingleChoiceSegmentedButtonRow
 import dev.koga.deeplinklauncher.designsystem.DLLTopBar
@@ -45,6 +46,7 @@ import dev.koga.deeplinklauncher.file.model.FileType
 import dev.koga.deeplinklauncher.file.model.getByLabel
 import dev.koga.deeplinklauncher.file.model.label
 import kotlinx.collections.immutable.toPersistentList
+import kotlinx.datetime.LocalDateTime
 
 @Composable
 fun ImportScreen(
@@ -75,6 +77,7 @@ internal fun ImportUI(
     onBrowse: () -> Unit,
     onBack: () -> Unit,
     onOptionSelected: (FileType) -> Unit,
+    exampleDate: LocalDateTime = currentLocalDateTime,
 ) {
     val colors = DeepLinkTheme.colors
 
@@ -96,6 +99,7 @@ internal fun ImportUI(
                 modifier = Modifier.weight(1f),
                 selectedType = selectedType,
                 onOptionSelected = onOptionSelected,
+                exampleDate = exampleDate,
             )
 
             ImportFooter(
@@ -110,6 +114,7 @@ internal fun ImportContent(
     modifier: Modifier = Modifier,
     selectedType: FileType,
     onOptionSelected: (FileType) -> Unit,
+    exampleDate: LocalDateTime = currentLocalDateTime,
 ) {
     val typography = DeepLinkTheme.typography
 
@@ -179,7 +184,7 @@ internal fun ImportContent(
             label = "",
         ) { selectedType ->
             when (selectedType) {
-                FileType.JSON -> JSONTutorial()
+                FileType.JSON -> JSONTutorial(exampleDate = exampleDate)
                 FileType.TXT -> PlainTextTutorial()
             }
         }
@@ -204,7 +209,7 @@ fun ImportFooter(modifier: Modifier = Modifier, onBrowse: () -> Unit) {
 }
 
 @Composable
-fun JSONTutorial() {
+fun JSONTutorial(exampleDate: LocalDateTime = currentLocalDateTime) {
     val typography = DeepLinkTheme.typography
 
     Column(
@@ -236,7 +241,7 @@ fun JSONTutorial() {
         )
 
         Text(
-            text = createdAtHint,
+            text = createdAtHint(exampleDate),
             style = typography.body.small,
         )
 
