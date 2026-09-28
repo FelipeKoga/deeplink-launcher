@@ -12,5 +12,4 @@ xcuserdata
 .kotlin
 env.properties
 keystore.properties
-.hotswan/
 trace_processor
