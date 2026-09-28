@@ -108,6 +108,7 @@ internal fun LinkDeepLinkForFolderUI(
                 launch = { onAction(LinkDeepLinkForFolderAction.LaunchInputDeepLink) },
                 onSuggestionClicked = { onAction(LinkDeepLinkForFolderAction.OnSuggestionClicked(it)) },
                 onValueChange = { onAction(LinkDeepLinkForFolderAction.OnInputChanged(it)) },
+                onExpandedChange = { onAction(LinkDeepLinkForFolderAction.OnInputExpandedChanged(it)) },
             )
         },
     ) { contentPadding ->

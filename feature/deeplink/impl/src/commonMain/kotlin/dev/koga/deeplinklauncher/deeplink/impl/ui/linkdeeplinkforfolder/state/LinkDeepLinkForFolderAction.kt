@@ -10,6 +10,7 @@ internal sealed interface LinkDeepLinkForFolderAction {
     data object LaunchInputDeepLink : LinkDeepLinkForFolderAction
     data class OnInputChanged(val text: String) : LinkDeepLinkForFolderAction
     data class OnSuggestionClicked(val suggestion: Suggestion) : LinkDeepLinkForFolderAction
+    data class OnInputExpandedChanged(val expanded: Boolean) : LinkDeepLinkForFolderAction
     data object ConfirmLinkToFolder : LinkDeepLinkForFolderAction
     data object DismissLinkConfirmation : LinkDeepLinkForFolderAction
 }

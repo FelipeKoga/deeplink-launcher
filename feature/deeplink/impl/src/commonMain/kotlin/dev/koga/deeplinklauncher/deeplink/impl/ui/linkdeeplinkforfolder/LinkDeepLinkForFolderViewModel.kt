@@ -70,12 +70,18 @@ internal class LinkDeepLinkForFolderViewModel(
     private val launchInput = MutableStateFlow("")
     private val errorMessage = MutableStateFlow<String?>(null)
     private val pendingLinkConfirmation = MutableStateFlow<DeepLink?>(null)
+    private val inputExpanded = MutableStateFlow(false)
     private val suggestions = combine(
         launchInput,
+        inputExpanded,
         preferencesDataSource.preferencesStream,
-    ) { input, _ ->
-        getAutoSuggestionLinks(input)
-    }
+    ) { input, expanded, _ ->
+        if (expanded) getAutoSuggestionLinks(input) else emptyList()
+    }.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(),
+        initialValue = emptyList(),
+    )
 
     private val deepLinkInputState =
         combine(launchInput, errorMessage, suggestions, ::DeepLinkInputState)
@@ -142,6 +148,7 @@ internal class LinkDeepLinkForFolderViewModel(
             LinkDeepLinkForFolderAction.LaunchInputDeepLink -> launchInputDeepLink()
             is LinkDeepLinkForFolderAction.OnInputChanged -> onDeepLinkTextChanged(action.text)
             is LinkDeepLinkForFolderAction.OnSuggestionClicked -> onDeepLinkTextChanged(action.suggestion.text)
+            is LinkDeepLinkForFolderAction.OnInputExpandedChanged -> inputExpanded.value = action.expanded
             LinkDeepLinkForFolderAction.ConfirmLinkToFolder -> confirmLinkToFolder()
             LinkDeepLinkForFolderAction.DismissLinkConfirmation -> pendingLinkConfirmation.update { null }
         }
