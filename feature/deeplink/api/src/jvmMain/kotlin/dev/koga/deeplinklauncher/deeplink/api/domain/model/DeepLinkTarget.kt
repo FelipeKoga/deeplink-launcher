@@ -2,7 +2,6 @@
 
 package dev.koga.deeplinklauncher.deeplink.api.domain.model
 
-import dev.koga.deeplinklauncher.devicebridge.api.DeviceBridge
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 
@@ -16,6 +15,9 @@ public sealed interface DeepLinkTarget {
     public data class Device(
         override val id: String,
         val name: String,
-        val platform: DeviceBridge.Platform,
+        val platform: Platform,
     ) : DeepLinkTarget
+
+    /** Device platform, owned by the domain so consumers never see device-bridge types. */
+    public enum class Platform { ANDROID, IOS }
 }

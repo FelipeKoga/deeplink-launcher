@@ -10,7 +10,7 @@ import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.tooling.preview.PreviewScreenSizes
 import androidx.compose.ui.unit.dp
 import dev.koga.deeplinklauncher.deeplink.api.domain.model.Folder
-import dev.koga.deeplinklauncher.deeplink.api.ui.model.FolderListItem
+import dev.koga.deeplinklauncher.deeplink.uicomponent.model.FolderListItem
 import dev.koga.deeplinklauncher.designsystem.theme.DLLPreviewTheme
 import kotlinx.collections.immutable.persistentListOf
 import org.jetbrains.compose.ui.tooling.preview.Preview

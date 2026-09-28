@@ -1,8 +1,8 @@
 package dev.koga.deeplinklauncher.home.impl.ui.state
 
-import dev.koga.deeplinklauncher.deeplink.api.ui.model.DeepLinkListItem
-import dev.koga.deeplinklauncher.deeplink.api.ui.model.FolderListItem
 import dev.koga.deeplinklauncher.deeplink.uicomponent.DeepLinkInputState
+import dev.koga.deeplinklauncher.deeplink.uicomponent.model.DeepLinkListItem
+import dev.koga.deeplinklauncher.deeplink.uicomponent.model.FolderListItem
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 

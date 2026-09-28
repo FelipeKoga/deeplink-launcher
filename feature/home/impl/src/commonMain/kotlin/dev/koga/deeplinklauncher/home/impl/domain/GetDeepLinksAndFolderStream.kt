@@ -1,20 +1,20 @@
-package dev.koga.deeplinklauncher.deeplink.impl.domain.usecase
+package dev.koga.deeplinklauncher.home.impl.domain
 
 import dev.koga.deeplinklauncher.deeplink.api.domain.model.DeepLink
 import dev.koga.deeplinklauncher.deeplink.api.domain.model.Folder
 import dev.koga.deeplinklauncher.deeplink.api.domain.repository.DeepLinkRepository
 import dev.koga.deeplinklauncher.deeplink.api.domain.repository.FolderRepository
-import dev.koga.deeplinklauncher.deeplink.api.domain.usecase.GetDeepLinksAndFolderStream
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
 
-internal class GetDeepLinksAndFolderStreamImpl(
+/** Home's search over deeplinks and folders. Home is its only consumer, so it lives here. */
+internal class GetDeepLinksAndFolderStream(
     private val repository: DeepLinkRepository,
     private val folderRepository: FolderRepository,
-) : GetDeepLinksAndFolderStream {
+) {
 
-    override operator fun invoke(query: String): Flow<GetDeepLinksAndFolderStream.Result> {
+    operator fun invoke(query: String): Flow<Result> {
         val normalizeQuery = query.trim()
 
         return combine(
@@ -22,7 +22,7 @@ internal class GetDeepLinksAndFolderStreamImpl(
             folderRepository.getFoldersStream().distinctUntilChanged(),
         ) { deepLinks, folders ->
             val filteredDeepLinks = filterDeepLinks(deepLinks, normalizeQuery)
-            GetDeepLinksAndFolderStream.Result(
+            Result(
                 deepLinks = filteredDeepLinks,
                 favorites = filteredDeepLinks.filter(DeepLink::isFavorite),
                 folders = filterFolders(folders, normalizeQuery),
@@ -40,4 +40,11 @@ internal class GetDeepLinksAndFolderStreamImpl(
     private fun filterFolders(folders: List<Folder>, query: String): List<Folder> {
         return folders.filter { it.name.contains(query, true) }
     }
+
+    data class Result(
+        val deepLinks: List<DeepLink>,
+        val favorites: List<DeepLink>,
+        val folders: List<Folder>,
+        val folderPreviewDeepLinks: List<DeepLink>,
+    )
 }

@@ -26,12 +26,12 @@ import androidx.lifecycle.repeatOnLifecycle
 import dev.koga.deeplinklauncher.date.currentLocalDateTime
 import dev.koga.deeplinklauncher.deeplink.api.domain.model.DeepLink
 import dev.koga.deeplinklauncher.deeplink.api.domain.model.Folder
-import dev.koga.deeplinklauncher.deeplink.api.ui.model.DeepLinkListItem
-import dev.koga.deeplinklauncher.deeplink.api.ui.model.FolderListItem
 import dev.koga.deeplinklauncher.deeplink.uicomponent.CreateFolderCard
 import dev.koga.deeplinklauncher.deeplink.uicomponent.DeepLinkCard
 import dev.koga.deeplinklauncher.deeplink.uicomponent.DeepLinkCardActionsPresets
 import dev.koga.deeplinklauncher.deeplink.uicomponent.FolderCard
+import dev.koga.deeplinklauncher.deeplink.uicomponent.model.DeepLinkListItem
+import dev.koga.deeplinklauncher.deeplink.uicomponent.model.FolderListItem
 import dev.koga.deeplinklauncher.deeplink.uicomponent.rememberDeepLinkCardPainters
 import dev.koga.deeplinklauncher.ui.calculateWindowSizeSharedClass
 import kotlinx.collections.immutable.ImmutableList

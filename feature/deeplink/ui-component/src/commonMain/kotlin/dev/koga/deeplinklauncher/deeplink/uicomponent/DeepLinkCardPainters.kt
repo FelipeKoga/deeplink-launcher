@@ -14,7 +14,7 @@ import compose.icons.tablericons.Folder
 import compose.icons.tablericons.Link
 
 @Stable
-class DeepLinkCardPainters internal constructor(
+public class DeepLinkCardPainters internal constructor(
     internal val folder: Painter,
     internal val star: Painter,
     internal val starOutline: Painter,
@@ -23,7 +23,7 @@ class DeepLinkCardPainters internal constructor(
 )
 
 @Composable
-fun rememberDeepLinkCardPainters(): DeepLinkCardPainters {
+public fun rememberDeepLinkCardPainters(): DeepLinkCardPainters {
     val folder = rememberVectorPainter(TablerIcons.Folder)
     val star = rememberVectorPainter(Icons.Rounded.Star)
     val starOutline = rememberVectorPainter(Icons.Rounded.StarOutline)

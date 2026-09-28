@@ -1,7 +1,6 @@
 package dev.koga.deeplinklauncher.deeplink.impl.domain.usecase
 
 import dev.koga.deeplinklauncher.deeplink.api.domain.model.DeepLink
-import dev.koga.deeplinklauncher.deeplink.api.domain.usecase.ShareDeepLink
 import platform.UIKit.UIActivityViewController
 import platform.UIKit.UIApplication
 

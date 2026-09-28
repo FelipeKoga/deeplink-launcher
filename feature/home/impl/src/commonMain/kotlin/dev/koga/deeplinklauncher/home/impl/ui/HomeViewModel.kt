@@ -7,19 +7,18 @@ import androidx.lifecycle.viewModelScope
 import dev.koga.deeplinklauncher.analytics.api.AnalyticsTracker
 import dev.koga.deeplinklauncher.coroutines.startNowThenWhileSubscribed
 import dev.koga.deeplinklauncher.date.currentLocalDateTime
-import dev.koga.deeplinklauncher.deeplink.api.application.EnrichDeepLinksForList
 import dev.koga.deeplinklauncher.deeplink.api.domain.model.DeepLink
 import dev.koga.deeplinklauncher.deeplink.api.domain.model.Folder
 import dev.koga.deeplinklauncher.deeplink.api.domain.model.LaunchSource
 import dev.koga.deeplinklauncher.deeplink.api.domain.repository.DeepLinkRepository
 import dev.koga.deeplinklauncher.deeplink.api.domain.usecase.GetAutoSuggestionLinks
-import dev.koga.deeplinklauncher.deeplink.api.domain.usecase.GetDeepLinksAndFolderStream
 import dev.koga.deeplinklauncher.deeplink.api.domain.usecase.LaunchDeepLink
-import dev.koga.deeplinklauncher.deeplink.api.ui.model.DeepLinkListItem
-import dev.koga.deeplinklauncher.deeplink.api.ui.model.FolderListItem
 import dev.koga.deeplinklauncher.deeplink.api.ui.navigation.DeepLinkRouteEntryPoint
 import dev.koga.deeplinklauncher.deeplink.uicomponent.DeepLinkInputState
+import dev.koga.deeplinklauncher.deeplink.uicomponent.EnrichDeepLinksForList
 import dev.koga.deeplinklauncher.deeplink.uicomponent.MAX_FOLDER_PREVIEW_ICONS
+import dev.koga.deeplinklauncher.deeplink.uicomponent.model.DeepLinkListItem
+import dev.koga.deeplinklauncher.deeplink.uicomponent.model.FolderListItem
 import dev.koga.deeplinklauncher.home.impl.analytics.DeeplinkCreated
 import dev.koga.deeplinklauncher.home.impl.analytics.DeeplinkDetailsOpened
 import dev.koga.deeplinklauncher.home.impl.analytics.DeeplinkLaunchFailed
@@ -30,6 +29,7 @@ import dev.koga.deeplinklauncher.home.impl.analytics.HomeTabSelected
 import dev.koga.deeplinklauncher.home.impl.analytics.OnboardingCompleted
 import dev.koga.deeplinklauncher.home.impl.analytics.SearchUsed
 import dev.koga.deeplinklauncher.home.impl.analytics.track
+import dev.koga.deeplinklauncher.home.impl.domain.GetDeepLinksAndFolderStream
 import dev.koga.deeplinklauncher.home.impl.ui.state.HomeUiState
 import dev.koga.deeplinklauncher.navigation.AppNavigator
 import dev.koga.deeplinklauncher.preferences.repository.PreferencesDataSource
@@ -50,7 +50,7 @@ import kotlinx.coroutines.launch
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 
-class HomeViewModel(
+internal class HomeViewModel(
     getDeepLinksAndFolderStream: GetDeepLinksAndFolderStream,
     private val enrichDeepLinksForList: EnrichDeepLinksForList,
     private val getAutoSuggestionLinks: GetAutoSuggestionLinks,

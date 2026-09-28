@@ -38,10 +38,6 @@ kotlin {
             implementation(compose.components.uiToolingPreview)
             implementation(compose.preview)
         }
-
-        jvmMain.dependencies {
-            implementation(projects.library.deviceBridge.api)
-        }
     }
 }
 

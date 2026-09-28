@@ -23,7 +23,7 @@ import dev.koga.deeplinklauncher.deeplink.api.ui.model.DeepLinkIcon
 import dev.koga.deeplinklauncher.designsystem.theme.DeepLinkTheme
 
 @Composable
-fun DeepLinkHandlerIcon(
+public fun DeepLinkHandlerIcon(
     icon: DeepLinkIcon?,
     modifier: Modifier = Modifier,
     fallbackPainter: Painter = rememberVectorPainter(TablerIcons.Link),

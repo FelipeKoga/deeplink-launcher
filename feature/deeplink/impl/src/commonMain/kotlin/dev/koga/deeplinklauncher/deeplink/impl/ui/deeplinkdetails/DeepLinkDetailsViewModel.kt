@@ -8,7 +8,6 @@ import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
 import dev.koga.deeplinklauncher.analytics.api.AnalyticsTracker
 import dev.koga.deeplinklauncher.coroutines.CoroutineDebouncer
-import dev.koga.deeplinklauncher.deeplink.api.application.EnrichDeepLinkForDetails
 import dev.koga.deeplinklauncher.deeplink.api.domain.manager.DeepLinkShortcutManager
 import dev.koga.deeplinklauncher.deeplink.api.domain.model.DeepLink
 import dev.koga.deeplinklauncher.deeplink.api.domain.model.DeepLinkHandler
@@ -24,9 +23,7 @@ import dev.koga.deeplinklauncher.deeplink.api.domain.usecase.GetDeepLinkHandlers
 import dev.koga.deeplinklauncher.deeplink.api.domain.usecase.LaunchDeepLink
 import dev.koga.deeplinklauncher.deeplink.api.domain.usecase.LinkDeepLinkToFolder
 import dev.koga.deeplinklauncher.deeplink.api.domain.usecase.PinDeepLinkToHomeScreen
-import dev.koga.deeplinklauncher.deeplink.api.domain.usecase.ShareDeepLink
 import dev.koga.deeplinklauncher.deeplink.api.domain.usecase.ValidateDeepLink
-import dev.koga.deeplinklauncher.deeplink.api.ui.model.DeepLinkDetailsModel
 import dev.koga.deeplinklauncher.deeplink.api.ui.navigation.DeepLinkRouteEntryPoint
 import dev.koga.deeplinklauncher.deeplink.impl.analytics.DeeplinkDeleted
 import dev.koga.deeplinklauncher.deeplink.impl.analytics.DeeplinkDuplicated
@@ -37,6 +34,9 @@ import dev.koga.deeplinklauncher.deeplink.impl.analytics.DeeplinkPinned
 import dev.koga.deeplinklauncher.deeplink.impl.analytics.DeeplinkShared
 import dev.koga.deeplinklauncher.deeplink.impl.analytics.FavoriteToggled
 import dev.koga.deeplinklauncher.deeplink.impl.analytics.track
+import dev.koga.deeplinklauncher.deeplink.impl.application.DeepLinkDetailsModel
+import dev.koga.deeplinklauncher.deeplink.impl.application.EnrichDeepLinkForDetails
+import dev.koga.deeplinklauncher.deeplink.impl.domain.usecase.ShareDeepLink
 import dev.koga.deeplinklauncher.deeplink.impl.ui.deeplinkdetails.state.DeepLinkDetailsAction
 import dev.koga.deeplinklauncher.deeplink.impl.ui.deeplinkdetails.state.DeepLinkDetailsUiState
 import dev.koga.deeplinklauncher.deeplink.impl.ui.deeplinkdetails.state.DuplicateAction

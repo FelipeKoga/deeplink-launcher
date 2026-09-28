@@ -1,5 +1,6 @@
 package dev.koga.deeplinklauncher.home.impl.di
 
+import dev.koga.deeplinklauncher.home.impl.domain.GetDeepLinksAndFolderStream
 import dev.koga.deeplinklauncher.home.impl.ui.HomeViewModel
 import dev.koga.deeplinklauncher.home.impl.ui.navigation.HomeNavigationGraph
 import dev.koga.deeplinklauncher.navigation.NavigationGraph
@@ -10,6 +11,7 @@ import org.koin.dsl.bind
 import org.koin.dsl.module
 
 val homeModule = module {
+    singleOf(::GetDeepLinksAndFolderStream)
     viewModelOf(::HomeViewModel)
     singleOf(::HomeNavigationGraph) bind NavigationGraph::class
 

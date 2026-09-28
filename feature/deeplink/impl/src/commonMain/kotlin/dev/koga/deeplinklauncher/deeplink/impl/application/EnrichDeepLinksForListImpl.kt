@@ -1,11 +1,11 @@
 package dev.koga.deeplinklauncher.deeplink.impl.application
 
-import dev.koga.deeplinklauncher.deeplink.api.application.EnrichDeepLinksForList
 import dev.koga.deeplinklauncher.deeplink.api.domain.model.DeepLink
 import dev.koga.deeplinklauncher.deeplink.api.domain.model.DeepLinkHandlerInfo
 import dev.koga.deeplinklauncher.deeplink.api.domain.usecase.GetDeepLinkHandlerIcon
 import dev.koga.deeplinklauncher.deeplink.api.domain.usecase.GetDeepLinkHandlerInfo
-import dev.koga.deeplinklauncher.deeplink.api.ui.model.DeepLinkListItem
+import dev.koga.deeplinklauncher.deeplink.uicomponent.EnrichDeepLinksForList
+import dev.koga.deeplinklauncher.deeplink.uicomponent.model.DeepLinkListItem
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.async

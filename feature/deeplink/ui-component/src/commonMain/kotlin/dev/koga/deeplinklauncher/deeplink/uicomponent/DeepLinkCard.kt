@@ -19,8 +19,8 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import dev.koga.deeplinklauncher.date.currentLocalDateTime
 import dev.koga.deeplinklauncher.date.formatRelativeToNow
-import dev.koga.deeplinklauncher.deeplink.api.ui.formatting.truncatedLink
-import dev.koga.deeplinklauncher.deeplink.api.ui.model.DeepLinkListItem
+import dev.koga.deeplinklauncher.deeplink.uicomponent.formatting.truncatedLink
+import dev.koga.deeplinklauncher.deeplink.uicomponent.model.DeepLinkListItem
 import dev.koga.deeplinklauncher.designsystem.DLLOutlinedCard
 import dev.koga.deeplinklauncher.designsystem.button.DLLIconButton
 import dev.koga.deeplinklauncher.designsystem.button.DLLOutlinedIconButton
@@ -28,7 +28,7 @@ import dev.koga.deeplinklauncher.designsystem.theme.DeepLinkTheme
 import kotlinx.datetime.LocalDateTime
 
 @Composable
-fun DeepLinkCard(
+public fun DeepLinkCard(
     item: DeepLinkListItem,
     onClick: () -> Unit,
     actions: DeepLinkCardActions,

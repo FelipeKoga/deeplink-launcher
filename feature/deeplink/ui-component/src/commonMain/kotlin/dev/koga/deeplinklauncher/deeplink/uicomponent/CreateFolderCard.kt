@@ -36,7 +36,7 @@ import dev.koga.resources.folder_create_title
 import org.jetbrains.compose.resources.stringResource
 
 @Composable
-fun CreateFolderCard(
+public fun CreateFolderCard(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {

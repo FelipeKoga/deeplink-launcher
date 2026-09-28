@@ -1,4 +1,4 @@
-package dev.koga.deeplinklauncher.deeplink.api.ui.formatting
+package dev.koga.deeplinklauncher.deeplink.uicomponent.formatting
 
 import dev.koga.deeplinklauncher.deeplink.api.domain.model.DeepLink
 

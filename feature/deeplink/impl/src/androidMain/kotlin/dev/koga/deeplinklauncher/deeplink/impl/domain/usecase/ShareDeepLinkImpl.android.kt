@@ -3,7 +3,6 @@ package dev.koga.deeplinklauncher.deeplink.impl.domain.usecase
 import android.content.Context
 import android.content.Intent
 import dev.koga.deeplinklauncher.deeplink.api.domain.model.DeepLink
-import dev.koga.deeplinklauncher.deeplink.api.domain.usecase.ShareDeepLink
 
 internal class ShareDeepLinkImpl(
     private val context: Context,

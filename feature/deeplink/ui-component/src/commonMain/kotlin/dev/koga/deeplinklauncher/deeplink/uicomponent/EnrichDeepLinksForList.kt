@@ -1,7 +1,7 @@
-package dev.koga.deeplinklauncher.deeplink.api.application
+package dev.koga.deeplinklauncher.deeplink.uicomponent
 
 import dev.koga.deeplinklauncher.deeplink.api.domain.model.DeepLink
-import dev.koga.deeplinklauncher.deeplink.api.ui.model.DeepLinkListItem
+import dev.koga.deeplinklauncher.deeplink.uicomponent.model.DeepLinkListItem
 
 public interface EnrichDeepLinksForList {
     public suspend operator fun invoke(links: List<DeepLink>): List<DeepLinkListItem>

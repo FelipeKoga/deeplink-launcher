@@ -6,7 +6,6 @@ import compose.icons.tablericons.BrandAndroid
 import compose.icons.tablericons.BrandApple
 import compose.icons.tablericons.DeviceDesktop
 import dev.koga.deeplinklauncher.deeplink.api.domain.model.DeepLinkTarget
-import dev.koga.deeplinklauncher.devicebridge.api.DeviceBridge
 
 data class DeepLinkTargetsUiState(
     val selected: Option = DeepLinkTarget.Desktop.toUiState(),
@@ -53,8 +52,8 @@ fun DeepLinkTarget.toUiState(
         selected = selected,
         name = name,
         platform = when (platform) {
-            DeviceBridge.Platform.ANDROID -> DeepLinkTargetsUiState.Platform.ANDROID
-            DeviceBridge.Platform.IOS -> DeepLinkTargetsUiState.Platform.IOS
+            DeepLinkTarget.Platform.ANDROID -> DeepLinkTargetsUiState.Platform.ANDROID
+            DeepLinkTarget.Platform.IOS -> DeepLinkTargetsUiState.Platform.IOS
         },
     )
 }

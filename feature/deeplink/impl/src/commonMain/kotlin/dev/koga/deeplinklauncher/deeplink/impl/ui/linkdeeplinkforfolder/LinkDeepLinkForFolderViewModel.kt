@@ -8,7 +8,6 @@ import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
 import dev.koga.deeplinklauncher.analytics.api.AnalyticsTracker
 import dev.koga.deeplinklauncher.date.currentLocalDateTime
-import dev.koga.deeplinklauncher.deeplink.api.application.EnrichDeepLinksForList
 import dev.koga.deeplinklauncher.deeplink.api.domain.model.DeepLink
 import dev.koga.deeplinklauncher.deeplink.api.domain.model.LaunchSource
 import dev.koga.deeplinklauncher.deeplink.api.domain.repository.DeepLinkRepository
@@ -25,6 +24,7 @@ import dev.koga.deeplinklauncher.deeplink.impl.analytics.track
 import dev.koga.deeplinklauncher.deeplink.impl.ui.linkdeeplinkforfolder.state.LinkDeepLinkForFolderAction
 import dev.koga.deeplinklauncher.deeplink.impl.ui.linkdeeplinkforfolder.state.LinkDeepLinkForFolderUiState
 import dev.koga.deeplinklauncher.deeplink.uicomponent.DeepLinkInputState
+import dev.koga.deeplinklauncher.deeplink.uicomponent.EnrichDeepLinksForList
 import dev.koga.deeplinklauncher.navigation.AppNavigator
 import dev.koga.deeplinklauncher.preferences.repository.PreferencesDataSource
 import dev.koga.deeplinklauncher.uievent.SnackBarDispatcher

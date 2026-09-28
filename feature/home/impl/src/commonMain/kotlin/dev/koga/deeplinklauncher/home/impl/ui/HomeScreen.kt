@@ -33,7 +33,7 @@ import dev.koga.deeplinklauncher.settings.api.ui.navigation.SettingsRouteEntryPo
 import dev.koga.deeplinklauncher.ui.barHazeEffect
 
 @Composable
-fun HomeScreen(
+internal fun HomeScreen(
     viewModel: HomeViewModel,
     appNavigator: AppNavigator,
 ) {

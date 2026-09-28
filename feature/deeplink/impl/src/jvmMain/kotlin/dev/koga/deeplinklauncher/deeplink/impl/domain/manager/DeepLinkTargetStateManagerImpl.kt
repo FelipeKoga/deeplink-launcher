@@ -30,7 +30,10 @@ internal class DeepLinkTargetStateManagerImpl(
                 DeepLinkTarget.Device(
                     id = it.id,
                     name = it.name,
-                    platform = it.platform,
+                    platform = when (it.platform) {
+                        DeviceBridge.Platform.ANDROID -> DeepLinkTarget.Platform.ANDROID
+                        DeviceBridge.Platform.IOS -> DeepLinkTarget.Platform.IOS
+                    },
                 )
             } else {
                 null

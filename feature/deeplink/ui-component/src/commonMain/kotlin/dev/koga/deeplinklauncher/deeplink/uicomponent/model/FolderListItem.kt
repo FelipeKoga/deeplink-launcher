@@ -1,6 +1,7 @@
-package dev.koga.deeplinklauncher.deeplink.api.ui.model
+package dev.koga.deeplinklauncher.deeplink.uicomponent.model
 
 import dev.koga.deeplinklauncher.deeplink.api.domain.model.Folder
+import dev.koga.deeplinklauncher.deeplink.api.ui.model.DeepLinkIcon
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 

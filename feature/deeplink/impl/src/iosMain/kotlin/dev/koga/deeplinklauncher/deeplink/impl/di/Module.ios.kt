@@ -7,7 +7,6 @@ import dev.koga.deeplinklauncher.deeplink.api.domain.usecase.GetDeepLinkHandlers
 import dev.koga.deeplinklauncher.deeplink.api.domain.usecase.GetDeepLinkMetadata
 import dev.koga.deeplinklauncher.deeplink.api.domain.usecase.LaunchDeepLink
 import dev.koga.deeplinklauncher.deeplink.api.domain.usecase.PinDeepLinkToHomeScreen
-import dev.koga.deeplinklauncher.deeplink.api.domain.usecase.ShareDeepLink
 import dev.koga.deeplinklauncher.deeplink.api.domain.usecase.ValidateDeepLink
 import dev.koga.deeplinklauncher.deeplink.impl.domain.manager.DeepLinkShortcutManagerImpl
 import dev.koga.deeplinklauncher.deeplink.impl.domain.usecase.GetDeepLinkHandlerIconImpl
@@ -16,6 +15,7 @@ import dev.koga.deeplinklauncher.deeplink.impl.domain.usecase.GetDeepLinkHandler
 import dev.koga.deeplinklauncher.deeplink.impl.domain.usecase.GetDeepLinkMetadataImpl
 import dev.koga.deeplinklauncher.deeplink.impl.domain.usecase.LaunchDeepLinkImpl
 import dev.koga.deeplinklauncher.deeplink.impl.domain.usecase.PinDeepLinkToHomeScreenImpl
+import dev.koga.deeplinklauncher.deeplink.impl.domain.usecase.ShareDeepLink
 import dev.koga.deeplinklauncher.deeplink.impl.domain.usecase.ShareDeepLinkImpl
 import dev.koga.deeplinklauncher.deeplink.impl.domain.usecase.ValidateDeepLinkImpl
 import dev.koga.deeplinklauncher.deeplink.impl.platform.ClipboardTextReader

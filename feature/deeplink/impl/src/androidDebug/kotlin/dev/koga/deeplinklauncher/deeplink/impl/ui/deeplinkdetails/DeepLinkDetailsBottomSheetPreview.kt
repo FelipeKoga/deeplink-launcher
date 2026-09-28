@@ -6,7 +6,7 @@ import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.tooling.preview.PreviewScreenSizes
 import dev.koga.deeplinklauncher.deeplink.api.domain.model.DeepLinkHandlerInfo
 import dev.koga.deeplinklauncher.deeplink.api.domain.model.DeepLinkMetadata
-import dev.koga.deeplinklauncher.deeplink.api.ui.model.DeepLinkDetailsModel
+import dev.koga.deeplinklauncher.deeplink.impl.application.DeepLinkDetailsModel
 import dev.koga.deeplinklauncher.deeplink.impl.ui.deeplinkdetails.state.DeepLinkDetailsUiState
 import dev.koga.deeplinklauncher.deeplink.impl.ui.preview.previewFavoriteDeepLink
 import dev.koga.deeplinklauncher.deeplink.impl.ui.preview.previewFolder

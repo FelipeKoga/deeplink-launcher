@@ -19,11 +19,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import compose.icons.TablerIcons
 import compose.icons.tablericons.Folder
 import dev.koga.deeplinklauncher.deeplink.api.domain.model.Folder
-import dev.koga.deeplinklauncher.deeplink.api.ui.model.FolderListItem
+import dev.koga.deeplinklauncher.deeplink.uicomponent.model.FolderListItem
 import dev.koga.deeplinklauncher.designsystem.DLLOutlinedCard
 import dev.koga.deeplinklauncher.designsystem.theme.DeepLinkTheme
 import dev.koga.deeplinklauncher.platform.Platform
@@ -34,11 +35,11 @@ import dev.koga.resources.folder_empty
 import org.jetbrains.compose.resources.pluralStringResource
 import org.jetbrains.compose.resources.stringResource
 
-const val MAX_FOLDER_PREVIEW_ICONS = 4
-val FOLDER_CARD_HEIGHT = 180.dp
+public const val MAX_FOLDER_PREVIEW_ICONS: Int = 4
+public val FOLDER_CARD_HEIGHT: Dp = 180.dp
 
 @Composable
-fun FolderCard(
+public fun FolderCard(
     item: FolderListItem,
     onClick: (Folder) -> Unit,
     modifier: Modifier = Modifier,

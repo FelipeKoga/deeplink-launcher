@@ -7,12 +7,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
 import dev.koga.deeplinklauncher.analytics.api.AnalyticsTracker
-import dev.koga.deeplinklauncher.deeplink.api.application.EnrichDeepLinksForList
 import dev.koga.deeplinklauncher.deeplink.api.domain.model.DeepLink
 import dev.koga.deeplinklauncher.deeplink.api.domain.model.LaunchSource
 import dev.koga.deeplinklauncher.deeplink.api.domain.repository.FolderRepository
 import dev.koga.deeplinklauncher.deeplink.api.domain.usecase.LaunchDeepLink
-import dev.koga.deeplinklauncher.deeplink.api.ui.model.DeepLinkListItem
 import dev.koga.deeplinklauncher.deeplink.api.ui.navigation.DeepLinkRouteEntryPoint
 import dev.koga.deeplinklauncher.deeplink.impl.analytics.DeeplinkLaunchFailed
 import dev.koga.deeplinklauncher.deeplink.impl.analytics.DeeplinkLaunched
@@ -20,6 +18,8 @@ import dev.koga.deeplinklauncher.deeplink.impl.analytics.FolderDeleted
 import dev.koga.deeplinklauncher.deeplink.impl.analytics.track
 import dev.koga.deeplinklauncher.deeplink.impl.ui.folderdetails.state.FolderDetailsAction
 import dev.koga.deeplinklauncher.deeplink.impl.ui.folderdetails.state.FolderDetailsUiState
+import dev.koga.deeplinklauncher.deeplink.uicomponent.EnrichDeepLinksForList
+import dev.koga.deeplinklauncher.deeplink.uicomponent.model.DeepLinkListItem
 import dev.koga.deeplinklauncher.navigation.AppNavigator
 import dev.koga.deeplinklauncher.uievent.SnackBarDispatcher
 import kotlinx.collections.immutable.persistentListOf

@@ -4,7 +4,7 @@ import androidx.compose.runtime.Immutable
 import dev.koga.deeplinklauncher.deeplink.api.domain.model.DeepLink
 import dev.koga.deeplinklauncher.deeplink.api.domain.model.DeepLinkHandler
 import dev.koga.deeplinklauncher.deeplink.api.domain.model.Folder
-import dev.koga.deeplinklauncher.deeplink.api.ui.model.DeepLinkDetailsModel
+import dev.koga.deeplinklauncher.deeplink.impl.application.DeepLinkDetailsModel
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 
