@@ -18,6 +18,3 @@ internal fun createDeepLinkViewIntent(
 ): Intent = Intent(Intent.ACTION_VIEW, link.trim().toUri()).apply {
     targetPackage?.let(::setPackage)
 }
-
-internal fun handlerCacheKey(link: String, targetPackage: String?): String =
-    "${link.trim()}|${targetPackage.orEmpty()}"

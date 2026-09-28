@@ -12,6 +12,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.decodeToImageBitmap
 import androidx.compose.ui.unit.dp
 import compose.icons.TablerIcons
@@ -42,7 +43,7 @@ fun DeepLinkHandlerIcon(
         contentAlignment = Alignment.Center,
     ) {
         if (icon != null) {
-            val imageBitmap = remember(icon) { icon.byteArray.decodeToImageBitmap() }
+            val imageBitmap = remember(icon) { HandlerIconBitmapCache.get(icon) }
             Image(
                 bitmap = imageBitmap,
                 contentDescription = null,
@@ -58,5 +59,25 @@ fun DeepLinkHandlerIcon(
                 tint = colors.text.muted,
             )
         }
+    }
+}
+
+private object HandlerIconBitmapCache {
+    private const val MAX_ENTRIES = 32
+
+    private val bitmaps = LinkedHashMap<Long, ImageBitmap>()
+
+    fun get(icon: DeepLinkIcon): ImageBitmap {
+        bitmaps.remove(icon.id)?.let { cached ->
+            bitmaps[icon.id] = cached
+            return cached
+        }
+
+        val bitmap = icon.byteArray.decodeToImageBitmap()
+        bitmaps[icon.id] = bitmap
+        if (bitmaps.size > MAX_ENTRIES) {
+            bitmaps.remove(bitmaps.keys.first())
+        }
+        return bitmap
     }
 }
