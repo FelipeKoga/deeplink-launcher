@@ -1,0 +1,126 @@
+name: Screenshot Tests
+
+on:
+  pull_request:
+    branches: [ "main" ]
+    types: [ opened, synchronize, reopened, labeled, unlabeled ]
+
+concurrency:
+  group: screenshot-tests-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  actions: read
+  pull-requests: read
+
+jobs:
+  compare-screenshots:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Cache Gradle dependencies
+        uses: actions/cache@v5
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: >
+            ${{ runner.os }}-gradle-
+            ${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: ${{ runner.os }}-gradle-
+
+      - name: Cache Robolectric runtime
+        uses: actions/cache@v5
+        with:
+          path: ~/.m2/repository/org/robolectric
+          key: ${{ runner.os }}-robolectric-${{ hashFiles('gradle/libs.versions.toml') }}
+          restore-keys: ${{ runner.os }}-robolectric-
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v5
+        with:
+          java-version: '17'
+          distribution: 'zulu'
+          cache: gradle
+
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v4
+
+      - name: Create google-services.json
+        run: |
+          echo "${{ secrets.GOOGLE_SERVICES_JSON_BASE64 }}" | base64 --decode > androidApp/google-services.json
+
+      - name: Grant execute permission for gradlew
+        run: chmod +x ./gradlew
+
+      - name: Create Environment File
+        uses: ./.github/actions/create-env-action
+        with:
+          REVENUECAT_API_KEY: ${{ secrets.REVENUECAT_API_KEY }}
+
+      - name: Download baseline from main
+        id: baseline
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          run_id=$(gh run list --repo "$GITHUB_REPOSITORY" --workflow screenshot-baseline.yml --branch main \
+            --status success --limit 1 --json databaseId --jq '.[0].databaseId // empty')
+          if [ -z "$run_id" ]; then
+            echo "::warning::No screenshot baseline recorded on main yet, every screenshot counts as added."
+            echo "found=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          gh run download "$run_id" --repo "$GITHUB_REPOSITORY" --name screenshot-baseline --dir .
+          echo "found=true" >> "$GITHUB_OUTPUT"
+          echo "Baseline from run $run_id"
+
+      - name: Compare screenshots
+        run: ./gradlew compareRoborazziDebug
+
+      - name: Summarize
+        id: summary
+        run: |
+          files=$(find . -path '*/build/test-results/roborazzi/debug/results-summary.json' -not -path './.gradle/*')
+          if [ -z "$files" ]; then
+            echo "::error::Roborazzi wrote no results summary."
+            exit 1
+          fi
+          total=$(jq -s 'map(.summary.total) | add' $files)
+          added=$(jq -s 'map(.summary.added) | add' $files)
+          changed=$(jq -s 'map(.summary.changed) | add' $files)
+          unchanged=$(jq -s 'map(.summary.unchanged) | add' $files)
+          echo "changed=$changed" >> "$GITHUB_OUTPUT"
+          {
+            echo "### Screenshots"
+            echo "| Total | Changed | Added | Unchanged |"
+            echo "|---|---|---|---|"
+            echo "| $total | $changed | $added | $unchanged |"
+          } >> "$GITHUB_STEP_SUMMARY"
+          if [ "${{ steps.baseline.outputs.found }}" = "true" ] && [ "$total" -gt 0 ] && [ "$added" = "$total" ]; then
+            echo "::error::A baseline was downloaded but no screenshot matched it; check the artifact paths."
+            exit 1
+          fi
+
+      - name: Upload screenshot diffs
+        if: always()
+        uses: actions/upload-artifact@v6
+        with:
+          name: screenshot-diff
+          path: |
+            **/build/outputs/roborazzi/*_compare.png
+            **/build/reports/roborazzi
+          retention-days: 14
+          if-no-files-found: ignore
+
+      - name: Require approval for visual changes
+        if: steps.summary.outputs.changed != '0'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          labels=$(gh pr view "${{ github.event.pull_request.number }}" --repo "$GITHUB_REPOSITORY" --json labels --jq '.labels[].name')
+          if ! grep -qx "screenshots-approved" <<< "$labels"; then
+            echo "::error::${{ steps.summary.outputs.changed }} screenshots changed. Review the screenshot-diff artifact, then add the screenshots-approved label."
+            exit 1
+          fi
