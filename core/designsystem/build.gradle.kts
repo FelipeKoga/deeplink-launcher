@@ -11,7 +11,6 @@ kotlin {
             api(libs.composeIcons.tablerIcons)
             implementation(libs.kotlinx.immutable)
 
-            implementation(compose.components.uiToolingPreview)
             implementation(compose.preview)
         }
     }

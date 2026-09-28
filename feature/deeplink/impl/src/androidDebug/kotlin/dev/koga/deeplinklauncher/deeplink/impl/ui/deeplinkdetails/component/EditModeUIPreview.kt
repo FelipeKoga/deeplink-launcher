@@ -2,22 +2,17 @@ package dev.koga.deeplinklauncher.deeplink.impl.ui.deeplinkdetails.component
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.PreviewLightDark
-import androidx.compose.ui.tooling.preview.PreviewScreenSizes
 import dev.koga.deeplinklauncher.deeplink.api.domain.model.DeepLink
 import dev.koga.deeplinklauncher.deeplink.impl.ui.deeplinkdetails.state.DeepLinkDetailsUiState
 import dev.koga.deeplinklauncher.deeplink.impl.ui.preview.previewFavoriteDeepLink
-import dev.koga.deeplinklauncher.deeplink.impl.ui.preview.previewNotFavoriteDeepLink
 import dev.koga.deeplinklauncher.deeplink.impl.ui.preview.previewTargetAppHandlers
 import dev.koga.deeplinklauncher.designsystem.theme.DLLPreviewTheme
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toPersistentList
-import org.jetbrains.compose.ui.tooling.preview.Preview
 
-@Preview
-@PreviewScreenSizes
 @PreviewLightDark
 @Composable
-internal fun EditModeUIFavoritePreview() {
+internal fun EditModeUIDefaultPreview() {
     DLLPreviewTheme {
         EditModeUI(
             uiState = DeepLinkDetailsUiState.Edit(
@@ -30,25 +25,6 @@ internal fun EditModeUIFavoritePreview() {
     }
 }
 
-@Preview
-@PreviewScreenSizes
-@PreviewLightDark
-@Composable
-internal fun EditModeUINotFavoritePreview() {
-    DLLPreviewTheme {
-        EditModeUI(
-            uiState = DeepLinkDetailsUiState.Edit(
-                deepLink = previewNotFavoriteDeepLink,
-                folders = persistentListOf(),
-            ),
-            onAction = {},
-            onShowDeleteConfirmation = {},
-        )
-    }
-}
-
-@Preview
-@PreviewScreenSizes
 @PreviewLightDark
 @Composable
 internal fun EditModeUIErrorPreview() {
@@ -65,8 +41,6 @@ internal fun EditModeUIErrorPreview() {
     }
 }
 
-@Preview
-@PreviewScreenSizes
 @PreviewLightDark
 @Composable
 internal fun EditModeUITargetAppPreview() {
@@ -86,8 +60,6 @@ internal fun EditModeUITargetAppPreview() {
     }
 }
 
-@Preview
-@PreviewScreenSizes
 @PreviewLightDark
 @Composable
 internal fun DeepLinkDetailsTextFieldPreview() {
@@ -96,19 +68,6 @@ internal fun DeepLinkDetailsTextFieldPreview() {
             text = "Sample Text",
             onTextChange = {},
             label = "Label",
-        )
-    }
-}
-
-@Preview
-@PreviewScreenSizes
-@PreviewLightDark
-@Composable
-internal fun EditTopBarPreview() {
-    DLLPreviewTheme {
-        EditTopBar(
-            onBack = {},
-            onDelete = {},
         )
     }
 }

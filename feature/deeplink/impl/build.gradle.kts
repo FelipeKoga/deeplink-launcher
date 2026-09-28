@@ -38,7 +38,6 @@ kotlin {
             implementation(libs.haze)
             implementation(libs.haze.materials)
 
-            implementation(compose.components.uiToolingPreview)
             implementation(compose.preview)
         }
 

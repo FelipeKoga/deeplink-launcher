@@ -2,28 +2,10 @@ package dev.koga.deeplinklauncher.settings.impl.ui.products
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.PreviewLightDark
-import androidx.compose.ui.tooling.preview.PreviewScreenSizes
 import dev.koga.deeplinklauncher.designsystem.theme.DLLPreviewTheme
 import dev.koga.deeplinklauncher.purchase.api.Product
 import kotlinx.collections.immutable.persistentListOf
-import org.jetbrains.compose.ui.tooling.preview.Preview
-import org.koin.compose.viewmodel.koinViewModel
 
-@Preview
-@PreviewScreenSizes
-@PreviewLightDark
-@Composable
-internal fun ProductsBottomSheetPreview() {
-    DLLPreviewTheme {
-        ProductsBottomSheet(
-            viewModel = koinViewModel(),
-            onDismissRequest = {},
-        )
-    }
-}
-
-@Preview
-@PreviewScreenSizes
 @PreviewLightDark
 @Composable
 internal fun ProductsUIPreview() {
@@ -38,8 +20,6 @@ internal fun ProductsUIPreview() {
     }
 }
 
-@Preview
-@PreviewScreenSizes
 @PreviewLightDark
 @Composable
 internal fun ProductsUIEmptyPreview() {
@@ -51,8 +31,6 @@ internal fun ProductsUIEmptyPreview() {
     }
 }
 
-@Preview
-@PreviewScreenSizes
 @PreviewLightDark
 @Composable
 internal fun ProductCardPreview() {

@@ -6,22 +6,7 @@ import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.tooling.preview.PreviewScreenSizes
 import dev.koga.deeplinklauncher.designsystem.DLLListItem
 import dev.koga.deeplinklauncher.designsystem.theme.DLLPreviewTheme
-import org.jetbrains.compose.ui.tooling.preview.Preview
-import org.koin.compose.viewmodel.koinViewModel
 
-@Preview
-@PreviewScreenSizes
-@PreviewLightDark
-@Composable
-internal fun SettingsScreenPreview() {
-    DLLPreviewTheme {
-        SettingsScreen(
-            viewmodel = koinViewModel(),
-        )
-    }
-}
-
-@Preview
 @PreviewScreenSizes
 @PreviewLightDark
 @Composable
@@ -43,8 +28,6 @@ internal fun SettingsUIPurchaseAvailablePreview() {
     }
 }
 
-@Preview
-@PreviewScreenSizes
 @PreviewLightDark
 @Composable
 internal fun SettingsUIPurchaseNotAvailablePreview() {
@@ -65,8 +48,6 @@ internal fun SettingsUIPurchaseNotAvailablePreview() {
     }
 }
 
-@Preview
-@PreviewScreenSizes
 @PreviewLightDark
 @Composable
 internal fun SettingsListItemPreview() {

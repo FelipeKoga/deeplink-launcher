@@ -15,7 +15,6 @@ kotlin {
             implementation(libs.kotlinx.coroutines.core)
             implementation(libs.kotlinx.immutable)
 
-            implementation(compose.components.uiToolingPreview)
             implementation(compose.preview)
         }
     }

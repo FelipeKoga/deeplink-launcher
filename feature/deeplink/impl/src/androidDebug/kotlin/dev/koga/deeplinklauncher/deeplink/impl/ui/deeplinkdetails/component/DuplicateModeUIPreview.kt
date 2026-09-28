@@ -2,19 +2,14 @@ package dev.koga.deeplinklauncher.deeplink.impl.ui.deeplinkdetails.component
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.PreviewLightDark
-import androidx.compose.ui.tooling.preview.PreviewScreenSizes
 import dev.koga.deeplinklauncher.deeplink.api.domain.model.DeepLink
 import dev.koga.deeplinklauncher.deeplink.impl.ui.deeplinkdetails.state.DeepLinkDetailsUiState
 import dev.koga.deeplinklauncher.deeplink.impl.ui.preview.previewFavoriteDeepLink
-import dev.koga.deeplinklauncher.deeplink.impl.ui.preview.previewNotFavoriteDeepLink
 import dev.koga.deeplinklauncher.designsystem.theme.DLLPreviewTheme
-import org.jetbrains.compose.ui.tooling.preview.Preview
 
-@Preview
-@PreviewScreenSizes
 @PreviewLightDark
 @Composable
-internal fun DuplicateModeUIFavoritePreview() {
+internal fun DuplicateModeUIDefaultPreview() {
     DLLPreviewTheme {
         DuplicateModeUI(
             uiState = DeepLinkDetailsUiState.Duplicate(
@@ -25,23 +20,6 @@ internal fun DuplicateModeUIFavoritePreview() {
     }
 }
 
-@Preview
-@PreviewScreenSizes
-@PreviewLightDark
-@Composable
-internal fun DuplicateModeUINotFavoritePreview() {
-    DLLPreviewTheme {
-        DuplicateModeUI(
-            uiState = DeepLinkDetailsUiState.Duplicate(
-                deepLink = previewNotFavoriteDeepLink,
-            ),
-            onAction = {},
-        )
-    }
-}
-
-@Preview
-@PreviewScreenSizes
 @PreviewLightDark
 @Composable
 internal fun DuplicateModeUIErrorPreview() {
@@ -56,8 +34,6 @@ internal fun DuplicateModeUIErrorPreview() {
     }
 }
 
-@Preview
-@PreviewScreenSizes
 @PreviewLightDark
 @Composable
 internal fun TopBarPreview() {

@@ -7,13 +7,11 @@ import dev.koga.deeplinklauncher.datatransfer.impl.ui.screen.import.jsonStructur
 import dev.koga.deeplinklauncher.datatransfer.impl.ui.screen.import.plainTextPreview
 import dev.koga.deeplinklauncher.designsystem.theme.DLLPreviewTheme
 import dev.koga.deeplinklauncher.file.model.FileType
-import org.jetbrains.compose.ui.tooling.preview.Preview
 
-@Preview
 @PreviewScreenSizes
 @PreviewLightDark
 @Composable
-fun ExportUIJsonFileTypePreview() {
+private fun ExportUIJsonFileTypePreview() {
     DLLPreviewTheme {
         ExportUI(
             selectedExportType = FileType.JSON,
@@ -28,11 +26,10 @@ fun ExportUIJsonFileTypePreview() {
     }
 }
 
-@Preview
 @PreviewScreenSizes
 @PreviewLightDark
 @Composable
-fun ExportUITTxtFileTypePreview() {
+private fun ExportUITxtFileTypePreview() {
     DLLPreviewTheme {
         ExportUI(
             selectedExportType = FileType.TXT,
@@ -47,11 +44,9 @@ fun ExportUITTxtFileTypePreview() {
     }
 }
 
-@Preview
-@PreviewScreenSizes
 @PreviewLightDark
 @Composable
-fun ExportContentJsonFileTypePreview() {
+private fun ExportContentJsonFileTypePreview() {
     DLLPreviewTheme {
         ExportContent(
             selectedExportType = FileType.JSON,
@@ -64,11 +59,9 @@ fun ExportContentJsonFileTypePreview() {
     }
 }
 
-@Preview
-@PreviewScreenSizes
 @PreviewLightDark
 @Composable
-fun ExportContentTxtFileTypePreview() {
+private fun ExportContentTxtFileTypePreview() {
     DLLPreviewTheme {
         ExportContent(
             selectedExportType = FileType.TXT,
@@ -81,24 +74,24 @@ fun ExportContentTxtFileTypePreview() {
     }
 }
 
-@Preview
-@PreviewScreenSizes
 @PreviewLightDark
 @Composable
-fun ExportFooterPermissionGrantedPreview() {
-    ExportFooter(
-        isPermissionGranted = true,
-        export = {},
-    )
+private fun ExportFooterPermissionGrantedPreview() {
+    DLLPreviewTheme {
+        ExportFooter(
+            isPermissionGranted = true,
+            export = {},
+        )
+    }
 }
 
-@Preview
-@PreviewScreenSizes
 @PreviewLightDark
 @Composable
-fun ExportFooterPermissionNotGrantedPreview() {
-    ExportFooter(
-        isPermissionGranted = false,
-        export = {},
-    )
+private fun ExportFooterPermissionNotGrantedPreview() {
+    DLLPreviewTheme {
+        ExportFooter(
+            isPermissionGranted = false,
+            export = {},
+        )
+    }
 }

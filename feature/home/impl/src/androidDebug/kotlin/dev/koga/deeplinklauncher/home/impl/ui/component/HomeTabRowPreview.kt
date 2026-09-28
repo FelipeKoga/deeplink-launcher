@@ -3,13 +3,9 @@ package dev.koga.deeplinklauncher.home.impl.ui.component
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.PreviewLightDark
-import androidx.compose.ui.tooling.preview.PreviewScreenSizes
 import dev.koga.deeplinklauncher.designsystem.theme.DLLPreviewTheme
 import dev.koga.deeplinklauncher.home.impl.ui.HomeTabPage
-import org.jetbrains.compose.ui.tooling.preview.Preview
 
-@Preview
-@PreviewScreenSizes
 @PreviewLightDark
 @Composable
 internal fun HomeTabRowPreview() {

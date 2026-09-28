@@ -5,7 +5,6 @@ import androidx.compose.ui.tooling.preview.PreviewLightDark
 import dev.koga.deeplinklauncher.deeplink.api.domain.model.DeepLinkHandlerInfo
 import dev.koga.deeplinklauncher.deeplink.api.domain.model.DeepLinkMetadata
 import dev.koga.deeplinklauncher.designsystem.theme.DLLPreviewTheme
-import org.jetbrains.compose.ui.tooling.preview.Preview
 
 private val previewMetadata = DeepLinkMetadata(
     scheme = "https",
@@ -19,10 +18,9 @@ private val previewHandlerInfo = DeepLinkHandlerInfo.Available(
     appName = "Chrome",
 )
 
-@Preview
 @PreviewLightDark
 @Composable
-internal fun DetailsInformationContentPreview() {
+internal fun DetailsInformationContentAvailablePreview() {
     DLLPreviewTheme {
         DetailsInformationContent(
             metadata = previewMetadata,
@@ -32,7 +30,6 @@ internal fun DetailsInformationContentPreview() {
     }
 }
 
-@Preview
 @PreviewLightDark
 @Composable
 internal fun DetailsInformationContentCannotResolvePreview() {
@@ -45,7 +42,6 @@ internal fun DetailsInformationContentCannotResolvePreview() {
     }
 }
 
-@Preview
 @PreviewLightDark
 @Composable
 internal fun DetailsInformationContentUnavailablePreview() {

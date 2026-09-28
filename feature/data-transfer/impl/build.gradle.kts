@@ -31,7 +31,6 @@ kotlin {
             implementation(libs.mpfilepicker)
             implementation(libs.compose.navigation)
 
-            implementation(compose.components.uiToolingPreview)
             implementation(compose.preview)
         }
     }

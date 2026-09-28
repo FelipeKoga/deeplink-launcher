@@ -2,26 +2,42 @@ package dev.koga.deeplinklauncher.settings.impl.ui.apptheme
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.PreviewLightDark
-import androidx.compose.ui.tooling.preview.PreviewScreenSizes
 import dev.koga.deeplinklauncher.designsystem.theme.DLLPreviewTheme
-import org.jetbrains.compose.ui.tooling.preview.Preview
-import org.koin.compose.viewmodel.koinViewModel
+import dev.koga.deeplinklauncher.preferences.model.AppTheme
 
-@Preview
-@PreviewScreenSizes
 @PreviewLightDark
 @Composable
-internal fun AppThemeBottomSheetPreview() {
+internal fun AppThemeBottomSheetContentLightSelectedPreview() {
     DLLPreviewTheme {
-        AppThemeBottomSheet(
-            viewModel = koinViewModel(),
-            onDismissRequest = {},
+        AppThemeBottomSheetContent(
+            appTheme = AppTheme.LIGHT,
+            onSelect = {},
         )
     }
 }
 
-@Preview
-@PreviewScreenSizes
+@PreviewLightDark
+@Composable
+internal fun AppThemeBottomSheetContentDarkSelectedPreview() {
+    DLLPreviewTheme {
+        AppThemeBottomSheetContent(
+            appTheme = AppTheme.DARK,
+            onSelect = {},
+        )
+    }
+}
+
+@PreviewLightDark
+@Composable
+internal fun AppThemeBottomSheetContentAutoSelectedPreview() {
+    DLLPreviewTheme {
+        AppThemeBottomSheetContent(
+            appTheme = AppTheme.AUTO,
+            onSelect = {},
+        )
+    }
+}
+
 @PreviewLightDark
 @Composable
 internal fun AppThemeListItemSelectedPreview() {
@@ -34,8 +50,6 @@ internal fun AppThemeListItemSelectedPreview() {
     }
 }
 
-@Preview
-@PreviewScreenSizes
 @PreviewLightDark
 @Composable
 internal fun AppThemeListItemNotSelectedPreview() {

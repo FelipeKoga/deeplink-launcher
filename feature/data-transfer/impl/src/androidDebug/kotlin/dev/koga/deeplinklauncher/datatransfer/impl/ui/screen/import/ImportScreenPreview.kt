@@ -1,73 +1,75 @@
 package dev.koga.deeplinklauncher.datatransfer.impl.ui.screen.import
 
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.tooling.preview.PreviewScreenSizes
+import androidx.compose.ui.unit.dp
 import dev.koga.deeplinklauncher.designsystem.theme.DLLPreviewTheme
 import dev.koga.deeplinklauncher.file.model.FileType
-import org.jetbrains.compose.ui.tooling.preview.Preview
+import kotlinx.datetime.LocalDateTime
 
-@Preview
+private val previewExampleDate = LocalDateTime(2026, 1, 15, 10, 30)
+
 @PreviewScreenSizes
 @PreviewLightDark
 @Composable
-fun ImportUIJsonFileTypePreview() {
+private fun ImportUIJsonFileTypePreview() {
     DLLPreviewTheme {
         ImportUI(
             selectedType = FileType.JSON,
             onBrowse = {},
             onBack = {},
             onOptionSelected = {},
+            exampleDate = previewExampleDate,
         )
     }
 }
 
-@Preview
 @PreviewScreenSizes
 @PreviewLightDark
 @Composable
-fun ImportUITxtFileTypePreview() {
+private fun ImportUITxtFileTypePreview() {
     DLLPreviewTheme {
         ImportUI(
             selectedType = FileType.TXT,
             onBrowse = {},
             onBack = {},
             onOptionSelected = {},
+            exampleDate = previewExampleDate,
         )
     }
 }
 
-@Preview
-@PreviewScreenSizes
 @PreviewLightDark
 @Composable
-fun ImportContentJsonFileTypePreview() {
+private fun ImportContentJsonFileTypePreview() {
     DLLPreviewTheme {
         ImportContent(
             selectedType = FileType.JSON,
             onOptionSelected = {},
+            exampleDate = previewExampleDate,
         )
     }
 }
 
-@Preview
-@PreviewScreenSizes
 @PreviewLightDark
 @Composable
-fun ImportContentTxtFileTypePreview() {
+private fun ImportContentTxtFileTypePreview() {
     DLLPreviewTheme {
         ImportContent(
             selectedType = FileType.TXT,
             onOptionSelected = {},
+            exampleDate = previewExampleDate,
         )
     }
 }
 
-@Preview
-@PreviewScreenSizes
 @PreviewLightDark
 @Composable
-fun ImportFooterPreview() {
+private fun ImportFooterPreview() {
     DLLPreviewTheme {
         ImportFooter(
             onBrowse = {},
@@ -75,22 +77,24 @@ fun ImportFooterPreview() {
     }
 }
 
-@Preview
-@PreviewScreenSizes
 @PreviewLightDark
 @Composable
-fun JSONTutorialPreview() {
+private fun JSONTutorialPreview() {
     DLLPreviewTheme {
-        JSONTutorial()
+        Column(modifier = Modifier.padding(horizontal = 24.dp)) {
+            JSONTutorial(
+                exampleDate = previewExampleDate,
+            )
+        }
     }
 }
 
-@Preview
-@PreviewScreenSizes
 @PreviewLightDark
 @Composable
-fun PlainTextTutorialPreview() {
+private fun PlainTextTutorialPreview() {
     DLLPreviewTheme {
-        PlainTextTutorial()
+        Column(modifier = Modifier.padding(horizontal = 24.dp)) {
+            PlainTextTutorial()
+        }
     }
 }

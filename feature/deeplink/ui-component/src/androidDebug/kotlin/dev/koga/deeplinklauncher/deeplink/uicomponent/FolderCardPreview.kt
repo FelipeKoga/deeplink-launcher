@@ -2,21 +2,18 @@ package dev.koga.deeplinklauncher.deeplink.uicomponent
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.PreviewLightDark
-import androidx.compose.ui.tooling.preview.PreviewScreenSizes
 import androidx.compose.ui.unit.dp
 import dev.koga.deeplinklauncher.deeplink.api.domain.model.Folder
 import dev.koga.deeplinklauncher.deeplink.api.ui.model.FolderListItem
 import dev.koga.deeplinklauncher.designsystem.theme.DLLPreviewTheme
 import kotlinx.collections.immutable.persistentListOf
-import org.jetbrains.compose.ui.tooling.preview.Preview
 
-@Preview
-@PreviewScreenSizes
 @PreviewLightDark
 @Composable
 internal fun CreateFolderCardPreview() {
@@ -30,7 +27,6 @@ internal fun CreateFolderCardPreview() {
     }
 }
 
-@Preview
 @PreviewLightDark
 @Composable
 internal fun FolderCardEmptyPreview() {
@@ -52,7 +48,6 @@ internal fun FolderCardEmptyPreview() {
     }
 }
 
-@Preview
 @PreviewLightDark
 @Composable
 internal fun FolderCardWithIconsPreview() {
@@ -75,7 +70,6 @@ internal fun FolderCardWithIconsPreview() {
     }
 }
 
-@Preview
 @PreviewLightDark
 @Composable
 internal fun FolderCardWithOverflowPreview() {
@@ -101,18 +95,17 @@ internal fun FolderCardWithOverflowPreview() {
     }
 }
 
-@Preview
 @PreviewLightDark
 @Composable
 internal fun FolderCardGridPreview() {
     DLLPreviewTheme {
-        Column(
+        Row(
             modifier = Modifier.padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(12.dp),
+            horizontalArrangement = Arrangement.spacedBy(12.dp),
         ) {
             CreateFolderCard(
                 onClick = {},
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier.weight(1f),
             )
             FolderCard(
                 item = FolderListItem(
@@ -125,7 +118,7 @@ internal fun FolderCardGridPreview() {
                     previewIcons = persistentListOf(null, null),
                 ),
                 onClick = {},
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier.weight(1f),
             )
         }
     }
