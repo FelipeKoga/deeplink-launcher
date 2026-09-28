@@ -81,6 +81,8 @@ class HomeViewModel(
             val folderPreviewCandidates =
                 selectFolderPreviewCandidates(data.folderPreviewDeepLinks)
 
+            var folderPreviewItems: List<DeepLinkListItem>? = null
+
             if (!hasCompletedFullPass && data.deepLinks.size > FIRST_PAINT_ITEM_COUNT) {
                 val headLinks = (
                     data.deepLinks.take(FIRST_PAINT_ITEM_COUNT) +
@@ -89,13 +91,17 @@ class HomeViewModel(
                 val head = enrichDeepLinksForList(headLinks).associateBy { it.deepLink.id }
                 val items = data.deepLinks.map { head[it.id] ?: DeepLinkListItem(deepLink = it) }
                 val pendingPreviews = folderPreviewCandidates
-                    .map { DeepLinkListItem(deepLink = it) }
+                    .map { head[it.id] ?: DeepLinkListItem(deepLink = it) }
                 emit(buildEnrichedData(items, data.folders, pendingPreviews))
+
+                val enrichedPreviews = enrichDeepLinksForList(folderPreviewCandidates)
+                folderPreviewItems = enrichedPreviews
+                emit(buildEnrichedData(items, data.folders, enrichedPreviews))
             }
 
-            val folderPreviewItems = enrichDeepLinksForList(folderPreviewCandidates)
+            val previews = folderPreviewItems ?: enrichDeepLinksForList(folderPreviewCandidates)
             val deepLinks = enrichDeepLinksForList(data.deepLinks)
-            emit(buildEnrichedData(deepLinks, data.folders, folderPreviewItems))
+            emit(buildEnrichedData(deepLinks, data.folders, previews))
             hasCompletedFullPass = true
         }
     }.flowOn(Dispatchers.Default)
