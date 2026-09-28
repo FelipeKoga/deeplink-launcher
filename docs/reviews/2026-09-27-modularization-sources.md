@@ -1,0 +1,1641 @@
+# Fontes verificadas do estudo de modularização (2026-09-27)
+
+Achados produzidos por 9 pesquisas web independentes, cada uma revisada por um verificador adversarial que re-buscou as fontes. IDs citados em [2026-09-27-modularization-study.md](2026-09-27-modularization-study.md). Prefixos: TAX (taxonomia), BP (build), DI, NAV, T5 (KMP/iOS), X/M (SDKs), GOV (governança), TST (testes), LAY (camadas).
+
+Confiança: high/medium/low segundo o verificador. Itens refutados ou não verificáveis estão em cada seção, em "Não verificado".
+
+## 1. Taxonomia de módulos
+
+- **TAX-01** — App Platform's ModuleType enum defines eight concrete module types (APP, PUBLIC, PUBLIC_ROBOTS, TESTING, IMPL, IMPL_ROBOTS, INTERNAL, INTERNAL_ROBOTS) plus UNKNOWN. The docs group them under six headings: :public, :impl, :internal, :testing, :robots and :app. _(App Platform (Ralf Wondratschek; originally Amazon, now independent) · main at 0.2.2 (2026-09-25) · high)_
+  - <https://github.com/vRallev/app-platform/blob/main/gradle-plugin/module-structure/src/main/kotlin/software/ralf/app/platform/gradle/ModuleType.kt>
+  - <https://github.com/vRallev/app-platform/blob/main/docs/module-structure.md>
+  - <https://github.com/vRallev/app-platform/tree/main/sample>
+- **TAX-02** — App Platform's central rule is that only the final :app module may depend on :impl modules. :impl→:impl is forbidden by default, and :testing and robots modules never reach the runtime classpath. _(App Platform · 2026-09 · high)_
+  - <https://github.com/vRallev/app-platform/blob/main/docs/module-structure.md>
+- **TAX-03** — App Platform says api/impl is warranted only when dependency inversion is needed. Utilities, extension functions, UI components and test helpers stay in a :public module with no :impl. _(App Platform · 2026-09 · high)_
+  - <https://github.com/vRallev/app-platform/blob/main/docs/module-structure.md>
+- **TAX-04** — App Platform enforces its taxonomy in Gradle. Enforcement includes a checkModuleStructureDependencies task wired into check, an optional nesting check, and auto-applied default dependencies. The checker has shipped as a standalone module-structure artifact since 0.2.1 (2026-09-19). _(App Platform · 0.1.1–0.2.2, 2026-07-30 to 2026-09-25 · high)_
+  - <https://github.com/vRallev/app-platform/blob/main/docs/module-structure.md>
+  - <https://github.com/vRallev/app-platform/blob/main/CHANGELOG.md>
+- **TAX-05** — App Platform has moved from Amazon to independent maintenance. github.com/amzn/app-platform now 301-redirects to vRallev/app-platform, and the coordinates changed to software.ralf.app.platform. _(App Platform · 2026-09 · high)_
+  - <https://github.com/vRallev/app-platform/blob/main/README.md>
+  - <https://github.com/vRallev/app-platform/blob/main/docs/faq.md>
+- **TAX-06** — App Platform has no wiring module type. Implementations contribute themselves through DI annotations in :impl, and final graphs are declared only in application modules. Metro is the recommended DI because it supports KMP and verifies the graph at compile time. _(App Platform · 2026-09 · high)_
+  - <https://github.com/vRallev/app-platform/blob/main/docs/di.md>
+  - <https://github.com/vRallev/app-platform/blob/main/docs/faq.md>
+- **TAX-07** — Square's 2019 'Android at Scale @Square' talk introduced :public / :impl / :impl-wiring, plus :fake and :demo modules. _(Square · 2019-11-25 · medium)_
+  - <https://speakerdeck.com/vrallev/android-at-scale-at-square>
+  - <https://ralf-wondratschek.com/presentation/android-at-scale-at-square.html>
+- **TAX-08** — Square Android (2026) migrated more than 7,000 Gradle modules, 1,500 CI jobs, over 300 development apps and 22 production apps to Metro. It still forbids impl→impl, uses :public / :impl-real / :impl-fake, and still has wiring modules. _(Square (Block) · 2026-04-14 · high)_
+  - <https://engineering.block.xyz/blog/metro-migration-at-square-android>
+- **TAX-09** — Now in Android (main, September 2026) splits each feature into :api and :impl, where :api holds only the navigation key. Settings has no :api. The split was authored on 2025-06-12 but landed on main on 2025-12-03 with the Navigation 3 migration (PR #2003). _(Google (Now in Android) · repo main 2026-09-22; split merged 2025-12-03 · high)_
+  - <https://github.com/android/nowinandroid/blob/main/settings.gradle.kts>
+  - <https://github.com/android/nowinandroid/blob/main/docs/ModularizationLearningJourney.md>
+  - <https://github.com/android/nowinandroid/commit/068d8cc93c523967bd00e66ffd257217acd1d07e>
+  - <https://github.com/android/nowinandroid/pull/2003>
+- **TAX-10** — Now in Android keeps data and domain in global layer modules (core:data, core:domain, core:model) rather than per feature. It adds test-fixture modules and a design-system catalog app, and says to split the data layer further as it grows. _(Google (Now in Android) · 2026-09 · high)_
+  - <https://github.com/android/nowinandroid/blob/main/docs/ModularizationLearningJourney.md>
+  - <https://github.com/android/nowinandroid/blob/main/settings.gradle.kts>
+- **TAX-11** — The official Navigation 3 guidance puts navigation keys in each feature's api and NavEntry/entryProvider content in its impl. At scale it recommends DI multibinding (@IntoSet) of entry builders and of per-feature DeepLinkMatchers. _(Google (Android Developers) · page updated 2026-09-22 · high)_
+  - <https://developer.android.com/guide/navigation/navigation-3/modularize>
+- **TAX-12** — Android's official modularization patterns page names five module types (data, feature, app, common/core, test) and lists when splitting abstraction from implementation pays off: diverse capabilities, multiple applications, independent teams, large codebase. _(Google (Android Developers) · page updated 2026-03-05 · high)_
+  - <https://developer.android.com/topic/modularization/patterns>
+- **TAX-13** — Android's modularization guide warns against modules that are too fine-grained, too coarse-grained, or created for projects too small to benefit. _(Google (Android Developers) · page updated 2026-03-05 · high)_
+  - <https://developer.android.com/topic/modularization>
+- **TAX-14** — Slack types modules as Features, Services and Libraries. On iOS, Features and Services are split into Interface/Implementation. On Android, Slack explicitly does not prescribe interface/implementation pairs, because they double Gradle configuration cost, and uses them only to unwind circular dependencies. _(Slack · 2022-03-28 (updated 2022-05-04) · high)_
+  - <https://slack.engineering/stabilize-modularize-modernize-scaling-slacks-mobile-codebases-2/>
+- **TAX-15** — Airbnb iOS uses twelve module types with per-type visibility rules. A feature cannot depend on another feature and shares types only through a sibling 'feature interface' module. Airbnb reports nearly 1,500 modules, and Dev Apps drive over 50% of local builds. _(Airbnb · 2021-10-05 · high)_
+  - <https://medium.com/airbnb-engineering/designing-for-productivity-in-a-large-scale-ios-application-9376a430a0bf>
+  - <https://web.archive.org/web/2024id_/https://medium.com/airbnb-engineering/designing-for-productivity-in-a-large-scale-ios-application-9376a430a0bf>
+- **TAX-16** — Afterpay (on the Cash App Code Blog, not about Cash App) split every feature/service module into :api, :impl, :wiring, :fakes (services only) and :demo. Its rules: dependencies go only sideways or top-down, and each feature exposes a single public launch method. _(Afterpay (Block) · 2021-08-03 · high)_
+  - <https://code.cash.app/android-architecture-for-the-rocketship-part1-modularisation>
+- **TAX-17** — Grab's passenger Android repo has roughly 2,000 modules and 11M lines of code. Its Focus-based IDE plugin made dependency counts visible, which nudged teams toward interface/implementation pairs such as :payment-api / :payment-impl. Grab says those pairs keep consumers' dependency counts low and make focused sync faster. _(Grab · 2026-05-15 · high)_
+  - <https://engineering.grab.com/how-we-improved-android-studio-in-large-monorepo>
+- **TAX-18** — Grab's 2021 taxonomy had Base/Core, Shared Library, Feature and Kit (bridge) modules, with the App module as the DI hub. Feature modules never depended on other feature modules. _(Grab · 2021-07-13 · high)_
+  - <https://engineering.grab.com/app-modularisation-at-scale>
+- **TAX-19** — Dropbox Android puts modules in four directory-encoded layers (product, core, base, external), ordered top to bottom and enforced by a layered verifier in buildSrc. This is a layer taxonomy, not api/impl. _(Dropbox · 2019-10-30 · medium)_
+  - <https://dropbox.tech/mobile/modernizing-our-android-build-system-part-ii-the-execution>
+- **TAX-20** — Uber's alternative is a plugin architecture. Features are isolated plugins attached to 'plugin points', tooling blocks plugin-to-plugin build dependencies, and every plugin ships behind an A/B test so it can be disabled remotely. _(Uber · 2017-08-02 · medium)_
+  - <https://www.uber.com/us/en/blog/plugins/>
+- **TAX-21** — Trade Republic (2025) uses :<feature>:public-api / :<feature>:impl / :<feature>:fake. The impl holds the presentation, domain and data layers, and 'Shared Features' modules hold reusable feature-like building blocks. _(Trade Republic · 2025-03-10 · high)_
+  - <https://traderepublic.substack.com/p/state-of-android-at-tr-2024-edition>
+- **TAX-22** — In KMP (Objective-C export), the iOS side of any taxonomy collapses into one umbrella module and framework. JetBrains advises against multiple Kotlin frameworks, and the iOS app always consumes every feature module in the umbrella. _(JetBrains (Kotlin docs) · page updated 2026-03-12 · high)_
+  - <https://kotlinlang.org/docs/multiplatform/multiplatform-project-configuration.html>
+- **TAX-23** — JetBrains' 2026 default KMP layout is a shared library module plus per-platform app modules, with a sharedLogic/sharedUI split when some platform uses native UI. AGP 9 makes a separate Android entry-point module mandatory. _(JetBrains · 2026-05 (blog); 2026-07-21 (docs) · high)_
+  - <https://blog.jetbrains.com/kotlin/2026/05/new-kmp-default-structure/>
+  - <https://kotlinlang.org/docs/multiplatform/multiplatform-project-recommended-structure.html>
+- **TAX-24** — Swift Export narrows what each KMP module exposes to Swift by generating separate Swift modules, but the Kotlin code still compiles to a single binary. It is Alpha and mutually exclusive with Objective-C export and SKIE. _(Touchlab · 2026-06-12 · medium)_
+  - <https://touchlab.co/the-future-of-kmps-ios-interop>
+- **TAX-25** — Tivi, a KMP/Circuit reference app now archived, shows a non-api/impl taxonomy. It has per-screen :ui:* modules, per-domain :data:* modules, remote-API client modules, one central :common:ui:screens module holding every Screen key, a separate :ui:root module, and qa/prod umbrella variants. _(Chris Banes (Tivi) · archived; last push 2024-11-12 · high)_
+  - <https://github.com/chrisbanes/tivi/blob/main/settings.gradle.kts>
+  - <https://github.com/chrisbanes/tivi/blob/main/common/ui/screens/src/commonMain/kotlin/app/tivi/screens/Screens.kt>
+- **TAX-26** — An individual practitioner proposes 'API/DI' as an alternative to api/impl: each module declares the interfaces it needs, and the app module provides the implementations, so modules never depend on each other. _(Alexander Gherschon (individual blog) · 2024-05-31 · low)_
+  - <https://galex.dev/posts/advanced-modularization-api-impl-vs-api-di/>
+- **TAX-27** — modules-graph-assert 2.9.1 (2026-04-12) enforces module-type dependency rules in Gradle using regex rules or per-module type aliases. It supports KMP configurations and a maximum graph height, and works with any naming scheme, including :api. _(Josef Raska (open source) · 2.9.1, 2026-04-12 · high)_
+  - <https://github.com/jraska/modules-graph-assert>
+  - <https://github.com/jraska/modules-graph-assert/releases>
+- **TAX-28** — Metro 1.4.5 (2026-09-24) is a compile-time DI compiler plugin for Kotlin Multiplatform with Anvil-style cross-module aggregation. This is what lets App Platform and Square drop hand-written wiring. _(Zac Sweers (Metro) · 1.4.5, 2026-09-24 · high)_
+  - <https://github.com/ZacSweers/metro>
+  - <https://github.com/ZacSweers/metro/releases>
+  - <https://github.com/vRallev/app-platform/blob/main/CHANGELOG.md>
+- **TAX-29** — The Koin Compiler Plugin 1.2.1 (2026-09-10) adds cross-module @Configuration module discovery and compile-time validation of the full graph at the startKoin<T>() / @KoinApplication entry point. It requires Koin 4.2.0+ and Kotlin 2.3.20–2.4.20. _(Kotzilla / InsertKoinIO · 1.2.1, 2026-09-10 · high)_
+  - <https://github.com/InsertKoinIO/koin-compiler-plugin>
+  - <https://github.com/InsertKoinIO/koin-compiler-plugin/blob/main/docs/COMPILE_TIME_SAFETY.md>
+  - <https://github.com/InsertKoinIO/koin-compiler-plugin/blob/main/docs/ROADMAP.md>
+  - <https://github.com/InsertKoinIO/koin/releases>
+- **TAX-30** — Kotlin's official Swift export docs (last modified 2026-08-28) still mark it Alpha. It exports each Kotlin module as a separate Swift module, but works only with direct Xcode integration. _(JetBrains (Kotlin docs) · page updated 2026-08-28 · high)_
+  - <https://kotlinlang.org/docs/native-swift-export.html>
+- **TAX-31** — Gradle Isolated Projects, which runs project configuration in parallel, is incubating (promoted from experimental in Gradle 9.7.0; current docs are for 9.8.0). Now in Android enabled it on 2026-09-02. _(Gradle / Google (NiA) · Gradle 9.7.0–9.8.0; NiA 2026-09-02 · high)_
+  - <https://docs.gradle.org/current/userguide/isolated_projects.html>
+  - <https://github.com/android/nowinandroid/commit/12f80da6>
+  - <https://github.com/android/nowinandroid/blob/main/gradle.properties>
+- **TAX-32** — Dropbox's Focus Gradle plugin (com.dropbox.focus 0.4.0) generates a module-specific settings file so the IDE configures only one module and its dependencies. Grab built its 2026 IDE solution on it. _(Dropbox (tool), Grab (user) · README 0.4.0; repo active 2026-06 · medium)_
+  - <https://github.com/dropbox/focus>
+  - <https://engineering.grab.com/how-we-improved-android-studio-in-large-monorepo>
+- **TAX-33** — App Platform 0.1.1 (2026-07-30) added a KMP 'list-detail' blueprint with a modular architecture and four platform shells. It applies the taxonomy selectively, e.g. theme ships as :public only with no :impl. _(App Platform · 2026-07-30 (0.1.1) · high)_
+  - <https://github.com/vRallev/app-platform/blob/main/CHANGELOG.md>
+  - <https://github.com/vRallev/app-platform/tree/main/blueprints>
+
+**Não verificado / refutado:**
+
+- Square '400 to 3,800 modules' (2019 talk): the Speaker Deck fetch returned slide text about module growth but no such numbers. Still unverified.
+- Uber 'prevented six outages by disabling plugins': re-checked and not found in the article text. The article says only 'resolve multiple large production crashes'. Treat the number as unsupported.
+- Reddit Android numbers ('194k to ~7k LOC monolith', 'hundreds of feature modules', 'dozens of sample apps', Anvil adoption): from a LinkedIn snippet only; no r/RedditEng primary post was found. Not re-checked (search budget exhausted).
+- Spotify Android taxonomy ('dozens of specialized modules') and '5 million lines migrated from Gradle to Bazel': from snippets and an X post only; not fetched.
+- Pinterest, DoorDash, Instacart and Duolingo module taxonomies: no primary engineering post describing module types or rules was found.
+- Slack's module 'score': Foundry's docs/platforms/gradle/mod-score.md contains only 'TODO'; the definition is not public.
+- A general 'leaf vs non-leaf' module rule: no company source defines one. App Platform's KDoc only calls :app modules 'leaf modules'.
+- Whether App Platform's module-structure checker accepts custom type names (e.g. `:api` instead of `:public`): the docs and ModuleType.kt show only path parsing of `:public`/`:impl`/`:internal`/`:testing`/`*-robots`/app. No configuration option was found.
+- Airbnb's Android module taxonomy: the verified post is about iOS and only says Dev Apps 'originated in the Airbnb Android ecosystem'.
+- Cedric Ferry (Medium, 2026-01-07) claims 'The Implementation module is only depended upon by the API module'. This contradicts every primary source (api must never depend on impl) and is treated as unreliable.
+- Grab 2026 headline IDE figure '35 minutes to under 1 minute': it appears in the post's summary but conflicts with the same post's detailed '26 minutes at p95 → under 2 minutes for typical feature work'. Use the p95 figure.
+- Dropbox Focus plugin version: 0.4.0 comes from the README setup snippet; the repo has no GitHub Release objects to confirm it is the latest published version.
+
+## 2. Performance de build
+
+- **BP-01** — Gradle compile avoidance hashes the ABI of every classpath entry and skips downstream recompilation of Java when that hash is unchanged. Method-body changes, private member changes, parameter renames, comment changes and resource changes are ABI-compatible. _(Gradle · 2022-11-28 (mechanism current; Kotlin remark superseded) · high)_
+  - <https://blog.gradle.org/compilation-avoidance>
+  - <https://docs.gradle.org/current/userguide/java_library_plugin.html>
+- **BP-02** — Gradle's performance guide (docs 9.8.0) says 'Switching to `implementation` for internal-only dependencies is one of the most impactful changes you can make to improve build performance in large, modular codebases', because only changes to `api` dependencies trigger downstream recompilation. _(Gradle / Google · Gradle docs 9.8.0 (Sep 2026) · high)_
+  - <https://docs.gradle.org/current/userguide/performance.html>
+  - <https://docs.gradle.org/current/userguide/java_library_plugin.html>
+  - <https://developer.android.com/topic/modularization/patterns>
+- **BP-03** — Kotlin/JVM incremental compilation has used classpath snapshots by default since Kotlin 1.8.20. A non-ABI upstream change leaves the downstream Kotlin compile task UP-TO-DATE. An ABI change recompiles dependents at member granularity for project outputs and at class granularity for .jar files in the Gradle cache. _(JetBrains · 1.7.0 (2022) -> default 1.8.20 (2023); docs 2026-08-12 · high)_
+  - <https://kotlinlang.org/docs/gradle-compilation-and-caches.html>
+  - <https://kotlinlang.org/docs/whatsnew1820.html>
+  - <https://blog.jetbrains.com/kotlin/2022/07/a-new-approach-to-incremental-compilation-in-kotlin/>
+- **BP-04** — Kotlin's ABI is wider than Java's because inline function bodies are part of it. Editing a public inline function in an api module therefore invalidates consumers even when no signature changes. _(JetBrains · 2022 / current docs · high)_
+  - <https://blog.jetbrains.com/kotlin/2022/07/a-new-approach-to-incremental-compilation-in-kotlin/>
+  - <https://kotlinlang.org/docs/inline-functions.html>
+- **BP-05** — Google states that separating API and implementation stops implementation changes from recompiling the API's consumers. That benefit holds only while the api module's own ABI stays stable. _(Google · current docs · high)_
+  - <https://developer.android.com/topic/modularization/patterns>
+  - <https://kotlinlang.org/docs/gradle-compilation-and-caches.html>
+- **BP-06** — In Square's 7,000+-module repo, replacing Dagger with Metro as a compiler plugin sped up ABI-change builds by 20.5%-56.5% (dev app) and 28.6%-47.7% (production app). Non-ABI builds changed little (dev app App -8.7%, i.e. slower, Utilities +5.3%; production +4.1%), so DI codegen cost matters mainly when ABI changes fan out. _(Square / Block · 2026-04-14 · high)_
+  - <https://engineering.block.xyz/blog/metro-migration-at-square-android>
+- **BP-07** — Block measured about 220 ms per project and an 8.4-minute warm IntelliJ sync on a 2,000+-subproject Kotlin JVM backend build (not Android), with sync time described as 'slightly quadratic' in project count. _(Block (Square) · 2025-10-14 · high)_
+  - <https://engineering.block.xyz/blog/shrinking-elephants>
+- **BP-08** — Slack does not prescribe api/impl pairs for every module, because pairs would double the subprojects Gradle has to configure. It does use them to unwind circular dependencies. _(Slack · 2022-03-28 (updated 2022-05-04) · high)_
+  - <https://slack.engineering/stabilize-modularize-modernize-scaling-slacks-mobile-codebases-2/>
+- **BP-09** — Square splits units into :public / :impl / :impl-wiring (2019 talk). It grew from about 3,500 modules (2021) to about 4,400 (2023) with local cumulative build cost flat at over 3 days/day, and had 7,000+ modules in 2026. Cost containment is documented only for 2021 to 2023. _(Square / Block · 2019-11-25; 2021-11-04; 2023-01-31; 2026-04-14 · high)_
+  - <https://speakerdeck.com/vrallev/android-at-scale-at-square>
+  - <https://developer.squareup.com/blog/herding-elephants/>
+  - <https://developer.squareup.com/blog/stampeding-elephants/>
+  - <https://engineering.block.xyz/blog/metro-migration-at-square-android>
+- **BP-10** — Focus-style partial sync (load only the target module and its dependency closure) is the largest IDE-sync lever reported in 600-2,000-module Android repos. Grab says it 'can cut the number of loaded modules by 50% or more'. Grab describes interface/impl separation as shrinking that closure but gives no number for it. _(Grab; Dropbox · 2026-05-15; 2022-03-29 · high)_
+  - <https://engineering.grab.com/how-we-improved-android-studio-in-large-monorepo>
+  - <https://dropbox.tech/mobile/introducing-focus-a-new-open-source-gradle-plugin>
+  - <https://github.com/dropbox/focus>
+- **BP-11** — Configuration cache has been Gradle's preferred mode since 9.0 and runs tasks in parallel even within one project. Gradle's Aug 2026 blog moved the default-on target to Gradle 11, while the 9.8.0 docs still say Gradle 10. _(Gradle; JetBrains; Inaki Villar · docs 9.8.0; 2026-08-19; 2024-11-17 · high)_
+  - <https://docs.gradle.org/current/userguide/configuration_cache.html>
+  - <https://blog.gradle.org/gradle-is-going-agentic>
+  - <https://kotlinlang.org/docs/native-improving-compilation-time.html>
+  - <https://dev.to/cdsap/gradle-811-faster-configuration-cache-and-improved-configuration-time-ja1>
+- **BP-12** — Isolated Projects (parallel configuration, cached per project) moved from experimental to incubating in Gradle 9.7.0 (2026-08-06). Gradle reports 1.3x-3.6x speedups in configuration and sync on builds of 300-5,000+ projects; only the configuration phase gets faster. _(Gradle · 2026-07-22 / 2026-08-06; docs 9.8.0 · high)_
+  - <https://blog.gradle.org/introducing-isolated-projects>
+  - <https://docs.gradle.org/9.7.0/release-notes.html>
+  - <https://docs.gradle.org/current/userguide/isolated_projects.html>
+  - <https://blog.gradle.org/isolated-projects-in-gradle-team>
+- **BP-13** — Kotlin 2.1.20 made KGP support Isolated Projects for KMP, JVM-only and Android-only projects, except JS and Wasm targets. No primary source found gives newer per-version KMP/AGP compatibility status. _(JetBrains; community tracker · 2025-03 (2.1.20); tracker based on Gradle 9.3.0 / AGP 9.1.0 · medium)_
+  - <https://kotlinlang.org/docs/whatsnew2120.html>
+  - <https://agp-status.frybits.com/gradle-isolated-projects/>
+  - <https://agp-status.frybits.com/>
+- **BP-14** — Kotlin/Native links everything into one umbrella framework. Splitting modules speeds up per-module klib compilation and caching but leaves the final link monolithic, and Swift Export does not change that. _(JetBrains; Touchlab · 2026-03-12 docs; 2026-06-12 · high)_
+  - <https://kotlinlang.org/docs/multiplatform/multiplatform-project-configuration.html>
+  - <https://touchlab.co/the-future-of-kmps-ios-interop>
+- **BP-15** — Incremental compilation of klib artifacts (klib to native binary) is Beta in Kotlin 2.4.20 (2026-09-07). In one KMP app it cut an iOS simulator debug link by about 28%. _(JetBrains; John O'Reilly (Confetti) · 2026-09 · high)_
+  - <https://kotlinlang.org/docs/whatsnew2420.html>
+  - <https://kotlinlang.org/docs/native-improving-compilation-time.html>
+  - <https://github.com/joreilly/Confetti/pull/1925>
+- **BP-16** — JetBrains' Kotlin/Native compile-time guidance: build only the target and arch you need, use debug link tasks, avoid transitiveExport, preserve ~/.konan, remove the legacy disableCompilerDaemon and disableNativeCache workarounds, and enable build cache, configuration cache and kotlin.incremental.native. The docs recommend Kotlin 2.4.20+. _(JetBrains; Touchlab · 2024-04 to 2026-09 · high)_
+  - <https://kotlinlang.org/docs/native-improving-compilation-time.html>
+  - <https://touchlab.co/touchlab-build-only-what-you-need>
+  - <https://kotlinlang.org/docs/whatsnew23.html>
+  - <https://kotlinlang.org/docs/whatsnew24.html>
+- **BP-17** — In KMP each declared target adds a compilation per module, and build/assemble compile the same code once per target. Target count is therefore a per-module cost that small modules pay in full. _(JetBrains; Touchlab; R. Sicarelli · 2026-08-19 docs; 2023-10-04; 2025-11-02 · medium)_
+  - <https://kotlinlang.org/docs/gradle-best-practices.html>
+  - <https://touchlab.co/optimizing-gradle-builds-in-Multi-module-projects>
+  - <https://dev.to/rsicarelli/the-hidden-cost-of-default-hierarchy-templates-in-kotlin-multiplatform-256a>
+- **BP-18** — iosX64 has been a Tier 3 target since Kotlin 2.3.0 and, as of 2026-08-19, is still not deprecated or removed. macosX64, tvosX64 and watchosX64 have been deprecated since 2.3.20. The 2.3.0 plan to remove x86_64 Apple targets in 2.4.0 did not happen for iosX64. _(JetBrains · 2025-12-16; page 2026-08-19 · high)_
+  - <https://kotlinlang.org/docs/whatsnew23.html>
+  - <https://kotlinlang.org/docs/whatsnew24.html>
+  - <https://kotlinlang.org/docs/native-target-support.html>
+- **BP-19** — The Android-KMP library plugin (com.android.kotlin.multiplatform.library) is single-variant and turns off tests, Java compilation and Android resources by default for build speed. Using com.android.library for KMP needs opt-in on AGP 9.0+ and is expected to be removed in AGP 10.0 (second half of 2026). _(Google · 2026-09 · high)_
+  - <https://developer.android.com/kotlin/multiplatform/plugin>
+  - <https://developer.android.com/build/releases/agp-9-4-0-release-notes>
+- **BP-20** — Official Android and Kotlin guidance treats over-modularization as a real cost without giving a numeric threshold: every module adds overhead, and teams should consolidate when it outweighs the gains. _(Google; JetBrains · current docs · high)_
+  - <https://developer.android.com/topic/modularization>
+  - <https://kotlinlang.org/docs/gradle-best-practices.html>
+  - <https://developer.android.com/build/optimize-your-build>
+- **BP-21** — How much modularization gains from the build cache depends on deterministic, relocatable task inputs. DuckDuckGo (160 modules) cut builds by 19%-93% by fixing cache misses, not by restructuring modules. _(DuckDuckGo / Develocity · 2026-05-12 · high)_
+  - <https://develocity.ai/blog/duckduckgo-build-cache-optimization/>
+- **BP-22** — Toast's 61% build-time cut (68 -> 27 min, 300+ modules) came from quick wins such as hardware, gradle.properties, heap and CI changes. Modularization was named only as the next phase. _(Toast / Develocity · 2025-03-26 · high)_
+  - <https://develocity.ai/blog/android-builds-quick-wins-enhance-developer-productivity-develocity/>
+- **BP-23** — Meta, which historically relied on 'small modules' for fast builds, found that incremental Kotlin compilation via the Build Tools API with classpath snapshots matters most once modules grow large. _(Meta · 2025-08-26 · high)_
+  - <https://engineering.fb.com/2025/08/26/open-source/enabling-kotlin-incremental-compilation-on-buck2/>
+- **BP-24** — KGP uses the Kotlin Build Tools API by default for Kotlin/JVM compilation, where BTA is Beta. Kotlin 2.4.20 adds experimental BTA support for JS, Wasm and metadata compilation, and JetBrains plans to make it the default for those in 2.5.0. _(JetBrains · BTA page 2026-08-25; 2.4.20 2026-09-07 · high)_
+  - <https://kotlinlang.org/docs/build-tools-api.html>
+  - <https://kotlinlang.org/docs/whatsnew2420.html>
+  - <https://kotlinlang.org/docs/whatsnew24.html>
+- **BP-25** — On JetBrains' 2024 benchmarks, K2 (Kotlin 2.0) roughly halved clean compile time. That lowers the payoff of splitting modules purely for compile speed. _(JetBrains · 2024-04 · high)_
+  - <https://blog.jetbrains.com/kotlin/2024/04/k2-compiler-performance-benchmarks-and-how-to-measure-them-on-your-projects/>
+- **BP-26** — Annotation processing is the biggest per-module compile multiplier. Uber measured kapt adding about 95% over pure Kotlin, and Sweers called kapt 'highly susceptible to classpath changes', recommending api/impl splits to protect it. _(Uber; Zac Sweers · 2019-04-30; 2021-07-23 · medium)_
+  - <https://www.uber.com/us/en/blog/measuring-kotlin-build-performance/>
+  - <https://www.zacsweers.dev/optimizing-your-kotlin-build/>
+- **BP-27** — Tony Robalik's Dependency Analysis Gradle Plugin finds which dependencies leak into a module's ABI (so must be api) and which are implementation-only. It is the tooling basis for keeping api surfaces thin. _(Tony Robalik · 2020-08-27 · medium)_
+  - <https://dev.to/autonomousapps/dependency-analysis-gradle-plugin-what-s-an-abi-3l2h>
+- **BP-28** — Declarative Gradle is still experimental (EAP3, 'not ready for production use') and makes no performance claims. Gradle reaffirmed it in Aug 2026, and a Kotlin-ecosystem declarative plugin was shown at KotlinConf 2026. _(Gradle · 2025-04-15; 2026-05 to 2026-08 · medium)_
+  - <https://declarative.gradle.org/>
+  - <https://blog.gradle.org/declarative-gradle-april-2025-update>
+  - <https://plugins.gradle.org/plugin/org.gradle.experimental.kmp-ecosystem>
+  - <https://newsletter.gradle.org/2026/07>
+- **BP-29** — Configuration-on-demand is still incubating in Gradle 9.8 and works reliably only for fully decoupled builds. Its docs do not describe how it interacts with configuration cache or Isolated Projects. _(Gradle · docs 9.8.0 · medium)_
+  - <https://docs.gradle.org/current/userguide/configuration_on_demand.html>
+  - <https://developer.squareup.com/blog/stampeding-elephants/>
+- **BP-30** — Gradle 9.8.0 (2026-09-24) lets plugin authors declare Isolated Projects compatibility on the Plugin Portal, so third-party plugin readiness becomes checkable. _(Gradle · 2026-09-24 · high)_
+  - <https://docs.gradle.org/9.8.0/release-notes.html>
+- **BP-31** — With configuration cache on, loading a CC entry is always parallel, but parallel storing (org.gradle.configuration-cache.parallel) is still incubating and gives less than its full benefit unless --parallel is enabled. _(Gradle · docs 9.8.0 · high)_
+  - <https://docs.gradle.org/current/userguide/configuration_cache_enabling.html>
+  - <https://docs.gradle.org/current/userguide/configuration_cache.html>
+- **BP-32** — KGP has experimental built-in ABI validation that dumps JVM and klib ABIs. Running it on api modules in CI makes ABI churn visible in review. In current docs the tasks are checkKotlinAbi and updateKotlinAbi. _(JetBrains · 2025-06-23; docs 2026-04-28 · high)_
+  - <https://kotlinlang.org/docs/whatsnew22.html>
+  - <https://kotlinlang.org/docs/gradle-binary-compatibility-validation.html>
+- **BP-33** — Compose Multiplatform generates an internal Res class by default and generates it only for projects that explicitly depend on the resource library. Making Res public and exporting it widens every consumer's ABI surface. _(JetBrains · docs 2026-09-02 · high)_
+  - <https://kotlinlang.org/docs/multiplatform/compose-multiplatform-resources-usage.html>
+- **BP-34** — Under Isolated Projects a project may read only immutable data of other projects (name, path, projectDir, buildFile, rootDir) and navigate the hierarchy. group and version are forbidden because they are mutable, and project.isolated provides a safe read-only view. _(Gradle · docs 9.8.0 · high)_
+  - <https://docs.gradle.org/current/userguide/isolated_projects.html>
+- **BP-35** — Kotlin/Native can cache release binaries so release links stop running as full-program LTO every time, at some runtime-performance cost. Both required properties are now on the official compile-time page. _(JetBrains · 2026-09-03 · medium)_
+  - <https://kotlinlang.org/docs/native-improving-compilation-time.html>
+- **BP-36** — The Gradle issue asking whether Isolated Projects was abandoned (#36940, March 2026) was closed against milestone 9.7.0, the release that promoted IP to incubating. _(Gradle · 2026-03-04 -> 9.7.0 (2026-08-06) · medium)_
+  - <https://github.com/gradle/gradle/issues/36940>
+  - <https://docs.gradle.org/9.7.0/release-notes.html>
+
+**Não verificado / refutado:**
+
+- No finding was refuted outright. The corrections are recorded in the partially-verified findings: BP-02 quote wording, BP-06 column mix-up, BP-09 cost-containment scope, BP-10 misattributed Grab 50%, BP-11 Gradle 10 vs 11 default, BP-13 stale tracker, BP-16 wrong legacy property name.
+- Airbnb, Spotify and LinkedIn modularization build numbers for 2025-2026: not searched. The WebSearch budget (200 calls per session) ran out during this check, so later checks relied on direct fetches of known URLs only.
+- Square '400 to 3,800 modules' with builds 'from several minutes to seconds', and a '10X' sync reduction from development apps: search snippets only, no primary transcript.
+- Kotlin/Native release binary cache timing numbers ('~10 min first build / ~2.3 min subsequent'): the property names are now verified on the official page (BP-35), but no primary source for the timings was found.
+- Whether KGP 2.3/2.4 applies ABI-based compile avoidance or IC to Kotlin/Native source-to-klib compilation, and whether BTA metadata compilation (2.4.20, experimental) brings classpath-snapshot IC to commonMain metadata.
+- AGP 9.x compatibility with Isolated Projects: no Google primary source with versions. Gradle's blog only says the Android and Kotlin plugins are compatible through collaboration. The frybits tracker is stale (Gradle 9.3.0 / AGP 9.1.0). KT-80311 (KMP JS/Wasm under IP) could not be fetched, so its status is unknown.
+- Whether `rootProject.file(...)` from a subproject is flagged under Isolated Projects. projectDir and rootDir are explicitly allowed, and file() is not listed.
+- The existence and semantics of the `org.gradle.tooling.parallel` property used in this repo's gradle.properties: not verified against Gradle docs.
+- The Plugin Portal ID `org.gradle.experimental.kmp-library` was not checked; only `org.gradle.experimental.kmp-ecosystem` 0.1.62 was verified.
+- Pocket Casts '3x faster Android builds' and '3 to 14 max parallel module compilation': secondary or marketing snippets only.
+- Andrei Beriukhov's 'Kotlin Multiplatform Scalability Challenges on a Large Project' (1000+ modules): HTTP 403, not used.
+- A Google Docs '25% Kotlin/Native speed improvement' and a '40 s -> 14 s shared module' claim: search-summary text only.
+- Per-module task counts and actual timings for this repo: Gradle was not run. The target-overhead and metadata-compilation claims for this repo are inferred from the convention plugin.
+- The deeplink:api content breakdown (UI models, DeepLinkFormatting.kt, routes) comes from the earlier study notes and was not re-inspected in this check.
+
+## 3. DI em KMP modular
+
+- **DI-01** — Metro reached 1.0.0 stable on 2026-04-27, and the latest release is 1.4.5 (2026-09-24). 1.0 made the runtime, MetroX artifacts and Gradle plugin API-stable, except APIs marked experimental. _(Metro (Zac Sweers) · 2026-04-27 (1.0.0); 2026-09-24 (1.4.5) · high)_
+  - <https://www.zacsweers.dev/metro-is-stable/>
+  - <https://api.github.com/repos/ZacSweers/metro/releases>
+  - <https://github.com/ZacSweers/metro/blob/main/CHANGELOG.md>
+  - <https://zacsweers.github.io/metro/latest/stability/>
+- **DI-02** — Metro's CI tests Kotlin 2.3.0 through 2.5.0-dev. Multi-module aggregation works from Kotlin 2.3.0 on JVM but needs 2.3.20+ on Android, Apple, Wasm, Linux, Windows and Android Native, and 2.3.21+ on JS. Metro recommends 2.3.20+ everywhere because 2.3.0 and 2.3.10 have KLIB annotation defects. _(Metro · docs as of 2026-09 · high)_
+  - <https://raw.githubusercontent.com/ZacSweers/metro/main/docs/multiplatform.md>
+  - <https://zacsweers.github.io/metro/latest/compatibility/>
+  - <https://raw.githubusercontent.com/ZacSweers/metro/main/gradle/libs.versions.toml>
+- **DI-03** — Metro has Anvil-style aggregation built in. Feature modules contribute to a scope key (@ContributesTo, @ContributesBinding, @ContributesIntoSet, @ContributesIntoMap), and the @DependencyGraph(scope) merges them without a central module list and without intermediate merged components. _(Metro · docs as of 2026-09 · high)_
+  - <https://zacsweers.github.io/metro/latest/aggregation/>
+  - <https://github.com/ZacSweers/metro/blob/main/CHANGELOG.md>
+  - <https://zacsweers.github.io/metro/latest/interop/>
+- **DI-04** — Metro deliberately does not aggregate contributions from transitive dependencies. The module that owns the graph must depend directly on every contributing module, or receive them through Gradle `api`. _(Metro · docs as of 2026-09 · high)_
+  - <https://raw.githubusercontent.com/ZacSweers/metro/main/docs/faq.md>
+  - <https://zacsweers.github.io/metro/latest/dependency-graphs/>
+- **DI-05** — Metro follows Kotlin visibility, so `internal` contributed classes don't work across modules by default. The `generateContributionProviders` option, promoted to stable in Metro 1.2.0 (2026-06-10), lets impl classes stay internal. _(Metro · 1.2.0, 2026-06-10 · high)_
+  - <https://raw.githubusercontent.com/ZacSweers/metro/main/docs/faq.md>
+  - <https://zacsweers.github.io/metro/latest/aggregation/>
+  - <https://github.com/ZacSweers/metro/blob/main/CHANGELOG.md>
+- **DI-06** — Metro models scope hierarchies (App, then LoggedIn/User, then narrower scopes) as @GraphExtension. A feature module can contribute its extension factory to the parent scope, the root generates it, and scope mismatches are compile errors. _(Metro; Slack (2021 prior art) · docs as of 2026-09; Slack 2021-07-20 · high)_
+  - <https://zacsweers.github.io/metro/latest/dependency-graphs/>
+  - <https://raw.githubusercontent.com/ZacSweers/metro/main/docs/scopes.md>
+  - <https://slack.engineering/extending-anvil-for-fun-and-profit/>
+- **DI-07** — In KMP, the final @DependencyGraph has to live in each platform source set. The recommended pattern is an unannotated canonical graph interface in commonMain that each platform graph extends. _(Metro · docs as of 2026-09 · high)_
+  - <https://raw.githubusercontent.com/ZacSweers/metro/main/docs/multiplatform.md>
+- **DI-08** — JetBrains' KotlinConf app (CMP on Android, iOS, desktop and web) uses Metro 1.4.0 with a common AppGraph interface, per-platform @DependencyGraph(AppScope), a contributed GraphExtension and MetroX ViewModel. The app itself is small, with its graph in a single `app/shared` module. _(JetBrains (KotlinConf app) · repo main, pushed 2026-09-23 · high)_
+  - <https://github.com/JetBrains/kotlinconf-app/blob/main/app/shared/src/commonMain/kotlin/org/jetbrains/kotlinconf/di/AppGraph.kt>
+  - <https://github.com/JetBrains/kotlinconf-app/blob/main/app/shared/src/iosMain/kotlin/org/jetbrains/kotlinconf/di/IosAppGraph.kt>
+  - <https://github.com/JetBrains/kotlinconf-app/blob/main/app/shared/src/iosMain/kotlin/org/jetbrains/kotlinconf/di/IosBindings.kt>
+  - <https://github.com/JetBrains/kotlinconf-app/blob/main/app/shared/src/commonMain/kotlin/org/jetbrains/kotlinconf/di/YearGraph.kt>
+- **DI-09** — In the KotlinConf app and community Metro KMP examples, Swift never walks the DI graph. iosMain builds the graph privately and exposes a few top-level façade functions that Swift calls. Metro's docs have no Swift or iOS consumer guidance. _(JetBrains; FunkyMuse (community); Metro · 2026 · medium)_
+  - <https://github.com/JetBrains/kotlinconf-app/blob/main/app/shared/src/iosMain/kotlin/org/jetbrains/kotlinconf/main.ios.kt>
+  - <https://funkymuse.dev/posts/metro-di-kmp-mobile/>
+  - <https://github.com/ZacSweers/metro/blob/main/CHANGELOG.md>
+  - <https://zacsweers.github.io/metro/latest/performance/>
+- **DI-10** — MetroX ViewModel is a KMP artifact built on JetBrains lifecycle-viewmodel-compose. ViewModels are contributed through a map multibinding and fetched with metroViewModel(), but the app must also contribute its own MetroViewModelFactory subclass. _(Metro (MetroX) · 2026 · high)_
+  - <https://github.com/ZacSweers/metro/blob/main/metrox-viewmodel/README.md>
+  - <https://github.com/ZacSweers/metro/blob/main/metrox-viewmodel-compose/README.md>
+  - <https://github.com/ZacSweers/metro/blob/main/metrox-viewmodel-compose/build.gradle.kts>
+- **DI-11** — Metro offers two ways to override bindings in tests: dynamic graphs (createDynamicGraph with fake binding containers) and graph-level `excludes`. Square used `excludes` so fake modules never depend on :impl-real. _(Metro; Square/Block · 2026-04-14 (Square) · high)_
+  - <https://zacsweers.github.io/metro/latest/dependency-graphs/>
+  - <https://raw.githubusercontent.com/ZacSweers/metro/main/docs/faq.md>
+  - <https://engineering.block.xyz/blog/metro-migration-at-square-android>
+- **DI-12** — Square Android moved more than 7,000 Gradle modules from Dagger 2 + Anvil to Metro over about nine months, starting July 2025. It kept Dagger 2 working through Metro interop and a build-time flag while migrating incrementally. _(Square / Block · 2026-04-14 · high)_
+  - <https://engineering.block.xyz/blog/metro-migration-at-square-android>
+  - <https://github.com/square/anvil/issues/1149>
+- **DI-13** — Cash App Android (about 1,500 modules, stuck on languageVersion 1.9 because of Anvil) moved to Metro with a dual-build Gradle property. Its measured gains, about 59% on incremental builds and 16.7% on raw compilation, came from Metro and K2 together. _(Cash App · 2025-11-18 · high)_
+  - <https://code.cash.app/cash-android-moves-to-metro>
+  - <https://zacsweers.github.io/metro/latest/performance/>
+- **DI-14** — Vinted migrated a 14-year-old codebase of a few hundred modules from Dagger + dagger.android + Anvil to Metro in one pass without interop, while still on Metro 0.x. CI build times dropped 6-26%. _(Vinted · 2026-02-12 · high)_
+  - <https://vinted.engineering/2026/02/12/from-dagger-to-metro/>
+- **DI-15** — Self-reported Metro migrations hosted in Metro's docs include Freeletics (551 modules), BandLab (929 modules) and emulator.wtf. _(Freeletics, BandLab, emulator.wtf (via Metro docs) · 2025-2026 · medium)_
+  - <https://zacsweers.github.io/metro/latest/performance/>
+- **DI-16** — Metro's author-run benchmark (2026-07-30) puts Metro and the Koin compiler plugin at near build-time parity, with Dagger KSP about 4x slower on ABI changes. At runtime, Koin graph creation is about 30-233x slower than Metro. _(Metro (author-run benchmark) · 2026-07-30 · medium)_
+  - <https://zacsweers.github.io/metro/latest/performance/>
+  - <https://raw.githubusercontent.com/ZacSweers/metro/main/docs/performance.md>
+- **DI-17** — Square deprecated Anvil on 2025-07-18 (issue #1149) and endorsed Metro. K2 work stopped, and only fixes for K1 (languageVersion 1.9) continue. _(Square · 2025-07-18 · high)_
+  - <https://github.com/square/anvil/issues/1149>
+  - <https://github.com/square/anvil>
+  - <https://raw.githubusercontent.com/ZacSweers/metro/main/docs/adoption.md>
+  - <https://slackhq.github.io/circuit/code-gen/>
+- **DI-18** — kotlin-inject-anvil is in maintenance mode and no longer owned by Amazon, and its author says 'We moved our projects from kotlin-inject-(anvil) to Metro'. kotlin-inject itself releases rarely. _(vRallev (ex-Amazon); evant · 2026-01 releases; README 2026 · high)_
+  - <https://raw.githubusercontent.com/amzn/kotlin-inject-anvil/main/README.md>
+  - <https://api.github.com/repos/amzn/kotlin-inject-anvil/releases>
+  - <https://api.github.com/repos/evant/kotlin-inject/releases>
+- **DI-19** — App Platform (vRallev/app-platform 0.2.2, 2026-09-25, originally Amazon) recommends Metro by default and keeps kotlin-inject-anvil as the alternative. It pairs DI with an enforced :public/:impl/:internal/:testing/:*-robots/:app module structure. _(App Platform (Ralf Wondratschek, ex-Amazon) · 0.2.2, 2026-09-25 · high)_
+  - <https://vrallev.github.io/app-platform/di/>
+  - <https://vrallev.github.io/app-platform/module-structure/>
+  - <https://github.com/vRallev/app-platform>
+- **DI-20** — Square extends Metro with its own contribution annotations, including feature flags, Retrofit services, test robots and development-app graphs, through a compiler plugin built on Metro's experimental extension API. The repo is a reference and is not meant for external use. _(Square · 2026 · high)_
+  - <https://github.com/square/metro-extensions>
+  - <https://zacsweers.github.io/metro/latest/generating-metro-code/>
+- **DI-21** — The Koin Compiler Plugin is a native K2 plugin (1.0.0 on 2026-05-20, latest 1.2.1 on 2026-09-10) that replaces the deprecated KSP processor. It adds constructor auto-wiring in the DSL and cross-module @Configuration discovery through startKoin<T>(), which removes manual module lists. _(Koin (Kotzilla) · 1.0.0 2026-05-20; 1.2.1 2026-09-10 · high)_
+  - <https://github.com/InsertKoinIO/koin-compiler-plugin>
+  - <https://github.com/InsertKoinIO/koin-compiler-plugin/releases>
+  - <https://insert-koin.io/docs/intro/koin-compiler-plugin/>
+  - <https://github.com/InsertKoinIO/koin-compiler-plugin/blob/main/docs/CASE_STUDY_NOW_IN_ANDROID.md>
+- **DI-22** — Koin's compile-time safety validates the whole graph where it is assembled (startKoin, koinApplication or @KoinApplication). It checks missing definitions, qualifiers, wrong-scope access and cycles, but skips List<T>, nullable, default-valued, @InjectedParam, @Property and @Provided types, and the container still resolves at runtime. _(Koin · 2026 · high)_
+  - <https://insert-koin.io/docs/reference/koin-compiler/compile-safety/>
+  - <https://github.com/InsertKoinIO/koin-compiler-plugin/releases/tag/1.1.0>
+  - <https://github.com/InsertKoinIO/koin-compiler-plugin/blob/main/docs/ARCHITECTURE.md>
+  - <https://zacsweers.github.io/metro/latest/performance/>
+- **DI-23** — The Koin compiler plugin is still maturing on non-JVM targets. Recent releases fixed iOS/Native and JS/Wasm KLIB build breakages, and annotation-based Wasm/JS needs Kotlin 2.4.0. _(Koin · 2026-07 to 2026-09 · medium)_
+  - <https://github.com/InsertKoinIO/koin-compiler-plugin/releases>
+  - <https://github.com/InsertKoinIO/koin-compiler-plugin>
+  - <https://github.com/InsertKoinIO/koin-compiler-plugin/blob/main/docs/ROADMAP.md>
+- **DI-24** — Koin 4.2.0 (2026-03-17, Kotlin 2.3.20) added Navigation 3 entry providers, Nav2 navigation scopes, lazy modules, strictOverride, a Dagger bridge and Core Resolver V2. It also stopped sorting getAll() results. The latest release is 4.2.2 (2026-06-15). _(Koin · 2026-03-17 · high)_
+  - <https://github.com/InsertKoinIO/koin/releases/tag/4.2.0>
+  - <https://repo1.maven.org/maven2/io/insert-koin/koin-core/maven-metadata.xml>
+- **DI-25** — Without the compiler plugin, Koin's only graph check is the JVM-only `Module.verify()` test API, which replaced `checkModules()` (deprecated since 4.0). Koin's docs now point to the compiler plugin as the modern replacement. _(Koin · Koin 4.x docs · high)_
+  - <https://insert-koin.io/docs/reference/koin-test/verify/>
+- **DI-26** — Koin handles user and session scopes and iOS access at runtime. Named scopes are created and closed by id, and Swift calls KoinComponent helper classes. Registering Swift-implemented services needs a helper that the docs tell you to write yourself; Koin does not ship it. _(Koin · Koin 4.x docs · medium)_
+  - <https://insert-koin.io/docs/reference/koin-core/scopes/>
+  - <https://insert-koin.io/docs/reference/koin-mp/kmp/>
+- **DI-27** — Dagger and Hilt are still JVM-only. KMP remains on the Dagger roadmap with no date. The latest maintainer update (2026-08-11) says work stalled on the KSP2 switch and KSP performance but that the team is 'in a position to get back to this soon'. _(Google Dagger team · 2025-04-23 and 2026-08-11 comments; releases to 2026-07-06 · medium)_
+  - <https://github.com/google/dagger/issues/3916>
+  - <https://github.com/google/dagger/issues/4834>
+  - <https://api.github.com/repos/google/dagger/releases>
+  - <https://api.github.com/repos/google/dagger/contributors>
+- **DI-28** — Metro has interop and adoption paths for Dagger, Anvil, Hilt, kotlin-inject and Guice but none for Koin. Its author calls koinInject-style leaf lookups, and CompositionLocal-held graphs, service locators that Metro is not designed for. _(Metro · 2026-03-20 · high)_
+  - <https://zacsweers.github.io/metro/latest/interop/>
+  - <https://raw.githubusercontent.com/ZacSweers/metro/main/docs/adoption.md>
+  - <https://github.com/ZacSweers/metro/discussions/2023>
+- **DI-29** — KSP-based DI codegen in KMP must be configured per target. Circuit's KSP codegen supports a Metro mode, and Metro also ships its own built-in Circuit codegen that needs no KSP (see DI-36). _(Slack Circuit; Metro · 2026 · high)_
+  - <https://slackhq.github.io/circuit/code-gen/>
+  - <https://raw.githubusercontent.com/slackhq/circuit/main/docs/docs/code-gen.md>
+  - <https://github.com/ZacSweers/metro>
+- **DI-30** — Metro doesn't guarantee that generated code works with a Metro runtime version other than the one it was compiled against. Multi-repo enterprises should keep one Metro version across all prebuilt artifacts. _(Metro · 2026 · high)_
+  - <https://zacsweers.github.io/metro/latest/stability/>
+  - <https://www.zacsweers.dev/metro-is-stable/>
+  - <https://raw.githubusercontent.com/ZacSweers/metro/main/docs/graph-analysis.md>
+- **DI-31** — Community Metro KMP guides use @ContributesIntoSet multibindings as self-registration extension points (app initializers, nav-graph registrars) and make ordering an explicit field instead of relying on set order. _(Community (FunkyMuse, KMP Bits) · 2026-05 · medium)_
+  - <https://funkymuse.dev/posts/metro-di-kmp-mobile/>
+  - <https://www.kmpbits.com/posts/drop-the-clutch/>
+- **DI-32** — Metro main adds an opt-in Gradle check, `checkMainMetroHiddenDependencies`, that fails when a graph misses contributions hidden behind upstream `implementation` dependencies. As of 1.4.5 it is listed under 'Unreleased' and covers JVM and Android only. _(Metro · Unreleased as of 2026-09-27 (after 1.4.5) · high)_
+  - <https://raw.githubusercontent.com/ZacSweers/metro/main/docs/aggregation.md>
+  - <https://github.com/ZacSweers/metro/blob/main/CHANGELOG.md>
+- **DI-33** — Since Koin compiler 1.1.0, leaf or library modules with no Koin entry point in their own compilation get no compile-safety diagnostics, so feature modules are checked only when an app, test or demo module assembles them. Since 1.2.0, plain `startKoin { modules(list) }` compositions are validated too. _(Koin · 2026-07-29 (1.1.0); 2026-09-09 (1.2.0) · high)_
+  - <https://github.com/InsertKoinIO/koin-compiler-plugin/releases/tag/1.1.0>
+  - <https://github.com/InsertKoinIO/koin-compiler-plugin/releases/tag/1.2.0>
+- **DI-34** — Dagger's KSP backend is documented as stable as of Dagger 2.60+ with KSP 2.3.9+. This matters for Android-only teams, but Dagger is still not a KMP option. _(Google Dagger team · 2026-09-10 · medium)_
+  - <https://github.com/google/dagger/commit/099c3c8f40>
+  - <https://github.com/google/dagger/issues/3916>
+  - <https://api.github.com/repos/google/dagger/releases>
+- **DI-35** — Square's Gradle module structure forbids implementation modules from depending on other implementation modules, using :public, :impl-real and :impl-fake. That rule is why test graphs use `excludes` instead of `replaces`. _(Square / Block; App Platform · 2026-04-14 · high)_
+  - <https://engineering.block.xyz/blog/metro-migration-at-square-android>
+  - <https://vrallev.github.io/app-platform/module-structure/>
+- **DI-36** — Metro has built-in Circuit code generation (`enableCircuitCodegen`), run inside its compiler plugin without KSP. It needs Kotlin 2.3.20+, and must never run alongside Circuit's KSP generator for the same declarations. _(Metro · docs as of 2026-09 · high)_
+  - <https://raw.githubusercontent.com/ZacSweers/metro/main/docs/circuit.md>
+- **DI-37** — For very large graphs, Metro offers two opt-in scaling knobs. `@MergeContributionsInIr` (a @DelicateMetroApi) and `merged-supertype-chunk-size` work around the JVM's 65535-byte class-signature limit, but the first hides contributed interfaces from ObjC export and from the IDE. _(Metro · docs as of 2026-09 · high)_
+  - <https://raw.githubusercontent.com/ZacSweers/metro/main/docs/performance.md>
+- **DI-38** — Kotlin's Compose compiler plugin ships with Kotlin itself, and JetBrains states that the latest Compose Multiplatform always works with the latest Kotlin. The KotlinConf app runs CMP 1.11.1 with Kotlin 2.4.10 and Metro 1.4.0, which supports the path of bumping Kotlin for Metro or the Koin plugin. _(JetBrains · 2026-09 · medium)_
+  - <https://kotlinlang.org/docs/multiplatform/compose-compatibility-and-versioning.html>
+  - <https://github.com/JetBrains/kotlinconf-app/blob/main/gradle/libs.versions.toml>
+- **DI-39** — App Platform's module tooling goes further than the dependency rule. It can auto-add all :impl dependencies to app modules, checks nesting, lets assembly modules opt out of dependency checks, and uses suffixed :impl-<variant> names for multiple implementations. _(App Platform · 0.2.x, 2026-09 · high)_
+  - <https://vrallev.github.io/app-platform/module-structure/>
+  - <https://vrallev.github.io/app-platform/di/>
+
+**Não verificado / refutado:**
+
+- Refutation summary: none of the 31 original findings were refuted. DI-14 (the 'two months' duration), DI-26 (declareFromSwift is user-written, not a Koin API) and DI-27 (a newer 2026-08-11 Dagger update exists) were corrected as partial, and DI-02 and DI-12 got wording fixes.
+- Square's '21%-47% production app' figure: the raw Block page was re-grepped on 2026-09-27 and neither string appears. Only the 5%-56% range and the more than 4,800 CI hours per week (at an assumed 10% average) are verified.
+- The Koin blog post 'Koin Compiler 1.0: DSL and Annotations, Now Compile-Safe' (June 2026): its URL wasn't found (the blog root returns 200, but the guessed URL gave 404). Only docs, README and release notes were used.
+- CMP 1.10.3 against Kotlin 2.3.20 or 2.4.x specifically: no explicit JetBrains compatibility table was found. Only the general statement 'latest CMP is always compatible with the latest Kotlin' and KotlinConf's CMP 1.11.1 + Kotlin 2.4.10 were found (DI-38). SQLDelight, AGP and other plugin compatibility with the bump was not checked.
+- Whether a KotlinConf 2026 or other conference talk on Metro with slides or a transcript exists: none found.
+- Independent (non-author) benchmarks comparing Metro and the Koin compiler plugin on real KMP/iOS builds, including Kotlin/Native link time: none found.
+- A practical incremental bridge from Koin to Metro (for example, registering Metro graph accessors into Koin during migration): this is an inference only, with no documented tooling.
+- Koin compiler plugin validation of scope hierarchies in KMP (Nav3 navigation scopes, linked scopes): the docs list 'Scoped dependency from wrong scope — ERROR' but give no detail for linked or navigation scopes.
+- Whether Amazon internally still uses App Platform or kotlin-inject-anvil: only the ownership transfer and the 'we moved our projects... to Metro' statement are documented.
+- Whether the Koin 1.2.x list resolver treats this repo's `modules(appModule /* function param */, platformModule /* expect val */, ...)` as resolvable or incomplete: this is my inference and wasn't tested by building.
+- Timing of the Metro `checkMainMetroHiddenDependencies` release: it is in main docs and under 'Unreleased' in the CHANGELOG, and no release version is known.
+
+## 4. Navegação entre features
+
+- **NAV-01** — Jetpack Navigation 3 1.0.0 went stable on 2025-11-19. Google's announcement says 'Go ahead and use it in your production apps today.' It says Nav2 was 'designed 7 years ago' and that Nav2 users 'should consider migrating to Nav3'. It mentions 'a cross-platform version from JetBrains' and says 'We're currently working on a deeplinks recipe'. _(Google / AndroidX · 2025-11-19 · high)_
+  - <https://android-developers.googleblog.com/2025/11/jetpack-navigation-3-is-stable.html>
+  - <https://developer.android.com/jetpack/androidx/releases/navigation3>
+- **NAV-02** — Navigation 3 1.1.0 (stable 2026-04-08) added a type-safe NavMetadata DSL (MetadataKey/NavMetadataKey), SceneDecoratorStrategy, shared elements between scenes, and OverlayScene.onRemoved. NavDisplay and rememberSceneState now take a List<SceneStrategy>. _(Google / AndroidX · 2026-04-08 · high)_
+  - <https://developer.android.com/jetpack/androidx/releases/navigation3>
+  - <https://developer.android.com/guide/navigation/navigation-3/metadata>
+- **NAV-03** — Navigation 3 1.2.0 (stable 2026-09-23) adds a result API (ResultEventBus, LocalResultEventBus, ResultEventBusNavEntryDecorator, rememberResultEventBus, conflateAsState, ResultEffect). It also adds a KMP deep-link API in androidx.navigation3.runtime.deeplink (DeepLinkRequest, RequestExtras, DeepLinkUri, DeepLinkMatcher, UriDeepLinkMatcher, StaticKeyDeepLinkMatcher, BackStackMatcher via withBackStack, DeepLinkSerializer), plus NavigationBackHandler and rememberNavigationEventState. _(Google / AndroidX · 2026-09-23 · high)_
+  - <https://developer.android.com/jetpack/androidx/releases/navigation3>
+  - <https://dl.google.com/android/maven2/androidx/navigation3/navigation3-runtime/1.2.0/navigation3-runtime-1.2.0-sources.jar>
+- **NAV-04** — Google publishes navigation3-runtime with KMP targets, but Google's navigation3-ui is effectively Android-only (still true at 1.2.0). On iOS, desktop and web, NavDisplay comes from JetBrains' org.jetbrains.androidx.navigation3:navigation3-ui. _(Google / JetBrains · 2025-08-27 / 2026-09-23 · high)_
+  - <https://developer.android.com/jetpack/androidx/releases/navigation3>
+  - <https://dl.google.com/android/maven2/androidx/navigation3/navigation3-ui/1.2.0/navigation3-ui-1.2.0.module>
+  - <https://dl.google.com/android/maven2/androidx/navigation3/navigation3-runtime/1.2.0/navigation3-runtime-1.2.0.module>
+- **NAV-05** — Each CMP release pins specific JetBrains Nav2 and Nav3 versions. The first stable CMP release that carries the Nav3 KMP deep-link and result APIs is 1.12.0, and it carries them at alpha (navigation3 1.2.0-alpha02, which maps to Google 1.2.0-alpha04). CMP 1.12.1 moves back to the stable 1.1.2 line (maps to Google 1.1.7). _(JetBrains · 2026-01-13 to 2026-09-22 · high)_
+  - <https://github.com/JetBrains/compose-multiplatform/releases/tag/v1.10.0>
+  - <https://github.com/JetBrains/compose-multiplatform/releases/tag/v1.11.0>
+  - <https://github.com/JetBrains/compose-multiplatform/releases/tag/v1.12.0>
+  - <https://github.com/JetBrains/compose-multiplatform/releases/tag/v1.12.1>
+- **NAV-06** — On Maven Central, JetBrains navigation3-ui first went stable at 1.1.0 (2026-04-20). The latest stable is 1.1.2 (2026-09-22), and 1.2.0-beta01 is out (2026-09-08) and tracks Google Navigation3 1.2.0-beta01. JetBrains navigation-compose (Nav2) is stable at 2.9.2 (2026-02-10) with 2.10.0-beta01 out (2026-09-08). _(JetBrains · 2026-09-22 · high)_
+  - <https://repo1.maven.org/maven2/org/jetbrains/androidx/navigation3/navigation3-ui/>
+  - <https://repo1.maven.org/maven2/org/jetbrains/androidx/navigation/navigation-compose/>
+  - <https://github.com/JetBrains/compose-multiplatform/releases/tag/v1.13.0-alpha01>
+  - <https://repo1.maven.org/maven2/org/jetbrains/compose/material3/adaptive/adaptive-navigation3/>
+- **NAV-07** — On non-JVM targets (iOS, web), CMP Nav3 requires explicit polymorphic NavKey serialization through SavedStateConfiguration. JetBrains documents three multi-module registration patterns and says DI can collect the per-module serializers. _(JetBrains · 2026-07-07 · high)_
+  - <https://kotlinlang.org/docs/multiplatform/compose-navigation-3.html>
+  - <https://developer.android.com/jetpack/androidx/releases/navigation3>
+- **NAV-08** — Google's Nav3 modularization guide says: create api and impl submodules for each feature; put NavKeys in api; put entry builders (EntryProviderScope<NavKey> extension functions) and content in impl; give entry providers to the app directly or, when there are many features, through DI multibinding (@IntoSet). Each feature defines the DeepLinkMatchers for destinations it owns, and they are collected through multibinding. _(Google · 2026-09-22 · high)_
+  - <https://developer.android.com/guide/navigation/navigation-3/modularize>
+- **NAV-09** — android/nav3-recipes has Hilt, Koin and Metro 'modular' recipes whose READMEs describe api/impl feature modules. In code, the Hilt and Koin recipes are single-Gradle-module simulations (both live in the one :app module), and Metro's lives in a separate metroapp module. They use untyped Any keys and a Navigator backed by a plain mutableStateListOf. _(Google DevRel / terrakok · 2026-09-10 · high)_
+  - <https://github.com/android/nav3-recipes>
+  - <https://github.com/android/nav3-recipes/blob/main/app/src/main/java/com/example/nav3recipes/modular/koin/ConversationModule.kt>
+  - <https://github.com/android/nav3-recipes/blob/main/app/src/main/java/com/example/nav3recipes/modular/hilt/CommonModule.kt>
+  - <https://github.com/android/nav3-recipes/blob/main/metroapp/src/main/java/com/example/nav3recipes/modular/metro/ConversationModule.kt>
+- **NAV-10** — Koin has a multiplatform Nav3 integration, io.insert-koin:koin-compose-navigation3, from Koin 4.2.0 (2026-03-17). Its navigation<T>{} DSL lets each feature's Koin module declare its own entries, and they are collected with koinEntryProvider() (common) or getEntryProvider() (Android). _(Kotzilla / Koin · 2026-06-15 · high)_
+  - <https://repo1.maven.org/maven2/io/insert-koin/koin-compose-navigation3/>
+  - <https://insert-koin.io/docs/reference/koin-compose/navigation3>
+  - <https://github.com/android/nav3-recipes/blob/main/app/src/main/java/com/example/nav3recipes/modular/koin/ConversationModule.kt>
+- **NAV-11** — Now in Android runs on Nav3 with feature :api/:impl modules. feature:settings has only :impl because Settings is not a navigation destination at all: it is a dialog toggled by a boolean in NiaApp. Entries are aggregated by direct calls, not multibinding. _(Google (NiA) · 2026-01-16 · high)_
+  - <https://github.com/android/nowinandroid/blob/main/settings.gradle.kts>
+  - <https://github.com/android/nowinandroid/blob/main/app/src/main/kotlin/com/google/samples/apps/nowinandroid/ui/NiaApp.kt>
+  - <https://github.com/android/nowinandroid/blob/main/feature/topic/api/src/main/kotlin/com/google/samples/apps/nowinandroid/feature/topic/api/navigation/TopicNavKey.kt>
+  - <https://github.com/android/nowinandroid/blob/main/feature/topic/impl/src/main/kotlin/com/google/samples/apps/nowinandroid/feature/topic/impl/navigation/TopicEntryProvider.kt>
+- **NAV-12** — In NiA, each feature :impl screen logs its own screen view with the TrackScreenViewEvent composable from core:ui, using an AnalyticsHelper from the LocalAnalyticsHelper CompositionLocal. There is no route-based lookup at the root. _(Google (NiA) · 2026 · high)_
+  - <https://github.com/android/nowinandroid/blob/main/core/ui/src/main/kotlin/com/google/samples/apps/nowinandroid/core/ui/AnalyticsExtensions.kt>
+- **NAV-13** — JetBrains' KotlinConf app is a production CMP app on JetBrains Nav3 (navigation3-ui 1.1.1, CMP 1.11.1, Kotlin 2.4.10, Koin 4.2.2, Metro 1.4.0, nav3-browser 1.1.0). All routes are one @Serializable sealed AppRoute hierarchy in :app:shared. AppRoute does not implement NavKey; back stacks are saved with rememberSerializable(SnapshotStateListSerializer()). _(JetBrains · 2026-09-23 (last push) · high)_
+  - <https://github.com/JetBrains/kotlinconf-app/blob/main/app/shared/src/commonMain/kotlin/org/jetbrains/kotlinconf/navigation/Routes.kt>
+  - <https://github.com/JetBrains/kotlinconf-app/blob/main/app/shared/src/commonMain/kotlin/org/jetbrains/kotlinconf/navigation/NavState.kt>
+  - <https://github.com/JetBrains/kotlinconf-app/blob/main/gradle/libs.versions.toml>
+  - <https://github.com/JetBrains/kotlinconf-app/blob/main/settings.gradle.kts>
+- **NAV-14** — In Nav3, adaptive and multi-pane layouts are driven by entry metadata that SceneStrategies read. Material3 adaptive-navigation3 provides ListDetailSceneStrategy.listPane/detailPane/extraPane and rememberListDetailSceneStrategy. The JetBrains CMP artifact exists but is still pre-stable (1.3.0-rc01). _(Google / JetBrains · 2026-09-22 · high)_
+  - <https://developer.android.com/guide/navigation/navigation-3/scenes>
+  - <https://developer.android.com/guide/navigation/navigation-3/metadata>
+  - <https://repo1.maven.org/maven2/org/jetbrains/compose/material3/adaptive/adaptive-navigation3/>
+  - <https://github.com/JetBrains/compose-multiplatform/releases/tag/v1.12.1>
+- **NAV-15** — NavEntryDecorator has been a public open class (constructor: onPop, decorate) since Nav3 1.0.0-alpha11, so it is the official hook for concerns that apply to every destination. Entry lifecycles give a 'fully visible' signal: scene-level LocalLifecycleOwner reaches RESUMED when transitions finish (1.0.0-rc01), and entries under overlays are capped at STARTED (1.1.0-rc01). _(Google / AndroidX · 2025-10-08 onward · high)_
+  - <https://developer.android.com/jetpack/androidx/releases/navigation3>
+  - <https://dl.google.com/android/maven2/androidx/navigation3/navigation3-runtime/1.2.0/navigation3-runtime-1.2.0-sources.jar>
+- **NAV-16** — Two Nav3 fixes matter for multi-module apps. First, from 1.1.6/1.2.0, NavEntry.contentKey defaults to key.toString() plus key::class.toString(), so data-object keys that share a simple name no longer collide, except on JS. Second, from 1.1.5/1.2.0, entryProvider prefers an entry registered for a key instance over one registered for the key type. JetBrains navigation3-ui 1.1.2 depends on Google runtime 1.1.7, so it includes both fixes. _(Google / AndroidX · 2026-08-12 · high)_
+  - <https://developer.android.com/jetpack/androidx/releases/navigation3>
+  - <https://repo1.maven.org/maven2/org/jetbrains/androidx/navigation3/navigation3-ui/1.1.2/navigation3-ui-1.1.2.module>
+- **NAV-17** — Nav3's event-style result API sends a one-shot result with LocalResultEventBus.current.sendResult<T>() and receives it with ResultEffect<T>{}. It is keyed by type by default, with explicit String resultKey overloads. Google warns it is in-memory and does not survive process death, so results that must persist need rememberSaveable, a SavedStateHandle-scoped ViewModel, or data inside the NavKey. _(Google · 2026-09-23 · high)_
+  - <https://developer.android.com/guide/navigation/navigation-3/migration-guide>
+  - <https://developer.android.com/guide/navigation/navigation-3/recipes/results-event>
+  - <https://developer.android.com/jetpack/androidx/releases/navigation3>
+- **NAV-18** — Nav3 deep links at scale work like this: each feature contributes DeepLinkMatchers, the root picks the best match with mapNotNull{it.match(request)}.maxOrNull() (MatchResult is Comparable), and a BackStackMatcher (withBackStack) builds the synthetic back stack. Google documents only the Android/Activity wiring. _(Google · 2026-09-22 · high)_
+  - <https://developer.android.com/guide/navigation/navigation-3/deep-links>
+  - <https://developer.android.com/guide/navigation/navigation-3/modularize>
+  - <https://developer.android.com/guide/navigation/navigation-3/migration-guide>
+  - <https://github.com/android/nav3-recipes/blob/main/docs/deeplink-guide.md>
+- **NAV-19** — JetBrains' CMP deep-link docs cover Nav2 (navigation-compose) only. They use a common ExternalUriHandler singleton, fed from Swift on iOS and from Desktop.setOpenURIHandler or argv on desktop, and consumed with navController.navigate(NavUri(uri)). _(JetBrains · 2026-07-21 · high)_
+  - <https://kotlinlang.org/docs/multiplatform/compose-navigation-deep-links.html>
+  - <https://kotlinlang.org/docs/multiplatform/compose-navigation-routing.html>
+- **NAV-20** — Circuit (Slack; 'used in production at Slack and ready for general use') navigates by Screen keys through a Navigator. Presenters can request results via rememberAnsweringNavigator, and NavigableCircuitContent 'delivers each result only to the screen that requested it'. _(Slack · 2026-09-15 · high)_
+  - <https://slackhq.github.io/circuit/>
+  - <https://github.com/slackhq/circuit/blob/main/docs/docs/navigation.md>
+  - <https://github.com/slackhq/circuit/blob/main/CHANGELOG.md>
+  - <https://github.com/slackhq/circuit/blob/main/docs/recipes/deep-linking-android.md>
+- **NAV-21** — Circuit uses code generation for multi-module registration. @CircuitInject contributes presenter and UI factories. Since 0.36.0 (2026-08-05), @CircuitSerializable(scope) contributes Set<CircuitSerializerRegistration> entries for SerializableCircuitSaver via DI multibinding. For KMP, only Metro or kotlin-inject-anvil work, because Anvil and Hilt generate code only for JVM and Android. _(Slack · 2026-08-05 · high)_
+  - <https://github.com/slackhq/circuit/blob/main/docs/docs/code-gen.md>
+  - <https://github.com/slackhq/circuit/blob/main/CHANGELOG.md>
+- **NAV-22** — circuitx-navigation provides InterceptingNavigator (rememberInterceptingNavigator), NavigationInterceptor and NavigationEventListener. Circuit documents them for cross-cutting concerns such as analytics and logging, and for deep linking or external URL handling. _(Slack · 2026 · high)_
+  - <https://github.com/slackhq/circuit/blob/main/docs/circuitx/navigation.md>
+- **NAV-23** — Decompose is actively maintained: 3.5.0 stable (2026-03-15) and 3.6.0-beta01 (2026-09-10). Navigation lives in a UI-agnostic component tree with 'pluggable UI (Jetpack/Multiplatform Compose, Android Views, SwiftUI, Kotlin/React, etc.)'. _(Arkadii Ivanov (Decompose) · 2026-09-10 · high)_
+  - <https://github.com/arkivanov/Decompose/releases>
+  - <https://github.com/arkivanov/Decompose/blob/master/README.md>
+  - <https://arkivanov.github.io/Decompose/navigation/overview/>
+- **NAV-24** — Voyager is in maintenance-only mode. A repo collaborator (not the original author) answered 'Actively maintained **no**' in February 2026, said they still use Voyager professionally, and pointed teams that don't want to own the internals to Navigation 3. _(Voyager (adrielcafe) · 2026-06-06 · high)_
+  - <https://github.com/adrielcafe/voyager/issues/556>
+  - <https://github.com/adrielcafe/voyager/releases>
+- **NAV-25** — Appyx (Bumble) looks dormant. The last release is 1.7.1 (2025-05-02). The last commit on the default 1.x branch is 2025-05-15 and on the 2.x (KMP) branch 2024-07-16. The KMP artifacts (com.bumble.appyx:appyx-navigation) last shipped as 2.0.1 on 2024-04-25. The repo is not archived. _(Bumble · 2025-05-15 · high)_
+  - <https://github.com/bumble-tech/appyx>
+  - <https://github.com/bumble-tech/appyx/releases>
+  - <https://repo1.maven.org/maven2/com/bumble/appyx/appyx-navigation/>
+- **NAV-26** — App Platform has moved away from Amazon: amzn/app-platform now redirects to vRallev/app-platform. It is maintained there under software.ralf.app.platform (latest 0.2.2, 2026-09-25). It uses model-driven navigation plus an experimental Nav3-backed presenter back stack. _(Ralf Wondratschek (ex-Amazon App Platform) · 2026-09-25 · high)_
+  - <https://github.com/vRallev/app-platform>
+  - <https://github.com/vRallev/app-platform/blob/main/docs/presenter.md>
+  - <https://github.com/vRallev/app-platform/blob/main/CHANGELOG.md>
+  - <https://github.com/vRallev/app-platform/releases>
+- **NAV-27** — Firebase Analytics' automatic screen tracking follows the focused Activity or UIViewController (on Apple platforms via method swizzling). Single-Activity Compose apps therefore need manual screen_view logging to get per-screen reports. Automatic reporting can be turned off on either platform. _(Google Firebase · 2026-09-24 · high)_
+  - <https://firebase.google.com/docs/analytics/screenviews>
+- **NAV-28** — Atomic Robot's post (Greg Williams, 2026-01-19) is titled 'Yes, You Should Migrate'. The body is more nuanced: use Nav3 'without reservation' for new CMP projects, and 'Stick with Nav2 for existing projects' that have a working production Nav2 implementation. It flags polymorphic serialization on iOS/web and NavigationBackHandler for iOS swipe-back. _(Atomic Robot / JetBrains · 2026-01-19 · high)_
+  - <https://atomicrobot.com/blog/navigation3-for-cmp/>
+  - <https://kotlinlang.org/docs/multiplatform/compose-navigation-3.html>
+- **NAV-29** — ResultEventBus is one shared in-memory bus per NavDisplay. ResultEventBusNavEntryDecorator provides the same bus to every entry. The typed overloads key channels by T::class.toString(), and the KDoc says results 'are not saved across configuration changes or process death'. _(Google / AndroidX · 2026-09-23 · high)_
+  - <https://dl.google.com/android/maven2/androidx/navigation3/navigation3-runtime/1.2.0/navigation3-runtime-1.2.0-sources.jar>
+  - <https://developer.android.com/guide/navigation/navigation-3/migration-guide>
+- **NAV-30** — Intel Apple targets are gone from the Nav3/CMP stack. Google navigation3-runtime has published no iosX64 variant since 1.1.0 (1.0.1 still had one). JetBrains navigation3-ui 1.1.2 and 1.2.0-beta01 publish only iosArm64 and iosSimulatorArm64 for iOS. The CMP runtime 1.11.0 module has no x64 Apple variants, while 1.10.3 still had uikitX64, macosX64, tvosX64 and watchosX64. _(Google / JetBrains · 2026-04 onward · high)_
+  - <https://dl.google.com/android/maven2/androidx/navigation3/navigation3-runtime/1.1.0/navigation3-runtime-1.1.0.module>
+  - <https://repo1.maven.org/maven2/org/jetbrains/androidx/navigation3/navigation3-ui/1.2.0-beta01/navigation3-ui-1.2.0-beta01.module>
+  - <https://repo1.maven.org/maven2/org/jetbrains/compose/runtime/runtime/1.11.0/runtime-1.11.0.module>
+  - <https://repo1.maven.org/maven2/org/jetbrains/compose/runtime/runtime-uikitx64/>
+- **NAV-31** — JetBrains does not fork the Nav3 runtime. org.jetbrains.androidx.navigation3:navigation3-ui depends directly on Google's androidx.navigation3:navigation3-runtime (1.1.2 on runtime 1.1.7; 1.2.0-beta01 on runtime 1.2.0-beta01), and no org.jetbrains navigation3-runtime artifact exists on Maven Central. _(JetBrains / Google · 2026-09-22 · high)_
+  - <https://repo1.maven.org/maven2/org/jetbrains/androidx/navigation3/navigation3-ui/1.2.0-beta01/navigation3-ui-1.2.0-beta01.module>
+  - <https://repo1.maven.org/maven2/org/jetbrains/androidx/navigation3/navigation3-ui/1.1.2/navigation3-ui-1.1.2.module>
+  - <https://repo1.maven.org/maven2/org/jetbrains/androidx/navigation3/>
+- **NAV-32** — Nav2 is still actively developed. Google Navigation 2.10.0 went stable on 2026-08-26 and 'added support for desktop, linux, macOS, iOS, javascript, WASM, watchos, and tvos' to navigation-common, navigation-runtime and navigation-testing. 2.10.2 followed on 2026-09-23, and JetBrains navigation-compose 2.10.0-beta01 maps to it. _(Google / AndroidX · 2026-08-26 · high)_
+  - <https://developer.android.com/jetpack/androidx/releases/navigation>
+  - <https://github.com/JetBrains/compose-multiplatform/releases/tag/v1.12.1>
+- **NAV-33** — On Kotlin/JS, Nav3's type-derived keys still collide. contentKey keeps colliding for data-object keys with the same simple name, and Google says JS apps 'should still implement custom contentKey'. _(Google / AndroidX · 2026-08-12 · high)_
+  - <https://developer.android.com/jetpack/androidx/releases/navigation3>
+- **NAV-34** — NiA's feature :api modules are not minimal. The nowinandroid.android.feature.api convention plugin adds `api(project(":core:navigation"))`, which exposes navigation3-runtime and the Navigator type. feature:topic:api additionally applies the feature.impl and library.compose convention plugins, which bring core:ui, designsystem, lifecycle, Hilt and navigation3 dependencies. _(Google (NiA) · 2026-01-30 · high)_
+  - <https://github.com/android/nowinandroid/blob/main/build-logic/convention/src/main/kotlin/AndroidFeatureApiConventionPlugin.kt>
+  - <https://github.com/android/nowinandroid/blob/main/build-logic/convention/src/main/kotlin/AndroidFeatureImplConventionPlugin.kt>
+  - <https://github.com/android/nowinandroid/blob/main/feature/topic/api/build.gradle.kts>
+- **NAV-35** — Google's Nav2→Nav3 migration guide (updated 2026-09-23) now covers results and deep links. Nav2 SavedStateHandle results become ResultEventBus (with a caution about process death), and Nav2 navDeepLink entries become UriDeepLinkMatchers matched in the Activity to build the initial back stack. _(Google · 2026-09-23 · high)_
+  - <https://developer.android.com/guide/navigation/navigation-3/migration-guide>
+
+**Não verificado / refutado:**
+
+- Refuted sub-claim (NAV-01): 'Google says Nav2 is still supported / remains supported'. The Nav3 stable blog has no such sentence; it says Nav2 users 'should consider migrating'. Replaced with the Navigation 2.10.0 release notes as evidence of maintenance.
+- Refuted sub-claim (NAV-06): 'CMP release notes don't say which Google version JetBrains 1.2.0-beta01 tracks'. The CMP v1.13.0-alpha01 table maps it to Google Navigation3 1.2.0-beta01.
+- Refuted sub-claim (NAV-09): 'each modular recipe defines EntryProviderInstaller'. The Koin recipe doesn't; it uses navigation<T>{} and getEntryProvider(). Also refuted: the implied real api/impl Gradle modules. The Hilt and Koin 'modules' are files inside the single :app module.
+- Refuted sub-claim (NAV-21): 'Metro is recommended for new projects'. The docs say 'New projects should use Metro, Hilt, or kotlin-inject-anvil'.
+- Refuted sub-claim (NAV-28 and disagreements): Atomic Robot 'says yes, you should migrate' as a blanket recommendation. Only the title says so; the body says stick with Nav2 for working production apps.
+- Corrected sub-claims: NAV-04's quote was a paraphrase (the verbatim text is now used); NAV-24's quote came from a collaborator, not the author, and '196' counts issues plus PRs (188 issues); NAV-11's settings has no :api because it isn't a destination at all, not because it lacks inbound navigation.
+- No WebSearch was available in this fact-check pass (the session budget of 200/200 was exhausted). Every check used a direct page fetch, the GitHub API (contents, trees, releases, issues, code search), Maven Central or Google Maven metadata and .module files, or the navigation3-runtime 1.2.0 sources jar.
+- Hypothesis, not tested: combining Google navigation3-runtime 1.2.0 (stable, with KMP deep-link and result APIs in commonMain) with JetBrains navigation3-ui 1.1.2 (built against runtime 1.1.7) through Gradle version resolution might expose those APIs on stable CMP today. Binary compatibility and behaviour are unverified.
+- That two live ResultEffect receivers of the same key compete for results (Channel.receiveAsFlow semantics), and that JS simple-name KClass.toString() makes ResultEventBus default keys collide: both inferred from the source, not documented.
+- Whether wasmJs has the same simple-name contentKey limitation as JS: the release notes mention only 'JS platform'.
+- Why CMP 1.11+ publishes no x64 Apple variants: observed only in .module metadata and Maven directories; no CMP release note states it.
+- App Platform option name: the docs say enableComposePresenterBackstack, while the CHANGELOG entry that introduced the feature says enableMoleculePresenterBackstack. A rename is likely but was not confirmed.
+- No primary source was found in which a large, multi-team enterprise CMP app shipping on iOS documents its navigation choice. The closest are the KotlinConf app (no feature modules) and Circuit at Slack, where the KMP/iOS scope of Slack's use isn't stated.
+- The kotlinlang catalog versions (e.g. navigation-compose 2.10.0-beta01 on the deep-links page, nav3-ui 1.1.1 on the Nav3 page) may be templated variables, not point-in-time statements. Maven Central dates are authoritative.
+
+## 5. KMP/CMP enterprise (iOS, targets)
+
+- **T5-01** — JetBrains recommends against shipping more than one Kotlin framework in an iOS app, and recommends an umbrella module that depends on all KMP modules and produces the app's single framework. A known constraint is that the app then consumes every feature module. _(JetBrains (official docs) · page last modified 2026-03-12 · high)_
+  - <https://kotlinlang.org/docs/multiplatform/multiplatform-project-configuration.html>
+- **T5-02** — Two Kotlin frameworks in one app have mutually incompatible types (the same Kotlin class shows up as a different type in each framework). The 2020 crash when combining two debug static frameworks was expected to be fixed in Kotlin 1.4, so treat it as historical. _(Touchlab · 2020-04-17 (dated) · medium)_
+  - <https://touchlab.co/multiple-kotlin-frameworks-in-application>
+  - <https://kotlinlang.org/docs/multiplatform/multiplatform-project-configuration.html>
+- **T5-03** — export() accepts only `api` dependencies and is non-transitive by default. Exporting a dependency disables dead-code elimination for it, and JetBrains advises against transitiveExport and against exporting more modules than necessary. _(JetBrains (official docs) · docs current as of 2026-09 · high)_
+  - <https://kotlinlang.org/docs/multiplatform/multiplatform-build-native-binaries.html>
+  - <https://kotlinlang.org/docs/native-improving-compilation-time.html>
+- **T5-04** — JetBrains documents remote distribution as an umbrella XCFramework published as a binary Swift package, with Package.swift in a separate repo as the recommended layout. Since Kotlin 2.4.20(-RC3), `assembleSharedXCFramework` generates a Package.swift when the project consumes SwiftPM dependencies. _(JetBrains · spm-export page modified 2026-07-21; Kotlin 2.4.20 = 2026-09-07 · high)_
+  - <https://kotlinlang.org/docs/multiplatform/multiplatform-spm-export.html>
+  - <https://kotlinlang.org/docs/whatsnew2420.html>
+  - <https://github.com/JetBrains/kotlin/releases/tag/v2.4.20>
+- **T5-05** — JetBrains groups iOS consumption into local integration (direct, local SwiftPM package, local podspec) and remote integration (XCFramework through SwiftPM or CocoaPods). When you use remote, it recommends adding a local-development workflow, and it describes four repository layouts. _(JetBrains · integration overview modified 2026-07-21 · high)_
+  - <https://kotlinlang.org/docs/multiplatform/multiplatform-project-configuration.html>
+  - <https://kotlinlang.org/docs/multiplatform/multiplatform-ios-integration-overview.html>
+- **T5-06** — Swift export became Alpha in Kotlin 2.4.0 (GitHub tag 2026-06-03). Each Kotlin module becomes a separate Swift module, it works only with direct integration, and generics are mostly unsupported. The August 2026 roadmap's next milestone is Beta, not Stable. _(JetBrains · 2.4.0 = 2026-06-03; 2.4.20 = 2026-09-07; roadmap Aug 2026 · high)_
+  - <https://kotlinlang.org/docs/whatsnew24.html>
+  - <https://kotlinlang.org/docs/whatsnew2420.html>
+  - <https://kotlinlang.org/docs/native-swift-export.html>
+  - <https://kotlinlang.org/docs/roadmap.html>
+- **T5-07** — Swift export does not remove the one-Kotlin-runtime-per-app constraint. It changes how the single binary appears to Swift (separate Swift modules instead of one flat Obj-C namespace). _(JetBrains, Touchlab · 2026-06/08 · high)_
+  - <https://kotlinlang.org/docs/native-swift-export.html>
+  - <https://touchlab.co/the-future-of-kmps-ios-interop>
+- **T5-08** — Swift export and Obj-C export + SKIE are mutually exclusive, and Touchlab (June 2026) still recommends SKIE for production, including CMP apps. SKIE 0.10.15 (2026-09-25) added Kotlin 2.4.20 support. _(Touchlab · article 2026-06-12; SKIE 0.10.15 2026-09-25 · high)_
+  - <https://touchlab.co/the-future-of-kmps-ios-interop>
+  - <https://skie.touchlab.co/intro>
+  - <https://skie.touchlab.co/Installation>
+  - <https://github.com/touchlab/SKIE/pull/202>
+- **T5-09** — SwiftPM import (Alpha; introduced in Kotlin 2.4.0, and the current docs say to use KGP 2.4.20-RC3 or later) lets a KMP module declare iOS Swift packages such as firebase-ios-sdk and use their Obj-C-visible APIs. Transitive consumers get the machine code automatically. _(JetBrains · Alpha; spm-import page modified 2026-07-21 · high)_
+  - <https://kotlinlang.org/docs/multiplatform/multiplatform-spm-import.html>
+  - <https://kotlinlang.org/docs/whatsnew24.html>
+- **T5-10** — KMMBridge's last release is still 1.2.1 (2025-01-27). Its multi-module SPM work (per-module XCFrameworks plus an aggregated Package.swift) was merged 2026-09-14 into the `spm-multi-module` branch, not into main. _(Touchlab · PR 2026-09-14; last release 2025-01-27 · high)_
+  - <https://github.com/touchlab/KMMBridge/pull/284>
+  - <https://github.com/touchlab/KMMBridge/releases>
+  - <https://kotlinlang.org/docs/multiplatform/multiplatform-project-configuration.html>
+- **T5-11** — The official Kotlin/Native build-time guidance: build only the binary and target you need with linkDebug*, skip iosX64 unless you use an Intel simulator, avoid release and universal builds in the dev loop, turn on the Gradle build and configuration caches, and consider klib incremental compilation (Beta since 2.4.20). _(JetBrains, Touchlab · 2024-04 to 2026-09 · high)_
+  - <https://kotlinlang.org/docs/native-improving-compilation-time.html>
+  - <https://kotlinlang.org/docs/whatsnew2420.html>
+  - <https://kotlinlang.org/docs/whatsnew24.html>
+  - <https://kotlinlang.org/docs/whatsnew1920.html>
+- **T5-12** — Google Workspace validated KMP in Google Docs with a production A/B experiment that ran about a year. At that scale it builds with Bazel using header klibs for compilation avoidance, and it shrinks the IPA with an explicit Obj-C export entry-point list. _(Google Workspace · 2025-05 (KotlinConf 2025) · high)_
+  - <https://resources.jetbrains.com/storage/products/kotlinconf-2025/may-22/Deploying%20Kotlin%20Multiplatform%20at%20Google%20Workspace%20_%20Jason%20Parachoniak%20_%20Johan%20Bay.pdf>
+- **T5-13** — iosX64 is not deprecated; it is a Tier 3 target. The deprecated Apple x86_64 targets are macosX64, tvosX64 and watchosX64 (since Kotlin 2.3.20), and watchosArm32 is deprecated since 2.4.20 with removal planned for 2.5.0. _(JetBrains · 2026-08/09 · high)_
+  - <https://kotlinlang.org/docs/native-target-support.html>
+  - <https://kotlinlang.org/docs/whatsnew24.html>
+  - <https://kotlinlang.org/docs/whatsnew2420.html>
+- **T5-14** — The default hierarchy template creates appleMain, iosMain, nativeMain, webMain and so on. For extra source sets, JetBrains documents re-applying `applyDefaultHierarchyTemplate()` and adding `dependsOn`. The custom `applyHierarchyTemplate {}` DSL, used by Bitkey, is officially described as not ready and still in development. _(JetBrains, Block (Bitkey) · 2026 · high)_
+  - <https://kotlinlang.org/docs/multiplatform/multiplatform-hierarchy.html>
+  - <https://github.com/proto-at-block/bitkey/blob/main/app/gradle/build-logic/src/main/kotlin/build/wallet/gradle/logic/extensions/KotlinMultiplatformExtension.kt>
+  - <https://github.com/JetBrains/kotlinconf-app/blob/main/app/shared/build.gradle.kts>
+- **T5-15** — JetBrains' new default structure (May 2026, Márton Braun) separates a `shared` KMP library from per-platform app modules. When any app uses native UI, it recommends splitting shared code into `sharedLogic` and `sharedUI`. _(JetBrains · 2026-05 (docs modified 2026-07-21) · high)_
+  - <https://blog.jetbrains.com/kotlin/2026/05/new-kmp-default-structure/>
+  - <https://kotlinlang.org/docs/multiplatform/multiplatform-project-recommended-structure.html>
+- **T5-16** — KMP library modules should move from `com.android.library` + `androidTarget()` to `com.android.kotlin.multiplatform.library`. The old path needs an opt-in on AGP 9 and is expected to be removed in AGP 10 (H2 2026). As of September 2026 the latest stable AGP is 9.4.0 and AGP 10 is not yet released. _(Google Android team, JetBrains · 2025-2026 · high)_
+  - <https://developer.android.com/kotlin/multiplatform/plugin>
+  - <https://kotlinlang.org/docs/multiplatform/multiplatform-compatibility-guide.html>
+  - <https://developer.android.com/build/releases/gradle-plugin>
+- **T5-17** — Bitkey (Block) is the most detailed public enterprise KMP module graph: 198 unique Gradle modules organized as `:public`/`:impl`/`:fake`/`:testing` capabilities, with a `module()` helper that gives each one a unique project name. The public/impl rules are documented but not enforced by the build. _(Block (Bitkey) · repo state 2026-08-12 · high)_
+  - <https://github.com/proto-at-block/bitkey/blob/main/app/settings.gradle.kts>
+  - <https://github.com/proto-at-block/bitkey/blob/main/app/gradle/build-logic/src/main/kotlin/build/wallet/gradle/logic/structure/ModuleStructure.kt>
+- **T5-18** — Bitkey keeps its iOS umbrella (`:shared:xc-framework`, iOS-only, static, baseName "Shared") separate from its composition root (`:shared:app-component:impl`, which assembles every impl). The umbrella exports 22 project modules plus one external library, and also exports 7 test-support modules, including fakes and impls. _(Block (Bitkey) · repo state 2026-08 · high)_
+  - <https://github.com/proto-at-block/bitkey/blob/main/app/shared/xc-framework/build.gradle.kts>
+  - <https://github.com/proto-at-block/bitkey/blob/main/app/shared/app-component/impl/build.gradle.kts>
+  - <https://github.com/proto-at-block/bitkey/blob/main/app/gradle/build-logic/src/main/kotlin/build/wallet/gradle/logic/di/DiPlugin.kt>
+- **T5-19** — Bitkey splits its logic graph finely but keeps every UI feature in `:ui:features:public`, and that module's commonMain depends directly on three `:impl` modules, violating Bitkey's own documented rule. _(Block (Bitkey) · repo state 2026-08 · high)_
+  - <https://github.com/proto-at-block/bitkey/blob/main/app/ui/features/public/build.gradle.kts>
+  - <https://github.com/proto-at-block/bitkey/blob/main/app/settings.gradle.kts>
+- **T5-20** — Bitkey compiles only the iOS targets the host needs (arm64 simulator on Apple Silicon, x64 simulator only on Intel), with Gradle properties to override. _(Block (Bitkey) · repo state 2026-08 · high)_
+  - <https://github.com/proto-at-block/bitkey/blob/main/app/gradle/build-logic/src/main/kotlin/build/wallet/gradle/logic/gradle/KonanTargets.kt>
+  - <https://github.com/proto-at-block/bitkey/blob/main/app/shared/xc-framework/build.gradle.kts>
+- **T5-21** — Bitkey moved from shared KMP logic with native UIs to a single Compose Multiplatform UI on Android and iOS, and KMP is about 95% of its codebase. _(Block (Bitkey) · 2025-05-12 · high)_
+  - <https://engineering.block.xyz/blog/how-bitkey-uses-cross-platform-development>
+  - <https://kotlinlang.org/case-studies/?type=multiplatform>
+- **T5-22** — App Platform, built at Amazon and used in Amazon Flex (Android/iOS), formalizes KMP module types (`:public`, `:impl[-suffix]`, `:internal`, `:testing`, `:*-robots`, `:app`) and enforces them with a Gradle check. Since July 2026 it has been maintained independently of Amazon under vRallev/app-platform. _(App Platform (originally Amazon; now Ralf Wondratschek / vRallev) · 0.2.2 (2026-09-25); ownership moved 2026-07 · high)_
+  - <https://github.com/vRallev/app-platform/blob/main/docs/module-structure.md>
+  - <https://github.com/vRallev/app-platform/blob/main/docs/faq.md>
+  - <https://github.com/vRallev/app-platform/blob/main/README.md>
+  - <https://github.com/vRallev/app-platform/blob/main/sample/app-framework/impl/build.gradle>
+- **T5-23** — McDonald's (with Umain) runs one app across 62 markets with 75% of the codebase in KMP. The UI is fully native with no logic, and navigation is "puppeted" from KMP while the native side owns the navigation stack. _(McDonald's / Umain · 2025-05 (KotlinConf 2025) · high)_
+  - <https://resources.jetbrains.com/storage/products/kotlinconf-2025/may-23/Leveraging%20KMP%20for%20navigation%20in%20the%20McDonalds%20App%20_%20Cas%20van%20Luijtelaar%20_%20Anthony%20Bassey.pdf>
+  - <https://blog.jetbrains.com/kotlin/2025/12/industry-leaders-on-the-kotlinconf25-stage/>
+- **T5-24** — JetBrains' KotlinConf app (last push 2026-09-23) is deliberately coarse: two shared CMP modules (`:app:shared` and `:app:ui-components`), no feature modules, a static arm64-only framework, Metro DI and Navigation 3. _(JetBrains · repo state 2026-09-23 · high)_
+  - <https://github.com/JetBrains/kotlinconf-app/blob/main/settings.gradle.kts>
+  - <https://github.com/JetBrains/kotlinconf-app/blob/main/app/shared/build.gradle.kts>
+- **T5-25** — Tivi, a widely cited KMP reference app that is now archived, builds per-variant iOS frameworks (`:shared:prod`, `:shared:qa`) on a `:shared:common` composition layer and exports only three modules. _(Chris Banes (Tivi) · archived; last push 2024-11-12 · medium)_
+  - <https://github.com/chrisbanes/tivi/blob/main/shared/prod/build.gradle.kts>
+  - <https://github.com/chrisbanes/tivi>
+- **T5-26** — The enterprise and reference KMP codebases checked (Bitkey, App Platform, the KotlinConf app, Tivi) all use compile-time, contribution-based DI (kotlin-inject-anvil or Metro). Koin now has a compile-time-validating path of its own (T5-33), so "runtime service locator vs compile-time DI" is no longer a strict library choice. _(Block, App Platform, JetBrains, Tivi · 2024-2026 · medium)_
+  - <https://github.com/proto-at-block/bitkey/blob/main/app/gradle/build-logic/src/main/kotlin/build/wallet/gradle/logic/di/DiPlugin.kt>
+  - <https://github.com/vRallev/app-platform/blob/main/docs/faq.md>
+  - <https://github.com/JetBrains/kotlinconf-app/blob/main/app/shared/build.gradle.kts>
+  - <https://github.com/ZacSweers/metro/releases>
+- **T5-27** — Kotlin/Native partial linkage can turn a multi-module dependency-version skew into a runtime IrLinkageError on iOS even though every build passed. Touchlab recommends one version catalog, `-Xpartial-linkage-loglevel=ERROR`, and iOS simulator integration tests. _(Touchlab · 2026-09-18 · high)_
+  - <https://touchlab.co/gradle-transitive-dependency-resolution>
+- **T5-28** — In the documented native-UI case studies, KMP shares data, domain and sync logic (sometimes presentation logic), while platform teams build the UI. Most of these case studies are several years old. _(Autodesk, Baidu, Duolingo, Forbes · Baidu 2021; Duolingo 2025; Autodesk undated · medium)_
+  - <https://kotlinlang.org/case-studies/autodesk/>
+  - <https://kotlinlang.org/case-studies/baidu/>
+  - <https://blog.jetbrains.com/kotlin/2025/12/industry-leaders-on-the-kotlinconf25-stage/>
+  - <https://kotlinlang.org/case-studies/?type=multiplatform>
+- **T5-29** — Current stable versions: Kotlin 2.4.20 (2026-09-07) and Compose Multiplatform 1.12.1 (2026-09-22). Kotlin 2.4.0 turned on the CMS GC by default and dropped `-language-version=1.9`, which ends K1. _(JetBrains · 2026-09 · high)_
+  - <https://github.com/JetBrains/kotlin/releases>
+  - <https://github.com/JetBrains/compose-multiplatform/releases>
+  - <https://kotlinlang.org/docs/whatsnew24.html>
+- **T5-30** — Cash App's public KMP story centers on Redwood (native UI driven by Compose) and Zipline (Kotlin/JS loaded at runtime), presented in 2023 as a way to release in hours instead of days. Redwood has since been declared no longer under active development, and Cash App's internal module structure is not public. _(Cash App (Block) · 2023 session; Redwood inactive as of 2026 · medium)_
+  - <https://dpe.org/sessions/jake-wharton/releasing-faster-with-kotlin-multiplatform/>
+  - <https://github.com/cashapp/redwood>
+  - <https://github.com/cashapp/zipline/releases>
+  - <https://kotlinlang.org/case-studies/?type=multiplatform>
+- **T5-31** — The Kotlin roadmap (last modified August 2026, next update February 2027) prioritizes moving Swift export from Alpha to Beta, turning on klib incremental compilation by default, native compiler caches in release mode, and SwiftPM import support. _(JetBrains · 2026-08 · high)_
+  - <https://kotlinlang.org/docs/roadmap.html>
+- **T5-32** — The CocoaPods trunk becomes permanently read-only on 2026-12-02, which pushes enterprise KMP apps that pull iOS vendor SDKs (Firebase and similar) through the Kotlin CocoaPods plugin toward SwiftPM import or Swift-side integration. _(CocoaPods, JetBrains · read-only 2026-12-02 · high)_
+  - <https://blog.cocoapods.org/CocoaPods-Specs-Repo/>
+  - <https://kotlinlang.org/docs/whatsnew24.html>
+  - <https://kotlinlang.org/docs/multiplatform/multiplatform-cocoapods-overview.html>
+- **T5-33** — The Koin Compiler Plugin (1.2.1, 2026-09-10) adds compile-time DI safety for Koin in KMP: it validates the whole graph assembled by `startKoin<T>()`, discovers `@Configuration` modules across Gradle modules, and checks `get`/`inject`/`koinViewModel` call sites. _(Kotzilla / Koin · 1.2.1 = 2026-09-10 · medium)_
+  - <https://github.com/InsertKoinIO/koin-compiler-plugin>
+  - <https://github.com/InsertKoinIO/koin-compiler-plugin/blob/main/docs/ROADMAP.md>
+  - <https://github.com/InsertKoinIO/koin-compiler-plugin/releases>
+  - <https://github.com/InsertKoinIO/koin/releases>
+- **T5-34** — SKIE's Kotlin 2.4.20 support shipped in 0.10.15 on 2026-09-25, while the SKIE docs still say "up to 2.4.10". Check the GitHub release notes before a Kotlin bump, because SKIE gates Kotlin upgrades for apps that use it. _(Touchlab · 2026-09-25 · high)_
+  - <https://github.com/touchlab/SKIE/releases/tag/0.10.15>
+  - <https://github.com/touchlab/SKIE/pull/202>
+  - <https://skie.touchlab.co/intro>
+- **T5-35** — Kotlin 2.5.0-Beta1 came out on 2026-09-23, and watchosArm32 is planned for removal in 2.5.0. Compose Multiplatform 1.13.0-alpha01 (2026-09-10) is the next CMP line. _(JetBrains · 2026-09 · high)_
+  - <https://github.com/JetBrains/kotlin/releases>
+  - <https://github.com/JetBrains/compose-multiplatform/releases>
+  - <https://kotlinlang.org/docs/whatsnew2420.html>
+- **T5-36** — JetBrains' Kotlin Toolchain (the successor to Amper, 0.12 in September 2026) now supports multiplatform library publishing but is still Alpha, so Gradle convention plugins remain the enterprise default for multi-module KMP. _(JetBrains · 2026-09 · low)_
+  - <https://blog.jetbrains.com/kotlin/2026/09/kotlin-toolchain-0-12-multiplatform-library-publishing-wasm-apps-and-more/>
+
+**Não verificado / refutado:**
+
+- No finding was refuted. Every correction is written into the affected finding's detail as "Verdict: partially — ...".
+- The AGP status (9.4.0 latest stable in September 2026; AGP 10 not in any preview channel) comes from a small-model summary of developer.android.com/build/releases/gradle-plugin and was not cross-checked against Maven metadata.
+- The Koin Compiler Plugin's compile-time validation claims (A3 full-graph, cross-Gradle-module hints) come from the project's own README and ROADMAP, not from independent testing or an enterprise case study.
+- Whether `linkerOpts("-lsqlite3")` in shared/build.gradle.kts still takes effect after switching to `isStatic = true`, or has to move to Xcode OTHER_LDFLAGS. The SQLDelight 2.2.1 multiplatform page does not cover it.
+- Whether `-Xbinary=objcExportEntryPointsPath=` (Google's tree-shaker) is a documented, supported public option. It appears only in the KotlinConf 2025 slides, where the authors warn it lets you "shoot yourself in the foot".
+- Netflix's current KMP architecture. The only detailed source is the October 2020 TechBlog post, and the case-study index now just says it shares logic for "mobile studio apps".
+- Forbes, Quizlet, Philips and Duolingo module structure and iOS distribution details. Only the one-line case-study-index summaries and the December 2025 JetBrains blog were verified.
+- Cash App's internal Gradle module structure and iOS framework setup. No primary source exists, and Redwood is now inactive.
+- What Tadeas Kriz's KotlinConf 2026 talk concludes about multiple KMP binaries. Search budget was exhausted and no transcript was fetched.
+- Whether KMMBridge PR #284 (on the `spm-multi-module` branch) will reach main or a release.
+- Whether Bitkey's Swift code implements the exported `bugsnagPublic`/`datadogPublic` interfaces or only calls them. The Swift sources were not inspected.
+- Whether the App Platform FAQ's list of Amazon production apps (Flex, VAPR, Smart Glasses) is still accurate after ownership moved away from Amazon in July 2026.
+- JetBrains Toolbox's CMP desktop migration details were not re-fetched (2021 post, dated).
+
+## 6. SDKs externos (analytics, flags, crash, purchase)
+
+- **X-01** — As of 2026-09-27 there is still no official Google Firebase SDK for KMP. The de-facto option is GitLive's firebase-kotlin-sdk, which wraps the official SDKs per platform and covers only part of each API. _(GitLive / Google Firebase · 2.7.0 = 2026-09-02; 3.0.0-alpha02 = 2026-09-03 · high)_
+  - <https://github.com/GitLiveApp/firebase-kotlin-sdk>
+  - <https://github.com/GitLiveApp/firebase-kotlin-sdk/releases>
+  - <https://firebase.uservoice.com/forums/948424-general/suggestions/46591717-support-kotlin-multiplatform-kmp-in-the-sdks>
+- **X-02** — Kotlin/Native cannot import pure Swift libraries. JetBrains recommends 'reverse import': declare an interface in Kotlin, implement it in Swift, and pass the Swift object to Kotlin. _(JetBrains (Kotlin docs) · swift-export doc dated 2026-08-28 · high)_
+  - <https://kotlinlang.org/docs/native-lib-import-stability.html>
+  - <https://kotlinlang.org/docs/native-swift-export.html>
+- **X-03** — KMP's SwiftPM import (the `swiftPMDependencies {}` DSL) is Alpha. It needs Kotlin Gradle plugin 2.4.20, which became stable on 2026-09-07 (the docs still say 2.4.20-RC3), and only Objective-C-visible APIs (Clang modules) reach Kotlin. _(JetBrains · KGP 2.4.20 stable = 2026-09-07 · high)_
+  - <https://kotlinlang.org/docs/multiplatform/multiplatform-spm-import.html>
+  - <https://kotlinlang.org/docs/multiplatform/multiplatform-cocoapods-spm-migration.html>
+  - <https://github.com/JetBrains/kotlin/releases>
+- **X-04** — Tivi (Chris Banes, KMP + CMP) is an open-source example of a vendor implementation injected from Swift: the Kotlin `Analytics` interface is implemented in Swift with Firebase iOS and passed into the Kotlin DI graph when the app starts. _(Tivi (Chris Banes) · last analytics commit 2024-09-03; archived 2024-11 · high)_
+  - <https://github.com/chrisbanes/tivi/blob/main/core/analytics/src/commonMain/kotlin/app/tivi/core/analytics/Analytics.kt>
+  - <https://github.com/chrisbanes/tivi/blob/main/core/analytics/src/iosMain/kotlin/app/tivi/core/analytics/AnalyticsPlatformComponent.kt>
+  - <https://github.com/chrisbanes/tivi/blob/main/ios-app/Tivi/Tivi/TiviApp.swift>
+  - <https://github.com/chrisbanes/tivi>
+- **X-05** — Tivi runs startup through initializer multibinding. Modules contribute `AppInitializer`s into a Set, and analytics consent and crash reporting are initializers. Set order is not guaranteed. _(Tivi · 2024 · high)_
+  - <https://github.com/chrisbanes/tivi/blob/main/shared/common/src/commonMain/kotlin/app/tivi/appinitializers/AppInitializers.kt>
+  - <https://github.com/chrisbanes/tivi/blob/main/core/analytics/src/commonMain/kotlin/app/tivi/core/analytics/AnalyticsInitializer.kt>
+  - <https://github.com/chrisbanes/tivi/blob/main/core/logging/src/commonMain/kotlin/app/tivi/util/LoggerComponent.kt>
+  - <https://github.com/chrisbanes/tivi/blob/main/core/logging/src/iosMain/kotlin/app/tivi/util/CrashlyticsIosInitializer.kt>
+- **X-06** — JetBrains recommends using your DI framework, not expect/actual, to provide platform implementations once a project has DI. Expect/actual is for simple cases. _(JetBrains; Amazon App Platform · 2026 · high)_
+  - <https://kotlinlang.org/docs/multiplatform/multiplatform-connect-to-apis.html>
+  - <https://github.com/amzn/app-platform/blob/main/docs/module-structure.md>
+- **X-07** — Amazon's App Platform (KMP) enforces a module structure in Gradle: `:public`, zero or more `:impl` (suffixed per vendor or app when there are several), `:internal`, `:testing`, `:*-robots` and `:app`. Only `:app` may depend on `:impl`. The public/impl split is recommended only where dependency inversion is needed. _(Amazon (amzn/app-platform) · docs on main, 2026 · high)_
+  - <https://github.com/amzn/app-platform/blob/main/docs/module-structure.md>
+  - <https://amzn.github.io/app-platform/>
+- **X-08** — Now in Android keeps a vendor-neutral `core:analytics` port and puts the implementation in Android flavors: Firebase in `prod`, a stub in `demo`. Screen tracking is a composable effect that screens call. The event contract uses String values, and events are spread across core and feature modules. _(Google (Now in Android) · main branch, 2026 · high)_
+  - <https://raw.githubusercontent.com/android/nowinandroid/main/core/analytics/src/main/kotlin/com/google/samples/apps/nowinandroid/core/analytics/AnalyticsEvent.kt>
+  - <https://raw.githubusercontent.com/android/nowinandroid/main/core/analytics/src/prod/kotlin/com/google/samples/apps/nowinandroid/core/analytics/AnalyticsModule.kt>
+  - <https://raw.githubusercontent.com/android/nowinandroid/main/core/ui/src/main/kotlin/com/google/samples/apps/nowinandroid/core/ui/AnalyticsExtensions.kt>
+  - <https://github.com/android/nowinandroid/blob/main/feature/foryou/impl/src/main/kotlin/com/google/samples/apps/nowinandroid/feature/foryou/impl/ForYouViewModel.kt>
+- **X-09** — The Android-KMP library plugin (`com.android.kotlin.multiplatform.library`) has a single variant, with no build types or product flavors. Using `com.android.library` for KMP relies on AGP APIs deprecated in AGP 9.0 and expected to be removed in AGP 10.0 (H2 2026), which has not shipped as of 2026-09-27. _(Google (AGP) · AGP 9 = Q4 2025; AGP 10 not yet published at 2026-09-27 · high)_
+  - <https://developer.android.com/kotlin/multiplatform/plugin>
+  - <https://dl.google.com/dl/android/maven2/com/android/tools/build/gradle/maven-metadata.xml>
+- **X-10** — Sentry's official KMP SDK is still 0.x. The latest stable is 0.27.0 (2026-06-03), and 0.28.0-beta.1 (2026-09-23) moves the Cocoa build to SwiftPM through the community spm4Kmp plugin. _(Sentry · 0.27.0 = 2026-06-03; 0.28.0-beta.1 = 2026-09-23 · high)_
+  - <https://github.com/getsentry/sentry-kotlin-multiplatform>
+  - <https://github.com/getsentry/sentry-kotlin-multiplatform/releases>
+  - <https://docs.sentry.io/platforms/kotlin/guides/kotlin-multiplatform/>
+  - <https://docs.sentry.io/platforms/kotlin/guides/kotlin-multiplatform/configuration/filtering/>
+- **X-11** — RevenueCat's official KMP SDK 3.0.0 drops the PurchasesHybridCommon pod. The iOS target builds against the native purchases-ios Swift package through a cinterop binding that Gradle generates. _(RevenueCat · 3.0.0 release = 2026-05-07; blog = 2026-05-14; 3.10.1 = 2026-09-23 · high)_
+  - <https://www.revenuecat.com/blog/engineering/kmp-sdk-3>
+  - <https://github.com/RevenueCat/purchases-kmp/releases>
+- **X-12** — Datadog ships an official KMP SDK (RUM, crash and error tracking, logs, session replay, WebView tracking, Ktor tracing), designed to be set up once in commonMain. Its README lists Android API 23+ and iOS/iPadOS/tvOS 12+. _(Datadog · blog 2025-05-20; 1.8.0 = 2026-08-10 · high)_
+  - <https://www.datadoghq.com/blog/kotlin-multiplatform-sdk/>
+  - <https://github.com/Datadog/dd-sdk-kotlin-multiplatform>
+- **X-13** — OpenTelemetry has a Kotlin Multiplatform API and SDK, donated by Embrace and announced 2026-03-24. It targets Android, JVM, iOS and JS, and its Logging and Tracing APIs are not yet stable. _(OpenTelemetry / Embrace · 2026-03-24; v0.8.0 = 2026-09-17 · high)_
+  - <https://opentelemetry.io/blog/2026/kotlin-multiplatform-opentelemetry/>
+  - <https://www.cncf.io/blog/2026/03/24/announcing-a-kotlin-multiplatform-api-and-sdk-for-opentelemetry/>
+  - <https://github.com/embrace-io/opentelemetry-kotlin>
+  - <https://github.com/open-telemetry/opentelemetry-kotlin>
+- **X-14** — For Crashlytics or Bugsnag on iOS in KMP, the established approach is Touchlab's CrashKiOS plus Kermit's kermit-crashlytics/kermit-bugsnag log writers. Bugsnag also has an official KMP SDK (Android, Apple, JS) in which the app links bugsnag-cocoa itself. _(Touchlab; SmartBear/Bugsnag · CrashKiOS 0.10.0 = 2026-09-16; Bugsnag KMP 1.0.0 = 2025-09-23 · high)_
+  - <https://crashkios.touchlab.co/>
+  - <https://github.com/touchlab/CrashKiOS/releases>
+  - <https://kermit.touchlab.co/docs/crashreporting/>
+  - <https://github.com/touchlab/Kermit/tree/main/extensions>
+- **X-15** — LaunchDarkly and Statsig offer no KMP client SDK. From KMP you need a Kotlin port with an Android impl and a Swift-injected iOS impl, or an OpenFeature provider. The known community LaunchDarkly KMP wrapper is archived. _(LaunchDarkly; Statsig · checked 2026-09-27 · high)_
+  - <https://launchdarkly.com/docs/sdk/client-side>
+  - <https://docs.statsig.com/client/introduction>
+  - <https://github.com/MyUNiDAYS/launch-darkly-kotlin-sdk>
+- **X-16** — ConfigCat and PostHog have official KMP SDKs that include feature flags. PostHog also covers analytics, experiments, error tracking and session replay (Android/iOS), but is still 0.x. _(ConfigCat; PostHog · ConfigCat 5.1.0 = 2025-08-15; PostHog KMP 0.5.1 = 2026-09-01 · high)_
+  - <https://configcat.com/docs/sdk-reference/kotlin/>
+  - <https://github.com/configcat/kotlin-sdk>
+  - <https://posthog.com/docs/libraries/kmp>
+  - <https://github.com/PostHog/posthog-kmp>
+- **X-17** — OpenFeature's Kotlin SDK is KMP and supports multi-provider, hooks, evaluation context and provider events, so it can serve as a vendor-neutral flags port. It is still 0.x, domains are in development, and isolated (non-global) API instances were merged but not released as of 2026-08-12. _(OpenFeature (CNCF); Spotify Confidence · 0.8.0 = 2026-04-22; update 2026-08-12 · high)_
+  - <https://openfeature.dev/docs/reference/sdks/client/kotlin/>
+  - <https://openfeature.dev/blog/openfeature-mid-2026-update/>
+  - <https://github.com/open-feature/kotlin-sdk>
+  - <https://github.com/spotify/confidence-openfeature-provider-kotlin>
+- **X-18** — Spotify replaced boolean flags with typed 'properties' that have an in-code default. They are declared in YAML next to the code that uses them and published at build time, so the server only sends values that differ from the default. _(Spotify · 2020-10-29 · high)_
+  - <https://engineering.atspotify.com/2020/10/spotifys-new-experimentation-platform-part-1>
+- **X-19** — Uber's rider app puts most features behind 'plugin points'. Every plugin ships through an A/B test that doubles as a kill switch, and tooling stops non-plugin code from referencing plugin code. _(Uber · 2017-08-02 · high)_
+  - <https://www.uber.com/us/en/blog/plugins/>
+- **X-20** — Uber built Piranha to automatically generate diffs that delete code behind stale feature flags and send them to flag authors. Today's PolyglotPiranha includes built-in cleanup rules for Kotlin and Swift, among others. _(Uber · blog 2020-03-17; v0.4.8 = 2026-04-02 · high)_
+  - <https://www.uber.com/us/en/blog/piranha/>
+  - <https://github.com/uber/piranha>
+  - <https://github.com/uber/piranha/tree/master/crates/core/src/cleanup_rules>
+- **X-21** — Slack's iOS team found that hand-edited common feature-flag files caused constant merge conflicts and fixed it with codegen scripts. Slack Android used Anvil so any module could contribute bindings and multibound members to the app component without editing a central list; Anvil is now deprecated. _(Slack · 2022-03-28 (updated 2022-05-04) · high)_
+  - <https://slack.engineering/stabilize-modularize-modernize-scaling-slacks-mobile-codebases-2/>
+  - <https://github.com/square/anvil>
+- **X-22** — Segment's analytics-kotlin is a reference pipeline for fanning analytics out to multiple destinations: ordered plugin types, a timeline per destination, and a consent add-on that blocks events per destination. The library is Android/JVM, not KMP. _(Segment (Twilio) · 1.26.0 = 2026-07-27 · high)_
+  - <https://github.com/segmentio/analytics-kotlin/blob/main/core/src/main/java/com/segment/analytics/kotlin/core/platform/Plugin.kt>
+  - <https://github.com/segmentio/analytics-kotlin>
+  - <https://github.com/segment-integrations/analytics-kotlin-consent>
+- **X-23** — Typed event code generated from a central tracking plan is mainstream (Segment Typewriter, Amplitude Ampli, Avo Codegen, Snowplow Snowtype). None is documented as emitting KMP common code, and Typewriter has had no release since June 2023. _(Segment, Amplitude, Avo, Snowplow · Typewriter latest v9.1.0 = 2023-06-30 · medium)_
+  - <https://docs.snowplow.io/docs/data-product-studio/snowtype>
+  - <https://github.com/segmentio/typewriter>
+  - <https://github.com/segmentio/typewriter/releases>
+- **X-24** — Firebase/Google Analytics consent mode v2 on apps uses default consent keys in AndroidManifest/Info.plist plus a runtime `setConsent` that persists across launches. A consent port therefore needs both build-time defaults and runtime updates. _(Google · current docs · high)_
+  - <https://developers.google.com/tag-platform/security/guides/app-consent>
+  - <https://firebase.google.com/docs/analytics/android/configure-data-collection>
+- **X-25** — Jetpack App Startup models initializer ordering explicitly with `Initializer<T>.dependencies()` and supports lazy init. It is the reference for dependency-ordered vendor startup, and a KMP initializer port should mirror it. _(Google (Jetpack) · current docs · high)_
+  - <https://developer.android.com/topic/libraries/app-startup>
+- **X-26** — Compile-time KMP DI now supports module contributions natively: Metro 1.0 (stable since 2026-04-27) has @ContributesIntoSet/@ContributesIntoMap with replaces, excludes and priority. Koin 4.2 still has no native multibinding and changed `getAll` to return declaration order. _(Metro (Zac Sweers); Koin · Metro 1.0 = 2026-04-27; Koin 4.2.0 = 2026-03-17; 4.2.2 = 2026-06-15 · high)_
+  - <https://zacsweers.github.io/metro/latest/aggregation/>
+  - <https://www.zacsweers.dev/metro-is-stable/>
+  - <https://github.com/ZacSweers/metro/releases>
+  - <https://github.com/InsertKoinIO/koin/releases/tag/4.2.0>
+- **X-27** — Isolation rules ('features never import vendor SDKs', 'only the app depends on :impl') can be enforced with off-the-shelf tools: modules-graph-assert, detekt ForbiddenImport and Konsist. The option names depend on the version, and KMP needs extra configuration. _(jraska; detekt; Konsist · 2025-2026 · high)_
+  - <https://github.com/jraska/modules-graph-assert>
+  - <https://github.com/detekt/detekt/blob/v1.23.8/detekt-core/src/main/resources/default-detekt-config.yml>
+  - <https://detekt.dev/docs/rules/style/>
+  - <https://docs.konsist.lemonappdev.com/>
+- **X-28** — Several 'KMP SDKs' for analytics vendors are community wrappers, not vendor-official, even when the README says otherwise. _(Community · 2026 · high)_
+  - <https://github.com/nathanfallet/amplitude-kmp>
+  - <https://github.com/nathanfallet/amplitude-kmp/blob/main/gradle/libs.versions.toml>
+  - <https://github.com/itsivag/mixpanel-kmp>
+- **M-01** — Now in Android now splits features into api/impl modules, and ships a recording analytics fake in a shared `core:testing` module. That is the ':testing' pattern for asserting events in ViewModel tests. _(Google (Now in Android) · main branch, 2026 · high)_
+  - <https://github.com/android/nowinandroid/tree/main/feature/foryou>
+  - <https://github.com/android/nowinandroid/blob/main/core/testing/src/main/kotlin/com/google/samples/apps/nowinandroid/core/testing/util/TestAnalyticsHelper.kt>
+- **M-02** — Anvil, the mechanism behind Slack's 'any module contributes to the app component' pattern, is deprecated and K1-only. The maintained successor for KMP is Metro, which keeps Anvil interop. _(Square; Zac Sweers · 2026 · high)_
+  - <https://github.com/square/anvil>
+  - <https://www.zacsweers.dev/metro-is-stable/>
+- **M-03** — Koin's own answer to a hand-maintained module list is Koin Annotations with `@Configuration` modules that are discovered automatically, bootstrapped through `@KoinApplication`. The KSP processor is deprecated in favor of the Koin Compiler Plugin. _(Koin (Kotzilla) · Koin 4.2 docs, 2026 · medium)_
+  - <https://insert-koin.io/docs/reference/koin-annotations/modules/>
+  - <https://insert-koin.io/docs/reference/koin-annotations/start/>
+- **M-04** — OpenTelemetry Kotlin ships its own api/noop/implementation split plus a Java-compat mode, which is a model for an observability port. Every experimental symbol requires opt-in. _(OpenTelemetry · v0.8.0 = 2026-09-17 · high)_
+  - <https://opentelemetry.io/docs/languages/kotlin/getting-started/>
+  - <https://github.com/open-telemetry/opentelemetry-kotlin>
+- **M-05** — modules-graph-assert needs extra configuration for KMP; the default api/implementation configurations miss commonMain dependencies. It also supports type-based rules through module aliases, which suits api/impl/app enforcement. _(jraska · 2.9.1 = 2026-04-12 · high)_
+  - <https://github.com/jraska/modules-graph-assert>
+- **M-06** — As of 2026-09-27: Kotlin 2.4.20 is stable (2026-09-07) and 2.5.0-Beta1 is out (2026-09-23); Compose Multiplatform is at 1.12.1 (2026-09-22); the latest stable AGP is 9.4.1, with no AGP 10 published. _(JetBrains; Google · 2026-09-27 · high)_
+  - <https://github.com/JetBrains/kotlin/releases>
+  - <https://github.com/JetBrains/compose-multiplatform/releases>
+  - <https://dl.google.com/dl/android/maven2/com/android/tools/build/gradle/maven-metadata.xml>
+- **M-07** — In 2026, vendor KMP SDKs are converging on Gradle-owned Swift dependencies instead of CocoaPods or manually linked pods. This shrinks the Xcode-side glue that the Swift-injection pattern needed. _(RevenueCat, GitLive, Sentry, JetBrains · 2026-05 to 2026-09 · medium)_
+  - <https://www.revenuecat.com/blog/engineering/kmp-sdk-3>
+  - <https://github.com/GitLiveApp/firebase-kotlin-sdk/releases>
+  - <https://github.com/getsentry/sentry-kotlin-multiplatform/releases>
+  - <https://kotlinlang.org/docs/multiplatform/multiplatform-spm-import.html>
+
+**Não verificado / refutado:**
+
+- No finding in the input was fully refuted, so none was dropped. The corrections are recorded inline as [PARTIALLY] in each finding's detail (X-01, X-03, X-08, X-11, X-12, X-13, X-14, X-20, X-21, X-23, X-27, X-28).
+- Segment Typewriter docs, Avo Codegen docs and Amplitude Ampli docs returned ECONNREFUSED during this check. Not re-verified: the Typewriter quote that 'analytics-swift and analytics-kotlin don't support run-time validation', Ampli's `ampli pull` behavior, and Avo's per-destination interface (logEvent, logPage, revenue, setUserProperties, identify, unidentify) with 'routes data locally in your client'.
+- Exact archive date of embrace-io/opentelemetry-kotlin: the README only says 'no longer maintained'; its last push was 2026-02-16 and the new repo's v0.1.0 is 2026-02-20. The original claim of 'archived 2026-02-20' is not confirmed.
+- Whether GitLive's `com.google.firebase` expect-declaration layer ships in 2.7.0 or only in 3.x: the master README describes it without a version tag.
+- The effective firebase-analytics version resolved in this repo (explicit 22.4.0 pin vs firebase-bom 34.9.0 in androidApp) needs `./gradlew :androidApp:dependencies` to confirm.
+- Whether the Sentry KMP (0.x), PostHog KMP (0.x), OpenFeature Kotlin (0.x) and OpenTelemetry Kotlin (0.x) vendors consider these SDKs production-ready. Only PostHog's docs make an explicit '0.x pre-release / API may change' statement, and OTel's docs say breaking changes happen 'without notice'.
+- The Datadog KMP docs setup page could not be fetched (the fetch failed). The min-OS correction (API 23+, iOS 12+) comes from the GitHub README.
+- Koin 4.2 Lazy Modules benchmark numbers: the release notes mention benchmarks but give no numbers.
+- Metro's claimed build-time improvements ('upwards of 50-80%') and 'dozens of companies' come from the author's own blog, with no independent measurement.
+- Whether Google plans an official Firebase KMP SDK: only its absence was verified (GitLive README, and the UserVoice request with no official status).
+- Primary-source case studies for Airbnb, Square/Cash App and Duolingo on modularizing analytics, flags or third-party SDKs: none found. The web-search budget for this session was exhausted, so these were not searched in this pass.
+- Contents of Tivi's shared/prod and shared/qa modules: the directories exist, but how exactly they swap bindings was not inspected.
+- Whether every NiA feature screen calls TrackScreenViewEvent: the composable exists in core:ui, but call sites were not enumerated.
+- Uber Piranha ICSE-SEIP 2020 paper (manu.sridharan.net PDF): not re-fetched.
+
+## 7. Governança e enforcement
+
+- **GOV-01** — The Dependency Analysis Gradle Plugin (DAGP, settings plugin `com.autonomousapps.build-health`) is the main dependency-hygiene tool. KMP analysis arrived in 3.6.0 (Maven Central 2026-02-26) and covers only the `jvm` and Android targets. The current version is 3.19.2 (2026-09-14). _(autonomousapps (Tony Robalik) · 3.19.2, 2026-09-14 · high)_
+  - <https://github.com/autonomousapps/dependency-analysis-gradle-plugin>
+  - <https://github.com/autonomousapps/dependency-analysis-gradle-plugin/blob/main/CHANGELOG.md>
+  - <https://repo1.maven.org/maven2/com/autonomousapps/dependency-analysis-gradle-plugin/>
+  - <https://github.com/autonomousapps/dependency-analysis-gradle-plugin/releases>
+- **GOV-02** — modules-graph-assert 2.9.1 (2026-04-12) enforces module-graph rules with path regexes or per-module aliases. `allowed` is exhaustive (any unmatched edge fails `assertModuleGraph`, which is part of `check`), and `restricted` forbids specific edges. It is NOT compatible with Gradle Isolated Projects. _(Josef Raska · 2.9.1, 2026-04-12 · high)_
+  - <https://github.com/jraska/modules-graph-assert>
+  - <https://github.com/jraska/modules-graph-assert/blob/master/plugin/src/main/kotlin/com/jraska/module/graph/assertion/GraphRulesExtension.kt>
+  - <https://github.com/jraska/modules-graph-assert/blob/master/plugin/src/main/kotlin/com/jraska/module/graph/assertion/GradleDependencyGraphFactory.kt>
+  - <https://github.com/jraska/modules-graph-assert/issues/322>
+- **GOV-03** — App Platform (built at Amazon, now maintained independently at vRallev/app-platform, Maven group `software.ralf.app.platform`) encodes module types in the leaf module name (`:public`, `:impl`, `:internal`, `:testing`, `:*-robots`, `:app`). Only `:app` modules may depend on `:impl`, and a `checkModuleStructureDependencies` task that `check` depends on enforces this across production, test and test-fixture compile classpaths. _(App Platform (ex-Amazon, Ralf Wondratschek) · 0.2.2, 2026-09-25 · high)_
+  - <https://github.com/vRallev/app-platform/blob/main/docs/module-structure.md>
+  - <https://github.com/vRallev/app-platform>
+- **GOV-04** — Now in Android (NiA) defines a feature `api` as 'navigation keys' and `impl` as everything else. In CI it hard-fails fork PRs and push builds on dependency-guard or module-graph drift. For same-repo PRs it regenerates the baselines/graphs and auto-commits them into the PR instead of failing. _(Google / Now in Android · main branch, fetched 2026-09-27 · high)_
+  - <https://github.com/android/nowinandroid/blob/main/docs/ModularizationLearningJourney.md>
+  - <https://github.com/android/nowinandroid/blob/main/.github/workflows/Build.yaml>
+  - <https://github.com/android/nowinandroid/blob/main/build-logic/convention/src/main/kotlin/com/google/samples/apps/nowinandroid/Graph.kt>
+  - <https://github.com/android/nowinandroid/blob/main/app/build.gradle.kts>
+- **GOV-05** — dropbox/dependency-guard (`com.dropbox.dependency-guard` 0.5.0, 2024-02-05) detects unintended changes to a resolved classpath against committed `dependencies/<configuration>.txt` baselines. The project is effectively dormant. _(Dropbox · 0.5.0, 2024-02-05 · high)_
+  - <https://github.com/dropbox/dependency-guard>
+  - <https://github.com/dropbox/dependency-guard/releases>
+  - <https://github.com/dropbox/dependency-guard/commits/main>
+- **GOV-06** — ABI validation built into the Kotlin Gradle plugin is still experimental (custom configuration needs `@OptIn(ExperimentalAbiValidation::class)`). It appeared in 2.2.0 with `checkLegacyAbi`/`updateLegacyAbi`. 2.3.20 renamed them to `checkKotlinAbi`/`updateKotlinAbi` and hooked them into `check`. 2.4.0 streamlined the DSL and deprecated parts of it. _(JetBrains · KGP 2.2.0 → 2.3.20 → 2.4.0 (latest 2.4.20) · high)_
+  - <https://kotlinlang.org/docs/whatsnew22.html>
+  - <https://kotlinlang.org/docs/whatsnew2320.html>
+  - <https://kotlinlang.org/docs/whatsnew24.html>
+  - <https://kotlinlang.org/docs/whatsnew2420.html>
+- **GOV-07** — The standalone binary-compatibility-validator (BCV, latest 0.18.2 from 2026-09-02) is in maintenance mode: critical fixes and support for new Kotlin versions only, with new features going into KGP's experimental ABI validation. JetBrains has also declined to add Isolated Projects support to it. _(JetBrains · 0.18.2, 2026-09-02 · high)_
+  - <https://github.com/Kotlin/binary-compatibility-validator>
+  - <https://kotlinlang.org/docs/api-guidelines-backward-compatibility.html>
+  - <https://youtrack.jetbrains.com/issue/KT-78262>
+  - <https://agp-status.frybits.com/gradle-isolated-projects/>
+- **GOV-08** — Kotlin's library-author API guidelines recommend explicit API mode. It forces visibility modifiers (and explicit types) on public declarations, which makes a module's intended public surface explicit and reviewable. _(JetBrains · current docs · high)_
+  - <https://kotlinlang.org/docs/api-guidelines-simplicity.html>
+  - <https://kotlinlang.org/docs/api-guidelines-backward-compatibility.html>
+- **GOV-09** — Gradle Isolated Projects was promoted from experimental to incubating in Gradle 9.7.0 (enable with `org.gradle.isolated-projects=true`). From 9.7.0 the build fails on the first violation by default. Diagnostics mode (added in 9.6.0) and the 9.7.0 'temporarily ignore violations' mode help you migrate. It parallelizes only the configuration phase. _(Gradle · Gradle 9.6.0 / 9.7.0 / 9.8.0 docs · high)_
+  - <https://docs.gradle.org/current/userguide/isolated_projects.html>
+  - <https://github.com/gradle/gradle/releases>
+- **GOV-10** — Gradle's official best-practices pages (9.8 docs) recommend `build-logic` composite builds and convention plugins for shared logic, the plugins block, a named root project, no `afterEvaluate`, version catalogs, repositories declared in settings, and avoiding redundant dependency declarations. _(Gradle · Gradle 9.8.0 docs · high)_
+  - <https://docs.gradle.org/current/userguide/best_practices_structuring_builds.html>
+  - <https://docs.gradle.org/current/userguide/best_practices_general.html>
+  - <https://docs.gradle.org/current/userguide/best_practices_dependencies.html>
+  - <https://docs.gradle.org/current/userguide/sharing_build_logic_between_subprojects.html>
+- **GOV-11** — Type-safe project accessors are still an incubating feature preview in the current Gradle docs. _(Gradle · current docs · high)_
+  - <https://docs.gradle.org/current/userguide/declaring_dependencies_basics.html>
+- **GOV-12** — Square's 'Herding Elephants' (Tony Robalik, 2021-11-04) set the pattern of one convention plugin per module type, with build scripts limited to plugins, dependencies and a custom `square {}` block. Square later published its build-logic as binary plugins because resolving plugins from an included build added about 30 s (~33%) to configuration. _(Square (Tony Robalik), Google NiA, Jendrik Johannes · 2021-11-04 (Square); NiA/idiomatic-gradle current · high)_
+  - <https://developer.squareup.com/blog/herding-elephants/>
+  - <https://github.com/android/nowinandroid/blob/main/build-logic/README.md>
+  - <https://github.com/jjohannes/idiomatic-gradle>
+- **GOV-13** — Slack's Foundry (0.36.0, 2026-07-28) includes 'module topography', which reports enabled-but-unused build features for removal; Skippy, which computes affected projects from changed files; and a project generator in its Skate IntelliJ plugin. _(Slack · 0.36.0, 2026-07-28 · high)_
+  - <https://github.com/slackhq/foundry/blob/main/platforms/gradle/foundry-gradle-plugin/src/main/kotlin/foundry/gradle/topography/ModuleTopographyTask.kt>
+  - <https://github.com/slackhq/foundry/blob/main/platforms/gradle/foundry-gradle-plugin/src/main/kotlin/foundry/gradle/topography/DefaultFeatures.kt>
+  - <https://github.com/slackhq/foundry/blob/main/tools/skippy/src/main/kotlin/foundry/skippy/AffectedProjectsComputer.kt>
+  - <https://github.com/slackhq/foundry/blob/main/platforms/intellij/skate/src/main/kotlin/foundry/intellij/skate/projectgen/ProjectGenMenuAction.kt>
+- **GOV-14** — Spotlight (`com.fueledbycaffeine.spotlight` 1.8.0, 2026-09-17) cuts IDE sync in very large builds by loading a working set plus its statically parsed transitive dependencies. It advises against type-safe project accessors in Kotlin build scripts. Dropbox Focus is effectively dormant. _(Josh Friend (Spotlight), Dropbox (Focus) · Spotlight 1.8.0, 2026-09-17 · high)_
+  - <https://github.com/joshfriend/spotlight>
+  - <https://github.com/dropbox/focus>
+  - <https://github.com/dropbox/focus/commits/main>
+- **GOV-15** — Dropbox archived AffectedModuleDetector and points users to Flo Health's fork, which publishes under the new plugin id `health.flo.affectedmoduledetector`. _(Dropbox → Flo Health · archived; fork last push 2026-06-17 · high)_
+  - <https://github.com/dropbox/AffectedModuleDetector>
+  - <https://github.com/flo-health/AffectedModuleDetector>
+- **GOV-16** — Develocity Predictive Test Selection is the commercial way to run fewer tests. It needs a Develocity server (2022.2+) and tests that run on the JUnit Platform. _(Gradle Inc. / Develocity · current docs · medium)_
+  - <https://docs.develocity.ai/predictive-test-selection/>
+- **GOV-17** — GitHub CODEOWNERS uses gitignore-like patterns where the last match wins. With required code-owner review, approval from any one listed owner is enough, and owners must have explicit write access. _(GitHub · current docs · high)_
+  - <https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners>
+- **GOV-18** — The latest final detekt is 1.23.8 (2025-02-21, built against Kotlin 2.0.21). The detekt README now labels the 2.0 pre-release (2.0.0-alpha.6, 2026-08-04; plugin id `dev.detekt`) as the recommended setup. _(detekt · 1.23.8 final / 2.0.0-alpha.6 · high)_
+  - <https://github.com/detekt/detekt>
+  - <https://github.com/detekt/detekt/releases>
+  - <https://detekt.dev/docs/introduction/extensions/>
+  - <https://detekt.dev/docs/gettingstarted/gradle/>
+- **GOV-19** — Twitter's Compose lint rules are no longer developed; the maintained fork is `io.nlopez.compose.rules`. Since 0.5.0 its detekt artifact targets detekt 2.0 alphas, and 0.4.28 is the last release built for detekt 1.23.8. _(Nacho Lopez (ex-Twitter) · v0.6.7, 2026-09-24 · high)_
+  - <https://github.com/mrmans0n/compose-rules>
+  - <https://github.com/mrmans0n/compose-rules/releases>
+- **GOV-20** — Using `com.android.library` in KMP modules relies on AGP APIs that are deprecated and opt-in from AGP 9.0 and 'expected to be removed' in AGP 10.0 ('second half of 2026'). The replacement is `com.android.kotlin.multiplatform.library` (needs AGP ≥ 8.10, KGP ≥ 2.0). As of 2026-09-27, no AGP 10 artifact has been published. _(Google (AGP) · doc fetched 2026-09-27 · high)_
+  - <https://developer.android.com/kotlin/multiplatform/plugin>
+  - <https://dl.google.com/dl/android/maven2/com/android/tools/build/gradle/maven-metadata.xml>
+  - <https://github.com/autonomousapps/dependency-analysis-gradle-plugin/blob/main/CHANGELOG.md>
+- **GOV-21** — Konsist writes architecture rules as unit tests over package layers and module or source-set scopes. It is pre-1.0, has had no release since 0.17.3 (2024-12-08), and its docs don't mention KMP. _(LemonAppDev · 0.17.3, 2024-12-08 · medium)_
+  - <https://docs.konsist.lemonappdev.com/writing-tests/architecture-assert>
+  - <https://docs.konsist.lemonappdev.com/writing-tests/koscope>
+  - <https://github.com/LemonAppDev/konsist/releases>
+  - <https://github.com/LemonAppDev/konsist/pull/1874>
+- **GOV-22** — Renovate's gradle manager covers `*.gradle(.kts)`, `gradle.properties`, `gradle/*.toml` / `*.versions.toml` and buildSrc `.kt`. Self-hosted Renovate runs the Gradle Wrapper only when the admin allows it. Monorepo presets exist for Kotlin, kotlinx-coroutines and KSP, but not for Compose Multiplatform, Koin, SQLDelight or AndroidX. _(Mend Renovate · current docs · high)_
+  - <https://docs.renovatebot.com/modules/manager/gradle/>
+  - <https://docs.renovatebot.com/presets-monorepo/>
+  - <https://docs.renovatebot.com/presets-group/>
+- **GOV-23** — Bazel and Buck2 are not realistic replacements for Gradle in KMP apps that ship iOS. rules_kotlin supports only the jvm, android and js flavors, and open-source Buck2 calls itself early-stage and does not ship open-source toolchains. _(Bazel / Meta / Grab · 2023–2026 · high)_
+  - <https://github.com/bazel-contrib/rules_kotlin>
+  - <https://engineering.fb.com/2023/04/06/open-source/buck2-open-source-large-scale-build-system/>
+  - <https://buck2.build/docs/about/why/>
+  - <https://github.com/grab/grazel>
+- **GOV-24** — JetBrains archived the Amper repo and continues it as 'Kotlin Toolchain' (JetBrains/kotlin-toolchain, created 2026-05-11). It is actively released (v0.12.2 on 2026-09-15) and still pre-1.0. _(JetBrains · v0.12.2, 2026-09-15 · high)_
+  - <https://github.com/JetBrains/amper>
+  - <https://github.com/JetBrains/kotlin-toolchain>
+  - <https://github.com/JetBrains/kotlin-toolchain/releases>
+- **GOV-25** — gradle/actions v6 (latest stable v6.3.0, 2026-08-02) provides setup-gradle (which validates the wrapper on every run since v4), dependency-submission (feeds GitHub vulnerability alerts) and wrapper-validation. _(Gradle · v6.3.0 · high)_
+  - <https://github.com/gradle/actions>
+  - <https://github.com/gradle/actions/releases>
+- **GOV-26** — cashapp/licensee (1.14.1, 2025-10-09) fails the build when any dependency, including transitive ones, has a license outside the allowlist. It explicitly supports `org.jetbrains.kotlin.multiplatform` and wires variant-specific tasks into `check`. _(Cash App (Block) · 1.14.1, 2025-10-09 · high)_
+  - <https://github.com/cashapp/licensee>
+- **GOV-27** — Android's modularization guide (last updated 2026-03-05) recommends separating API from implementation in four cases: diverse capabilities, multiple applications or platforms, independent teams, and large codebases. That makes it a positive recommendation for enterprise multi-team apps. It also says to prefer `implementation` over `api` and to keep public surfaces minimal. _(Google Android · 2026-03-05 · high)_
+  - <https://developer.android.com/topic/modularization/patterns>
+- **GOV-28** — Gradle's configure-on-demand is still incubating ('only some builds are guaranteed to work correctly'), and modules-graph-assert warns that it can hide modules from the graph assertions. _(Gradle / jraska · current docs · high)_
+  - <https://docs.gradle.org/current/userguide/configuration_on_demand.html>
+  - <https://github.com/jraska/modules-graph-assert>
+- **GOV-NEW-01** — Kotlin Multiplatform supports Gradle Isolated Projects for every target except JS/Wasm. The JS/Wasm gap (KT-80311) is in progress with a plan tied to Kotlin 2.5.0. Full KGP compatibility with Gradle 9.7 needs Kotlin 2.4.20. _(JetBrains · 2026-09 · high)_
+  - <https://youtrack.jetbrains.com/issue/KT-80311>
+  - <https://kotlinlang.org/docs/whatsnew2320.html>
+  - <https://kotlinlang.org/docs/whatsnew24.html>
+  - <https://kotlinlang.org/docs/whatsnew2420.html>
+- **GOV-NEW-02** — Several governance plugins are not Isolated-Projects-compatible, so 'enforce the graph' and 'adopt Isolated Projects' currently pull in different directions. A community tracker lists modules-graph-assert and BCV as Broken, and DAGP, KSP, Firebase Crashlytics and Firebase Perf as Ready. _(Community tracker (frybits) + primary issues · status as of Gradle 9.3.0; issues checked 2026-09-27 · medium)_
+  - <https://agp-status.frybits.com/gradle-isolated-projects/>
+  - <https://github.com/jraska/modules-graph-assert/issues/322>
+  - <https://youtrack.jetbrains.com/issue/KT-78262>
+- **GOV-NEW-03** — Compose Multiplatform 1.10.0 deprecated the Gradle plugin's dependency aliases (`compose.ui`, `compose.material3`, …) in favor of direct coordinates in the version catalog. CMP 1.11.0 added a runtime/skiko version-consistency check. The latest stable is 1.12.1 (2026-09-22). _(JetBrains Compose Multiplatform · 1.10.0 (deprecation) → 1.12.1 (2026-09-22) · high)_
+  - <https://github.com/JetBrains/compose-multiplatform/blob/master/CHANGELOG.md>
+  - <https://github.com/JetBrains/compose-multiplatform/pull/5462>
+  - <https://github.com/JetBrains/compose-multiplatform/releases>
+- **GOV-NEW-04** — Firebase BOM 34.9.0 pins firebase-analytics 23.0.0, firebase-crashlytics 20.0.4 and firebase-perf 22.0.4. An explicit version in the catalog bypasses BOM alignment in any module that doesn't import the BOM. _(Google Firebase / Gradle · BOM 34.9.0 · medium)_
+  - <https://dl.google.com/dl/android/maven2/com/google/firebase/firebase-bom/34.9.0/firebase-bom-34.9.0.pom>
+  - <https://docs.gradle.org/current/userguide/best_practices_dependencies.html>
+
+**Não verificado / refutado:**
+
+- Method limitation: the session-wide WebSearch budget was exhausted (200/200) for this fact-check too. Verification used direct fetches of primary URLs, raw README/CHANGELOG/source via the GitHub API, the Maven Central and Google Maven directories, and the YouTrack REST API. Recent conference talks and 2025–2026 company blog posts are still under-represented.
+- Removed from unverified (now verified): Square's figures (30 s / ~33% configuration regression, 32-module build-logic, 61% complexity reduction) were confirmed verbatim in the original post.
+- Refuted framing (kept, but corrected): GOV-04's 'NiA gates CI on dependency-guard baselines' holds only for fork PRs and push builds; same-repo PRs auto-commit new baselines and graphs.
+- Refuted quote (corrected): 'suitable for toy projects only' does not appear in the Kotlin 2.2.0 notes; the actual text is 'You can try it out in toy projects, but we don't recommend using it in production yet.'
+- Whether AGP 8.13.x (or AGP 9.x) is officially compatible with Gradle 9.7/9.8 and with Isolated Projects was not checked.
+- Whether Compose Multiplatform 1.10–1.12's Gradle plugin, SQLDelight 2.2.x, BuildKonfig 0.17.x and Koin (runtime-only, so probably irrelevant) are Isolated-Projects-compatible was not checked. The frybits tracker doesn't list them and its status is as of Gradle 9.3.0.
+- App Platform's `checkModuleStructureDependencies`: Isolated Projects compatibility not checked.
+- Whether DAGP analyzes the Android target of KMP modules using legacy `com.android.library` + `androidTarget()` was not tested. The README lists only `com.android.kotlin.multiplatform.library` for KMP Android, though 3.7.0 mentions 'the androidMain source set is special'.
+- AGP 10: the Android doc still says 'expected … second half of 2026', but no 10.x artifact exists on Google Maven as of 2026-09-27. The actual release date is unknown.
+- Firebase analytics compile/runtime skew in this repo is an inference from Gradle's conflict-resolution rules; `dependencyInsight` was not executed. The recent commit removing google-services.json may also affect configuration.
+- The Flo Health AffectedModuleDetector fork: no published release was located on Maven Central (the repo1 path returned 404) and there are no GitHub tags.
+- eduardbosch/modules-graph-assert (IP-compatible fork): 1 star, last push 2026-03-18; its correctness and maintenance were not verified.
+- Foundry: the version catalog declares DAGP and sort-dependencies as plugin dependencies; how Foundry wires them into builds was not inspected.
+- Develocity PTS not covering Kotlin/Native tests is inferred from 'Tests must run via JUnit Platform', not stated in the docs.
+- The Renovate `monorepo:kotlin` source URL it matches was not inspected.
+- Whether Lyft, Spotify and Snap still build mobile apps with Bazel: the only source is the undated bazel.build users page.
+- Kotlin 2.4.0 ABI-validation deprecations: only the summary line was found; the exact deprecated DSL members were not listed on the what's-new page.
+- Detekt 2.0 stable date and its K2/Analysis-API status: not found.
+
+## 8. Arquitetura de testes
+
+- **TST-01** — App Platform defines six module types: :public, :impl, :internal, :testing, :*-robots and :app. Its core rule is that no module except the final :app may depend on :impl modules (robots depend on :impl for UI tests only), and an opt-in Gradle task, :checkModuleStructureDependencies, enforces the rules as part of `check`. _(App Platform (Ralf Wondratschek; started at Amazon, now maintained independently under vRallev/app-platform) · docs fetched 2026-09-27; Amazon-namespace releases through 0.0.17 · high)_
+  - <https://vrallev.github.io/app-platform/module-structure/>
+  - <https://vrallev.github.io/app-platform/>
+  - <https://amzn.github.io/app-platform/>
+- **TST-02** — In KMP, App Platform's :testing modules are ordinary library modules with their fakes in commonMain, and robots live in commonMain of :*-impl-robots modules. They are not test source sets. _(App Platform sample (vRallev/app-platform) · repo main, fetched 2026-09-27 · high)_
+  - <https://github.com/vRallev/app-platform/tree/main/sample/user/testing>
+  - <https://github.com/vRallev/app-platform/blob/main/sample/login/impl-robots/src/commonMain/kotlin/software/ralf/app/platform/sample/login/LoginRobot.kt>
+  - <https://github.com/vRallev/app-platform/blob/main/sample/app-framework/impl-ui-test-robots/src/desktopMain/kotlin/software/ralf/app/platform/sample/TestDesktopAppGraph.kt>
+  - <https://vrallev.github.io/app-platform/testing/>
+- **TST-03** — App Platform's testing docs prefer real implementations first and shared fakes second, and recommend no mocking framework ('None'). They test Molecule presenters with Turbine and Compose renderers with runComposeUiTest as unit tests on Desktop and iOS; Android renderers need a device or emulator. _(App Platform · docs fetched 2026-09-27 · high)_
+  - <https://vrallev.github.io/app-platform/testing/>
+  - <https://vrallev.github.io/app-platform/presenter/>
+  - <https://vrallev.github.io/app-platform/renderer/>
+- **TST-04** — Now in Android uses no mocking library. Its test doubles ship as dedicated non-test modules (:core:testing, :core:data-test, :core:datastore-test, :core:screenshot-testing, :sync:sync-test), alongside :ui-test-hilt-manifest and the :app-nia-catalog showcase app. _(Google, Now in Android (NiA) · repo main, fetched 2026-09-27 · high)_
+  - <https://raw.githubusercontent.com/android/nowinandroid/main/README.md>
+  - <https://raw.githubusercontent.com/android/nowinandroid/main/settings.gradle.kts>
+  - <https://github.com/android/nowinandroid/blob/main/core/data-test/src/main/kotlin/com/google/samples/apps/nowinandroid/core/data/test/TestDataModule.kt>
+  - <https://github.com/android/nowinandroid/blob/main/core/testing/src/main/kotlin/com/google/samples/apps/nowinandroid/core/testing/util/TestAnalyticsHelper.kt>
+- **TST-05** — Each NiA feature:impl module owns its ViewModel tests, Roborazzi screenshot tests with golden PNGs committed in the module, and instrumented screen tests. ViewModels are built by hand from Test* repositories combined with real use cases, not through DI. _(Google, Now in Android · repo main, fetched 2026-09-27 · high)_
+  - <https://github.com/android/nowinandroid/tree/main/feature/foryou/impl>
+  - <https://github.com/android/nowinandroid/blob/main/feature/foryou/impl/build.gradle.kts>
+  - <https://github.com/android/nowinandroid/blob/main/feature/foryou/impl/src/test/kotlin/com/google/samples/apps/nowinandroid/feature/foryou/impl/ForYouViewModelTest.kt>
+  - <https://github.com/android/nowinandroid/blob/main/core/screenshot-testing/src/main/kotlin/com/google/samples/apps/nowinandroid/core/testing/util/ScreenshotHelper.kt>
+- **TST-06** — Android's official test-doubles guidance prefers fakes over mocks, stubs and spies, and recommends a DI framework to swap them in at test time. _(Google (Android Developers) · page last updated 2026-03-05 · high)_
+  - <https://developer.android.com/training/testing/fundamentals/test-doubles>
+- **TST-07** — Google's SWE book says the team that owns a real implementation should write and maintain its fake, that fakes need their own tests, run as 'contract tests' against both the real implementation and the fake, and that realism should be preferred over isolation. _(Google, Software Engineering at Google (ch. 13 'Test Doubles') · book, 2020 (online edition) · high)_
+  - <https://abseil.io/resources/swe-book/html/ch13.html>
+- **TST-08** — Google's modularization patterns page names test modules as the pattern for shared test code, and shows api/impl dependency inversion swapping implementations per configuration, including a mock implementation for instrumented tests. _(Google (Android modularization guide) · page last updated 2026-03-05 · high)_
+  - <https://developer.android.com/topic/modularization/patterns>
+- **TST-09** — Gradle's java-test-fixtures plugin and AGP's @Incubating testFixtures DSL cover only JVM and Android modules. Consumers use testImplementation(testFixtures(project(":lib"))). _(Gradle / AGP · Gradle 9.8.0 (current, built 2026-09-24); AGP TestFixtures DSL added in 7.1.0 · high)_
+  - <https://docs.gradle.org/current/userguide/java_testing.html>
+  - <https://developer.android.com/reference/tools/gradle-api/9.4/com/android/build/api/dsl/TestFixtures>
+  - <https://services.gradle.org/versions/current>
+- **TST-10** — As of 2026-09, Kotlin Multiplatform still has no test-fixtures support. Non-JVM support is 'To be discussed', JVM/Android support is in Backlog, and a 2026-08 bug says java-test-fixtures silently ignores Kotlin sources in KMP modules. _(JetBrains (Kotlin YouTrack) · KT-63142 updated 2026-08-04; KT-69482 updated 2026-08-07; KT-88423 created 2026-08-07 · high)_
+  - <https://youtrack.jetbrains.com/issue/KT-63142>
+  - <https://youtrack.jetbrains.com/issue/KT-69482>
+  - <https://youtrack.jetbrains.com/issue/KT-88423>
+- **TST-11** — KGP now warns 'Unsupported API dependency types in test source sets' when testApi or commonTest api() is used, because test source sets should not be consumable. So KMP has no supported way to share one module's test sources with another; shared fakes must go in a regular module. _(JetBrains (Kotlin Gradle Plugin) · KT-63285 fixed 2025-10-07; KT-82223 reported on 2.3.0-Beta2 (2025-11-06); KT-81097 docs task still Open · high)_
+  - <https://youtrack.jetbrains.com/issue/KT-63285>
+  - <https://youtrack.jetbrains.com/issue/KT-82223>
+  - <https://youtrack.jetbrains.com/issue/KT-81097>
+- **TST-12** — Tuist's TMA gives each feature five targets (Feature, FeatureInterface, FeatureTests, FeatureTesting, FeatureExample) so every feature can be built, tested and tried independently of the main app. _(Tuist (iOS), The Modular Architecture (TMA) · docs in tuist/tuist main, fetched 2026-09-27 · high)_
+  - <https://github.com/tuist/tuist/blob/main/server/priv/docs/en/guides/features/projects/tma-architecture.md>
+  - <https://docs.tuist.dev/en/guides/features/projects/tma-architecture>
+- **TST-13** — Koin's runtime graph check is Module.verify(), which is JVM-only. checkModules() has been deprecated since Koin 4.0, and the Koin 4.1 docs line is marked as no longer actively maintained. _(Koin (Kotzilla) · Koin 4.2.0 on 2026-03-17; 4.2.2 on 2026-06-15 · high)_
+  - <https://insert-koin.io/docs/reference/koin-test/verify/>
+  - <https://insert-koin.io/docs/4.1/support/releases>
+  - <https://github.com/InsertKoinIO/koin/releases>
+  - <https://insert-koin.io/docs/reference/koin-compose/compose-testing>
+- **TST-14** — The Koin Compiler Plugin is a K2 compiler plugin that validates the Koin graph at compile time: per module (A2), as the full graph at startKoin<T>() (A3), and at every get/inject/koinViewModel call site (A4). Koin's docs say it replaces runtime verify() and checkModules() tests. _(Koin Compiler Plugin (InsertKoinIO/koin-compiler-plugin) · repo created 2026-02-04; 0.4.0 on 2026-03-12; 1.0.0 on 2026-05-20; 1.2.1 on 2026-09-10 · high)_
+  - <https://github.com/InsertKoinIO/koin-compiler-plugin>
+  - <https://github.com/InsertKoinIO/koin-compiler-plugin/releases>
+  - <https://insert-koin.io/docs/reference/koin-compiler/compile-safety>
+- **TST-15** — Metro validates each dependency graph at compile time in the IR backend. Tests swap in fakes with @ContributesTo(replaces = [...]) or graph-level excludes, and cross-module aggregation has per-platform Kotlin minimums. _(Metro (Zac Sweers) · 1.4.5 released 2026-09-24 · high)_
+  - <https://zacsweers.github.io/metro/latest/validation-and-error-reporting/>
+  - <https://zacsweers.github.io/metro/latest/aggregation/>
+  - <https://zacsweers.github.io/metro/latest/multiplatform/>
+  - <https://github.com/ZacSweers/metro/releases>
+- **TST-16** — Compose UI tests can live in commonTest with runComposeUiTest and run on the iOS simulator, JVM/desktop, Wasm and Android devices, but not as Android local (host) tests. CMP 1.11.0 deprecated the v1 API in favor of v2, which defaults to StandardTestDispatcher. _(JetBrains (Compose Multiplatform) · docs page dated 15 May 2026, with a live version placeholder (currently 1.12.1); CMP 1.11.0 on 2026-05-13, 1.12.0 on 2026-08-25, 1.12.1 on 2026-09-22 · high)_
+  - <https://kotlinlang.org/docs/multiplatform/compose-test.html>
+  - <https://github.com/JetBrains/compose-multiplatform/blob/master/CHANGELOG.md>
+  - <https://github.com/JetBrains/compose-multiplatform/releases>
+- **TST-17** — Of the screenshot tools reviewed (Roborazzi, Paparazzi, Google Compose Preview Screenshot Testing, ComposablePreviewScanner), only Roborazzi covers Android (Robolectric), Compose Desktop and Compose iOS, and it marks both its Desktop and iOS support as experimental. _(Roborazzi (takahirom) · 1.75.0 released 2026-09-21 · high)_
+  - <https://github.com/takahirom/roborazzi>
+  - <https://takahirom.github.io/roborazzi/compose-multiplatform.html>
+  - <https://github.com/takahirom/roborazzi/releases>
+- **TST-18** — Paparazzi and Google's Compose Preview Screenshot Testing both render host-side with LayoutLib and support Android only. Google's docs say its tooling doesn't support non-Android KMP targets, and its standalone com.android.compose.screenshot plugin is now deprecated in favor of AGP test suites (see T1-30). _(Cash App (Paparazzi) and Google (Compose Preview Screenshot Testing) · Paparazzi 2.0.0-alpha05 on 2026-05-20; Google standalone-plugin page updated 2026-09-25 · high)_
+  - <https://developer.android.com/studio/preview/compose-screenshot-testing>
+  - <https://github.com/cashapp/paparazzi/blob/master/CHANGELOG.md>
+  - <https://github.com/cashapp/paparazzi>
+- **TST-19** — ComposablePreviewScanner can find @Preview functions in commonMain, but preview-driven screenshot tests must run from an Android or Desktop target. CMP 1.10.0 deprecated JetBrains' @Preview annotations in favor of androidx.compose.ui.tooling.preview.Preview, which is now available in commonMain. _(ComposablePreviewScanner (Sergio Sastre) and JetBrains CMP · Scanner 0.9.3 on 2026-08-17; CMP 1.10.0 on 2026-01-13 · high)_
+  - <https://github.com/sergio-sastre/ComposablePreviewScanner>
+  - <https://github.com/JetBrains/compose-multiplatform/blob/master/CHANGELOG.md>
+- **TST-20** — To test a StateFlow built with stateIn(Lazily or WhileSubscribed) you need an active collector (a backgroundScope collector on UnconfinedTestDispatcher, or Turbine). Dispatchers should be injected rather than hardcoded, and Dispatchers.setMain is a common-code API. _(Google (Android Developers), Cash App (Turbine), kotlinx.coroutines · flow-testing and coroutine best-practices pages updated 2026-09-24; Turbine 1.2.1 on 2025-06-11 · high)_
+  - <https://developer.android.com/kotlin/flow/test>
+  - <https://developer.android.com/kotlin/coroutines/coroutines-best-practices>
+  - <https://github.com/cashapp/turbine>
+  - <https://kotlinlang.org/api/kotlinx.coroutines/kotlinx-coroutines-test/kotlinx.coroutines.test/set-main.html>
+- **TST-21** — Molecule presenters are tested by running them as a Flow with moleculeFlow(RecompositionMode.Immediate) and asserting with Turbine. Circuit wraps this in Presenter.test/presenterTestOf and adds FakeNavigator and TestEventSink. _(Cash App (Molecule) and Slack (Circuit) · Molecule 2.2.0 on 2025-09-24; Circuit 0.39.0 on 2026-09-15 · high)_
+  - <https://github.com/cashapp/molecule>
+  - <https://slackhq.github.io/circuit/docs/testing/>
+  - <https://github.com/slackhq/circuit/releases>
+- **TST-22** — SQLDelight repository tests can use a real in-memory database on every KMP target: JdbcSqliteDriver(IN_MEMORY) on JVM and Android host, and inMemoryDriver(schema) on Kotlin/Native. SQLDelight's own tests pick the driver through an expect/actual provideDbDriver(). _(SQLDelight (Cash App) · 2.4.0 released 2026-09-18 · high)_
+  - <https://github.com/sqldelight/sqldelight/blob/master/docs/android_sqlite/testing.md>
+  - <https://github.com/sqldelight/sqldelight/blob/master/drivers/native-driver/src/nativeMain/kotlin/app/cash/sqldelight/driver/native/NativeSqlDatabase.kt>
+  - <https://github.com/sqldelight/sqldelight/blob/master/extensions/androidx-paging3/src/nativeTest/kotlin/app/cash/sqldelight/paging3/ProvideDbDriver.kt>
+- **TST-23** — MockK publishes only a JVM/Android runtime, so it cannot run in commonTest on iOS. Mokkery is a compiler-plugin mocking library for all KMP targets, but it can only mock interfaces, functional types and open/abstract (or all-open) classes, and since 3.4.0 it requires Kotlin 2.4.0 or later. _(MockK and Mokkery · MockK 1.14.11 on 2026-05-29; Mokkery 3.5.0 on 2026-09-07 (3.4.0 on 2026-06-03) · high)_
+  - <https://github.com/mockk/mockk>
+  - <https://repo1.maven.org/maven2/io/mockk/mockk/1.14.11/mockk-1.14.11.module>
+  - <https://mokkery.dev/>
+  - <https://mokkery.dev/docs/Limitations>
+- **TST-24** — iosSimulatorArm64Test runs a Kotlin/Native test binary on a simulator through /usr/bin/xcrun, so iOS tests need a macOS runner with Xcode. The simulator device is set with --device. _(JetBrains (Kotlin Gradle Plugin / Kotlin docs) · Kotlin docs dated 15 May 2026; KGP source on master · high)_
+  - <https://kotlinlang.org/docs/multiplatform/multiplatform-run-tests.html>
+  - <https://github.com/JetBrains/kotlin/blob/master/libraries/tools/kotlin-gradle-plugin/src/common/kotlin/org/jetbrains/kotlin/gradle/targets/native/tasks/KotlinNativeTest.kt>
+- **TST-25** — The com.android.kotlin.multiplatform.library plugin disables Android host and device tests by default; you opt in with withHostTest and withDeviceTest, which create androidHostTest and androidDeviceTest. The legacy com.android.library KMP APIs are expected to be removed in AGP 10.0. _(Google (AGP Android-KMP library plugin) · page updated 2026-09-22 · high)_
+  - <https://developer.android.com/kotlin/multiplatform/plugin>
+- **TST-26** — Open-source affected-module tools map a PR's changed files onto the Gradle project graph and run only affected modules' tests, with an escape hatch that runs everything when build-wide files change. The Dropbox AMD is archived and its Flo Health successor has no releases yet. _(Dropbox/Flo Health (AffectedModuleDetector) and Slack (Foundry 'Skippy') · AMD v0.6.2 on 2025-08-20 (Dropbox repo archived); Flo Health fork has commits from 2026-06-15 to 2026-06-17 and no tags; Foundry 0.36.0 on 2026-07-28 · high)_
+  - <https://github.com/dropbox/AffectedModuleDetector>
+  - <https://github.com/flo-health/AffectedModuleDetector>
+  - <https://github.com/slackhq/foundry/blob/main/tools/skippy/src/main/kotlin/foundry/skippy/AffectedProjectsComputer.kt>
+- **TST-27** — The main tools for test selection and sharding are Develocity Predictive Test Selection (a commercial extension for Gradle Test tasks, including Android unit tests), Gradle Managed Devices sharding for instrumented tests, and Gradle's maxParallelForks and forkEvery for JVM tests. _(Gradle Develocity, Google (Gradle Managed Devices), Gradle · GMD page updated 2026-01-16; Gradle 9.8.0 docs · high)_
+  - <https://docs.develocity.ai/predictive-test-selection/>
+  - <https://developer.android.com/studio/test/managed-devices>
+  - <https://docs.gradle.org/current/userguide/java_testing.html>
+- **TST-28** — modules-graph-assert enforces regex allow and deny rules, plus a maximum height, on the module graph as part of check. It can include KMP source-set configurations and module-type aliases, making it a generic way to keep :testing modules off production configurations. _(jraska/modules-graph-assert · 2.9.1 released 2026-04-12 · high)_
+  - <https://github.com/jraska/modules-graph-assert>
+- **TST-29** — Android's testing-strategy guide uses a five-layer pyramid (unit, component, feature, application, release candidate). It classes screenshot tests as component tests and JVM tests with fakes as feature tests that cross module boundaries. _(Google (Android testing strategy) · page last updated 2026-09-01 · high)_
+  - <https://developer.android.com/training/testing/fundamentals/strategies>
+- **TST-30** — Google's Compose screenshot testing is moving into AGP's native test suites: a screenshot suite is declared under android.testOptions.screenshotTests, can target specific variants, and replaces the standalone com.android.compose.screenshot plugin. It remains experimental and Android-only. _(Google (Android Studio / AGP test suites) · page updated 2026-09-23; needs AGP 9.5.0-alpha03+ · high)_
+  - <https://developer.android.com/studio/preview/compose-screenshot-testing-with-testsuites>
+  - <https://developer.android.com/studio/preview/compose-screenshot-testing>
+- **TST-31** — AndroidX's API guidelines require every Jetpack API to ship a testing story other than 'use Mockito', ban spying, tell library owners to avoid Mockito in their own tests, and warn against opening final classes to make them mockable. _(AndroidX (Jetpack API guidelines) · androidx-main, fetched 2026-09-27 · high)_
+  - <https://github.com/androidx/androidx/blob/androidx-main/docs/api_guidelines/testing.md>
+  - <https://vrallev.github.io/app-platform/testing/>
+- **TST-32** — In KMP, when a Metro graph mixes contributions from common and platform source sets, the final @DependencyGraph must be declared in the platform source set. That is why test graphs such as App Platform's TestDesktopAppGraph and TestAndroidAppGraph live in desktopMain and androidMain. _(Metro (Zac Sweers) · docs latest, fetched 2026-09-27 · high)_
+  - <https://zacsweers.github.io/metro/latest/multiplatform/>
+  - <https://github.com/vRallev/app-platform/blob/main/sample/app-framework/impl-ui-test-robots/src/desktopMain/kotlin/software/ralf/app/platform/sample/TestDesktopAppGraph.kt>
+- **TST-33** — NiA records its screenshot goldens on Linux CI, warns that other OSes will render slightly differently, and tells contributors to run tests only on the demoDebug variant, never a bare ./gradlew test or connectedAndroidTest. _(Google, Now in Android · README on main, fetched 2026-09-27 · high)_
+  - <https://raw.githubusercontent.com/android/nowinandroid/main/README.md>
+- **TST-34** — By Develocity's own eligibility rule ('Gradle's built-in Test task and its subclasses'), KMP jvmTest tasks qualify for Predictive Test Selection and Kotlin/Native tasks such as iosSimulatorArm64Test do not. This is an inference from class hierarchies, not a Develocity statement. _(Kotlin Gradle Plugin source plus Develocity docs (inference) · KGP master, fetched 2026-09-27 · medium)_
+  - <https://github.com/JetBrains/kotlin/blob/master/libraries/tools/kotlin-gradle-plugin/src/common/kotlin/org/jetbrains/kotlin/gradle/targets/jvm/tasks/KotlinJvmTest.kt>
+  - <https://github.com/JetBrains/kotlin/blob/master/libraries/tools/kotlin-gradle-plugin/src/common/kotlin/org/jetbrains/kotlin/gradle/tasks/KotlinTest.kt>
+  - <https://github.com/JetBrains/kotlin/blob/master/libraries/tools/kotlin-gradle-plugin/src/common/kotlin/org/jetbrains/kotlin/gradle/targets/native/tasks/KotlinNativeTest.kt>
+  - <https://docs.develocity.ai/predictive-test-selection/>
+- **TST-35** — App Platform recommends interfaces plus DI over expect/actual for platform-dependent code, because an interface can be replaced with a fake in tests while an expect/actual function cannot. _(App Platform · docs fetched 2026-09-27 · high)_
+  - <https://vrallev.github.io/app-platform/module-structure/>
+
+**Não verificado / refutado:**
+
+- Coverage: WebSearch was unavailable in both passes (search budget exhausted), so the 2025-2026 engineering blogs and conference talks the task asked for were not searched. Some of those posts may contradict or extend these findings.
+- Refuted sub-claim (original T1-01): 'App Platform defines seven module types'. The docs list six (:public, :impl, :internal, :testing, :*-robots, :app).
+- Refuted sub-claim (original T1-14 and disagreements): 'the Koin Compiler Plugin's releases start at 1.0.1 on 2026-06-12'. Tags start at 0.4.0 (2026-03-12), and 1.0.0 shipped 2026-05-20.
+- Dropped sub-claim (original T1-13): 'Koin verify() does not instantiate definitions'. The verify docs do not say this either way.
+- Refuted provenance (original T1-11): that KT-81097 links to KT-63285. Its description text cites KT-63142. The actual deprecation fix is KT-63285 (Fixed 2025-10-07).
+- Corrected sub-claim (original T1-21): that both Molecule and Circuit require `isReturnDefaultValues = true`. Only Circuit's docs say so.
+- App Platform's statement that 'CashApp banned mocking frameworks in the Android codebase': a WebFetch summary of the linked billjings.net post found a stated preference for fakes, not a ban.
+- Square's module convention with :fake, :impl-wiring or :demo modules (often attributed to Ralf Wondratschek's Square talks): no Square primary source was retrieved.
+- KT-63142 comment workaround (2026-08-04) that publishes JVM-only test fixtures from a KMP module via `adhocSoftwareComponent.addVariantsFromConfiguration(testFixturesApiElements...)`: a user comment, not official guidance, and not tested.
+- Whether AGP supports Kotlin sources in Android-only testFixtures without an extra experimental flag was not checked. Only the @Incubating `testFixtures { enable }` DSL (added in 7.1.0, default from android.experimental.enableTestFixtures=false) was verified.
+- Whether the Koin Compiler Plugin's cross-module call-site hints work for Kotlin/Native klib consumers the same way as for JVM JARs. The docs say 'hints from dependency JARs', and a separate note mentions a fixed klib mangling crash on iOS.
+- The proposed modules-graph-assert negative-lookahead rule `':(?!.*:testing).* -X> :.*:testing'` has not been tested; regex semantics against module paths need a trial run.
+- Maven coordinates and publishing status of the Flo Health AffectedModuleDetector fork: the Maven Central search call errored, and the fork shows no tags or releases.
+- That PR CI never executes the 5 existing test files follows from build files and Gradle task-name matching; it was not confirmed with a Gradle dry run, which needs google-services.json and full configuration.
+- PTS eligibility of KMP jvmTest and ineligibility of iosSimulatorArm64Test (T1-34) is inferred from KGP class hierarchies plus the Develocity docs' 'Test task and its subclasses' rule; Develocity does not state it directly.
+
+## 9. Camadas, domínio e multi-app
+
+- **LAY-01** — Google's official guidance still treats the domain layer as optional, and it warns that forcing all data access through use cases has a potentially significant downside. _(Google / Android Developers · page last updated 2026-03-05 · high)_
+  - <https://developer.android.com/topic/architecture/domain-layer>
+- **LAY-02** — Google's architecture recommendations mark the data and UI layers as 'Strongly recommended', the domain layer only as 'Recommended in big apps', screen-level ViewModels as 'Strongly recommended', and Navigation 3 as 'Strongly recommended' (under single-activity). _(Google / Android Developers · page last updated 2026-04-26 · high)_
+  - <https://developer.android.com/topic/architecture/recommendations>
+- **LAY-03** — Google defines business logic (domain/data layers) separately from UI logic (UI layer), which puts display decisions such as hints, scrolling and navigation-on-click in the UI layer. _(Google / Android Developers · page last updated 2026-05-11 · high)_
+  - <https://developer.android.com/topic/architecture/ui-layer/stateholders>
+- **LAY-04** — Google's modularization patterns describe per-domain data modules that expose repositories and hide data sources, feature modules that depend on data modules, and an api/impl split recommended only in four listed cases. _(Google / Android Developers · page last updated 2026-03-05 · high)_
+  - <https://developer.android.com/topic/modularization/patterns>
+- **LAY-05** — Google's Navigation 3 modularization guide says a feature's api module holds its navigation keys, and each feature impl adds its entry builders (and deep link matchers) to the app through DI multibinding. The published sample is Hilt/Android-specific. _(Google / Android Developers · page last updated 2026-09-22 · high)_
+  - <https://developer.android.com/guide/navigation/navigation-3/modularize>
+- **LAY-06** — Now in Android (main, Sept 2026) uses feature api/impl pairs where the api holds only a NavKey plus a navigate helper, and its core:domain module has exactly three use cases, all concrete @Inject classes with no interfaces. _(Google / Now in Android · main branch, last commit 2026-09-22 · high)_
+  - <https://github.com/android/nowinandroid/blob/main/settings.gradle.kts>
+  - <https://github.com/android/nowinandroid/blob/main/docs/ModularizationLearningJourney.md>
+  - <https://github.com/android/nowinandroid/blob/main/docs/ArchitectureLearningJourney.md>
+  - <https://github.com/android/nowinandroid/tree/main/core/domain/src/main/kotlin/com/google/samples/apps/nowinandroid/core/domain>
+- **LAY-07** — NiA keeps every repository in one core:data module (a horizontal layer split), while Tivi splits data into 14 per-domain modules (19 :data:* modules in total), which is closer to Google's 'data module per domain' guidance. _(Google NiA vs Tivi · NiA 2026-09; Tivi archived (last push 2024-11-12) · medium)_
+  - <https://github.com/android/nowinandroid/blob/main/settings.gradle.kts>
+  - <https://developer.android.com/topic/modularization/patterns>
+  - <https://github.com/chrisbanes/tivi/blob/main/settings.gradle.kts>
+- **LAY-08** — Tivi, a KMP + CMP + Circuit reference app (archived, last push Nov 2024), keeps 51 concrete Interactor/Observer classes in one shared :domain module, puts every Circuit screen key in one :common:ui:screens module, and uses the key's `name` for analytics screen tracking. _(Chris Banes / Tivi · archived; last push 2024-11-12 (possibly outdated) · high)_
+  - <https://github.com/chrisbanes/tivi/blob/main/settings.gradle.kts>
+  - <https://github.com/chrisbanes/tivi/tree/main/domain/src/commonMain/kotlin/app/tivi/domain>
+  - <https://github.com/chrisbanes/tivi/blob/main/common/ui/screens/src/commonMain/kotlin/app/tivi/screens/Screens.kt>
+  - <https://github.com/chrisbanes/tivi/blob/main/ui/root/src/commonMain/kotlin/app/tivi/home/TiviContent.kt>
+- **LAY-09** — Slack's Android codebase (2022) uses features, services and libraries, where services hold cross-feature business logic without UI, and Slack deliberately does not require api/impl pairs for every module, partly because of Gradle configuration cost. _(Slack · 2022-03-28 (updated 2022-05-04) · high)_
+  - <https://slack.engineering/stabilize-modularize-modernize-scaling-slacks-mobile-codebases-2/>
+- **LAY-10** — App Platform, a KMP framework that originated in Amazon Delivery and is now maintained independently under vRallev/app-platform, publishes an explicit module taxonomy (:public, zero or more :impl, :internal, :testing, :*-robots, :app) and can enforce its rules with a Gradle check. Enforcement is opt-in per module. _(App Platform (Ralf Wondratschek; originated at Amazon Delivery) · repo pushed 2026-09-25 · high)_
+  - <https://github.com/vRallev/app-platform/blob/main/docs/module-structure.md>
+  - <https://github.com/vRallev/app-platform/blob/main/docs/index.md>
+  - <https://vrallev.github.io/app-platform/>
+- **LAY-11** — App Platform's multi-app model shares one :public API and gives each app its own :impl module (plus an optional :internal for shared impl code), so no app picks up another app's code through transitive dependencies. Its FAQ says it shares code across several Amazon Delivery products. _(App Platform / Amazon Delivery · 2026-09 · high)_
+  - <https://github.com/vRallev/app-platform/blob/main/docs/module-structure.md>
+  - <https://github.com/vRallev/app-platform/blob/main/docs/faq.md>
+  - <https://github.com/vRallev/app-platform/blob/main/docs/index.md>
+- **LAY-12** — App Platform models an explicit scope tree (app root scope, then a user scope created at login and destroyed at logout) and strongly recommends aligning the DI component tree with it. _(App Platform · 2026-09 · high)_
+  - <https://github.com/vRallev/app-platform/blob/main/docs/scope.md>
+- **LAY-13** — App Platform puts presenter interfaces and their Model/Event types in :public, binds the implementations (and renderers) from :impl via contribution annotations, uses model-driven navigation where parent presenters compose child presenters, and now also offers an experimental Navigation 3-backed presenter backstack. _(App Platform · 2026-09 · high)_
+  - <https://github.com/vRallev/app-platform/blob/main/docs/presenter.md>
+  - <https://github.com/vRallev/app-platform/blob/main/docs/renderer.md>
+  - <https://github.com/vRallev/app-platform/blob/main/docs/faq.md>
+  - <https://github.com/vRallev/app-platform/blob/main/docs/testing.md>
+- **LAY-14** — Circuit (Slack; 0.39.0, released 2026-09-15) keys each Presenter+Ui pair by a Screen object, and DI multibinding collects the factories, so a feature's public surface is essentially its Screen type. For KMP, codegen requires Metro or kotlin-inject-anvil. _(Slack / Circuit · 0.39.0, 2026-09-15 · high)_
+  - <https://github.com/slackhq/circuit/blob/main/docs/index.md>
+  - <https://github.com/slackhq/circuit/blob/main/docs/docs/factories.md>
+  - <https://github.com/slackhq/circuit/blob/main/docs/docs/code-gen.md>
+  - <https://github.com/slackhq/circuit/blob/main/docs/docs/presenter-patterns.md>
+- **LAY-15** — Molecule (Cash App; 2.2.0 is still the latest release as of 2026-09) is the common base of the presenter camp: it runs Compose runtime state logic without Compose UI and outputs a StateFlow/Flow. _(Cash App (Block) · 2.2.0, 2025-09-24 · high)_
+  - <https://github.com/cashapp/molecule>
+  - <https://github.com/slackhq/circuit/blob/main/docs/index.md>
+  - <https://github.com/element-hq/element-x-android/blob/develop/libraries/architecture/src/main/kotlin/io/element/android/libraries/architecture/Presenter.kt>
+- **LAY-16** — Element X Android, a large open-source production app, uses api/impl/test modules for both features and libraries, adds an appnav layer between app and features, and defines App, Session and Room DI scopes on Metro. It is Android-only, not KMP. _(Element (element-hq) · develop branch, pushed 2026-09-26 · high)_
+  - <https://github.com/element-hq/element-x-android/blob/develop/docs/_developer_onboarding.md>
+  - <https://github.com/element-hq/element-x-android/blob/develop/docs/migration_to_metro.md>
+  - <https://github.com/element-hq/element-x-android/pull/5253>
+  - <https://github.com/element-hq/element-x-android/tree/develop/libraries/di/src/main/kotlin/io/element/android/libraries/di>
+- **LAY-17** — In Element X, a feature's api exposes an EntryPoint with typed Params and a Callback interface, so the feature never navigates to other features itself; the parent node routes. The api also carries embeddable UI and presenter contracts that other features reuse. _(Element (element-hq) · develop branch, 2026-09-26 · high)_
+  - <https://github.com/element-hq/element-x-android/blob/develop/features/roomdetails/api/src/main/kotlin/io/element/android/features/roomdetails/api/RoomDetailsEntryPoint.kt>
+  - <https://github.com/element-hq/element-x-android/tree/develop/features/poll/api/src/main/kotlin/io/element/android/features/poll/api>
+- **LAY-18** — Element X swaps third-party tooling and white-label variants by choosing modules at build time: analytics has api/impl/noop/test/compose modules, providers (PostHog, Sentry) are separate modules, and an enterprise build replaces the FOSS implementations. _(Element (element-hq) · develop branch, 2026-09-26 · high)_
+  - <https://github.com/element-hq/element-x-android/blob/develop/plugins/src/main/kotlin/extension/DependencyHandleScope.kt>
+  - <https://github.com/element-hq/element-x-android/blob/develop/plugins/src/main/kotlin/ModulesConfig.kt>
+  - <https://github.com/element-hq/element-x-android/blob/develop/plugins/src/main/kotlin/Enterprise.kt>
+  - <https://github.com/element-hq/element-x-android/blob/develop/app/build.gradle.kts>
+- **LAY-19** — The official KMP docs advise against exporting several Kotlin frameworks into one iOS app and suggest that, when several iOS apps use different subsets of shared libraries, each app gets its own umbrella module. _(JetBrains · last modified 2026-03-12 · high)_
+  - <https://kotlinlang.org/docs/multiplatform/multiplatform-project-configuration.html>
+- **LAY-20** — Uber's RIBs structures the app as a business-logic tree (not a view tree) with hierarchical DI scopes, and its README says the approach scales to hundreds of engineers. The logged-out/logged-in root split comes from the RIBs demo apps, not the 2016 blog. _(Uber · README current (pushed 2026-07-15); blog 2016-12-20 (dated) · medium)_
+  - <https://github.com/uber/RIBs>
+  - <https://github.com/uber/RIBs/tree/master/libraries>
+  - <https://github.com/uber/RIBs/tree/master/demos>
+  - <https://www.uber.com/blog/new-rider-app-architecture/>
+- **LAY-21** — Decompose (3.5.0 is the latest stable; 3.6.0-beta01 shipped 2026-09-10) is the KMP component-tree alternative: lifecycle-aware components hold navigation and logic, and the UI depends on the components. _(Arkadii Ivanov / Decompose · 3.5.0 (2026-03-15); 3.6.0-beta01 (2026-09-10) · high)_
+  - <https://github.com/arkivanov/Decompose/blob/master/docs/component/overview.md>
+  - <https://github.com/arkivanov/Decompose/releases>
+- **LAY-22** — Metro (1.4.5, released 2026-09-24) is now the de facto KMP DI for contribution-based 'app platform' modularization: @ContributesTo/@ContributesBinding/@ContributesIntoSet aggregate into a scoped @DependencyGraph, and @GraphExtension models child scopes such as a logged-in graph. Anvil is deprecated. _(Zac Sweers / Metro; Square / Anvil · Metro 1.4.5, 2026-09-24 · high)_
+  - <https://github.com/ZacSweers/metro/blob/main/docs/aggregation.md>
+  - <https://github.com/ZacSweers/metro/blob/main/docs/dependency-graphs.md>
+  - <https://github.com/square/anvil>
+  - <https://github.com/ZacSweers/metro/releases>
+- **LAY-23** — Koin 4.2 adds a K2 compiler plugin with compile-time graph validation and @Configuration modules that @KoinApplication loads automatically, which is Koin's equivalent of contribution-based module discovery. _(Kotzilla / Koin · 4.2.x, 2026 · medium)_
+  - <https://github.com/InsertKoinIO/koin/blob/main/docs/intro/koin-compiler-plugin.md>
+  - <https://github.com/InsertKoinIO/koin/blob/main/docs/reference/koin-annotations/modules.md>
+  - <https://github.com/InsertKoinIO/koin/blob/main/docs/reference/koin-compiler/compile-safety.md>
+  - <https://github.com/InsertKoinIO/koin/releases>
+- **LAY-24** — Fowler's position is that application code does not need interface/implementation pairs up front, because an interface can be extracted when needed. Published interfaces are the exception. _(Martin Fowler · 2005-12-08 (old but canonical) · medium)_
+  - <https://martinfowler.com/bliki/InterfaceImplementationPair.html>
+- **LAY-25** — Vertical slice architecture argues for high coupling inside a slice and low coupling between slices, which removes the need for shared layer abstractions, provided the team can refactor. _(Jimmy Bogard · 2018-04-19 · medium)_
+  - <https://www.jimmybogard.com/vertical-slice-architecture/>
+- **LAY-26** — A DDD Bounded Context splits a large model into separate, explicitly mapped sub-models, which is the conceptual basis for capability/domain modules that own their models instead of a single shared core:model. _(Martin Fowler · 2014-01-15 · medium)_
+  - <https://martinfowler.com/bliki/BoundedContext.html>
+- **LAY-27** — The 2019 rule 'feature modules never directly depend on each other' has given way in current reference projects (NiA, Element X, App Platform) to 'a feature impl may depend on another feature's api'. _(Jeroen Mols vs Google NiA / Element · 2019-03-18 vs 2026 · high)_
+  - <https://jeroenmols.com/blog/2019/03/18/modularizationarchitecture/>
+  - <https://github.com/android/nowinandroid/blob/main/docs/ModularizationLearningJourney.md>
+  - <https://github.com/element-hq/element-x-android/blob/develop/docs/_developer_onboarding.md>
+- **LAY-28** — Since Compose Multiplatform 1.10, Navigation 3 runs on Android, iOS, desktop and web. On non-JVM targets, NavKeys must be registered in a SerializersModule for polymorphic back-stack serialization, so in a modular CMP app each feature has to contribute its key serializers. _(JetBrains · page last modified 2026-07-07 · high)_
+  - <https://kotlinlang.org/docs/multiplatform/compose-navigation-3.html>
+- **LAY-29** — Koin 4.2 ships koin-compose-navigation3 (not present in 4.1.1): each Koin module declares its own navigation entries with `navigation<Route> { }`, and the root gets them all through `koinEntryProvider<T>()`. This is a multiplatform equivalent of Google's Hilt @IntoSet entry-builder recipe. _(Kotzilla / Koin · Koin 4.2.0+ (2026-03-17) · high)_
+  - <https://github.com/InsertKoinIO/koin/blob/main/docs/reference/koin-compose/navigation3.md>
+  - <https://github.com/InsertKoinIO/koin/tree/4.2.0/projects/compose>
+  - <https://github.com/InsertKoinIO/koin/tree/4.1.1/projects/compose>
+- **LAY-30** — Gradle Isolated Projects became incubating in Gradle 9.7.0 (2026-08-06) under the property `org.gradle.isolated-projects=true`, and NiA enabled it on Gradle 9.7.1. This reduces the per-module configuration cost Slack cited against universal api/impl pairs, and it constrains build logic. _(Gradle; Google NiA · Gradle 9.7.0 (2026-08-06); docs 9.8.0; NiA 2026-09 · high)_
+  - <https://docs.gradle.org/9.7.0/release-notes.html>
+  - <https://docs.gradle.org/current/userguide/isolated_projects.html>
+  - <https://github.com/android/nowinandroid/blob/main/gradle.properties>
+  - <https://github.com/android/nowinandroid/blob/main/gradle/wrapper/gradle-wrapper.properties>
+- **LAY-31** — Metro's compatibility table lists no stable Kotlin 2.3.10 row (only 2.3.10-RC, tested with Metro 0.9.1–0.10.3), supports Kotlin 2.3.20+/2.3.21 from Metro 0.10.0, and already covers Kotlin 2.4.x (2.4.20 from Metro 1.2.0). _(Zac Sweers / Metro · main branch, 2026-09 · high)_
+  - <https://github.com/ZacSweers/metro/blob/main/docs/compatibility.md>
+  - <https://github.com/ZacSweers/metro/blob/main/docs/circuit.md>
+- **LAY-32** — Google's modularization guidance explicitly tells modules to expose as little as possible and to prefer Gradle `implementation` over `api` dependencies, which is the primary-source basis for keeping feature/capability api modules thin. _(Google / Android Developers · page last updated 2026-03-05 · high)_
+  - <https://developer.android.com/topic/modularization/patterns>
+
+**Não verificado / refutado:**
+
+- Method limits: this fact-check pass also had no WebSearch (the session budget of 200/200 was exhausted). Every verification was a direct WebFetch of primary URLs, `gh api` reads of GitHub repos, or shallow git clones (Tivi, App Platform) on 2026-09-27. No finding was refuted outright. The refuted sub-claims are listed below and have been corrected in the findings.
+- Refuted sub-claim (LAY-07): 'Tivi uses 17 per-domain data modules'. Recount shows 19 :data:* modules, of which 14 are per-domain.
+- Refuted sub-claim (LAY-20): 'from the 2016 blog: the root interactor switches between logged-out and logged-in subtrees'. The blog has no logged-in/out wording; that pattern comes from the RIBs demos. 'RIBs is Rx-based' is outdated: coroutines and Compose libraries now exist.
+- Refuted sub-claim (applied_to_repo): 'data-transfer:api has zero external consumers'. DataTransferRoute is used by settings:impl and :shared.
+- Likely wrong, dropped (LAY-18): the inference that Element X's `rootProject.subprojects` scan in addAll()/allFeaturesImpl() is incompatible with Gradle project isolation. The Gradle 9.8 Isolated Projects docs explicitly allow traversing subprojects() and reading immutable `path`. Whether `add("implementation", p)` with a Project object passes isolated-projects checks was not tested.
+- Airbnb (Trio architecture, module types): no primary source fetched (earlier pass got 403/404), so nothing is included.
+- Square's approach to sharing features across multiple apps and Workflow's current usage at Square: no primary source fetched.
+- MVIKotlin, Orbit MVI and Redux-style KMP libraries: not researched, so there are no findings on how they affect module boundaries.
+- Uber RIBs plugin-point mechanics beyond the README and the 2016 blog: the RIBs wiki was not read.
+- No large-team primary source directly critiques per-feature data/domain/presentation module triplets. That anti-pattern rests on indirect evidence (Slack's configuration-cost quote, Google's 'Every module introduces configuration overhead').
+- Koin 4.2 @Configuration auto-discovery across Gradle modules for KMP native (iOS) compilations: the docs describe discovery from 'local + dependency JARs' and do not state klib/native behavior. Test it before relying on it.
+- Metro on Kotlin 2.3.10 stable: the compatibility table lists only 2.3.10-RC (Metro 0.9.1–0.10.3) and 2.3.0 (0.9.1+), with best-effort N+.2 forward compatibility. Whether Metro 1.4.x works on 2.3.10 stable is unconfirmed; bumping to 2.3.20+ avoids the question.
+- Whether Gradle Isolated Projects actually removes the configuration-time cost Slack cited for doubling subprojects: no benchmark was found.
+- App Platform's current production use at Amazon after ownership moved to vRallev: only the FAQ's present-tense statement supports it.
+- The Element X module counts (features 45/44/29, libraries 33/33/30) were independently re-counted from the develop git tree on 2026-09-27 and match. They remain counts of build.gradle.kts paths, not project-published figures.
+
+---
+
+# Parte 2: pesquisa sobre o tier capability (2026-09-27)
+
+Usada em [2026-09-27-capability-vs-feature.md](2026-09-27-capability-vs-feature.md). Mesma metodologia: pesquisa + verificador adversarial. Neste passe a cota de WebSearch estava esgotada; as páginas foram re-buscadas por curl/gh api e Wayback quando necessário (detalhes em "Não verificado").
+
+## 10. Capability: quem separa domínio/dados compartilhados das telas (CAP-W)
+
+**Síntese do verificador:** Fact-check result: all 30 original findings survived. None was refuted outright, but several had details that were wrong or overstated. - Corrected: CAP-W-07, 12, 13, 14, 22 and 30. - Refined: 04, 05, 08, 09, 11 and 17. - Upgraded after re-fetching the sources: CAP-W-17 and CAP-W-21 (FluxC sharing with WooCommerce and Square's module counts are now confirmed). - Added: CAP-W-31 (Tuist TMA) and CAP-W-32 (Google's domain-layer guide).  There are two credible answers to "where does shared domain/data live", and both are used at scale.  (A) A separate UI-free tier for cross-feature domain/data. This is common, but almost nobody calls it 'capability'. - 'Services': Slack ('Services generally do not contain UI code'), Airbnb iOS ('non-UI objects ... managing state that is shared between features'), Afterpay (only services get :fakes). - 'Data modules': Google ('Encapsulate all data and business logic of a certain domain'; 'Feature modules depend on data modules'). - Horizontal core: NiA puts shared domain/data in core:data and core:domain. Its feature:*:api holds navigation keys only, and a class used by two or more features 'should be placed into an appropriate core module'. - 'data:*' per domain: Tivi. - 'domain:*': Bitkey, per domain, and now with written rules ('must remain independent of UI'). Wire's Kalium also uses 'domain:*', inside a separate SDK repo. - Other names: Element X 'libraries' plus 'services'; Mozilla 'concept'/'browser'; isowords '*Client'; Shopify 'components'; Spring Modulith 'application modules'. - The literal word 'capability' as a Gradle tier: the only sizable repo found is Duck Detector (1,052 stars). Its rules ':feature -> :capability -> :core', 'A capability exists only because at least two features consume the same evidence', and no capability-to-capability dependencies are enforced by a Gradle plugin while the build configures.  (B) Keep the domain inside the feature namespace, or give every unit the same shape. - Thunderbird documents this explicitly: 'Business objects (e.g., account, mail, etc.) should live in their respective feature modules'. ADR-0009 puts repositories and use cases in :feature:*:api. Its live code still lags the ADR: settings is {api,impl}, setup is unsplit, storage is {api,legacy}, and account:common mixes entities, a repository and Compose UI. - DuckDuckGo keeps -api/-impl/-store/-internal per feature, and a build check makes :app the only consumer of -impl. saved-sites-api mixes repositories with UI plugin hooks (the same shape as DeepLink Launcher's deeplink:api) and is consumed by 5 other modules. - Proton units split into data/domain/presentation and depend on each other's domain and presentation modules directly. - Uniform-unit camp: Square (:public/:impl-real/:impl-fake at more than 7,000 modules; screens use the same shape as non-UI units), App Platform and Tuist TMA ('A module represents an application feature'). These projects do not name a tier at all; the api/impl discipline does the w
+
+- **CAP-W-01** — Slack names the UI-free, cross-feature tier 'Services', next to 'Features' (screens) and 'Libraries'. On iOS both features and services are split into Interface/Implementation. On Android Slack deliberately does not prescribe api/impl pairs. _(Slack · 2022-03-28 (updated 2022-05-04) · high)_
+  - <https://slack.engineering/stabilize-modularize-modernize-scaling-slacks-mobile-codebases-2/>
+- **CAP-W-02** — Airbnb iOS has a 'service' module type for non-UI shared state, separate from 'feature' (one user-facing destination) and 'feature interface'. Features cannot depend on other features. _(Airbnb (iOS) · 2021-10-05 · high)_
+  - <https://web.archive.org/web/2024id_/https://medium.com/airbnb-engineering/designing-for-productivity-in-a-large-scale-ios-application-9376a430a0bf>
+  - <https://medium.com/airbnb-engineering/designing-for-productivity-in-a-large-scale-ios-application-9376a430a0bf>
+- **CAP-W-03** — Afterpay (on the Cash App Code Blog) uses Feature, Service and Core module types. Only service modules get a :fakes submodule. The author says the design had not yet been validated at larger scale. _(Afterpay (Block) · 2021-08-03 · high)_
+  - <https://code.cash.app/android-architecture-for-the-rocketship-part1-modularisation>
+- **CAP-W-04** — Google's official modularization guide separates per-domain 'data modules' (repository as public API, data sources hidden) from 'feature modules' (screens + ViewModel), and says feature modules depend on data modules. _(Google / Android Developers · page last updated 2026-03-05 · high)_
+  - <https://developer.android.com/topic/modularization/patterns>
+  - <https://web.archive.org/web/2026id_/https://developer.android.com/topic/modularization/patterns>
+- **CAP-W-05** — Now in Android keeps shared domain/data horizontal: core:data, core:domain, core:model and core:database. Its feature:*:api modules contain only navigation keys, and a class used by more than one feature should be placed in a core module. _(Google (Now in Android) · repo pushed 2026-09-27 · high)_
+  - <https://github.com/android/nowinandroid/blob/main/settings.gradle.kts>
+  - <https://github.com/android/nowinandroid/blob/main/docs/ModularizationLearningJourney.md>
+  - <https://github.com/android/nowinandroid/tree/main/feature/topic/api>
+  - <https://github.com/android/nowinandroid/tree/main/core/data>
+- **CAP-W-06** — Tivi (KMP, archived) has per-domain :data:* modules separate from per-screen :ui:* modules. Persistence is centralized: 19 .sq files in :data:db-sqldelight, with DAO interfaces in :data:db. _(Chris Banes (Tivi) · archived; last push 2024-11-12 · high)_
+  - <https://github.com/chrisbanes/tivi/blob/main/settings.gradle.kts>
+  - <https://github.com/chrisbanes/tivi/tree/main/data/db-sqldelight/src/commonMain/sqldelight/app/tivi/data>
+  - <https://github.com/chrisbanes/tivi/tree/main/data/episodes/src/commonMain/kotlin/app/tivi/data/episodes>
+- **CAP-W-07** — Bitkey (Block, KMP) is the closest large KMP analog, and it writes its tier rules down. It has 32 per-domain :domain:<name> units (almost all public/impl/fake), a :libs:* tier and a :ui:* tier, and all 70 SQLDelight files are centralized in :domain:database:public. Domain modules must stay UI-free but may depend on other domain modules. The public/impl rule is not strictly followed. _(Block (Bitkey) · repo pushed 2026-08-12 · high)_
+  - <https://github.com/proto-at-block/bitkey/blob/main/app/settings.gradle.kts>
+  - <https://github.com/proto-at-block/bitkey/blob/main/app/domain/README.md>
+  - <https://github.com/proto-at-block/bitkey/blob/main/app/libs/README.md>
+  - <https://github.com/proto-at-block/bitkey/blob/main/app/ui/README.md>
+- **CAP-W-08** — Wire takes separation furthest. All business logic and persistence live in a separate KMP SDK repo, Kalium (core -> data -> domain -> logic, with per-domain :domain:* modules). The Android app consumes it as a git submodule and included build. The app's own UI sits mostly in :app, plus a few features:* modules. _(Wire · kalium pushed 2026-09-25; wire-android pushed 2026-09-27 · high)_
+  - <https://github.com/wireapp/kalium/blob/develop/docs/ARCHITECTURE.md>
+  - <https://github.com/wireapp/wire-android/blob/develop/.gitmodules>
+  - <https://github.com/wireapp/wire-android/blob/develop/include_builds.gradle.kts>
+  - <https://github.com/wireapp/wire-android/blob/develop/settings.gradle.kts>
+- **CAP-W-09** — Element X Android puts UI in features/* and non-UI code in libraries/* (for example libraries:matrix:{api,impl,test}, the Rust SDK wrapper). It also has a services/* tier with api/impl/test. Several libraries own their own SQLDelight database. _(Element (element-hq) · repo pushed 2026-09-26 · high)_
+  - <https://github.com/element-hq/element-x-android/blob/develop/settings.gradle.kts>
+  - <https://github.com/element-hq/element-x-android/blob/develop/docs/_developer_onboarding.md>
+  - <https://github.com/element-hq/element-x-android/tree/develop/services>
+  - <https://github.com/element-hq/element-x-android/tree/develop/libraries/matrix>
+- **CAP-W-10** — Mozilla Android Components uses a layered taxonomy: 'concept' (abstract contracts), 'browser' (implementations), 'feature' (use-case glue), plus 'service', 'support', 'lib' and 'ui'. The written rule is to depend on concepts, not implementations. This is an api/impl split under different names. _(Mozilla · repo pushed 2026-09-27; architecture.md last changed 2024-02-13 · high)_
+  - <https://github.com/mozilla-firefox/firefox/blob/main/mobile/android/android-components/README.md>
+  - <https://github.com/mozilla-firefox/firefox/blob/main/mobile/android/android-components/docs/contribute/architecture.md>
+  - <https://github.com/mozilla-firefox/firefox/blob/main/mobile/android/android-components/components/concept/storage/README.md>
+- **CAP-W-11** — Duck Detector (Android, 1,052 stars) is the only sizable project found in this survey that uses the literal word 'capability' as a Gradle tier: :app -> :sdk -> :feature -> :capability -> :core. A capability exists only when at least two features consume it, and capabilities never depend on each other. A build-logic plugin enforces this while the build configures. _(eltavine (Duck Detector) · repo pushed 2026-09-27 · high)_
+  - <https://github.com/eltavine/Duck-Detector-Refactoring/blob/main/docs/architecture/README.md>
+  - <https://github.com/eltavine/Duck-Detector-Refactoring/blob/main/settings.gradle.kts>
+  - <https://github.com/eltavine/Duck-Detector-Refactoring/blob/main/CODING_STANDARDS.md>
+- **CAP-W-12** — Thunderbird for Android is the strongest documented counter-example. Its docs say business objects live in feature modules and core has no business logic. A 'feature' is a domain area (account, mail) whose screen and non-screen parts are nested sub-features with :api/:internal. The live code has not yet fully reached the documented structure. _(Thunderbird (MZLA) · repo pushed 2026-09-27 · high)_
+  - <https://github.com/thunderbird/thunderbird-android/blob/main/docs/architecture/module-organization.md>
+  - <https://github.com/thunderbird/thunderbird-android/blob/main/docs/engineering/adr/0009-api-internal-split.md>
+  - <https://github.com/thunderbird/thunderbird-android/blob/main/docs/architecture/feature-modules.md>
+  - <https://github.com/thunderbird/thunderbird-android/blob/main/docs/architecture/module-structure.md>
+- **CAP-W-13** — DuckDuckGo Android keeps domain and data inside each feature's own -api/-impl pair (plus -store for persistence and -internal for internal builds), with UI in -impl. Only :app may depend on -impl, and a build check enforces this. This is the 'keep it in the feature' strategy at about 70 feature directories. saved-sites-api is consumed by 5 other modules plus :app, and its Room entities are registered in the central :app AppDatabase. _(DuckDuckGo · repo pushed 2026-09-27 · high)_
+  - <https://github.com/duckduckgo/Android/blob/develop/.claude/docs/architecture.md>
+  - <https://github.com/duckduckgo/Android/tree/develop/saved-sites>
+  - <https://github.com/duckduckgo/Android/tree/develop/saved-sites/saved-sites-api/src/main/java/com/duckduckgo/savedsites/api>
+  - <https://github.com/duckduckgo/Android/blob/develop/app/src/main/java/com/duckduckgo/app/global/db/AppDatabase.kt>
+- **CAP-W-14** — Proton Mail Android organizes code as vertical units, each split into subsets of :dagger/:data/:domain/:presentation. Domain-entity units (mail-message, mail-conversation, mail-label) sit next to screen units (mail-mailbox, mail-detail, mail-composer) under the same naming, with no separate capability tier and no api/impl. Screen units depend directly on other units' domain AND presentation modules. _(Proton · repo pushed 2026-09-01 · medium)_
+  - <https://github.com/ProtonMail/android-mail/blob/main/settings.gradle.kts>
+  - <https://github.com/ProtonMail/android-mail/blob/main/mail-mailbox/presentation/build.gradle.kts>
+  - <https://github.com/ProtonMail/android-mail/blob/main/mail-mailbox/domain/build.gradle.kts>
+- **CAP-W-15** — App Platform (Ralf Wondratschek; originally developed at Amazon, KMP) calls every unit a 'library' with :public/:impl/:internal/:testing/:*-robots. It does not separate domain from UI. Its sample 'user' library holds UserManager and the UserPagePresenter interface in :public, and presenters/renderers in :impl. _(Ralf Wondratschek (App Platform) · repo pushed 2026-09-25 · high)_
+  - <https://github.com/vRallev/app-platform/blob/main/docs/module-structure.md>
+  - <https://github.com/vRallev/app-platform/tree/main/sample/user>
+  - <https://github.com/vRallev/app-platform/blob/main/README.md>
+- **CAP-W-16** — Pocket Casts Android uses modules:features:* and modules:services:*, but 'services' is a horizontal catch-all. It holds the single Room database (services:model) and the repositories/managers (services:repositories), and also UI modules (services:ui, services:views, services:compose). _(Automattic (Pocket Casts) · repo pushed 2026-09-25 · medium)_
+  - <https://github.com/Automattic/pocket-casts-android/blob/main/settings.gradle.kts>
+  - <https://github.com/Automattic/pocket-casts-android/tree/main/modules/services/model/schemas>
+  - <https://github.com/Automattic/pocket-casts-android/tree/main/modules/services/repositories>
+- **CAP-W-17** — Automattic extracted the WordPress data layer into FluxC ('WordPress Network and Persistence layer based on the Flux architecture'), a separate library shared by two apps: WordPress/Jetpack and WooCommerce. It was later archived and merged back into both apps. In WordPress-Android it is now :libs:fluxc and owns the Room database (WPAndroidDatabase). _(Automattic (WordPress, WooCommerce) · FluxC archived (last push 2025-02-04); WordPress-Android pushed 2026-09-27 · high)_
+  - <https://github.com/wordpress-mobile/WordPress-FluxC-Android>
+  - <https://github.com/wordpress-mobile/WordPress-Android/blob/trunk/settings.gradle>
+  - <https://github.com/wordpress-mobile/WordPress-Android/tree/trunk/libs/fluxc>
+- **CAP-W-18** — Signal Android has :core:*, :lib:*, :feature:* and :demo:* modules, but its central persistence (SignalDatabase, MessageTable) still lives in the :app monolith. :lib mixes domain services (donations, contacts, billing, libsignal-service) with UI widgets. _(Signal · repo pushed 2026-09-25 · medium)_
+  - <https://github.com/signalapp/Signal-Android/blob/main/settings.gradle.kts>
+  - <https://github.com/signalapp/Signal-Android/blob/main/app/src/main/java/org/thoughtcrime/securesms/database/SignalDatabase.kt>
+- **CAP-W-19** — Wikipedia Android and the KotlinConf app do not separate capabilities from features. Both keep nearly all app code in one module. _(Wikimedia; JetBrains · pushed 2026-09-25; 2026-09-23 · high)_
+  - <https://github.com/wikimedia/apps-android-wikipedia/blob/main/settings.gradle.kts>
+  - <https://github.com/JetBrains/kotlinconf-app/blob/main/settings.gradle.kts>
+- **CAP-W-20** — Grab's 'Kit' modules are feature-interface bridges between features, not a domain/data capability tier. _(Grab · 2021-07-13 · high)_
+  - <https://engineering.grab.com/app-modularisation-at-scale>
+- **CAP-W-21** — Square uses one module shape for every unit, screens included: :public/:impl/:impl-wiring (+:fake, :demo) in 2019, and :public/:impl-real/:impl-fake at more than 7,000 Gradle modules in 2026, with impl->impl forbidden. No separate feature-vs-capability tier name was found. _(Square (Block) · 2019-11-25; 2026-04-14 · high)_
+  - <https://speakerdeck.com/vrallev/android-at-scale-at-square>
+  - <https://engineering.block.xyz/blog/metro-migration-at-square-android>
+- **CAP-W-22** — Point-Free's isowords (iOS/TCA) splits its client SwiftPM targets into *Feature (UI) and *Client (dependency interfaces, some with a *Live implementation). Persistence is owned by a client (LocalDatabaseClient -> Sqlite). _(Point-Free (isowords) · last push 2024-08-16 · high)_
+  - <https://github.com/pointfreeco/isowords/blob/main/Package.swift>
+- **CAP-W-23** — Shopify's modular monolith 'components' are organized around business domains (orders, shipping, inventory, billing). Each has a public API and exclusive ownership of its data, and boundary violations are tracked by a tool (Wedge). Shopify reported that this isolation was not achieved across the whole codebase. _(Shopify · 2019-02-21 · high)_
+  - <https://shopify.engineering/deconstructing-monolith-designing-software-maximizes-developer-productivity>
+- **CAP-W-24** — Spring Modulith calls the unit an 'application module': a provided interface (API package), internal implementation, and a required interface. Other modules may only use the API package or explicitly named interfaces. _(Spring (VMware/Broadcom) · docs fetched 2026-09-27 · high)_
+  - <https://docs.spring.io/spring-modulith/reference/fundamentals.html>
+- **CAP-W-25** — Where the name comes from: 'business capability' is a business-architecture term, 'something that a business does in order to generate value', and microservices decomposition uses it to find stable boundaries. _(Chris Richardson (microservices.io) · page fetched 2026-09-27 · high)_
+  - <https://microservices.io/patterns/decomposition/decompose-by-business-capability.html>
+- **CAP-W-26** — Naming caveat: in the canonical Lewis/Fowler usage, a business-capability unit is broad-stack and includes the user interface. That is the opposite of the proposed 'capability has no UI' rule. _(James Lewis, Martin Fowler · 2014-03-25 · high)_
+  - <https://martinfowler.com/articles/microservices.html>
+- **CAP-W-27** — Narayan's bliki treats user journeys as cross-capability. By analogy, screens (home, settings) can be seen as journeys that consume one or more capabilities rather than own them. The source is about team alignment, not module structure. _(Sriram Narayan (martinfowler.com) · 2016-06-08 · medium)_
+  - <https://martinfowler.com/bliki/BusinessCapabilityCentric.html>
+- **CAP-W-28** — Naming caveat: 'capability' already means something else inside Gradle (component capabilities), and Thunderbird uses 'capability models' for per-feature data keyed by AccountId. The word is overloaded. _(Gradle; Thunderbird · Gradle docs 9.8.0; Thunderbird repo pushed 2026-09-27 · high)_
+  - <https://docs.gradle.org/current/userguide/component_capabilities.html>
+  - <https://github.com/thunderbird/thunderbird-android/blob/main/feature/account/api/README.md>
+- **CAP-W-29** — A small personal KMP starter (0 stars) uses :capability:<domain>-api/-impl with the rules 'a Capability owns shared business/resource state' and 'Feature must not depend on Capability implementation'. It shows the term circulating in KMP circles but carries no weight as evidence. _(mayankmkh (personal repo) · repo pushed 2026-09-23 · low)_
+  - <https://github.com/mayankmkh/base_kmp_project/blob/main/settings.gradle.kts>
+  - <https://github.com/mayankmkh/base_kmp_project/blob/main/docs/architecture/helix-kmp-source-of-truth.md>
+- **CAP-W-30** — Cross-cutting: persistence ownership is split across the surveyed projects. The closest KMP/SQLDelight analogs (Bitkey, Tivi, Wire Kalium) keep the schema in one central module. Element X, Shopify and isowords let the unit own its storage. DuckDuckGo is mixed, and Thunderbird is per-unit only in its docs. _(multiple · 2026-09 · high)_
+  - <https://github.com/proto-at-block/bitkey/tree/main/app/domain/database/public>
+  - <https://github.com/chrisbanes/tivi/tree/main/data/db-sqldelight>
+  - <https://github.com/wireapp/kalium/blob/develop/docs/ARCHITECTURE.md>
+  - <https://github.com/element-hq/element-x-android/tree/develop/libraries/session-storage/impl/src/main/sqldelight>
+- **CAP-W-31** — Tuist's 'The Modular Architecture' (TMA, formerly µFeatures) for iOS treats every module as 'an application feature' made of Source, Interface, Tests, Testing and Example targets. Modules depend on each other's Interface targets. There is no separate domain/capability tier; like Square and App Platform, it uses one uniform unit shape. _(Tuist · doc last changed 2026-04-08 · high)_
+  - <https://github.com/tuist/tuist/blob/main/server/priv/docs/en/guides/features/projects/tma-architecture.md>
+  - <https://docs.tuist.dev/en/guides/features/projects/tma-architecture>
+- **CAP-W-32** — Google's architecture guide calls the domain layer optional. Its job is complex business logic, or simple logic reused by multiple ViewModels. Google warns that its 'domain layer' differs from clean architecture's, and says whether UI may bypass it to reach data is a per-codebase choice. This bears on DeepLink Launcher's 14 thin use-case interfaces and on the word 'domain' as a tier name. _(Google / Android Developers · page last updated 2026-03-05 · high)_
+  - <https://developer.android.com/topic/architecture/domain-layer>
+  - <https://web.archive.org/web/2026id_/https://developer.android.com/topic/architecture/domain-layer>
+
+**Não verificado / refutado:**
+
+- Tool limits this pass: WebSearch was still exhausted (200 of 200), and WebFetch hit its session limit on the first call. Every web page was re-fetched with curl (converted to text locally) and every GitHub file with gh api. developer.android.com redirected to Google OAuth, so Wayback snapshots from 2026-08-19 were used. The live Airbnb medium.com URL returned HTTP 403, so the Wayback copy was used. docs.tuist.dev returned HTTP 403, so the source markdown in the tuist/tuist repo was read.
+- 'Only sizable repo using a literal :capability: tier' (Duck Detector) is limited by search coverage. The earlier GitHub code-search queries and this pass found no other, but others may exist.
+- Uber (RIBs/Presidio module taxonomy) and Lyft module types: no primary source fetched.
+- Airbnb's full list of twelve iOS module types: the post names only feature, feature interface and service.
+- Element X 'services/' tier: no written definition found. Only the directory structure was observed.
+- Signal, Pocket Casts, Proton Mail: no written module-rule documents found. Their findings describe observed structure, not stated policy. (Bitkey was removed from this list because app/domain, app/libs and app/ui READMEs state its rules.)
+- Google modularization guide: no 'domain module' type is defined. The separate domain-layer guide (CAP-W-32) describes a layer, not a module type.
+- Thunderbird: whether the remaining impl->internal renames and the storage:internal module are planned. The ADR is Accepted but the live code still differs.
+- Duck Detector: the star count (1,052) comes from the GitHub API on 2026-09-27. Its domain (device-integrity evidence) differs from CRUD persistence. The repo name ('-Refactoring') suggests a rewrite of an earlier project, which was not checked.
+- Yusubov-Engineering/kmp-modular-app-template: uses 'capability' loosely in a settings comment for core modules. It is not a tier and was not re-checked this pass. Excluded.
+- Proton android-mail: whether this repo is Proton's current production Android mail client (pushed 2026-09-01) was not checked.
+
+## 11. Capability: origem e significado do nome, alternativas (CAP-N)
+
+**Síntese do verificador:** Fact-check result: nothing refuted. 16 findings verified (some with added detail), 7 marked partially and corrected (01, 06, 09, 16, 17 nuance, 18, 19), and 3 new findings added (24-26).  **Lineage of the word.** 'Business capability' comes from business architecture: what a business does to create value. The Open Group TOGAF guides G211 and G233 exist, but their text is behind a login; Homann 2006 is still unverified. Software architecture adopted the term through: - Lewis & Fowler 2014, 'Organized around Business Capabilities' (CAP-N-01) - Richardson's decomposition pattern (CAP-N-03) - Dehghani's monolith guide (CAP-N-07)  Team design adopted it through Narayan's business-capability-centric teams and Fowler's summary of Team Topologies' stream-aligned team (CAP-N-08). Team Topologies' own site says 'segment of the business domain' and uses 'capability' loosely (CAP-N-09). The motivation throughout is Conway's law and the Inverse Conway Maneuver (CAP-N-10).  **DDD vocabulary runs in parallel.** 'Capability' is not a DDD term: it appears only twice in Evans' DDD Reference, both incidentally (CAP-N-25). - **Bounded context:** a boundary, typically a subsystem or a team's work, within which one model applies. Evans says it should show up physically in 'code bases and database schemas'. - **Subdomain:** a part of the business domain. The phrase 'problem space' is Richardson's, not Azure's.  Richardson treats 'by business capability' and 'by subdomain' as alternatives with byte-identical forces text and near-identical examples (CAP-N-04). Azure connects them: design around capabilities, and each bounded context's model represents a subdomain (CAP-N-06).  **Borrowed name, narrower shape (corrected).** In Lewis & Fowler, a capability-aligned unit is vertical and 'broad-stack ... including user-interface'. Shopify's components are also vertical 'mini rails apps' (CAP-N-20). The study's tier is narrower, but not UI-free: - :capability:deeplink:api excludes UI, navigation, formatting and vendor types. - The tier keeps an optional :capability:deeplink:ui for entity widgets and mappers shared by 2+ features.  So the real gap from the original sense is 'no screens and no navigation'. The published names for this shape are: - Slack's Services. Android definition: 'business logic that spans one or more features and also should generally not contain UI' (CAP-N-14). This is the closest match. - Airbnb's 'service' type: 'non-UI objects ... managing state that is shared between features' (CAP-N-15). - Google's 'data module': 'Encapsulate all data and business logic of a certain domain' (CAP-N-11). - Mozilla application-services' Rust 'components' (CAP-N-19). - Element X's 'libraries' is only a partial match, because that bucket also holds UI modules (CAP-N-17).  The repo should therefore define 'capability' explicitly as 'the shared contract and implementation of one bounded context, with no screens or navigation'. It should not present this as a direct inheritan
+
+- **CAP-N-01** — Lewis & Fowler's 'Microservices' article (2014) is the canonical software use of 'business capability'. In their sense, a capability-aligned unit is a vertical, broad-stack slice that includes the user interface. The proposed tier is narrower. :capability:deeplink:api excludes UI. The tier as a whole excludes screens and navigation, but it has an optional :capability:deeplink:ui role for entity widgets and mappers shared by 2+ features. _(James Lewis & Martin Fowler · 2014-03-25 · high)_
+  - <https://martinfowler.com/articles/microservices.html>
+  - `docs/reviews/2026-09-27-modularization-study.md`
+- **CAP-N-02** — The same article defines component, library and service precisely, and notes that 'service' is a polyseme. In their terms, every Gradle module linked into a single app binary is a library, not a service. _(James Lewis & Martin Fowler · 2014-03-25 · high)_
+  - <https://martinfowler.com/articles/microservices.html>
+- **CAP-N-03** — Chris Richardson's 'Decompose by business capability' pattern defines a business capability as something a business does to generate value. It often corresponds to one business object, capabilities form a hierarchy, and the pattern is justified by the stability of capabilities and by the Common Closure Principle. _(Chris Richardson (microservices.io) · page accessed 2026-09-27 (no publication date shown) · high)_
+  - <https://microservices.io/patterns/decomposition/decompose-by-business-capability.html>
+- **CAP-N-04** — Richardson presents 'Decompose by subdomain' (DDD) and 'Decompose by business capability' as alternatives with identical Context/Problem/Forces text and almost identical examples. They are two vocabularies (business architecture vs DDD) for the same decomposition goal. _(Chris Richardson (microservices.io) · page accessed 2026-09-27 · high)_
+  - <https://microservices.io/patterns/decomposition/decompose-by-subdomain.html>
+  - <https://microservices.io/patterns/decomposition/decompose-by-business-capability.html>
+- **CAP-N-05** — A DDD bounded context is a boundary around one coherent model and language, not a business activity. Large models are split into several bounded contexts with explicit relationships between them. _(Martin Fowler · 2014-01-15; 2020-04-22 · high)_
+  - <https://martinfowler.com/bliki/BoundedContext.html>
+  - <https://martinfowler.com/bliki/DomainDrivenDesign.html>
+- **CAP-N-06** — Microsoft's Azure Architecture Center connects the terms. It says to design units around business capabilities rather than horizontal layers, that a bounded context is the boundary where one domain model applies, and that each bounded context's model represents a specific subdomain. _(Microsoft Azure Architecture Center · 2026-02-23 (ms.date) · high)_
+  - <https://learn.microsoft.com/en-us/azure/architecture/microservices/model/domain-analysis>
+- **CAP-N-07** — Zhamak Dehghani's monolith-decomposition guide describes the 'sticky capability': a leaky, poorly defined concept that many other capabilities depend on. Her remedy is to deconstruct it into well-defined domain concepts and extract those together with their data. She explicitly warns against lifting the sticky concept out as-is. This is the closest published description of the feature:deeplink:api problem, and it argues against simply renaming or moving the 33-file module. _(Zhamak Dehghani (on martinfowler.com) · 2018-04-24 · high)_
+  - <https://martinfowler.com/articles/break-monolith-into-microservices.html>
+- **CAP-N-08** — In team design, 'business capability' means a long-lived unit of ownership aligned with an area of the business. Team Topologies' stream-aligned team is defined (in Fowler's summary) as owning one business capability. Shared non-business needs such as storage, networking and observability go to platform teams, whose main benefit is lower cognitive load. _(Sriram Narayan; Martin Fowler · 2016-06-08; 2023-07-25 · high)_
+  - <https://martinfowler.com/bliki/BusinessCapabilityCentric.html>
+  - <https://martinfowler.com/bliki/TeamTopologies.html>
+- **CAP-N-09** — The official Team Topologies site uses 'capability' loosely, to mean abilities that platforms or enabling teams provide, not strictly 'business capability'. Its own definition of a stream-aligned team says 'segment of the business domain', not 'business capability'. _(Team Topologies (Skelton & Pais) · accessed 2026-09-27 · high)_
+  - <https://teamtopologies.com/key-concepts>
+- **CAP-N-10** — Conway's law (1968) is the root argument for organizing code around business areas instead of technical layers. Fowler recommends the Inverse Conway Maneuver (a term coined by LeRoy & Simons in 2010): change team structure to get the architecture you want, for example small, long-lived business-capability-centric teams. _(Melvin Conway; Martin Fowler · 1968-04; 2022-10-20 · high)_
+  - <https://www.melconway.com/Home/Committees_Paper.html>
+  - <https://martinfowler.com/bliki/ConwaysLaw.html>
+- **CAP-N-11** — In Google's Android modularization guide, 'Diverse capabilities' means multiple interchangeable implementations of one API, not business capabilities, so it gives no support for the tier's name. Google's own name for a per-domain module holding data and business logic is 'data module'. _(Google (Android Developers) · 2026-03-05 · high)_
+  - <https://developer.android.com/topic/modularization/patterns>
+  - <https://developer.android.com/topic/modularization>
+- **CAP-N-12** — Now in Android does not use 'capability'. It keeps domain and data in global core modules (core:data, core:domain, core:model, core:database) and splits screen features into feature:*:{api,impl}. Its docs suggest splitting the data layer further as it grows. _(Google (Now in Android) · repo main as of 2026-09-27 · high)_
+  - <https://raw.githubusercontent.com/android/nowinandroid/main/settings.gradle.kts>
+  - <https://raw.githubusercontent.com/android/nowinandroid/main/docs/ModularizationLearningJourney.md>
+- **CAP-N-13** — The Open Group publishes TOGAF guides dedicated to business capabilities, but their definition text sits behind a login and could not be quoted. _(The Open Group · 2022-04-25; 2023-04-11 · medium)_
+  - <https://publications.opengroup.org/g211>
+  - <https://publications.opengroup.org/g233>
+- **CAP-N-14** — Slack's mobile taxonomy is Features, Services and Libraries. Slack's 'Service' is the closest published match to the proposed capability tier. On Android its stated purpose is business logic that spans one or more features, without UI. On iOS it is a non-UI module split into Interface and Implementation. _(Slack (Tracy Stampfli, Bryan Stern) · 2022-03-28 (updated 2022-05-04) · high)_
+  - <https://slack.engineering/stabilize-modularize-modernize-scaling-slacks-mobile-codebases-2/>
+- **CAP-N-15** — Airbnb iOS calls the same concept a 'service': a non-UI module that manages state shared between features, with an optional interface sibling. Airbnb introduced semantic module types to replace an undifferentiated lib/ tree that lacked hierarchy and discoverability. _(Airbnb (Michael Bachand) · 2021-10-05 · high)_
+  - <https://medium.com/airbnb-engineering/designing-for-productivity-in-a-large-scale-ios-application-9376a430a0bf>
+  - <https://web.archive.org/web/2024id_/https://medium.com/airbnb-engineering/designing-for-productivity-in-a-large-scale-ios-application-9376a430a0bf>
+- **CAP-N-16** — At Grab (2021), 'kit' means the bridge or abstraction half of a feature (the API side), not a domain tier. A 2026 Grab article describes interface/implementation pairs using :payment-api and :payment-impl as examples. It does not say kit modules were renamed. _(Grab · 2021-07-13; 2026-05-15 · high)_
+  - <https://engineering.grab.com/app-modularisation-at-scale>
+  - <https://engineering.grab.com/how-we-improved-android-studio-in-large-monorepo>
+- **CAP-N-17** — Element X Android (Matrix client) puts product-specific domain modules, such as the Matrix SDK wrappers, deeplink and push, under 'libraries' with api/impl/test splits, and has a separate 'services' group. Its 'libraries' is a mixed bucket that also holds UI modules, so it is not a clean UI-free equivalent of the capability tier. _(Element (element-hq) · repo develop as of 2026-09-27 · high)_
+  - <https://github.com/element-hq/element-x-android/blob/develop/settings.gradle.kts>
+  - <https://github.com/element-hq/element-x-android/blob/develop/docs/_developer_onboarding.md>
+  - <https://github.com/element-hq/element-x-android/tree/develop/libraries>
+  - <https://github.com/element-hq/element-x-android/tree/develop/services>
+- **CAP-N-18** — Tivi (Chris Banes' KMP reference app, archived) names per-domain modules ':data:<domain>', has a single ':domain' module, and uses ':api:<vendor>' for remote API clients. Across codebases the word 'api' is overloaded: Tivi uses it for remote clients, while NiA and this repo use :api for interface modules. _(Chris Banes (Tivi) · repo main (archived; last push 2024-11-12) · high)_
+  - <https://github.com/chrisbanes/tivi/blob/main/settings.gradle.kts>
+- **CAP-N-19** — Mozilla calls its cross-platform shared business-logic units 'components'. These are Rust components with Kotlin and Swift bindings used by Firefox apps, the closest real-world match to a KMP capability tier. The older android-components taxonomy separates 'concept' (API contracts) from 'feature', 'service', 'support' and standalone 'lib'. _(Mozilla · application-services main as of 2026-09-27; android-components last push 2022-10-31 · high)_
+  - <https://github.com/mozilla/application-services/blob/main/README.md>
+  - <https://github.com/mozilla/application-services/tree/main/components>
+  - <https://github.com/mozilla-mobile/android-components/blob/main/README.md>
+- **CAP-N-20** — Shopify's modular monolith uses 'component' for a business-domain unit that exposes a public API and exclusively owns its data, with tooling that tracks boundary violations. Shopify components are vertical (each structured as a mini Rails app), closer to Lewis & Fowler's broad-stack sense than to a UI-free tier. _(Shopify (Kirsten Westeinde) · 2019-02-21 · high)_
+  - <https://shopify.engineering/deconstructing-monolith-designing-software-maximizes-developer-productivity>
+- **CAP-N-21** — On Android/KMP, several candidate names already have platform meanings: 'service' (android.app.Service), 'component' (Android app components), 'domain' (the optional domain layer of use cases) and 'platform' (KMP platform source sets and expect/actual). _(Google (Android Developers); JetBrains (Kotlin docs) · 2025-01-28; 2025-02-10; 2026-03-05; 2026-05-13 · high)_
+  - <https://developer.android.com/develop/background-work/services>
+  - <https://developer.android.com/guide/components/fundamentals>
+  - <https://developer.android.com/topic/architecture/domain-layer>
+  - <https://kotlinlang.org/docs/multiplatform/multiplatform-expect-actual.html>
+- **CAP-N-22** — 'Capability' itself collides with two build and IDE terms: Gradle's dependency-management capabilities and Xcode Capabilities. Both live in build configuration and target settings, not in Gradle project paths, so the clash is mild. See CAP-N-26 for platform collisions specific to this repo. _(Gradle; Apple · Gradle docs 9.8.0; Apple docs accessed 2026-09-27 · medium)_
+  - <https://docs.gradle.org/current/userguide/component_capabilities.html>
+  - <https://developer.apple.com/documentation/xcode/capabilities>
+  - <https://developer.apple.com/documentation/xcode/adding-capabilities-to-your-app>
+- **CAP-N-23** — A literal ':capability:' module tier was found only in very small personal repos. One is a 2026 KMP template ('Helix KMP') whose ADR states 'Capabilities own data'. No large mobile engineering org was found using the word as a module type. _(GitHub code search (various) · searched 2026-09-27 · low)_
+  - <https://github.com/mayankmkh/base_kmp_project/blob/main/settings.gradle.kts>
+  - <https://github.com/mayankmkh/base_kmp_project/blob/main/docs/architecture/adr/0001-helix-adoption.md>
+  - <https://github.com/Tinnci/anshin/blob/main/settings.gradle.kts>
+  - <https://github.com/Pluto-Studio/PlutoProject/blob/main/platform/paper/build.gradle.kts>
+- **CAP-N-24** — Google's official answer to 'why not keep the data inside each feature': feature modules depend on shared data modules and pass only IDs between each other, loading the entity from the shared data module. This is the primary-source argument against feature-owned domain data when several features consume it. _(Google (Android Developers) · 2026-03-05 · high)_
+  - <https://developer.android.com/topic/modularization/patterns>
+- **CAP-N-25** — Eric Evans' DDD Reference defines a bounded context as a boundary, typically a subsystem or a team's work, within which one model applies. He says the boundary should show up physically in code bases and database schemas. 'Capability' is not a DDD term. _(Eric Evans (Domain Language, Inc.) · 2015 (acknowledgements dated June 2014) · high)_
+  - <https://www.domainlanguage.com/wp-content/uploads/2016/05/DDD_Reference_2015-03.pdf>
+- **CAP-N-26** — This repo already touches two platform meanings of 'capability'. Android App Actions declares a <capability> element in shortcuts.xml, which is relevant to a launcher app that manages shortcuts. The iOS app's Info.plist already has UIRequiredDeviceCapabilities. Neither clashes with a Gradle path segment, but both will show up in repo-wide searches for 'capability'. _(Google (Android Developers); this repo · 2026-02-26; repo checked 2026-09-27 · medium)_
+  - <https://developer.android.com/develop/devices/assistant/action-schema>
+  - `iosApp/deeplinklauncher/Info.plist`
+
+**Não verificado / refutado:**
+
+- Tool limits this run: WebSearch was unavailable (the session's 200/200 search budget was already used), so no new web searches were run. WebFetch hit a session limit on 2 of 4 calls. All re-verification was done by fetching primary URLs directly with curl, the GitHub API via gh, and PDFKit for the DDD Reference PDF.
+- Ulrich Homann, 'A Business-Oriented Foundation for Service Orientation' (Microsoft, 2006): not retrieved. Earlier attempts found learn.microsoft.com and msdn URLs dead. This run, web.archive.org returned 'Temporarily Offline' and the availability API returned 429. Its date, definition and role as the origin of 'business capability' in software remain unverified.
+- TOGAF/Open Group definition text for business capability: G211 and G233 landing pages were verified, but every pubs.opengroup.org content page (TOGAF 9, 9.1, 10 business-capabilities, ArchiMate 3) redirects to identity.opengroup.org login, re-checked 2026-09-27. No definition is quoted.
+- BIZBOK (Business Architecture Guild) definition of business capability: not retrieved (403 in the earlier pass; not retried).
+- The exact date android-components was archived: the GitHub API shows archived=true and last push 2022-10-31 only.
+- The claim that no major mobile org uses 'capability' as a module tier rests on a limited GitHub code search of settings files. Private monorepos and engineering blogs were not searched, so it is absence of evidence, not proof.
+- The claim that 'core' becomes a junk drawer has only indirect support: Airbnb's migration away from lib/ for discoverability, and Google's statement that core modules 'don't represent any specific layer'. No primary source using that phrase for mobile 'core' modules was found.
+- The full list of Airbnb's twelve iOS module types is not public; the post says the documentation is internal.
+- Element X never defines 'services' modules in its onboarding doc, so their intended meaning versus 'libraries' is inferred only from directory contents.
+- The Team Topologies book's own wording was not read, only the website and Fowler's bliki. Fowler's phrase 'single business capability' for stream-aligned teams is his summary; the site says 'segment of the business domain'.
+- Apple's '*Kit' framework naming (UIKit, HealthKit, StoreKit) as an analogy for capability-scoped modules was not researched.
+- Whether Android App Actions (Assistant BIIs in shortcuts.xml) is being deprecated in favor of Gemini integrations: the overview page showed no deprecation notice (0 hits for 'deprecat'), but its long-term status was not researched further.
+
+## 12. Capability: por que extrair vs manter na feature (CAP-Y)
+
+**Síntese do verificador:** Fact-check result: all 30 original findings were re-fetched (curl+grep for verbatim quotes, GitHub git-tree/raw reads, local repo greps). None was refuted. Eight needed their claim or detail corrected. (1) CAP-Y-12: JetBrains splits sharedLogic/sharedUI only when some platform uses native UI. An all-Compose Multiplatform app like this one gets a single shared module by default, so JetBrains is an analogue, not an endorsement for this configuration. (2) CAP-Y-13/09/10: Mols' libraries, Element X libraries and NiA core also contain UI modules. Only Google data modules, Slack Services, Airbnb services and JetBrains sharedLogic are defined as non-UI; elsewhere being UI-free is a per-module property (core:data, libraries:matrix). (3) CAP-Y-22: Kotlin umbrella export can be selective; what cannot be split is inclusion (the app consumes all included feature modules). (4) CAP-Y-11: 'no UI-free tier' was an inference. App Platform separates UI through Presenter/Renderer, and the Amazon Delivery origin comes from docs/faq.md. (5) CAP-Y-16: the PIA list gained featureflags and sharedui. (6) CAP-Y-18/19: deeplink:api also depends on core:date and uses only implementation(), so the api() leak is a general mechanism, not a current repo problem. (7) CAP-Y-20: Kotlin/JVM classpath-snapshot IC is now the default. (8) Small quote fixes in 04, 07 (Slack iOS does split Services into Interface/Implementation) and 08 (feature interfaces are mandatory, service interfaces optional).  Overall, the evidence still clearly supports taking the shared deeplink/folder domain, data and schema out of the screen feature. Google (data modules that features depend on; exchange IDs, not objects), NiA (feature api = nav key only; shared classes go to core; core:data consumed by the non-UI sync:work), Slack Services, Airbnb services and Element X libraries:matrix all keep domain shared by several screens outside any screen feature. This repo's feature:deeplink:api is consumed in disjoint slices (settings and data-transfer use only domain; shared uses only navigation), which violates CRP/CCP. Its SQLDelight schema lives apart from the repositories that change with it. Evans' Shared Kernel explicitly bundles the model with its code and database design. Google's domain-scoped data module ('many types of data as long as they are related') is the closest official analogue and argues for one deeplink+folder module.  The evidence supports the rest of the proposal less. (a) The name: 'capability' comes from business architecture and microservices, where a capability is full-stack including UI (Lewis & Fowler). No primary mobile source uses it for a UI-free tier; the one production :capabilities tier (PIA) means cross-cutting concerns, and literal ':capability:' domain tiers appear only in two tiny personal repos. Using the name requires an explicit definition, or else an established term (data, domain, service). (b) Interface/impl everywhere: NiA and Google write use cases as concrete classes
+
+- **CAP-Y-01** — [verified] Google's official modularization patterns page defines domain-scoped data modules (repository, data sources, models) separately from feature modules (screens), and says feature modules depend on data modules. _(Google (Android Developers) · 2026-03-05 (last updated) · high)_
+  - <https://developer.android.com/topic/modularization/patterns>
+- **CAP-Y-02** — [verified] The same Google page tells features to exchange primitive IDs and load data from a shared data module rather than pass objects. On direct feature-to-feature communication it talks about cycles and a mediator module; it contains no blanket ban. _(Google (Android Developers) · 2026-03-05 · high)_
+  - <https://developer.android.com/topic/modularization/patterns>
+- **CAP-Y-03** — [verified] Google recommends splitting API from implementation in four named cases. The page uses the word 'capabilities' in its everyday sense, not as the name of a module tier. _(Google (Android Developers) · 2026-03-05 · high)_
+  - <https://developer.android.com/topic/modularization/patterns>
+- **CAP-Y-04** — [verified; quote corrected] Google's Navigation 3 modularization guide puts a feature's navigation keys in its api and the NavEntry/entryProvider content in its impl. It does not say where data or domain logic goes. _(Google (Android Developers) · 2026-09-22 (last updated) · high)_
+  - <https://developer.android.com/guide/navigation/navigation-3/modularize>
+- **CAP-Y-05** — [verified] In Now in Android, every feature api contains only a navigation key. A class needed by more than one feature moves to a core module, and all shared data lives in a single core:data module rather than inside any feature. _(Google / Now in Android · main branch, pushed 2026-09-27 · high)_
+  - <https://github.com/android/nowinandroid/blob/main/docs/ModularizationLearningJourney.md>
+  - <https://github.com/android/nowinandroid/blob/main/settings.gradle.kts>
+  - <https://github.com/android/nowinandroid/tree/main/feature/topic/api>
+  - <https://github.com/android/nowinandroid/tree/main/core/data/src/main/kotlin/com/google/samples/apps/nowinandroid/core/data/repository>
+- **CAP-Y-06** — [verified] Now in Android has a real non-UI consumer of shared data: :sync:work (WorkManager) depends on core:data and on no feature module. That only works because no screen feature owns the data. _(Google / Now in Android · 2026-09-27 · high)_
+  - <https://github.com/android/nowinandroid/blob/main/sync/work/build.gradle.kts>
+- **CAP-Y-07** — [verified; iOS nuance added] Slack keeps cross-feature business logic in UI-less 'Services', separate from 'Features'. On iOS both Features and Services are split into Interface and Implementation modules. On Android, Slack does not require api/impl pairs and uses them mainly to break cycles. _(Slack (Tracy Stampfli, Bryan Stern) · 2022-03-28 (updated 2022-05-04) · high)_
+  - <https://slack.engineering/stabilize-modularize-modernize-scaling-slacks-mobile-codebases-2/>
+- **CAP-Y-08** — [verified; quote attribution tightened] Airbnb iOS has a UI-less 'service' module type for state shared between features, separate from 'feature' and 'feature interface' modules. Every feature has an interface module that carries only lightweight types, and features cannot depend on other features. _(Airbnb (Michael Bachand) · 2021-10-05 · high)_
+  - <https://medium.com/airbnb-engineering/designing-for-productivity-in-a-large-scale-ios-application-9376a430a0bf>
+  - <https://web.archive.org/web/2024id_/https://medium.com/airbnb-engineering/designing-for-productivity-in-a-large-scale-ios-application-9376a430a0bf>
+- **CAP-Y-09** — [verified; wording corrected] Element X Android is the counter-model at the feature level: its feature apis can carry Compose UI, state factories and domain actions. Its core domain (the Matrix SDK wrappers) still lives in the horizontal 'libraries' tier, not inside a feature. That tier also holds UI libraries such as designsystem, so being UI-free is a property of libraries:matrix, not of the whole tier. _(Element (element-hq) · develop branch, pushed 2026-09-26 · high)_
+  - <https://github.com/element-hq/element-x-android/tree/develop/features/poll/api/src/main/kotlin/io/element/android/features/poll/api>
+  - <https://github.com/element-hq/element-x-android/blob/develop/features/poll/api/build.gradle.kts>
+  - <https://github.com/element-hq/element-x-android/blob/develop/docs/_developer_onboarding.md>
+- **CAP-Y-10** — [partially] Jeroen Mols (2019) described shared code as a horizontal 'library' tier beneath independent vertical features. That tier explicitly mixes business logic with UI components, so it is horizontal but not UI-free. By 2026, NiA and Nav3 let a feature impl depend on another feature's api, but only for navigation keys. _(Jeroen Mols; Google · 2019-03-18 vs 2026 · high)_
+  - <https://jeroenmols.com/blog/2019/03/18/modularizationarchitecture/>
+  - <https://github.com/android/nowinandroid/blob/main/docs/ModularizationLearningJourney.md>
+  - <https://developer.android.com/guide/navigation/navigation-3/modularize>
+- **CAP-Y-11** — [partially] App Platform, a KMP framework originally developed in Amazon's Delivery organization, gives every 'library' (features included) the same :public/:impl shape, with :public allowed to hold UI components. Its module-structure doc defines no separate UI-free tier; UI is decoupled from business logic through its Presenter/Renderer abstractions instead. Its hard rule is that only the app module may depend on :impl. _(App Platform (Ralf Wondratschek; originated at Amazon Delivery) · repo pushed 2026-09-25 · high)_
+  - <https://github.com/vRallev/app-platform/blob/main/docs/module-structure.md>
+  - <https://github.com/vRallev/app-platform/blob/main/README.md>
+  - <https://github.com/vRallev/app-platform/blob/main/docs/faq.md>
+- **CAP-Y-12** — [partially: the split is conditional] JetBrains' 2026 default KMP project structure creates a Compose-free sharedLogic module next to a Compose sharedUI module only when some platform uses native UI (for example SwiftUI on iOS). For an app that uses Compose Multiplatform on every platform, which is this repo's setup, the default is a single shared module. The logic/UI module split is therefore a platform-level analogue of the capability/feature split, not a JetBrains recommendation for this repo's configuration. _(JetBrains (Márton Braun) · 2026-05-15 · high)_
+  - <https://blog.jetbrains.com/kotlin/2026/05/new-kmp-default-structure/>
+- **CAP-Y-13** — [partially] On naming: every verified reference calls its shared-domain modules something other than 'capability'. Only some references define that tier as UI-free: Google data modules, Slack Services, Airbnb services and JetBrains sharedLogic. In NiA (core), Element X (libraries) and Mols (library modules) the horizontal tier also holds UI modules, and being UI-free is a property of individual modules such as core:data and libraries:matrix. _(cross-source · 2019-2026 · high)_
+  - <https://developer.android.com/topic/modularization/patterns>
+  - <https://github.com/android/nowinandroid/blob/main/settings.gradle.kts>
+  - <https://slack.engineering/stabilize-modularize-modernize-scaling-slacks-mobile-codebases-2/>
+  - <https://web.archive.org/web/2024id_/https://medium.com/airbnb-engineering/designing-for-productivity-in-a-large-scale-ios-application-9376a430a0bf>
+- **CAP-Y-14** — [verified] 'Capability' comes from business architecture and microservices ('decompose by business capability'), where a capability is a relatively stable area of what the business does. _(Chris Richardson; Sriram Narayan · microservices.io undated; Narayan 2016-06-08 · high)_
+  - <https://microservices.io/patterns/decomposition/decompose-by-business-capability.html>
+  - <https://martinfowler.com/bliki/BusinessCapabilityCentric.html>
+- **CAP-Y-15** — [verified] In the original microservices sense a business capability is full-stack, UI included. A UI-free mobile 'capability' module therefore repurposes the term. _(James Lewis & Martin Fowler · 2014-03-25 · high)_
+  - <https://martinfowler.com/articles/microservices.html>
+- **CAP-Y-16** — [verified; module list completed] In mobile, 'capabilities' has no settled meaning. The one production app found with a :capabilities tier, Private Internet Access VPN for Android, uses it for cross-cutting concerns (shared UI, analytics events, feature flags, support logs) and keeps foundational domain logic in :core. _(Kape / Private Internet Access (pia-foss) · repo pushed 2026-09-25 · medium)_
+  - <https://github.com/pia-foss/mobile-android/blob/main/settings.gradle.kts>
+  - <https://github.com/pia-foss/mobile-android/blob/main/CLAUDE.md>
+  - <https://github.com/pia-foss/mobile-android/blob/main/README.md>
+- **CAP-Y-17** — [verified] Robert C. Martin's package principles treat a package as a binary deliverable, which today means a Gradle module. They argue for grouping code by change and by use, and for depending toward stable, abstract modules. _(Robert C. Martin · undated (butunclebob.com) · high)_
+  - <http://butunclebob.com/ArticleS.UncleBob.PrinciplesOfOod>
+- **CAP-Y-18** — [verified; build deps corrected] Evidence from this repo: the consumers of feature:deeplink:api use disjoint slices of it. settings:impl, data-transfer:impl and shared never use the UI parts they share a module with, which violates the Common Reuse Principle. _(local repo observation · 2026-09-27 · high)_
+  - `feature/deeplink/api/build.gradle.kts`
+  - `feature/deeplink/api/src/commonMain/kotlin/dev/koga/deeplinklauncher/deeplink/api`
+  - `feature/settings/impl/src`
+  - `feature/data-transfer/impl/src`
+- **CAP-Y-19** — [verified; repo applicability noted] Gradle compile avoidance: implementation-only changes do not recompile downstream modules, ABI changes do, and api() dependencies are placed on consumers' compile classpath. A fat, mixed api module therefore widens the set of consumers that each ABI change touches. feature:deeplink:api currently uses only implementation(), so the relevant cost here is its own ABI surface, not leaked dependencies. _(Gradle (Amanda Martin); Tony Robalik · 2022-11-28; docs 9.8.0; 2020-08-27 · high)_
+  - <https://blog.gradle.org/compilation-avoidance>
+  - <https://docs.gradle.org/current/userguide/java_library_plugin.html>
+  - <https://dev.to/autonomousapps/dependency-analysis-gradle-plugin-what-s-an-abi-3l2h>
+- **CAP-Y-20** — [verified; status updated] The Kotlin ABI also includes public inline function bodies, so Gradle's own ABI comparison is not enough for Kotlin. Kotlin's classpath-snapshot incremental compilation, now the default for Kotlin/JVM, recompiles only the affected classes after an ABI change. The accurate build-time argument is task-level invalidation plus partial recompilation, not 'every consumer recompiles everything'. _(JetBrains (Andrey Uskov); Kotlin docs · 2022-07-15; 2026-08-12; 2026-07-15 · high)_
+  - <https://blog.jetbrains.com/kotlin/2022/07/a-new-approach-to-incremental-compilation-in-kotlin/>
+  - <https://kotlinlang.org/docs/gradle-compilation-and-caches.html>
+  - <https://kotlinlang.org/docs/api-guidelines-backward-compatibility.html>
+- **CAP-Y-21** — [verified] Android surfaces outside the screens need domain and data without the screen UI: Glance widgets cannot mix with regular Compose UI, and app shortcuts are published from app code at runtime. This repo already has a non-UI shortcut port inside its feature api. _(Google; local repo · 2026-09 · high)_
+  - <https://developer.android.com/develop/ui/compose/glance>
+  - <https://developer.android.com/develop/ui/views/launch/shortcuts/creating-shortcuts>
+  - `feature/deeplink/api/src/commonMain/kotlin/dev/koga/deeplinklauncher/deeplink/api/domain/manager/DeepLinkShortcutManager.kt`
+  - `feature/deeplink/impl/src/androidMain/kotlin/dev/koga/deeplinklauncher/deeplink/impl/domain/manager/DeepLinkShortcutManagerImpl.android.kt`
+- **CAP-Y-22** — [partially] On iOS, app extensions and App Intents share code through frameworks that must contain only extension-safe code. A KMP framework includes all of its dependencies, and an iOS app cannot use only some of the feature modules in an umbrella framework (export itself can be selective). That pushes toward a logic-only umbrella for any future extension. _(Apple; JetBrains · 2017-10-19 (Apple archive); 2026-03-12 (Kotlin) · medium)_
+  - <https://developer.apple.com/library/archive/documentation/General/Conceptual/ExtensibilityPG/ExtensionScenarios.html>
+  - <https://developer.apple.com/documentation/appintents/appintentspackage>
+  - <https://kotlinlang.org/docs/multiplatform/multiplatform-project-configuration.html>
+- **CAP-Y-23** — [verified] SQLDelight keeps migrations next to the .sq schema in one source set and verifies them per project. Splitting a schema across modules requires the same database name in different packages. Both favour one owner module for schema, migrations and repositories. _(Cash App / SQLDelight; local repo · docs main branch, 2026-09 · high)_
+  - <https://sqldelight.github.io/sqldelight/latest/multiplatform_sqlite/migrations/>
+  - <https://github.com/sqldelight/sqldelight/blob/main/docs/common/gradle-dependencies.md>
+  - `core/database/src/commonMain/sqldelight/dev/koga/deeplinklauncher/database`
+  - `core/database/build.gradle.kts`
+- **CAP-Y-24** — [verified; detail extended] DDD's Bounded Context is the conceptual basis for a capability that owns its model. Evans' Shared Kernel explicitly bundles the shared model with its code and database design. His Anticorruption Layer describes translating between models at the boundary. _(Martin Fowler; Eric Evans (via DDD Crew) · 2014-01-15; DDD Reference 2015 · medium)_
+  - <https://martinfowler.com/bliki/BoundedContext.html>
+  - <https://github.com/ddd-crew/context-mapping>
+  - <https://www.domainlanguage.com/ddd/reference/>
+- **CAP-Y-25** — [verified] Ownership follows module boundaries (Conway): a capability module gives shared data one accountable owner. When the data lives inside a screen feature, whoever owns that screen implicitly owns data other features depend on. _(Melvin Conway; Google · 1968-04; 2026-03-05 · high)_
+  - <https://www.melconway.com/Home/Committees_Paper.html>
+  - <https://developer.android.com/topic/modularization>
+- **CAP-Y-26** — [verified] Vertical slice architecture is the strongest case for keeping domain and data inside the feature: couple code inside a slice and avoid shared layers. Gradle's best practices accept 'vertical slices' as a valid split, but the pattern assumes a team that refactors toward a shared domain when one emerges. _(Jimmy Bogard; Gradle · 2018-04-19; docs 9.8.0 · high)_
+  - <https://www.jimmybogard.com/vertical-slice-architecture/>
+  - <https://docs.gradle.org/current/userguide/best_practices_structuring_builds.html>
+- **CAP-Y-27** — [verified] Cost 1, premature abstraction: interface/impl pairs and an extra tier cost upkeep. Fowler and Slack argue against pairs by default, and Fowler's Yagni explicitly exempts changes that make code easier to modify. _(Martin Fowler; Slack; Google · 2005-12-08; 2015-05-26; 2022; 2026-03-05 · high)_
+  - <https://martinfowler.com/bliki/InterfaceImplementationPair.html>
+  - <https://martinfowler.com/bliki/Yagni.html>
+  - <https://slack.engineering/stabilize-modularize-modernize-scaling-slacks-mobile-codebases-2/>
+  - <https://developer.android.com/topic/architecture/domain-layer>
+- **CAP-Y-28** — [verified] Cost 2, a 'god capability' or the wrong granularity: a capability that absorbs everything becomes 'yet another monolith', and one split too thin adds overhead. _(Google; Eric Evans (via DDD Crew) · 2026-03-05 · high)_
+  - <https://developer.android.com/topic/modularization>
+  - <https://github.com/ddd-crew/context-mapping>
+  - <https://github.com/android/nowinandroid/blob/main/docs/ModularizationLearningJourney.md>
+- **CAP-Y-29** — [verified] Cost 3, an anemic shared core: a capability that exports only data classes, with all behaviour in use-case 'services', is Fowler's Anemic Domain Model, which pays the costs of a domain model without its benefits. _(Martin Fowler · 2003-11-25 · high)_
+  - <https://martinfowler.com/bliki/AnemicDomainModel.html>
+- **CAP-Y-30** — [verified] Cost 4, cycles between capabilities: several capabilities can end up needing each other. The package principles forbid cycles, Slack used api/impl pairs specifically to unwind cycles that appeared during modularization, and Google suggests a mediator module. _(Robert C. Martin; Slack; App Platform; Google · various · high)_
+  - <http://butunclebob.com/ArticleS.UncleBob.PrinciplesOfOod>
+  - <https://slack.engineering/stabilize-modularize-modernize-scaling-slacks-mobile-codebases-2/>
+  - <https://github.com/vRallev/app-platform/blob/main/docs/module-structure.md>
+  - <https://developer.android.com/topic/modularization/patterns>
+- **CAP-Y-31** — [new] The reference implementations write use cases as concrete classes, not interface/impl pairs, and keep interfaces for repositories. Now in Android's core:domain has three use-case classes with operator fun invoke and no interfaces, and Google's domain-layer guide shows the same shape. This repo's feature:deeplink:api instead declares all 14 use cases (plus 2 'application' enrichers) as interfaces. _(Google / Now in Android; local repo · 2026-09-27 · high)_
+  - <https://github.com/android/nowinandroid/tree/main/core/domain/src/main/kotlin/com/google/samples/apps/nowinandroid/core/domain>
+  - <https://github.com/android/nowinandroid/blob/main/core/domain/src/main/kotlin/com/google/samples/apps/nowinandroid/core/domain/GetFollowableTopicsUseCase.kt>
+  - <https://github.com/android/nowinandroid/blob/main/core/data/src/main/kotlin/com/google/samples/apps/nowinandroid/core/data/repository/TopicsRepository.kt>
+  - <https://developer.android.com/topic/architecture/domain-layer>
+- **CAP-Y-32** — [new] In this repo, 8 of the 14 use-case interfaces, plus DeepLinkShortcutManager, have separate Android, iOS and JVM implementations, so they meet Google's 'diverse capabilities / multiple platforms' test for an API/impl split. The other 6 have a single commonMain implementation, which is the case Fowler's Interface Implementation Pair critique targets. _(local repo; Google; Martin Fowler · 2026-09-27 · high)_
+  - `feature/deeplink/impl/src`
+  - <https://developer.android.com/topic/modularization/patterns>
+  - <https://martinfowler.com/bliki/InterfaceImplementationPair.html>
+- **CAP-Y-33** — [new] The build-avoidance argument is weaker for the iOS target: fine-grained incremental compilation is the default only for Kotlin/JVM and JS, while Kotlin/Native incremental compilation of klibs into binaries is Beta and opt-in. This repo does not enable it. _(JetBrains (Kotlin docs); local repo · 2026-08-12; 2026-09-03 · medium)_
+  - <https://kotlinlang.org/docs/gradle-compilation-and-caches.html>
+  - <https://kotlinlang.org/docs/native-improving-compilation-time.html>
+  - `gradle.properties`
+  - `gradle/libs.versions.toml`
+- **CAP-Y-34** — [new] Google's domain-scoped data module is the closest official analogue to what the prior study calls a 'capability'. It is scoped by domain rather than by screen, may cover several related data types, and exposes only its repository. _(Google (Android Developers) · 2026-03-05 · high)_
+  - <https://developer.android.com/topic/modularization/patterns>
+- **CAP-Y-35** — [new] The only repositories found that literally use a ':capability:' module tier for domain modules are two tiny personal projects. The naming has no established production precedent in public code. _(GitHub public repos · 2026-09-27 · medium)_
+  - <https://github.com/mayankmkh/base_kmp_project/blob/main/settings.gradle.kts>
+  - <https://github.com/mayankmkh/base_kmp_project/tree/main/capability/posts-api>
+  - <https://github.com/Tinnci/anshin/blob/main/settings.gradle.kts>
+  - <https://github.com/pia-foss/mobile-android/blob/main/settings.gradle.kts>
+
+**Não verificado / refutado:**
+
+- WebSearch budget still exhausted (re-confirmed 200/200 on 2026-09-27): no web searches ran during either the research or the fact-check. Coverage relies on known URLs plus GitHub code-search API queries, so sources not already known may be missing.
+- Whether any large company (Uber, Spotify, Square/Cash, Airbnb Android, Duolingo, etc.) has a module tier literally named 'capability'. This could not be web-searched; GitHub code search found only PIA VPN (:capabilities, cross-cutting) and two tiny personal repos (:capability:), and that index is partial.
+- Airbnb article text is from the 2024 web.archive.org snapshot only; the live Medium URL returned a 5 KB stub without the article body.
+- TOGAF/Open Group definition of 'business capability': pubs.opengroup.org redirects to an SSO login and was not read.
+- Eric Evans' DDD Reference PDF was not text-extracted; the Shared Kernel and Anticorruption Layer quotes come from ddd-crew/context-mapping, which cites the Reference.
+- Robert C. Martin's full 2000 'Design Principles and Design Patterns' paper was not read; only the one-line principle definitions on butunclebob.com were used.
+- Team Topologies terminology and the Microsoft Azure Anti-Corruption Layer pattern page were not fetched.
+- How much an ABI change in a common KMP module costs on Kotlin/Native (klib compile plus framework link) versus JVM was not measured or found quantified in any source; CAP-Y-33 only establishes that native incremental compilation is Beta, opt-in and disabled here.
+- Apple extension guidance comes from the archived App Extension Programming Guide (2017-10-19) plus the current AppIntentsPackage page. Current WidgetKit extension constraints were not re-verified. That a KMP app extension would need a separate logic-only umbrella framework is an inference, not a documented JetBrains recommendation.
+- Element X's pattern of UI and domain actions in feature apis was observed in code (the poll feature); it is not a documented rule. Module counts (45 feature apis, 33 library apis) count build.gradle.kts paths.
+- microservices.io and the butunclebob principles page carry no publication date.
