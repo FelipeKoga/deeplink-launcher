@@ -10,6 +10,7 @@ kotlin {
         }
         commonMain.dependencies {
             implementation(libs.material3.windowSizeClass)
+            api(libs.haze)
         }
     }
 }
