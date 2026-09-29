@@ -4,5 +4,14 @@ appId: dev.koga.deeplinklauncher.android
 - launchApp
 - extendedWaitUntil:
     visible: "Got it!"
+    timeout: 15000
+    optional: true
+- runFlow:
+    when:
+      notVisible: "Got it!"
+    commands:
+      - launchApp
+- extendedWaitUntil:
+    visible: "Got it!"
     timeout: 30000
 - tapOn: "Got it!"
