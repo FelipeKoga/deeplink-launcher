@@ -25,6 +25,10 @@ kotlin {
             implementation(libs.sqldelight.jvm)
         }
 
+        jvmTest.dependencies {
+            implementation(libs.junit)
+        }
+
         iosMain.dependencies {
             implementation(libs.native.driver)
             implementation(libs.stately)
