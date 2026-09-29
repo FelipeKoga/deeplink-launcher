@@ -121,6 +121,7 @@ jobs:
       - name: Run the iOS Maestro flows
         run: |
           printf 'myapp://checkout/cart' | xcrun simctl pbcopy "$UDID"
+          echo "Simulator pasteboard: $(xcrun simctl pbpaste "$UDID")"
           cd ios-results
           maestro --device "$UDID" test ../maestro/ios \
             --format junit --output maestro-report.xml \
