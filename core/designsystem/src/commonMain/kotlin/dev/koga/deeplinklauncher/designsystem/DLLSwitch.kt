@@ -4,6 +4,7 @@ import androidx.compose.material3.Switch
 import androidx.compose.material3.SwitchDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import dev.koga.deeplinklauncher.designsystem.theme.DeepLinkTheme
 
 @Composable
@@ -21,8 +22,8 @@ fun DLLSwitch(
         enabled = enabled,
         colors = SwitchDefaults.colors(
             checkedThumbColor = colors.button.primaryContent,
-            checkedTrackColor = colors.button.primaryBackground,
-            checkedBorderColor = colors.button.primaryBackground,
+            checkedTrackColor = Color(0xFF16A34A),
+            checkedBorderColor = Color(0xFF16A34A),
             checkedIconColor = colors.button.primaryBackground,
             uncheckedThumbColor = colors.surface.card,
             uncheckedTrackColor = colors.border.default,
