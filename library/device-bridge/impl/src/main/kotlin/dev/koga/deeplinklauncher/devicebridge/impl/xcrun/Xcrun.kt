@@ -12,7 +12,7 @@ import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.updateAndGet
 import kotlinx.coroutines.withContext
 
-internal class Xcrun private constructor(
+internal class Xcrun internal constructor(
     private val path: String,
     private val dispatcher: CoroutineDispatcher,
 ) : DeviceBridge {
@@ -48,7 +48,7 @@ internal class Xcrun private constructor(
         }
 
         while (true) {
-            val inputStream = ProcessBuilder(
+            val process = ProcessBuilder(
                 path,
                 "simctl",
                 "list",
@@ -57,9 +57,14 @@ internal class Xcrun private constructor(
                 "available",
             ).start().apply {
                 waitFor()
-            }.inputStream
+            }
 
-            val devices = XcrunParser.parse(inputStream).map {
+            if (process.exitValue() != 0) {
+                emit(tracking.updateAndGet { emptyList() })
+                return@flow
+            }
+
+            val devices = XcrunParser.parse(process.inputStream).map {
                 DeviceBridge.Device(
                     id = it.udid,
                     name = it.name,
