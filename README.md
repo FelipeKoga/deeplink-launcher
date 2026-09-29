@@ -31,11 +31,19 @@ It's one Compose Multiplatform codebase. The UI, the data layer and almost all o
   <img src="docs/screenshots/light-folders.png" width="200" alt="Folders tab in the light theme" />
   <img src="docs/screenshots/light-settings.png" width="200" alt="Settings screen" />
 </p>
+<p align="center">
+  <img src="docs/screenshots/desktop-targets.png" width="410" alt="Desktop app with the target dropdown open, listing the computer and a connected Android emulator" />
+  <img src="docs/screenshots/desktop-details.png" width="410" alt="Desktop app sending links to the emulator, with the details sheet open" />
+</p>
 
 <!--
-Screenshots: Android emulator (Medium Phone API 35), debug build. The data comes from
+Android screenshots: emulator (Medium Phone API 35), debug build. The data comes from
 docs/screenshots/seed-deeplinks.json, imported through Settings > Import. Captured with
 agent-device (screenshot with a normalized status bar), then resized with `sips -Z 1200`.
+
+Desktop screenshots: the desktop App() rendered offscreen with ImageComposeScene at 1100x720 dp
+and density 2, with the Android database copied into an isolated user.home and an emulator
+connected over adb. Resized with `sips -Z 1100`.
 -->
 
 ## Download
@@ -163,10 +171,10 @@ maestro test maestro/
 
 ### Unit tests
 
-JVM unit tests cover the `adb` and `simctl` output parsers in `library:device-bridge:impl` and where the desktop app stores its data in `core:platform`. The pull request workflow doesn't run them yet:
+JVM unit tests cover the `adb` and `simctl` bridges in `library:device-bridge:impl`, where the desktop app stores its data in `core:platform`, and the upgrade of databases from older desktop versions in `core:database`. The pull request workflow runs them:
 
 ```bash
-./gradlew :library:device-bridge:impl:test :core:platform:jvmTest
+./gradlew jvmTest :library:device-bridge:impl:test
 ```
 
 ## Performance
@@ -183,7 +191,7 @@ On the home list, handler lookups are cached per link. The first rows get their 
 
 | Workflow | Runs on | What it does |
 |---|---|---|
-| [`pull-request.yml`](.github/workflows/pull-request.yml) | Pull requests to `main` | `testDebugUnitTest` (screenshot tests excluded) and ktlint |
+| [`pull-request.yml`](.github/workflows/pull-request.yml) | Pull requests to `main` | Android and JVM unit tests (screenshot tests excluded) and ktlint |
 | [`screenshot-tests.yml`](.github/workflows/screenshot-tests.yml) | Pull requests to `main` | Compares screenshots with the `main` baseline |
 | [`screenshot-baseline.yml`](.github/workflows/screenshot-baseline.yml) | Pushes to `main`, weekly, manual | Records the screenshot baseline |
 | [`maestro.yml`](.github/workflows/maestro.yml) | Pushes to `main`, nightly, manual | Runs the Maestro flows on an emulator |
