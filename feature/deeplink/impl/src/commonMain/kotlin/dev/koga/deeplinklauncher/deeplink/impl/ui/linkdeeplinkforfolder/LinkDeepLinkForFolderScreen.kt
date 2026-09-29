@@ -25,6 +25,7 @@ import dev.chrisbanes.haze.HazeState
 import dev.chrisbanes.haze.hazeSource
 import dev.chrisbanes.haze.materials.ExperimentalHazeMaterialsApi
 import dev.chrisbanes.haze.materials.HazeMaterials
+import dev.koga.deeplinklauncher.date.currentLocalDateTime
 import dev.koga.deeplinklauncher.deeplink.impl.ui.folderdetails.component.LinkDeepLinkToFolderBottomSheet
 import dev.koga.deeplinklauncher.deeplink.impl.ui.linkdeeplinkforfolder.state.LinkDeepLinkForFolderAction
 import dev.koga.deeplinklauncher.deeplink.impl.ui.linkdeeplinkforfolder.state.LinkDeepLinkForFolderUiState
@@ -40,6 +41,7 @@ import dev.koga.deeplinklauncher.designsystem.theme.DeepLinkTheme
 import dev.koga.deeplinklauncher.navigation.AppNavigator
 import dev.koga.deeplinklauncher.navigation.AppRoute
 import dev.koga.deeplinklauncher.ui.barHazeEffect
+import kotlinx.datetime.LocalDateTime
 
 @Composable
 internal fun LinkDeepLinkForFolderScreen(
@@ -70,6 +72,7 @@ internal fun LinkDeepLinkForFolderUI(
     onAction: (LinkDeepLinkForFolderAction) -> Unit,
     onNavigate: (AppRoute) -> Unit,
     hazeState: HazeState = remember { HazeState() },
+    now: () -> LocalDateTime = { currentLocalDateTime },
 ) {
     val colors = DeepLinkTheme.colors
     val shapes = DeepLinkTheme.shapes
@@ -119,6 +122,7 @@ internal fun LinkDeepLinkForFolderUI(
                 .hazeSource(hazeState),
             uiState = uiState,
             onAction = onAction,
+            now = now,
         )
     }
 }
@@ -128,6 +132,7 @@ internal fun LinkDeepLinkForFolderContent(
     modifier: Modifier = Modifier,
     uiState: LinkDeepLinkForFolderUiState,
     onAction: (LinkDeepLinkForFolderAction) -> Unit,
+    now: () -> LocalDateTime = { currentLocalDateTime },
 ) {
     val colors = DeepLinkTheme.colors
     val typography = DeepLinkTheme.typography
@@ -195,6 +200,7 @@ internal fun LinkDeepLinkForFolderContent(
                     },
                     actions = DeepLinkCardActionsPresets.linkPicker,
                     painters = painters,
+                    now = now(),
                 )
             }
         }

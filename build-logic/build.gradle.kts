@@ -16,6 +16,7 @@ dependencies {
     implementation(libs.detekt)
     implementation(libs.compose.compiler.plugin)
     implementation(libs.compose.gradlePlugin)
+    runtimeOnly(libs.roborazzi.gradlePlugin)
 
     implementation(files(libs::class.java.superclass.protectionDomain.codeSource.location))
 }

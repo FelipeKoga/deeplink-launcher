@@ -66,9 +66,11 @@ internal fun DetailsDeepLinkInfo(
     onAddFolder: () -> Unit = {},
     onSelectTargetPackage: (String?) -> Unit = {},
     modifier: Modifier = Modifier,
+    initiallyExpanded: Boolean = false,
+    initiallyFolderPickerExpanded: Boolean = false,
 ) {
-    var isExpanded by rememberSaveable { mutableStateOf(false) }
-    var isFolderPickerExpanded by rememberSaveable { mutableStateOf(false) }
+    var isExpanded by rememberSaveable { mutableStateOf(initiallyExpanded) }
+    var isFolderPickerExpanded by rememberSaveable { mutableStateOf(initiallyFolderPickerExpanded) }
 
     val folderChevronRotation by animateFloatAsState(
         targetValue = if (isFolderPickerExpanded) 90f else 0f,

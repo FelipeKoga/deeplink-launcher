@@ -7,8 +7,8 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
 import dev.koga.deeplinklauncher.datatransfer.impl.data.dto.dateFormat
-import dev.koga.deeplinklauncher.date.currentLocalDateTime
 import dev.koga.deeplinklauncher.date.format
+import kotlinx.datetime.LocalDateTime
 
 val generalPropertiesHint: AnnotatedString
     @Composable get() {
@@ -88,42 +88,42 @@ val uuidHint: AnnotatedString
         }
     }
 
-val createdAtHint: AnnotatedString
-    @Composable get() {
-        return buildAnnotatedString {
-            append("For the ")
+@Composable
+fun createdAtHint(exampleDate: LocalDateTime): AnnotatedString {
+    return buildAnnotatedString {
+        append("For the ")
 
-            withStyle(
-                style = SpanStyle(
-                    fontWeight = FontWeight.Bold,
-                ),
-            ) {
-                append("createdAt")
-            }
+        withStyle(
+            style = SpanStyle(
+                fontWeight = FontWeight.Bold,
+            ),
+        ) {
+            append("createdAt")
+        }
 
-            append(", if you want to include it, you must use the ")
+        append(", if you want to include it, you must use the ")
 
-            withStyle(
-                style = SpanStyle(
-                    fontWeight = FontWeight.Bold,
-                ),
-            ) {
-                append("ISO 8601 ")
-            }
+        withStyle(
+            style = SpanStyle(
+                fontWeight = FontWeight.Bold,
+            ),
+        ) {
+            append("ISO 8601 ")
+        }
 
-            append("format. Example: ")
+        append("format. Example: ")
 
-            withStyle(
-                style = SpanStyle(
-                    fontWeight = FontWeight.Bold,
-                ),
-            ) {
-                append(
-                    currentLocalDateTime.format(dateFormat),
-                )
-            }
+        withStyle(
+            style = SpanStyle(
+                fontWeight = FontWeight.Bold,
+            ),
+        ) {
+            append(
+                exampleDate.format(dateFormat),
+            )
         }
     }
+}
 
 val basicJsonPreview = """
     {

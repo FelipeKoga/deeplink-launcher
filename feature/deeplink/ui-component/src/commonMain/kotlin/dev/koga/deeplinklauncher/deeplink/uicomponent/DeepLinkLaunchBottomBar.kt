@@ -60,10 +60,11 @@ public fun DeepLinkLaunchBottomBar(
     launch: () -> Unit,
     onSuggestionClicked: (Suggestion) -> Unit,
     onExpandedChange: (Boolean) -> Unit = {},
+    initiallyExpanded: Boolean = false,
 ) {
     val focusRequester = remember { FocusRequester() }
     val focusManager = LocalFocusManager.current
-    var isExpanded by rememberSaveable { mutableStateOf(false) }
+    var isExpanded by rememberSaveable { mutableStateOf(initiallyExpanded) }
 
     val currentOnExpandedChange by rememberUpdatedState(onExpandedChange)
     LaunchedEffect(isExpanded) { currentOnExpandedChange(isExpanded) }

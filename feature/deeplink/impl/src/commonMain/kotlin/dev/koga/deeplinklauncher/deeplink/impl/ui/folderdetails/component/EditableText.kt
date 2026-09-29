@@ -34,13 +34,14 @@ internal fun EditableText(
     onSave: (String) -> Unit,
     inputLabel: String,
     editButtonEnabled: Boolean = true,
+    initiallyInEditMode: Boolean = false,
     textContent: @Composable () -> Unit,
 ) {
     val colors = DeepLinkTheme.colors
     val dimensions = DeepLinkTheme.dimensions
 
     var inEditMode by rememberSaveable {
-        mutableStateOf(false)
+        mutableStateOf(initiallyInEditMode)
     }
 
     var inputValue by rememberSaveable(value) {

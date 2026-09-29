@@ -1,7 +1,7 @@
 
 
 plugins {
-    alias(libs.plugins.deeplinkLauncher.composeMultiplatform)
+    alias(libs.plugins.deeplinkLauncher.screenshotTesting)
 }
 
 kotlin {
@@ -11,7 +11,6 @@ kotlin {
             api(libs.composeIcons.tablerIcons)
             implementation(libs.kotlinx.immutable)
 
-            implementation(compose.components.uiToolingPreview)
             implementation(compose.preview)
         }
     }

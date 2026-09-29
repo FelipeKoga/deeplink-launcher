@@ -44,10 +44,11 @@ internal fun HomeTopBar(
     onSettingsScreen: () -> Unit,
     onSearch: (String) -> Unit,
     pagerState: PagerState,
+    initiallySearching: Boolean = false,
 ) {
     val focusRequester = remember { FocusRequester() }
     var isSearching by rememberSaveable {
-        mutableStateOf(false)
+        mutableStateOf(initiallySearching)
     }
 
     LaunchedEffect(isSearching) {

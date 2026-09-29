@@ -1,0 +1,64 @@
+package dev.koga.deeplinklauncher.settings.impl.ui
+
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.tooling.preview.PreviewLightDark
+import androidx.compose.ui.tooling.preview.PreviewScreenSizes
+import dev.koga.deeplinklauncher.designsystem.DLLListItem
+import dev.koga.deeplinklauncher.designsystem.theme.DLLPreviewTheme
+
+@PreviewScreenSizes
+@PreviewLightDark
+@Composable
+internal fun SettingsUIPurchaseAvailablePreview() {
+    DLLPreviewTheme {
+        SettingsUI(
+            isPurchaseAvailable = true,
+            onBack = {},
+            onNavigateToExport = {},
+            onNavigateToImport = {},
+            onNavigateToStore = {},
+            onNavigateToOpenSourceLicenses = {},
+            onNavigateToGithub = {},
+            onShowDeleteDataBottomSheet = {},
+            onShowAppTheme = {},
+            onShowSuggestionsOption = {},
+            onShowProducts = {},
+        )
+    }
+}
+
+@PreviewLightDark
+@Composable
+internal fun SettingsUIPurchaseNotAvailablePreview() {
+    DLLPreviewTheme {
+        SettingsUI(
+            isPurchaseAvailable = false,
+            onBack = {},
+            onNavigateToExport = {},
+            onNavigateToImport = {},
+            onNavigateToStore = {},
+            onNavigateToOpenSourceLicenses = {},
+            onNavigateToGithub = {},
+            onShowDeleteDataBottomSheet = {},
+            onShowAppTheme = {},
+            onShowSuggestionsOption = {},
+            onShowProducts = {},
+        )
+    }
+}
+
+@PreviewLightDark
+@Composable
+internal fun SettingsListItemPreview() {
+    DLLPreviewTheme {
+        DLLListItem(
+            title = "Title",
+            description = "Description",
+            trailingContent = {
+                Text("Trailing Content")
+            },
+            onClick = {},
+        )
+    }
+}

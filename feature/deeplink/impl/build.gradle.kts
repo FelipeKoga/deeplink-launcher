@@ -1,7 +1,7 @@
 
 
 plugins {
-    alias(libs.plugins.deeplinkLauncher.composeMultiplatform)
+    alias(libs.plugins.deeplinkLauncher.screenshotTesting)
     alias(libs.plugins.stability.analyzer)
 }
 
@@ -38,7 +38,6 @@ kotlin {
             implementation(libs.haze)
             implementation(libs.haze.materials)
 
-            implementation(compose.components.uiToolingPreview)
             implementation(compose.preview)
         }
 

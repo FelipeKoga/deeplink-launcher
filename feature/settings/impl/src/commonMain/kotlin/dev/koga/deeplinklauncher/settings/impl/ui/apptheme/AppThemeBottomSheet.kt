@@ -29,42 +29,54 @@ fun AppThemeBottomSheet(
     onDismissRequest: () -> Unit,
 ) {
     val appTheme by viewModel.appTheme.collectAsStateWithLifecycle()
-    val typography = DeepLinkTheme.typography
 
     DLLModalBottomSheet(onDismiss = onDismissRequest) {
-        Column(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalAlignment = Alignment.CenterHorizontally,
-        ) {
-            Text(
-                text = "Theme",
-                style = typography.title.sheet,
-            )
+        AppThemeBottomSheetContent(
+            appTheme = appTheme,
+            onSelect = viewModel::update,
+        )
+    }
+}
 
-            Spacer(modifier = Modifier.height(12.dp))
+@Composable
+internal fun AppThemeBottomSheetContent(
+    appTheme: AppTheme,
+    onSelect: (AppTheme) -> Unit,
+) {
+    val typography = DeepLinkTheme.typography
 
-            Text(
-                text = "Choose an option and press to confirm.",
-                style = typography.body.default,
+    Column(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalAlignment = Alignment.CenterHorizontally,
+    ) {
+        Text(
+            text = "Theme",
+            style = typography.title.sheet,
+        )
+
+        Spacer(modifier = Modifier.height(12.dp))
+
+        Text(
+            text = "Choose an option and press to confirm.",
+            style = typography.body.default,
+        )
+
+        Spacer(modifier = Modifier.height(24.dp))
+
+        AppTheme.entries.forEach {
+            AppThemeListItem(
+                label = when (it) {
+                    AppTheme.LIGHT -> "Light"
+                    AppTheme.DARK -> "Dark"
+                    AppTheme.AUTO -> "Auto"
+                },
+                selected = appTheme == it,
+                onClick = {
+                    onSelect(it)
+                },
             )
 
             Spacer(modifier = Modifier.height(24.dp))
-
-            AppTheme.entries.forEach {
-                AppThemeListItem(
-                    label = when (it) {
-                        AppTheme.LIGHT -> "Light"
-                        AppTheme.DARK -> "Dark"
-                        AppTheme.AUTO -> "Auto"
-                    },
-                    selected = appTheme == it,
-                    onClick = {
-                        viewModel.update(it)
-                    },
-                )
-
-                Spacer(modifier = Modifier.height(24.dp))
-            }
         }
     }
 }

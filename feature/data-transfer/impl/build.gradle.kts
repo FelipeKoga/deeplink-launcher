@@ -1,7 +1,7 @@
 
 
 plugins {
-    alias(libs.plugins.deeplinkLauncher.composeMultiplatform)
+    alias(libs.plugins.deeplinkLauncher.screenshotTesting)
     alias(libs.plugins.kotlinSerialization)
 }
 
@@ -31,7 +31,6 @@ kotlin {
             implementation(libs.mpfilepicker)
             implementation(libs.compose.navigation)
 
-            implementation(compose.components.uiToolingPreview)
             implementation(compose.preview)
         }
     }
