@@ -1,0 +1,126 @@
+name: iOS
+
+on:
+  pull_request:
+    branches: [ "main" ]
+    paths-ignore:
+      - "docs/**"
+      - "**/*.md"
+      - "maestro/**"
+  push:
+    branches: [ "main" ]
+    paths-ignore:
+      - "docs/**"
+      - "**/*.md"
+      - "maestro/**"
+  workflow_dispatch:
+
+concurrency:
+  group: ios-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build-and-launch:
+    runs-on: macos-26
+    timeout-minutes: 60
+    env:
+      BUNDLE_ID: dev.koga.deeplinklauncher.ios
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Cache Gradle dependencies
+        uses: actions/cache@v5
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: >
+            ${{ runner.os }}-gradle-
+            ${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: ${{ runner.os }}-gradle-
+
+      - name: Cache Kotlin/Native toolchain
+        uses: actions/cache@v5
+        with:
+          path: ~/.konan
+          key: ${{ runner.os }}-konan-${{ hashFiles('gradle/libs.versions.toml') }}
+          restore-keys: ${{ runner.os }}-konan-
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v5
+        with:
+          java-version: '17'
+          distribution: 'zulu'
+          cache: gradle
+
+      - name: Create google-services.json
+        run: |
+          echo "${{ secrets.GOOGLE_SERVICES_JSON_BASE64 }}" | base64 --decode > androidApp/google-services.json
+
+      - name: Grant execute permission for gradlew
+        run: chmod +x ./gradlew
+
+      - name: Create Environment File
+        uses: ./.github/actions/create-env-action
+        with:
+          REVENUECAT_API_KEY: ${{ secrets.REVENUECAT_API_KEY }}
+
+      - name: Build the app for the simulator
+        run: |
+          xcodebuild -version
+          xcodebuild \
+            -project iosApp/deeplinklauncher.xcodeproj \
+            -scheme iosApp \
+            -configuration Debug \
+            -sdk iphonesimulator \
+            -destination 'generic/platform=iOS Simulator' \
+            -derivedDataPath build/ios \
+            CODE_SIGNING_ALLOWED=NO \
+            -quiet \
+            build
+
+      - name: Boot a simulator
+        run: |
+          udid=$(xcrun simctl list devices available -j | jq -r '
+            .devices
+            | to_entries
+            | map(select(.key | test("SimRuntime\\.iOS-")))
+            | sort_by(.key | capture("iOS-(?<major>[0-9]+)-(?<minor>[0-9]+)") | [(.major | tonumber), (.minor | tonumber)])
+            | last
+            | .value
+            | map(select(.name | startswith("iPhone")))
+            | first
+            | .udid')
+          echo "Simulator: $(xcrun simctl list devices | grep "$udid")"
+          xcrun simctl boot "$udid"
+          xcrun simctl bootstatus "$udid" -b
+          echo "UDID=$udid" >> "$GITHUB_ENV"
+
+      - name: Install and launch the app
+        run: |
+          app=$(find build/ios/Build/Products -maxdepth 2 -name '*.app' -type d | head -1)
+          echo "App: $app"
+          xcrun simctl install "$UDID" "$app"
+          pid=$(xcrun simctl launch "$UDID" "$BUNDLE_ID" | awk '{print $NF}')
+          echo "Launched with pid $pid"
+          sleep 20
+          mkdir -p ios-results
+          xcrun simctl io "$UDID" screenshot ios-results/launch.png
+          if ! ps -p "$pid" > /dev/null; then
+            echo "::error::The app is no longer running 20 seconds after launch."
+            exit 1
+          fi
+
+      - name: Collect crash reports
+        if: always()
+        run: |
+          mkdir -p ios-results
+          find ~/Library/Logs/DiagnosticReports -name '*.ips' -newer build/ios -exec cp {} ios-results/ \; 2>/dev/null || true
+
+      - name: Upload results
+        if: always()
+        uses: actions/upload-artifact@v6
+        with:
+          name: ios-results
+          path: ios-results
+          if-no-files-found: ignore
