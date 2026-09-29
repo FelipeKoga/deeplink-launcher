@@ -15,9 +15,7 @@
   <a href="https://github.com/FelipeKoga/deeplink-launcher/actions/workflows/screenshot-baseline.yml"><img src="https://github.com/FelipeKoga/deeplink-launcher/actions/workflows/screenshot-baseline.yml/badge.svg" alt="Screenshot baseline" /></a>
 </p>
 
-DeepLink Launcher is for developers and QA who test deeplinks. You paste or type a link, launch it, and it stays in a history you can search, favorite and sort into folders. On desktop the app can also send the link to a connected Android device or a booted iOS simulator, running `adb shell am start` or `xcrun simctl openurl` for you.
-
-It's one Compose Multiplatform codebase. The UI, the data layer and almost all of the logic are shared, and platform code is limited to things like firing an `Intent` on Android or calling `adb` on desktop.
+For developers and QA who test deeplinks. Built with Compose Multiplatform for Android, iOS and desktop.
 
 <p align="center">
   <img src="docs/screenshots/dark-home.png" width="200" alt="History tab in the dark theme" />
@@ -46,37 +44,28 @@ and density 2, with the Android database copied into an isolated user.home and a
 connected over adb. Resized with `sips -Z 1100`.
 -->
 
-## Download
-
-- Android: [Google Play](https://play.google.com/store/apps/details?id=dev.koga.deeplinklauncher.android).
-- Desktop: [latest GitHub release](https://github.com/FelipeKoga/deeplink-launcher/releases/latest), with a DMG for macOS, an EXE for Windows and a DEB for Debian and Ubuntu.
-- iOS: not on the App Store. You can build it from `iosApp/` with Xcode.
-
 ## What it does
 
-- Type or paste a link in the bottom bar and launch it. While you type, the bar suggests schemes and then matching links from your history. When the bar is empty and the clipboard holds something that looks like a deeplink, that link is the first suggestion.
-- Every launched link is saved, and History is ordered by the last launch. You can search it, mark favorites, move links into folders, give them a name and notes, or duplicate one with a different URL.
-- The details sheet splits the link into scheme, host, path and query. On Android it also says whether an installed app can open the link, and when more than one can, you choose which one it goes to.
-- Android can also turn a link into an app shortcut or pin it to the home screen.
-- The desktop app has a dropdown in the top bar that picks where links go: the computer itself, a connected Android device or emulator, or a booted iOS simulator.
-- Export and import use JSON, which keeps names, notes, favorites and folders, or plain text with one link per line.
+- Launch any deeplink or URL from the input bar
+- Suggestions from your history as you type
+- Suggests the deeplink on your clipboard (Android, desktop)
+- History sorted by last launch, with search
+- Favorites and folders
+- Name, notes, edit and duplicate links
+- Link details: scheme, host, path and query
+- Shows which app opens a link and lets you pick one when several can (Android)
+- App shortcuts and home screen pins (Android)
+- Send links to a connected Android device or a booted iOS simulator (desktop)
+- Share a link (on desktop it copies it to the clipboard)
+- Import and export as JSON or plain text
+- Light and dark theme
+- Donate to support the project (Android)
 
-Android has the full feature set. iOS shares the UI and the database, but it has no clipboard suggestions, app shortcuts, home screen pins, handler info or target app picker yet. The desktop app has the device bridge and clipboard suggestions, lacks the shortcut, pin and handler features, and its "share" copies the link to the clipboard. The donation screen (RevenueCat) and analytics (Firebase) only exist on Android; iOS and desktop bind no-op implementations.
+## Download
 
-## Architecture
-
-The Android app (`androidApp`) and the desktop app (`desktopApp`) are thin Gradle modules. The iOS app is the Xcode project in `iosApp/`, which embeds the `shared` framework. Almost everything else is Kotlin Multiplatform, compiled for Android, JVM and three iOS targets. The exceptions are `library:device-bridge`, a plain JVM library used only by the desktop app, and `baselineprofile`, an Android test module.
-
-The home, details, folder details and link-to-folder screens use the same pattern. The ViewModel exposes a single `StateFlow` of UI state, built with `combine(...).stateIn(...)`, and receives a sealed interface of actions through one `onAction()` function. ViewModels never see a `NavController`: they send `@Serializable` routes to an `AppNavigator`, and `App.kt` collects them and drives the `NavHost`. Navigation and snackbars go through app-wide `Channel`s (`AppNavigator` and `SnackBarDispatcher`). The settings and import/export ViewModels are simpler, with public functions instead of an action interface.
-
-Modules that need bindings declare a Koin module in their `di` package. Anything that depends on the platform, such as launching, sharing, shortcuts or the database driver, is an interface in common code (or an `expect` class, in the case of the clipboard reader) with an Android, iOS or JVM implementation bound in a per-platform Koin module. Deeplinks and folders are stored with SQLDelight and preferences with DataStore.
-
-Launching a link from the input bar goes through these steps:
-
-1. The launch button in [`DeepLinkLaunchBottomBar`](feature/deeplink/ui-component/src/commonMain/kotlin/dev/koga/deeplinklauncher/deeplink/uicomponent/DeepLinkLaunchBottomBar.kt) calls its `launch` callback, which `HomeScreen` turns into `HomeAction.LaunchInputDeepLink` for [`HomeViewModel`](feature/home/impl/src/commonMain/kotlin/dev/koga/deeplinklauncher/home/impl/ui/HomeViewModel.kt).
-2. The ViewModel checks whether the link is already saved and calls [`LaunchDeepLink`](feature/deeplink/api/src/commonMain/kotlin/dev/koga/deeplinklauncher/deeplink/api/domain/usecase/LaunchDeepLink.kt), an interface from `feature:deeplink:api`.
-3. `feature:deeplink:impl` has one implementation per platform. [Android](feature/deeplink/impl/src/androidMain/kotlin/dev/koga/deeplinklauncher/deeplink/impl/domain/usecase/LaunchDeepLinkImpl.android.kt) fires a `VIEW` intent, locked to the chosen app if there is one. [iOS](feature/deeplink/impl/src/iosMain/kotlin/dev/koga/deeplinklauncher/deeplink/impl/domain/usecase/LaunchDeepLinkImpl.ios.kt) calls `UIApplication.openURL`. [Desktop](feature/deeplink/impl/src/jvmMain/kotlin/dev/koga/deeplinklauncher/deeplink/impl/domain/usecase/LaunchDeepLinkImpl.jvm.kt) uses `Desktop.browse` or the device bridge, depending on the selected target.
-4. A new link that opened is inserted with `lastLaunchedAt` set to now. For a saved link, the implementation runs `updateLastLaunchedAt` from [`DeepLink.sq`](core/database/src/commonMain/sqldelight/dev/koga/deeplinklauncher/database/DeepLink.sq), an `UPDATE` of that one column. The SQLDelight query flow then moves the link to the top of History.
+- Android: [Google Play](https://play.google.com/store/apps/details?id=dev.koga.deeplinklauncher.android)
+- Desktop: [GitHub releases](https://github.com/FelipeKoga/deeplink-launcher/releases/latest) (DMG for macOS, EXE for Windows, DEB for Debian and Ubuntu)
+- iOS: not on the App Store yet; build it from `iosApp/` with Xcode
 
 ## Modules
 
