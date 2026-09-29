@@ -68,7 +68,7 @@ jobs:
           script: |
             adb shell settings put global hide_error_dialogs 1
             adb install -r androidApp/build/outputs/apk/debug/androidApp-debug.apk
-            maestro test maestro/ --format junit --output maestro-report.xml --debug-output maestro-debug
+            maestro test maestro/ --format junit --output maestro-report.xml --debug-output maestro-debug --flatten-debug-output
 
       - name: Upload Maestro results
         if: always()
