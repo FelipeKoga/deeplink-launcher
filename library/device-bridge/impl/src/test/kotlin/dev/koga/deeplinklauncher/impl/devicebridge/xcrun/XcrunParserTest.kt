@@ -48,4 +48,16 @@ class XcrunParserTest {
             devices,
         )
     }
+
+    @Test
+    fun `should return no devices when simctl prints nothing`() {
+        assertEquals(emptyList<XcrunDevice>(), XcrunParser.parse("".byteInputStream()))
+    }
+
+    @Test
+    fun `should return no devices when simctl prints something other than the device list`() {
+        val input = "xcrun: error: unable to find utility \"simctl\", not a developer tool or in PATH"
+
+        assertEquals(emptyList<XcrunDevice>(), XcrunParser.parse(input.byteInputStream()))
+    }
 }

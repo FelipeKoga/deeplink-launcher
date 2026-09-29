@@ -4,6 +4,7 @@ import dev.koga.deeplinklauncher.devicebridge.api.DeviceBridge
 import dev.koga.deeplinklauncher.devicebridge.impl.adb.Adb
 import dev.koga.deeplinklauncher.devicebridge.impl.xcrun.Xcrun
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
 
 internal class CompositeDeviceBridge internal constructor(
@@ -19,8 +20,8 @@ internal class CompositeDeviceBridge internal constructor(
 
     override fun track(): Flow<List<DeviceBridge.Device>> {
         return combine(
-            adb.track(),
-            xcrun.track(),
+            adb.track().catch { emit(emptyList()) },
+            xcrun.track().catch { emit(emptyList()) },
         ) { adb, xcrun -> adb + xcrun }
     }
 
