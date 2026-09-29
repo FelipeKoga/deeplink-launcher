@@ -13,4 +13,6 @@ internal actual class ClipboardTextReader(
 
         return clipboard.primaryClip?.getItemAt(0)?.text?.toString()
     }
+
+    actual fun hasTextToPaste(): Boolean = false
 }

@@ -18,4 +18,6 @@ internal actual class ClipboardTextReader {
             return null
         }
     }
+
+    actual fun hasTextToPaste(): Boolean = false
 }

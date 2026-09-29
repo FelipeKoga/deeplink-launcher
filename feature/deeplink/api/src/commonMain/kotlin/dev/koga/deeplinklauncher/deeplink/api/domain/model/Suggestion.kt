@@ -5,4 +5,8 @@ public sealed interface Suggestion {
 
     public data class Clipboard(override val text: String) : Suggestion
     public data class History(override val text: String) : Suggestion
+
+    public data object PasteFromClipboard : Suggestion {
+        override val text: String = ""
+    }
 }
