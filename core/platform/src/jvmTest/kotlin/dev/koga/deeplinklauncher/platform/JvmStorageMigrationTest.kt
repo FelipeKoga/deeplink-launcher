@@ -3,10 +3,12 @@ package dev.koga.deeplinklauncher.platform
 import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
+import org.junit.Assert.assertThrows
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
 import java.io.File
+import java.io.IOException
 import java.nio.file.Files
 
 class JvmStorageMigrationTest {
@@ -72,6 +74,45 @@ class JvmStorageMigrationTest {
         assertTrue(target.exists())
         assertFalse(legacy.exists())
         assertEquals("legacy-data", target.readText())
+    }
+
+    @Test
+    fun keepsLegacyAndLeavesNoTargetWhenCopyFails() {
+        val legacy = File(tempDir, "legacy.db").apply { writeText("legacy-data") }
+        val target = File(tempDir, "app/target.db")
+
+        assertThrows(IOException::class.java) {
+            migrateFileIfNeeded(
+                legacyFile = legacy,
+                targetFile = target,
+                rename = { _, _ -> false },
+                copy = { _, partial ->
+                    partial.writeText("leg")
+                    throw IOException("No space left on device")
+                },
+            )
+        }
+
+        assertFalse(target.exists())
+        assertFalse(File(tempDir, "app/target.db.migrating").exists())
+        assertEquals("legacy-data", legacy.readText())
+    }
+
+    @Test
+    fun retriesCopyAfterPreviousFailure() {
+        val legacy = File(tempDir, "legacy.db").apply { writeText("legacy-data") }
+        val target = File(tempDir, "app/target.db")
+        File(tempDir, "app").mkdirs()
+        File(tempDir, "app/target.db.migrating").writeText("leg")
+
+        migrateFileIfNeeded(
+            legacyFile = legacy,
+            targetFile = target,
+            rename = { _, _ -> false },
+        )
+
+        assertEquals("legacy-data", target.readText())
+        assertFalse(legacy.exists())
     }
 
     @Test
