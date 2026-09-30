@@ -79,6 +79,9 @@ jobs:
             -quiet \
             build
 
+      - name: Run the database tests on a simulator
+        run: ./gradlew :core:database:iosSimulatorArm64Test
+
       - name: Boot a simulator
         run: |
           udid=$(xcrun simctl list devices available -j | jq -r '
