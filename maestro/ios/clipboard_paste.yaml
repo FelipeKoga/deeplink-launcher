@@ -17,6 +17,11 @@ name: "Paste a deeplink from the clipboard with the system paste control"
     visible: "Paste the link you copied"
     timeout: 10000
 - tapOn: "Paste"
+- runFlow:
+    when:
+      visible: "Allow Paste"
+    commands:
+      - tapOn: "Allow Paste"
 - extendedWaitUntil:
     visible: "myapp://checkout/cart"
     timeout: 10000
