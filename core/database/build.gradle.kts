@@ -29,9 +29,18 @@ kotlin {
             implementation(libs.junit)
         }
 
+        androidUnitTest.dependencies {
+            implementation(libs.junit)
+            implementation(libs.robolectric)
+        }
+
         iosMain.dependencies {
             implementation(libs.native.driver)
             implementation(libs.stately)
+        }
+
+        iosTest.dependencies {
+            implementation(kotlin("test"))
         }
     }
 }
