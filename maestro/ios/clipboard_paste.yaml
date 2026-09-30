@@ -16,6 +16,7 @@ name: "Paste a deeplink from the clipboard with the system paste control"
 - extendedWaitUntil:
     visible: "Paste the link you copied"
     timeout: 10000
+- takeScreenshot: paste-row
 - tapOn: "Paste"
 - runFlow:
     when:
