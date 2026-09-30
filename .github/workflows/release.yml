@@ -105,7 +105,7 @@ jobs:
 
       - name: Upload APK
         if: always()
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: android-apk
           path: |
@@ -135,7 +135,7 @@ jobs:
 
       - name: Upload DEB
         if: always()
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: desktop-ubuntu-deb
           path: |
@@ -168,7 +168,7 @@ jobs:
 
       - name: Upload EXE
         if: always()
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: desktop-windows-exe
           path: |
@@ -198,7 +198,7 @@ jobs:
 
       - name: Upload DMG
         if: always()
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: desktop-macos-dmg
           path: |
@@ -212,25 +212,25 @@ jobs:
 
     steps:
       - name: Download desktop windows exe artifact
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@v8
         with:
           name: desktop-windows-exe
           path: ${{ env.DOWNLOADS_PATH }}
 
       - name: Download desktop ubuntu deb artifact
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@v8
         with:
           name: desktop-ubuntu-deb
           path: ${{ env.DOWNLOADS_PATH }}
 
       - name: Download desktop macos dmg artifact
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@v8
         with:
           name: desktop-macos-dmg
           path: ${{ env.DOWNLOADS_PATH }}
 
       - name: Download android APK artifact
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@v8
         with:
           name: android-apk
           path: ${{ env.DOWNLOADS_PATH }}
