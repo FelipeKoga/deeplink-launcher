@@ -24,7 +24,7 @@ internal class DeepLinkShortcutManagerImpl(
     override suspend fun add(
         deepLink: DeepLink,
     ): DeepLinkShortcutManager.AddResult = withContext(Dispatchers.IO) {
-        if (deepLink.id.isBlank()) return@withContext DeepLinkShortcutManager.AddResult.Failed
+        if (deepLink.id.isEmpty()) return@withContext DeepLinkShortcutManager.AddResult.Failed
 
         runCatching { ShortcutManagerCompat.pushDynamicShortcut(context, buildShortcut(deepLink)) }.fold(
             onSuccess = { added ->
@@ -39,7 +39,7 @@ internal class DeepLinkShortcutManagerImpl(
     }
 
     override suspend fun update(deepLink: DeepLink) {
-        if (deepLink.id.isBlank()) return
+        if (deepLink.id.isEmpty()) return
         withContext(Dispatchers.IO) {
             runCatching {
                 ShortcutManagerCompat.updateShortcuts(context, listOf(buildShortcut(deepLink)))
@@ -48,7 +48,7 @@ internal class DeepLinkShortcutManagerImpl(
     }
 
     override suspend fun remove(deepLinkId: String) {
-        if (deepLinkId.isBlank()) return
+        if (deepLinkId.isEmpty()) return
         withContext(Dispatchers.IO) {
             runCatching { ShortcutManagerCompat.removeDynamicShortcuts(context, listOf(deepLinkId)) }
         }
@@ -77,7 +77,7 @@ internal class DeepLinkShortcutManagerImpl(
     }
 
     override suspend fun enable(deepLinkIds: List<String>) {
-        val ids = deepLinkIds.filter { it.isNotBlank() }
+        val ids = deepLinkIds.filter { it.isNotEmpty() }
         if (ids.isEmpty()) return
         withContext(Dispatchers.IO) {
             runCatching { context.getSystemService(ShortcutManager::class.java).enableShortcuts(ids) }
@@ -85,7 +85,7 @@ internal class DeepLinkShortcutManagerImpl(
     }
 
     override suspend fun disable(deepLinkIds: List<String>) {
-        val ids = deepLinkIds.filter { it.isNotBlank() }
+        val ids = deepLinkIds.filter { it.isNotEmpty() }
         if (ids.isEmpty()) return
         withContext(Dispatchers.IO) {
             runCatching { ShortcutManagerCompat.disableShortcuts(context, ids, DELETED_MESSAGE) }

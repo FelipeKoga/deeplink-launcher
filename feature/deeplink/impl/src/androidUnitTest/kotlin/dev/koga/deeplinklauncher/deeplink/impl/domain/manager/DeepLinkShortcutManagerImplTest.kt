@@ -15,7 +15,7 @@ import org.robolectric.RuntimeEnvironment
 import org.robolectric.annotation.Config
 
 @RunWith(RobolectricTestRunner::class)
-@Config(sdk = [35])
+@Config(sdk = [35], shadows = [StrictShadowShortcutManager::class])
 class DeepLinkShortcutManagerImplTest {
 
     private lateinit var context: Context
@@ -25,6 +25,7 @@ class DeepLinkShortcutManagerImplTest {
     fun setUp() {
         context = RuntimeEnvironment.getApplication()
         manager = DeepLinkShortcutManagerImpl(context)
+        StrictShadowShortcutManager.calls.clear()
     }
 
     @Test
@@ -45,17 +46,34 @@ class DeepLinkShortcutManagerImplTest {
     }
 
     @Test
-    fun ignoresEmptyIdsAndKeepsHandlingTheOthers() = runBlocking {
+    fun disablesOnlyTheNonEmptyIds() = runBlocking {
+        manager.disable(listOf("", "id"))
+
+        assertEquals(listOf("disable" to listOf("id")), StrictShadowShortcutManager.calls)
+    }
+
+    @Test
+    fun enablesOnlyTheNonEmptyIds() = runBlocking {
+        manager.enable(listOf("", "id"))
+
+        assertEquals(listOf("enable" to listOf("id")), StrictShadowShortcutManager.calls)
+    }
+
+    @Test
+    fun skipsAnEmptyIdWhenRemovingOrUpdating() = runBlocking {
+        manager.remove("")
+        manager.update(deepLink(id = "", link = "myapp://home"))
+
+        assertEquals(emptyList<Pair<String, List<String>>>(), StrictShadowShortcutManager.calls)
+    }
+
+    @Test
+    fun doesNotThrowWhenAnUpdatedShortcutCannotBeBuilt() = runBlocking {
         manager.add(deepLink(id = "id", link = "myapp://home"))
 
-        manager.enable(listOf("", "id"))
-        manager.disable(listOf("", "id"))
-        manager.update(deepLink(id = "", link = ""))
         manager.update(deepLink(id = "id", link = ""))
-        manager.remove("")
-        manager.remove("id")
 
-        assertFalse(manager.isAdded("id"))
+        assertTrue(manager.isAdded("id"))
     }
 
     private fun deepLink(id: String, link: String) = DeepLink(
