@@ -14,13 +14,16 @@ internal class GetDeepLinkHandlersImpl(
 ) : GetDeepLinkHandlers {
     override suspend fun invoke(link: String): List<DeepLinkHandler> = withContext(dispatchers.io) {
         val intent = createDeepLinkViewIntent(link)
-        context.packageManager.queryIntentActivities(intent, PackageManager.MATCH_ALL)
-            .map { resolveInfo ->
-                DeepLinkHandler(
-                    packageName = resolveInfo.activityInfo.packageName,
-                    appName = resolveInfo.loadLabel(context.packageManager).toString(),
-                )
-            }
+        runCatching {
+            context.packageManager.queryIntentActivities(intent, PackageManager.MATCH_ALL)
+                .map { resolveInfo ->
+                    DeepLinkHandler(
+                        packageName = resolveInfo.activityInfo.packageName,
+                        appName = resolveInfo.loadLabel(context.packageManager).toString(),
+                    )
+                }
+        }
+            .getOrDefault(emptyList())
             .distinctBy { it.packageName }
             .sortedBy { it.appName.lowercase() }
     }

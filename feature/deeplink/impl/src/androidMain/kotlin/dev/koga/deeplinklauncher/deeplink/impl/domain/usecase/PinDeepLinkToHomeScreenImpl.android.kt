@@ -17,6 +17,13 @@ internal class PinDeepLinkToHomeScreenImpl(
             return PinDeepLinkToHomeScreen.Result.NotSupported
         }
 
+        return runCatching { requestPin(shortcutManager, deepLink) }.fold(
+            onSuccess = { PinDeepLinkToHomeScreen.Result.Requested },
+            onFailure = { PinDeepLinkToHomeScreen.Result.Failed },
+        )
+    }
+
+    private fun requestPin(shortcutManager: ShortcutManager, deepLink: DeepLink) {
         val label = (deepLink.name?.takeIf { it.isNotBlank() } ?: deepLink.link)
             .take(MAX_SHORT_LABEL_LENGTH)
 
@@ -35,8 +42,6 @@ internal class PinDeepLinkToHomeScreenImpl(
 
         shortcutManager.enableShortcuts(listOf(deepLink.id))
         shortcutManager.requestPinShortcut(shortcut, null)
-
-        return PinDeepLinkToHomeScreen.Result.Requested
     }
 
     companion object {

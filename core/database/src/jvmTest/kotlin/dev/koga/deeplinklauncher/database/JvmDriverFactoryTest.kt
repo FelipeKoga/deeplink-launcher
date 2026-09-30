@@ -5,7 +5,10 @@ import dev.koga.deeplinklauncher.database.converter.localDateTimeAdapter
 import kotlinx.datetime.LocalDateTime
 import org.junit.After
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
+import org.junit.Assert.assertNotEquals
 import org.junit.Assert.assertNull
+import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
 import java.io.File
@@ -72,8 +75,104 @@ class JvmDriverFactoryTest {
         assertEquals("com.example", deepLink.targetPackage)
     }
 
-    private fun createUnversionedDatabase() {
-        DriverManager.getConnection(url()).use { connection ->
+    @Test
+    fun upgradesEverySchemaSnapshotToCurrentVersion() {
+        val snapshots = File("src/commonMain/sqldelight/databases")
+            .listFiles { file -> file.extension == "db" }
+            .orEmpty()
+        assertTrue(snapshots.isNotEmpty())
+
+        snapshots.forEach { snapshot ->
+            val file = File(tempDir, snapshot.name)
+            snapshot.copyTo(file)
+            setUserVersion(file, snapshot.nameWithoutExtension.toInt())
+
+            val driver = createJvmDriver(file)
+            val database = driver.database()
+            database.folderQueries.upsertFolder(id = "folder", name = "Folder", description = null)
+            database.deepLinkQueries.upsertDeeplink(
+                id = "id",
+                link = "myapp://home",
+                name = null,
+                description = null,
+                createdAt = LocalDateTime(2026, 1, 15, 10, 30),
+                lastLaunchedAt = null,
+                isFavorite = 0,
+                folderId = "folder",
+                targetPackage = "com.example",
+            )
+            val deepLinks = database.folderQueries.getFolderDeepLinks("folder").executeAsList()
+            driver.close()
+
+            assertEquals(snapshot.name, 1, deepLinks.size)
+            assertEquals(snapshot.name, DeepLinkLauncherDatabase.Schema.version, userVersion(file))
+        }
+    }
+
+    @Test
+    fun relocatesLegacyDatabaseAndUpgradesIt() {
+        val legacyFile = File(tempDir, "home/dll-db.db").apply { parentFile.mkdirs() }
+        createUnversionedDatabase(legacyFile)
+
+        relocateLegacyDatabase(legacyFile = legacyFile, databaseFile = databaseFile)
+        val driver = createJvmDriver(databaseFile)
+        val deepLink = driver.database().deepLinkQueries.getDeepLinkById("legacy-id").executeAsOne()
+        driver.close()
+
+        assertFalse(legacyFile.exists())
+        assertEquals("myapp://legacy", deepLink.link)
+    }
+
+    @Test
+    fun doesNotCreateLegacyDatabaseWhenItIsMissing() {
+        val legacyFile = File(tempDir, "home/dll-db.db").apply { parentFile.mkdirs() }
+
+        relocateLegacyDatabase(legacyFile = legacyFile, databaseFile = databaseFile)
+
+        assertFalse(legacyFile.exists())
+        assertFalse(databaseFile.exists())
+    }
+
+    @Test
+    fun rollsBackInterruptedLegacyWriteBeforeRelocating() {
+        val legacyFile = File(tempDir, "home/dll-db.db").apply { parentFile.mkdirs() }
+        createUnversionedDatabase(legacyFile, rows = 2_000)
+        leaveHotJournal(legacyFile)
+
+        relocateLegacyDatabase(legacyFile = legacyFile, databaseFile = databaseFile)
+        val driver = createJvmDriver(databaseFile)
+        val deepLinks = driver.database().deepLinkQueries.selectAllDeeplinks().executeAsList()
+        driver.close()
+
+        assertEquals("ok", integrityCheck(databaseFile))
+        assertEquals(2_000, deepLinks.size)
+        assertTrue(deepLinks.all { it.description == null })
+    }
+
+    private fun leaveHotJournal(file: File) {
+        val journal = File("${file.path}-journal")
+        val crashedFile = File(tempDir, "crashed.db")
+        val crashedJournal = File(tempDir, "crashed.db-journal")
+        val originalBytes = file.readBytes()
+
+        DriverManager.getConnection(url(file)).use { connection ->
+            connection.createStatement().use { statement ->
+                statement.execute("PRAGMA cache_size = 1")
+                connection.autoCommit = false
+                statement.executeUpdate("UPDATE deeplink SET description = hex(randomblob(64))")
+                file.copyTo(crashedFile)
+                journal.copyTo(crashedJournal)
+                connection.rollback()
+            }
+        }
+
+        assertNotEquals(originalBytes.toList(), crashedFile.readBytes().toList())
+        crashedFile.copyTo(file, overwrite = true)
+        crashedJournal.copyTo(journal, overwrite = true)
+    }
+
+    private fun createUnversionedDatabase(file: File = databaseFile, rows: Int = 0) {
+        DriverManager.getConnection(url(file)).use { connection ->
             connection.createStatement().use { statement ->
                 statement.executeUpdate(
                     """
@@ -103,17 +202,37 @@ class JvmDriverFactoryTest {
                     "INSERT INTO deeplink (id, link, name, createdAt) " +
                         "VALUES ('legacy-id', 'myapp://legacy', 'Legacy', 0)",
                 )
+                repeat(rows - 1) { index ->
+                    statement.executeUpdate(
+                        "INSERT INTO deeplink (id, link, createdAt) VALUES ('id-$index', 'myapp://$index', 0)",
+                    )
+                }
             }
         }
     }
 
-    private fun userVersion(): Long = DriverManager.getConnection(url()).use { connection ->
+    private fun setUserVersion(file: File, version: Int) {
+        DriverManager.getConnection(url(file)).use { connection ->
+            connection.createStatement().use { it.executeUpdate("PRAGMA user_version = $version") }
+        }
+    }
+
+    private fun integrityCheck(file: File): String = DriverManager.getConnection(url(file)).use { connection ->
+        connection.createStatement().use { statement ->
+            statement.executeQuery("PRAGMA integrity_check").use { result ->
+                result.next()
+                result.getString(1)
+            }
+        }
+    }
+
+    private fun userVersion(file: File = databaseFile): Long = DriverManager.getConnection(url(file)).use { connection ->
         connection.createStatement().use { statement ->
             statement.executeQuery("PRAGMA user_version").use { it.getLong(1) }
         }
     }
 
-    private fun url() = "jdbc:sqlite:${databaseFile.absolutePath}"
+    private fun url(file: File = databaseFile) = "jdbc:sqlite:${file.absolutePath}"
 
     private fun SqlDriver.database() = DeepLinkLauncherDatabase(
         driver = this,

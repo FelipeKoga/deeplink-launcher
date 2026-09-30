@@ -40,7 +40,18 @@ sqldelight {
     databases {
         create(name = "DeepLinkLauncherDatabase") {
             packageName.set("dev.koga.deeplinklauncher.database")
+            schemaOutputDirectory.set(file("src/commonMain/sqldelight/databases"))
+            verifyMigrations.set(true)
         }
     }
     linkSqlite = true
+}
+
+tasks.matching { it.name == "verifyCommonMainDeepLinkLauncherDatabaseMigration" }.configureEach {
+    inputs.files(fileTree("src/commonMain/sqldelight") { include("**/*.db") })
+        .withPathSensitivity(PathSensitivity.RELATIVE)
+}
+
+tasks.matching { it.name == "jvmTest" }.configureEach {
+    dependsOn("verifySqlDelightMigration")
 }

@@ -36,7 +36,7 @@ internal class GetAutoSuggestionLinksImpl(
             ?: Suggestion.PasteFromClipboard.takeIf { getDeepLinkFromClipboard.canOfferPaste() }
             ?: return suggestions
 
-        return listOf(clipboardSuggestion) + suggestions
+        return (listOf(clipboardSuggestion) + suggestions).distinctBy { it.text }
     }
 
     private fun getSuggestionsBasedOnHistory(link: String): List<Suggestion> {

@@ -13,5 +13,6 @@ public interface DeepLinkShortcutManager {
     public sealed interface AddResult {
         public data object Added : AddResult
         public data object NotSupported : AddResult
+        public data object Failed : AddResult
     }
 }

@@ -14,10 +14,18 @@ class JvmDriverFactory : DriverFactory {
         val databasePath = File(appDir, "$databaseName.db")
         val legacyPath = File(System.getProperty("user.home"), "$databaseName.db")
 
-        migrateFileIfNeeded(legacyFile = legacyPath, targetFile = databasePath)
+        relocateLegacyDatabase(legacyFile = legacyPath, databaseFile = databasePath)
 
         return createJvmDriver(databasePath)
     }
+}
+
+internal fun relocateLegacyDatabase(legacyFile: File, databaseFile: File) {
+    if (legacyFile.exists() && !databaseFile.exists()) {
+        runCatching { markUnversionedDatabase("jdbc:sqlite:${legacyFile.absolutePath}") }
+    }
+
+    migrateFileIfNeeded(legacyFile = legacyFile, targetFile = databaseFile)
 }
 
 internal fun createJvmDriver(databaseFile: File): SqlDriver {

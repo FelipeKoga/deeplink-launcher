@@ -69,8 +69,10 @@ internal class AndroidHandlerResolver(context: Context) {
         val resolveLinkGeneration = linkGeneration.get()
         val resolveComponentGeneration = componentGeneration.get()
         val intent = createDeepLinkViewIntent(link, targetPackage)
-        val handler = packageManager.resolveActivity(intent, 0)
-            ?.let { internHandler(it, resolveComponentGeneration) }
+        val handler = runCatching {
+            packageManager.resolveActivity(intent, 0)
+                ?.let { internHandler(it, resolveComponentGeneration) }
+        }.getOrNull()
 
         when {
             handler != null -> byLink.put(key, CachedResolution.Found(handler))
