@@ -8,5 +8,6 @@ public interface PinDeepLinkToHomeScreen {
     public sealed interface Result {
         public data object Requested : Result
         public data object NotSupported : Result
+        public data object Failed : Result
     }
 }
