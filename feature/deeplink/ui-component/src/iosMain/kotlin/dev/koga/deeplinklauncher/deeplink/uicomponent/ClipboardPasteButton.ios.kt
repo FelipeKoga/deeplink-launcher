@@ -58,6 +58,7 @@ internal actual fun ClipboardPasteButton(
             properties = UIKitInteropProperties(
                 interactionMode = UIKitInteropInteractionMode.NonCooperative,
                 isNativeAccessibilityEnabled = true,
+                placedAsOverlay = true,
             ),
         )
     }
