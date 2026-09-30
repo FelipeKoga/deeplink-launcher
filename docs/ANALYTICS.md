@@ -63,7 +63,7 @@ GA4 also emits `first_open` and `session_start` automatically.
 | `deeplink_details_opened` | `entry_point` |
 | `favorite_toggled` | `is_favorite` |
 | `deeplink_shared` | — |
-| `deeplink_pinned` | `result` (`requested`, `not_supported`) |
+| `deeplink_pinned` | `result` (`requested`, `not_supported`, `failed`) |
 | `deeplink_link_copied` | — |
 | `deeplink_deleted` | — |
 | `deeplink_duplicated` | `copy_all_fields` |

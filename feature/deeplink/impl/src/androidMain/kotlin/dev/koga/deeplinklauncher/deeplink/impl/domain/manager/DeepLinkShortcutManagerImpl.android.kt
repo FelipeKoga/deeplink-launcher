@@ -24,24 +24,33 @@ internal class DeepLinkShortcutManagerImpl(
     override suspend fun add(
         deepLink: DeepLink,
     ): DeepLinkShortcutManager.AddResult = withContext(Dispatchers.IO) {
-        val added = ShortcutManagerCompat.pushDynamicShortcut(context, buildShortcut(deepLink))
+        if (deepLink.id.isBlank()) return@withContext DeepLinkShortcutManager.AddResult.Failed
 
-        if (added) {
-            DeepLinkShortcutManager.AddResult.Added
-        } else {
-            DeepLinkShortcutManager.AddResult.NotSupported
-        }
+        runCatching { ShortcutManagerCompat.pushDynamicShortcut(context, buildShortcut(deepLink)) }.fold(
+            onSuccess = { added ->
+                if (added) {
+                    DeepLinkShortcutManager.AddResult.Added
+                } else {
+                    DeepLinkShortcutManager.AddResult.NotSupported
+                }
+            },
+            onFailure = { DeepLinkShortcutManager.AddResult.Failed },
+        )
     }
 
     override suspend fun update(deepLink: DeepLink) {
+        if (deepLink.id.isBlank()) return
         withContext(Dispatchers.IO) {
-            ShortcutManagerCompat.updateShortcuts(context, listOf(buildShortcut(deepLink)))
+            runCatching {
+                ShortcutManagerCompat.updateShortcuts(context, listOf(buildShortcut(deepLink)))
+            }
         }
     }
 
     override suspend fun remove(deepLinkId: String) {
+        if (deepLinkId.isBlank()) return
         withContext(Dispatchers.IO) {
-            ShortcutManagerCompat.removeDynamicShortcuts(context, listOf(deepLinkId))
+            runCatching { ShortcutManagerCompat.removeDynamicShortcuts(context, listOf(deepLinkId)) }
         }
     }
 
@@ -68,16 +77,18 @@ internal class DeepLinkShortcutManagerImpl(
     }
 
     override suspend fun enable(deepLinkIds: List<String>) {
-        if (deepLinkIds.isEmpty()) return
+        val ids = deepLinkIds.filter { it.isNotBlank() }
+        if (ids.isEmpty()) return
         withContext(Dispatchers.IO) {
-            context.getSystemService(ShortcutManager::class.java).enableShortcuts(deepLinkIds)
+            runCatching { context.getSystemService(ShortcutManager::class.java).enableShortcuts(ids) }
         }
     }
 
     override suspend fun disable(deepLinkIds: List<String>) {
-        if (deepLinkIds.isEmpty()) return
+        val ids = deepLinkIds.filter { it.isNotBlank() }
+        if (ids.isEmpty()) return
         withContext(Dispatchers.IO) {
-            ShortcutManagerCompat.disableShortcuts(context, deepLinkIds, DELETED_MESSAGE)
+            runCatching { ShortcutManagerCompat.disableShortcuts(context, ids, DELETED_MESSAGE) }
         }
     }
 

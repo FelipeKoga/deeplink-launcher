@@ -328,7 +328,13 @@ internal class DeepLinkDetailsViewModel(
     }
 
     private fun pinToHomeScreen() {
-        when (pinDeepLinkToHomeScreen(deepLink.value)) {
+        val deepLink = deepLink.value
+        if (!validateDeepLink.isValid(deepLink.link)) {
+            messageDispatcher.trySend("Invalid deeplink")
+            return
+        }
+
+        when (pinDeepLinkToHomeScreen(deepLink)) {
             PinDeepLinkToHomeScreen.Result.Requested -> {
                 analyticsTracker.track(DeeplinkPinned(result = "requested"))
             }
@@ -336,6 +342,11 @@ internal class DeepLinkDetailsViewModel(
             PinDeepLinkToHomeScreen.Result.NotSupported -> {
                 analyticsTracker.track(DeeplinkPinned(result = "not_supported"))
                 messageDispatcher.trySend("Pinning shortcuts is not supported on this device")
+            }
+
+            PinDeepLinkToHomeScreen.Result.Failed -> {
+                analyticsTracker.track(DeeplinkPinned(result = "failed"))
+                messageDispatcher.trySend("Couldn't add the deeplink to the home screen")
             }
         }
     }
@@ -359,6 +370,10 @@ internal class DeepLinkDetailsViewModel(
 
                         DeepLinkShortcutManager.AddResult.NotSupported -> {
                             messageDispatcher.trySend("App shortcuts are not supported on this device")
+                        }
+
+                        DeepLinkShortcutManager.AddResult.Failed -> {
+                            messageDispatcher.trySend("Couldn't add the deeplink to app shortcuts")
                         }
                     }
                 }
