@@ -12,6 +12,7 @@
   <a href="https://play.google.com/store/apps/details?id=dev.koga.deeplinklauncher.android"><img src="https://img.shields.io/badge/Google_Play-download-34A853?logo=googleplay&logoColor=white" alt="Get it on Google Play" /></a>
   <a href="https://github.com/FelipeKoga/deeplink-launcher/releases/latest"><img src="https://img.shields.io/github/v/release/FelipeKoga/deeplink-launcher?label=release" alt="Latest release" /></a>
   <a href="https://github.com/FelipeKoga/deeplink-launcher/actions/workflows/maestro.yml"><img src="https://github.com/FelipeKoga/deeplink-launcher/actions/workflows/maestro.yml/badge.svg" alt="Maestro" /></a>
+  <a href="https://github.com/FelipeKoga/deeplink-launcher/actions/workflows/ios.yml"><img src="https://github.com/FelipeKoga/deeplink-launcher/actions/workflows/ios.yml/badge.svg" alt="iOS" /></a>
   <a href="https://github.com/FelipeKoga/deeplink-launcher/actions/workflows/screenshot-baseline.yml"><img src="https://github.com/FelipeKoga/deeplink-launcher/actions/workflows/screenshot-baseline.yml/badge.svg" alt="Screenshot baseline" /></a>
 </p>
 
@@ -48,7 +49,7 @@ connected over adb. Resized with `sips -Z 1100`.
 
 - Launch any deeplink or URL from the input bar
 - Suggestions from your history as you type
-- Suggests the deeplink on your clipboard (Android, desktop)
+- Suggests the deeplink on your clipboard (Android, desktop), or offers the system Paste button for it (iOS)
 - History sorted by last launch, with search
 - Favorites and folders
 - Name, notes, edit and duplicate links
@@ -158,13 +159,28 @@ The 16 [Maestro](https://maestro.mobile.dev) flows in [`maestro/flows`](maestro/
 maestro test maestro/
 ```
 
+On iOS, `ios.yml` builds the app for a simulator, launches it and runs the flow in [`maestro/ios`](maestro/ios), which pastes a deeplink with the system Paste button.
+
 ### Unit tests
 
-JVM unit tests cover the `adb` and `simctl` bridges in `library:device-bridge:impl`, where the desktop app stores its data in `core:platform`, and the upgrade of databases from older desktop versions in `core:database`. The pull request workflow runs them:
+Unit tests cover:
+
+- **`library:device-bridge:impl`:** the `adb` and `simctl` bridges.
+- **`core:platform`:** where the desktop app stores its data.
+- **`core:database`:** the upgrade of databases from older desktop versions and from every schema snapshot.
+- **`feature:deeplink:impl` (Robolectric):** Add to Home and app shortcuts with data that older versions could store.
+
+The pull request workflow runs them:
 
 ```bash
-./gradlew jvmTest :library:device-bridge:impl:test
+./gradlew testDebugUnitTest jvmTest :library:device-bridge:impl:test -PexcludeScreenshotTests
 ```
+
+`jvmTest` first runs `verifySqlDelightMigration`. It applies every migration to the schema snapshots in `core/database/src/commonMain/sqldelight/databases` and compares the result with a fresh database, so a `.sq` change without a migration fails the build. To change the schema:
+
+1. Add the next `N.sqm`.
+2. Regenerate the snapshot with `./gradlew :core:database:generateCommonMainDeepLinkLauncherDatabaseSchema`.
+3. Commit the new `.db`.
 
 ## Performance
 
@@ -184,6 +200,7 @@ On the home list, handler lookups are cached per link. The first rows get their 
 | [`screenshot-tests.yml`](.github/workflows/screenshot-tests.yml) | Pull requests to `main` | Compares screenshots with the `main` baseline |
 | [`screenshot-baseline.yml`](.github/workflows/screenshot-baseline.yml) | Pushes to `main`, weekly, manual | Records the screenshot baseline |
 | [`maestro.yml`](.github/workflows/maestro.yml) | Pushes to `main`, nightly, manual | Runs the Maestro flows on an emulator |
+| [`ios.yml`](.github/workflows/ios.yml) | Pull requests to `main`, pushes to `main`, manual | Builds the iOS app for a simulator, launches it and runs the iOS Maestro flow |
 | [`release.yml`](.github/workflows/release.yml) | Manual, with a tag name | Builds the signed APK, DMG, EXE and DEB and publishes a GitHub release |
 
 ## Building
