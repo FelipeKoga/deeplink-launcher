@@ -1,0 +1,21 @@
+{
+  "folders": [
+    { "id": "checkout", "name": "Checkout", "description": "Cart, payment and order screens" },
+    { "id": "onboarding", "name": "Onboarding", "description": "First-run and sign-up steps" },
+    { "id": "campaigns", "name": "Campaigns", "description": "Push and email campaign links" }
+  ],
+  "deepLinks": [
+    { "id": "1", "link": "myapp://checkout/cart?coupon=WELCOME10", "name": "Cart with coupon", "description": "Applies the WELCOME10 coupon on open", "folderId": "checkout", "isFavorite": true, "createdAt": "2026-09-28T22:37:00" },
+    { "id": "2", "link": "https://github.com/FelipeKoga/deeplink-launcher", "name": "DeepLink Launcher on GitHub", "isFavorite": true, "createdAt": "2026-09-28T22:05:00" },
+    { "id": "3", "link": "geo:0,0?q=Curitiba+PR", "name": "Office location", "createdAt": "2026-09-28T20:41:00" },
+    { "id": "4", "link": "myapp://checkout/payment?method=pix", "name": "Pix payment", "folderId": "checkout", "createdAt": "2026-09-28T16:12:00" },
+    { "id": "5", "link": "mailto:qa@example.com?subject=Bug%20report", "name": "Report a bug", "createdAt": "2026-09-27T18:30:00" },
+    { "id": "6", "link": "myapp://onboarding/step/2?variant=b", "name": "Onboarding step 2 (variant B)", "folderId": "onboarding", "createdAt": "2026-09-26T11:20:00" },
+    { "id": "7", "link": "tel:+5541999990000", "name": "Support hotline", "createdAt": "2026-09-25T09:45:00" },
+    { "id": "8", "link": "myapp://promo/spring-sale?utm_source=push", "name": "Spring sale push", "folderId": "campaigns", "isFavorite": true, "createdAt": "2026-09-22T14:00:00" },
+    { "id": "9", "link": "sms:+5541999990000?body=Hello", "createdAt": "2026-09-20T10:00:00" },
+    { "id": "10", "link": "myapp://checkout/orders/48213", "name": "Order details", "folderId": "checkout", "createdAt": "2026-09-18T17:30:00" },
+    { "id": "11", "link": "myapp://onboarding/welcome", "folderId": "onboarding", "createdAt": "2026-09-15T08:00:00" },
+    { "id": "12", "link": "https://example.com/campaigns/newsletter?utm_campaign=sept", "name": "September newsletter", "folderId": "campaigns", "createdAt": "2026-09-10T12:00:00" }
+  ]
+}
