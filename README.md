@@ -45,7 +45,7 @@ For developers and QA who test deeplinks.
   <tr>
     <td align="center"><img src="docs/screenshots/ios-dark-home.png" width="180" alt="History tab on iOS in the dark theme" /><br /><sub>History</sub></td>
     <td align="center"><img src="docs/screenshots/ios-dark-details-info.png" width="180" alt="Details sheet on iOS with the parsed link" /><br /><sub>Link details</sub></td>
-    <td align="center"><img src="docs/screenshots/ios-dark-favorites.png" width="180" alt="Favorites tab on iOS in the dark theme" /><br /><sub>Favorites</sub></td>
+    <td align="center"><img src="docs/screenshots/ios-dark-suggestions.png" width="180" alt="Input bar on iOS suggesting links from history" /><br /><sub>Suggestions</sub></td>
     <td align="center"><img src="docs/screenshots/ios-dark-folders.png" width="180" alt="Folders tab on iOS in the dark theme" /><br /><sub>Folders</sub></td>
   </tr>
   <tr>
