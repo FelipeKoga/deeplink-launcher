@@ -167,7 +167,10 @@ Unit tests cover:
 
 - **`library:device-bridge:impl`:** the `adb` and `simctl` bridges.
 - **`core:platform`:** where the desktop app stores its data.
-- **`core:database`:** the upgrade of databases from older desktop versions and from every schema snapshot.
+- **`core:database`:** the upgrade of databases from older versions and from every schema snapshot, through the real drivers.
+  - JVM: the desktop driver.
+  - Android: Robolectric.
+  - iOS: a simulator, from `ios.yml`.
 - **`feature:deeplink:impl` (Robolectric):** Add to Home and app shortcuts with data that older versions could store.
 
 The pull request workflow runs them:
@@ -200,7 +203,7 @@ On the home list, handler lookups are cached per link. The first rows get their 
 | [`screenshot-tests.yml`](.github/workflows/screenshot-tests.yml) | Pull requests to `main` | Compares screenshots with the `main` baseline |
 | [`screenshot-baseline.yml`](.github/workflows/screenshot-baseline.yml) | Pushes to `main`, weekly, manual | Records the screenshot baseline |
 | [`maestro.yml`](.github/workflows/maestro.yml) | Pushes to `main`, nightly, manual | Runs the Maestro flows on an emulator |
-| [`ios.yml`](.github/workflows/ios.yml) | Pull requests to `main`, pushes to `main`, manual | Builds the iOS app for a simulator, launches it and runs the iOS Maestro flow |
+| [`ios.yml`](.github/workflows/ios.yml) | Pull requests to `main`, pushes to `main`, manual | Builds the iOS app for a simulator, runs the database tests, launches the app and runs the iOS Maestro flow |
 | [`release.yml`](.github/workflows/release.yml) | Manual, with a tag name | Builds the signed APK, DMG, EXE and DEB and publishes a GitHub release |
 
 ## Building
