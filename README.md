@@ -34,7 +34,28 @@ For developers and QA who test deeplinks.
     <td align="center"><img src="docs/screenshots/light-home.png" width="180" alt="History tab in the light theme" /><br /><sub>History</sub></td>
     <td align="center"><img src="docs/screenshots/light-details.png" width="180" alt="Details sheet with the quick actions in the light theme" /><br /><sub>Quick actions</sub></td>
     <td align="center"><img src="docs/screenshots/light-folders.png" width="180" alt="Folders tab in the light theme" /><br /><sub>Folders</sub></td>
-    <td align="center"><img src="docs/screenshots/light-settings.png" width="180" alt="Settings screen" /><br /><sub>Settings</sub></td>
+    <td align="center"><img src="docs/screenshots/light-folder-details.png" width="180" alt="Checkout folder with its three deeplinks" /><br /><sub>Folder details</sub></td>
+  </tr>
+</table>
+
+<table>
+  <tr>
+    <th colspan="4">iOS · dark</th>
+  </tr>
+  <tr>
+    <td align="center"><img src="docs/screenshots/ios-dark-home.png" width="180" alt="History tab on iOS in the dark theme" /><br /><sub>History</sub></td>
+    <td align="center"><img src="docs/screenshots/ios-dark-details-info.png" width="180" alt="Details sheet on iOS with the parsed link" /><br /><sub>Link details</sub></td>
+    <td align="center"><img src="docs/screenshots/ios-dark-favorites.png" width="180" alt="Favorites tab on iOS in the dark theme" /><br /><sub>Favorites</sub></td>
+    <td align="center"><img src="docs/screenshots/ios-dark-folders.png" width="180" alt="Folders tab on iOS in the dark theme" /><br /><sub>Folders</sub></td>
+  </tr>
+  <tr>
+    <th colspan="4">iOS · light</th>
+  </tr>
+  <tr>
+    <td align="center"><img src="docs/screenshots/ios-light-home.png" width="180" alt="History tab on iOS in the light theme" /><br /><sub>History</sub></td>
+    <td align="center"><img src="docs/screenshots/ios-light-details.png" width="180" alt="Details sheet on iOS with the quick actions" /><br /><sub>Quick actions</sub></td>
+    <td align="center"><img src="docs/screenshots/ios-light-folders.png" width="180" alt="Folders tab on iOS in the light theme" /><br /><sub>Folders</sub></td>
+    <td align="center"><img src="docs/screenshots/ios-light-folder-details.png" width="180" alt="Checkout folder on iOS with its three deeplinks" /><br /><sub>Folder details</sub></td>
   </tr>
 </table>
 
@@ -49,13 +70,19 @@ For developers and QA who test deeplinks.
 </table>
 
 <!--
-Android screenshots: emulator (Medium Phone API 35), debug build. The data comes from
-docs/screenshots/seed-deeplinks.json, imported through Settings > Import. Captured with
-agent-device (screenshot with a normalized status bar), then resized with `sips -Z 1200`.
+Data: docs/screenshots/seed-deeplinks.json.
 
-Desktop screenshots: the desktop App() rendered offscreen with ImageComposeScene at 1100x720 dp
-and density 2, with the Android database copied into an isolated user.home and an emulator
-connected over adb. Resized with `sips -Z 1100`.
+Android: emulator (Medium Phone API 35), debug build. Most screens were imported through
+Settings > Import and captured with agent-device. The folder details screen was written straight
+into the app database, with the dates shifted to the capture time, then captured with Maestro in
+SystemUI demo mode (9:41, airplane mode). All are resized with `sips -Z 1200`.
+
+iOS: the same data on an iPhone simulator in CI (macos-26). Status bar overridden with
+`simctl status_bar`, captured with Maestro, resized with `sips -Z 1200`.
+
+Desktop: the desktop App() rendered offscreen with ImageComposeScene at 1100x720 dp and density 2,
+with the Android database copied into an isolated user.home and an emulator connected over adb.
+Resized with `sips -Z 1100`.
 -->
 
 ## Features
