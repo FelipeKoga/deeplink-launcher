@@ -13,16 +13,22 @@
   <a href="https://github.com/FelipeKoga/deeplink-launcher/releases/latest"><img src="https://img.shields.io/github/v/release/FelipeKoga/deeplink-launcher?label=release" alt="Latest release" /></a>
 </p>
 
-For developers and QA who test deeplinks. Built with Compose Multiplatform for Android, iOS and desktop.
+For developers and QA who test deeplinks.
 
 ## Screenshots
 
 <table>
   <tr>
+    <th colspan="4">Android · dark</th>
+  </tr>
+  <tr>
     <td align="center"><img src="docs/screenshots/dark-home.png" width="180" alt="History tab in the dark theme" /><br /><sub>History</sub></td>
     <td align="center"><img src="docs/screenshots/dark-details-info.png" width="180" alt="Details sheet with the parsed link and the app that opens it" /><br /><sub>Link details</sub></td>
     <td align="center"><img src="docs/screenshots/dark-suggestions.png" width="180" alt="Input bar suggesting links from history" /><br /><sub>Suggestions</sub></td>
     <td align="center"><img src="docs/screenshots/dark-folders.png" width="180" alt="Folders tab in the dark theme" /><br /><sub>Folders</sub></td>
+  </tr>
+  <tr>
+    <th colspan="4">Android · light</th>
   </tr>
   <tr>
     <td align="center"><img src="docs/screenshots/light-home.png" width="180" alt="History tab in the light theme" /><br /><sub>History</sub></td>
@@ -34,8 +40,11 @@ For developers and QA who test deeplinks. Built with Compose Multiplatform for A
 
 <table>
   <tr>
-    <td align="center"><img src="docs/screenshots/desktop-targets.png" width="400" alt="Desktop app with the target dropdown open, listing the computer and a connected Android emulator" /><br /><sub>Desktop: launch on this computer or a connected device</sub></td>
-    <td align="center"><img src="docs/screenshots/desktop-details.png" width="400" alt="Desktop app sending links to the emulator, with the details sheet open" /><br /><sub>Desktop: link details</sub></td>
+    <th colspan="2">Desktop</th>
+  </tr>
+  <tr>
+    <td align="center"><img src="docs/screenshots/desktop-targets.png" width="390" alt="Desktop app with the target dropdown open, listing the computer and a connected Android emulator" /><br /><sub>Launch on this computer or a connected device</sub></td>
+    <td align="center"><img src="docs/screenshots/desktop-details.png" width="390" alt="Desktop app sending links to the emulator, with the details sheet open" /><br /><sub>Link details</sub></td>
   </tr>
 </table>
 
@@ -56,12 +65,12 @@ connected over adb. Resized with `sips -Z 1100`.
 - Suggests the deeplink on your clipboard (Android, desktop), or offers the system Paste button for it (iOS)
 - History sorted by last launch, with search
 - Favorites and folders
-- Name, notes, edit and duplicate links
+- Edit and duplicate links, with a name and notes
 - Link details: scheme, host, path and query
 - Shows which app opens a link and lets you pick one when several can (Android)
 - App shortcuts and home screen pins (Android)
 - Send links to a connected Android device or a booted iOS simulator (desktop)
-- Share a link (on desktop it copies it to the clipboard)
+- Copy a link, or share it (Android, iOS)
 - Import and export as JSON or plain text
 - Light and dark theme
 - Donate to support the project (Android)
@@ -80,8 +89,10 @@ connected over adb. Resized with `sips -Z 1100`.
 - Koin
 - SQLDelight
 - DataStore
-- Kotlin Coroutines, Kotlinx Serialization, kotlinx-datetime
+- kotlinx.coroutines, kotlinx.serialization, kotlinx-datetime, kotlinx-collections-immutable
 - Haze, Tabler Icons
+- mpfilepicker
+- AboutLibraries
 - Firebase (Analytics, Crashlytics, Performance)
 - RevenueCat
 - ktlint, Detekt
@@ -112,10 +123,16 @@ The Android build also needs a Firebase config at `androidApp/google-services.js
 
 For iOS, open `iosApp/deeplinklauncher.xcodeproj` in Xcode and run the app.
 
+## Docs
+
+- [Design system](docs/DESIGN_SYSTEM.md)
+- [Analytics](docs/ANALYTICS.md)
+- [Privacy policy](PRIVACY_POLICY.md)
+
 ## Contributing
 
-Issues and pull requests are welcome. For anything bigger than a small fix, open an issue first. Commit messages and branch names follow Conventional Commits (`feat:` and `feat/`, `fix:` and `fix/`), and `./gradlew ktlint` should pass before you open a pull request.
+Issues and pull requests are welcome. For anything bigger than a small fix, open an issue first. Commit messages follow Conventional Commits (`feat:`, `fix:`, `perf:` and so on), branch names start with the same type (`feat/`, `fix/`), and `./gradlew ktlint` should pass before you open a pull request.
 
 ## License
 
-Apache 2.0. See [LICENSE](LICENSE). Privacy policy: [PRIVACY_POLICY.md](PRIVACY_POLICY.md).
+Apache 2.0. See [LICENSE](LICENSE).
