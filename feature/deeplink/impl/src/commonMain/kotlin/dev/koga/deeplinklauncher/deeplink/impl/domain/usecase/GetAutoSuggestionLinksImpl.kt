@@ -32,9 +32,11 @@ internal class GetAutoSuggestionLinksImpl(
 
         val suggestions = getSuggestionsBasedOnHistory(link)
         if (link.isNotBlank()) return suggestions
-        val deeplinkFromClipboard = getDeepLinkFromClipboard() ?: return suggestions
+        val clipboardSuggestion = getDeepLinkFromClipboard()?.let(Suggestion::Clipboard)
+            ?: Suggestion.PasteFromClipboard.takeIf { getDeepLinkFromClipboard.canOfferPaste() }
+            ?: return suggestions
 
-        return (listOf(Suggestion.Clipboard(deeplinkFromClipboard)) + suggestions).distinctBy { it.text }
+        return (listOf(clipboardSuggestion) + suggestions).distinctBy { it.text }
     }
 
     private fun getSuggestionsBasedOnHistory(link: String): List<Suggestion> {

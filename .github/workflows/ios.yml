@@ -111,6 +111,22 @@ jobs:
             exit 1
           fi
 
+      - name: Install Maestro
+        env:
+          MAESTRO_VERSION: 2.8.0
+        run: |
+          curl -fsSL "https://get.maestro.mobile.dev" | bash
+          echo "$HOME/.maestro/bin" >> "$GITHUB_PATH"
+
+      - name: Run the iOS Maestro flows
+        run: |
+          printf 'myapp://checkout/cart' | xcrun simctl pbcopy "$UDID"
+          echo "Simulator pasteboard: $(xcrun simctl pbpaste "$UDID")"
+          cd ios-results
+          maestro --device "$UDID" test ../maestro/ios \
+            --format junit --output maestro-report.xml \
+            --debug-output maestro-debug --flatten-debug-output
+
       - name: Collect crash reports
         if: always()
         run: |

@@ -10,6 +10,8 @@ internal class GetDeepLinkFromClipboard(
     operator fun invoke(): String? = clipboard.read()?.trim()
         ?.takeIf { DEEPLINK_PATTERN.matches(it) && validateDeepLink.isValid(it) }
 
+    fun canOfferPaste(): Boolean = clipboard.hasTextToPaste()
+
     private companion object {
         val DEEPLINK_PATTERN = Regex("^[A-Za-z][A-Za-z0-9+.-]+:\\S+$")
     }

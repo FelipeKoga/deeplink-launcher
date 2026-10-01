@@ -1,0 +1,29 @@
+appId: dev.koga.deeplinklauncher.ios
+name: "Paste a deeplink from the clipboard with the system paste control"
+---
+- launchApp
+- runFlow:
+    when:
+      visible: "Got it!"
+    commands:
+      - tapOn: "Got it!"
+- tapOn: "Type your deeplink here..."
+- runFlow:
+    when:
+      visible: "Continue"
+    commands:
+      - tapOn: "Continue"
+- extendedWaitUntil:
+    visible: "Paste the link you copied"
+    timeout: 10000
+- takeScreenshot: paste-row
+- tapOn: "Paste"
+- runFlow:
+    when:
+      visible: "Allow Paste"
+    commands:
+      - tapOn: "Allow Paste"
+- extendedWaitUntil:
+    visible: "myapp://checkout/cart"
+    timeout: 10000
+- takeScreenshot: pasted

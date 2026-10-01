@@ -181,18 +181,28 @@ public fun DeepLinkLaunchBottomBar(
                     items = state.suggestions,
                     key = { it.text },
                 ) { suggestion ->
-                    SuggestionListItem(
-                        modifier = Modifier
-                            .animateItem()
-                            .clip(shapes.icon)
-                            .clickable {
+                    if (suggestion is Suggestion.PasteFromClipboard) {
+                        PasteFromClipboardItem(
+                            modifier = Modifier.animateItem(),
+                            onPaste = { text ->
                                 focusRequester.requestFocus()
-                                onSuggestionClicked(suggestion)
+                                onSuggestionClicked(Suggestion.Clipboard(text.trim()))
                             },
-                        suggestion = suggestion,
-                        visible = visible,
-                        onVisibleChanged = { visible = it },
-                    )
+                        )
+                    } else {
+                        SuggestionListItem(
+                            modifier = Modifier
+                                .animateItem()
+                                .clip(shapes.icon)
+                                .clickable {
+                                    focusRequester.requestFocus()
+                                    onSuggestionClicked(suggestion)
+                                },
+                            suggestion = suggestion,
+                            visible = visible,
+                            onVisibleChanged = { visible = it },
+                        )
+                    }
                 }
             }
         }
@@ -248,5 +258,36 @@ internal fun SuggestionListItem(
                 modifier = Modifier.size(16.dp),
             )
         }
+    }
+}
+
+@Composable
+internal fun PasteFromClipboardItem(
+    onPaste: (String) -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    val colors = DeepLinkTheme.colors
+    val typography = DeepLinkTheme.typography
+
+    Row(
+        modifier = modifier.fillMaxWidth().padding(horizontal = 12.dp, vertical = 8.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween,
+    ) {
+        Column(modifier = Modifier.weight(1f)) {
+            Text(
+                text = "Deeplink from clipboard",
+                style = typography.label.caption.copy(
+                    fontWeight = FontWeight.SemiBold,
+                    color = colors.text.secondary,
+                ),
+            )
+            Text(
+                text = "Paste the link you copied",
+                style = typography.body.emphasis.copy(color = colors.text.primary),
+            )
+        }
+
+        ClipboardPasteButton(onPaste = onPaste)
     }
 }
