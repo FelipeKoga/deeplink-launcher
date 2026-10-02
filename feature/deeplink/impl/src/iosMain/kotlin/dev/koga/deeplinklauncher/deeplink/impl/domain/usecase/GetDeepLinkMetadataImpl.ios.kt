@@ -8,12 +8,12 @@ import platform.Foundation.NSURLComponents
 internal class GetDeepLinkMetadataImpl : GetDeepLinkMetadata {
 
     override fun invoke(link: String): DeepLinkMetadata {
-        val nsurl = NSURL(string = link)
-
-        val components = NSURLComponents.componentsWithURL(
-            url = nsurl,
-            resolvingAgainstBaseURL = false,
-        ) ?: return DeepLinkMetadata(
+        val components = NSURL.URLWithString(link)?.let { nsurl ->
+            NSURLComponents.componentsWithURL(
+                url = nsurl,
+                resolvingAgainstBaseURL = false,
+            )
+        } ?: return DeepLinkMetadata(
             scheme = null,
             host = null,
             path = "/",
