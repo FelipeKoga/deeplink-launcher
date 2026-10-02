@@ -13,9 +13,9 @@ internal class LaunchDeepLinkImpl(
     private val application = UIApplication.sharedApplication
 
     override suspend fun launch(url: String): LaunchDeepLink.Result {
-        val nsurl = NSURL(string = url)
+        val nsurl = NSURL.URLWithString(url)
 
-        return if (application.canOpenURL(nsurl)) {
+        return if (nsurl != null && application.canOpenURL(nsurl)) {
             application.openURL(
                 url = nsurl,
                 options = emptyMap<Any?, Any>(),
