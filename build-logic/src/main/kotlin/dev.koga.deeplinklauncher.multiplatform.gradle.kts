@@ -22,6 +22,11 @@ kotlin {
 
         androidMain.get().dependsOn(mobileMain)
         iosMain.get().dependsOn(mobileMain)
+
+        commonTest.dependencies {
+            implementation(kotlin("test"))
+            implementation(libs.kotlinx.coroutines.test)
+        }
     }
 
     compilerOptions {
