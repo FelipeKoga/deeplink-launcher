@@ -79,8 +79,8 @@ jobs:
             -quiet \
             build
 
-      - name: Run the database tests on a simulator
-        run: ./gradlew :core:database:iosSimulatorArm64Test
+      - name: Run the iOS unit tests on a simulator
+        run: ./gradlew :core:database:iosSimulatorArm64Test :feature:deeplink:api:iosSimulatorArm64Test
 
       - name: Boot a simulator
         run: |
