@@ -1,13 +1,13 @@
 ---
 name: metro-di
-description: Dependency injection with Metro 1.4.5 in this Compose Multiplatform repo (Android, iOS, desktop), and the incremental migration off Koin. Use when adding or changing an injected class, a binding, a ViewModel, a graph or an app entry point, when moving a Koin module to Metro, when a Metro compile error appears (MissingBinding, DuplicateBinding, scope or visibility errors), or when the user mentions Metro, DI, dependency graph, @Inject, @ContributesBinding, @SingleIn, metroViewModel or Koin.
+description: Dependency injection with Metro 1.4.5 in this Compose Multiplatform repo (Android, iOS, desktop), and the Koin to Metro migration. Use when adding or changing an injected class, a binding, a ViewModel, a graph or an app entry point, when replacing a leftover Koin pattern, when a Metro compile error appears (MissingBinding, DuplicateBinding, scope or visibility errors), or when the user mentions Metro, DI, dependency graph, @Inject, @ContributesBinding, @SingleIn, metroViewModel or Koin.
 ---
 
 # Metro DI in deeplink-launcher
 
 Metro is a compile-time DI framework: a compiler plugin generates the graph and reports missing or duplicate bindings as build errors. Reference docs: https://zacsweers.github.io/metro/1.4.5/. MetroX ViewModel docs: the `metrox-viewmodel` and `metrox-viewmodel-compose` READMEs in https://github.com/ZacSweers/metro/tree/1.4.5.
 
-The repo is moving from Koin to Metro one layer at a time. Until the migration ends, both containers run side by side (see "Koin bridge"). The end state is `git grep -i koin` returning nothing.
+The app moved from Koin to Metro in one step. Koin is gone; keep it that way (`git grep -i koin` should only hit the stale baseline profiles until they are regenerated).
 
 ## 1. Toolchain gate
 
@@ -77,7 +77,7 @@ object DatabaseBindings {
 }
 ```
 
-Keep provider signatures public and build internal helpers (`DriverFactory`, `DatabaseProvider`, `Adb`, `Xcrun`, the raw `DataStore<Preferences>`) inside the body, so those types never become graph keys.
+Keep provider signatures public and build internal helpers (`DriverFactory`, `DatabaseProvider`, `Adb`, `Xcrun`, the raw `DataStore<Preferences>`) inside the body, so those types never become graph keys. A key type must also be on `:shared`'s classpath: `DataStore<Preferences>` as a key fails with `unexpected error while processing type: 'dev.zacsweers.metro.Provider<out <error>>'`, because the DataStore library is only an `implementation` dependency of core:preferences.
 
 Repo-specific bindings:
 
@@ -89,8 +89,8 @@ Repo-specific bindings:
 ## 4. Visibility
 
 - Contributed classes can stay `internal` thanks to `generateContributionProviders`, but `:shared` must be able to bind every constructor input. A public contributed class that takes an internal type fails to compile.
-- Some classes must be public because contributed internal classes take them as inputs across modules. Known ones: `GetDeepLinkFromClipboard`, `ClipboardTextReader` and `AndroidHandlerResolver`.
-- Assisted ViewModels (§5) and their factories must be public. Their public members then expose their UI state types, so those become public too.
+- Internal `@Inject` helpers used by contributed classes in the same module (`GetDeepLinkFromClipboard`, `ClipboardTextReader`, `AndroidHandlerResolver`) can stay internal too.
+- Assisted ViewModels (§5) and their nested factories can stay `internal`; this compiles on all three platforms with `generateContributionProviders`.
 - Modules with `explicitApi()` need explicit `public` modifiers.
 
 ## 5. ViewModels (MetroX)
@@ -146,19 +146,7 @@ class AddFolderViewModel(
 
 The call site is `assistedMetroViewModel<AddFolderViewModel>()`. It passes the back-stack entry's extras, so `toRoute()` and `getStateFlow` keep working unchanged.
 
-## 6. Koin bridge (temporary)
-
-Metro takes over bottom-up, so Metro never needs an instance that Koin owns. Koin reads from Metro, never the reverse:
-
-1. The graph is created before `startKoin` on every platform.
-2. `AppGraph` extends the `KoinBridge` interface, which has one accessor per type Metro owns that Koin code still needs.
-3. `startKoin` loads `module { single { graph.appCoroutineScope } ... }` built from those accessors.
-
-A migration PR moves one layer on every platform at once and deletes its Koin definitions in the same PR, so each type has exactly one owner. Add a bridge accessor for every moved type that some Koin definition or `koinViewModel` still resolves. Remove accessors as the last Koin consumers go. The startup PR deletes the bridge, `startKoin`, the `platformModule` expect/actuals in `:shared`, and the Koin modules.
-
-Koin is only checked at runtime, so a missing bridge accessor crashes when the screen that needs it opens.
-
-## 7. Verification
+## 6. Verification
 
 Compile all three graphs. Metro validates each graph when its platform compiles:
 
@@ -180,10 +168,10 @@ Full local check, with the debug keystore env from the perf setup:
 - **Android:** run `gh workflow run maestro.yml --ref <branch>`.
 - **No automated coverage:** export/import and the Products screen have no Maestro flow. Check them by hand when a PR touches those bindings.
 
-## 8. Pitfalls
+## 7. Pitfalls
 
 - **`[Metro/MissingBinding]`**: the type has no `@Inject` constructor, contribution or `@Provides`, or the contributing module isn't on `:shared`'s classpath. Also check that the module applies the Metro plugin.
-- **`[Metro/DuplicateBinding]`**: two contributions for the same key, typically one in common code and one in a platform source set, or a Koin-era duplicate.
+- **`[Metro/DuplicateBinding]`**: two contributions for the same key, typically one in common code and one in a platform source set.
 - **Scopes:** `@SingleIn` goes on the class or the `@Provides` function, never on `@Binds`.
 - **Providers:** `Provider<T>` and `() -> T` are invoked with `()`; there is no `get()`. `Lazy<T>` uses `.value`.
 - **Multibindings:** empty sets and maps are an error unless declared with `@Multibinds(allowEmpty = true)`.
