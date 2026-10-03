@@ -2,5 +2,11 @@
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": [
     "config:recommended"
+  ],
+  "packageRules": [
+    {
+      "matchPackageNames": ["io.github.vinceglb:filekit-dialogs-compose"],
+      "allowedVersions": "<0.14.2"
+    }
   ]
 }
