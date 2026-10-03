@@ -33,7 +33,6 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
-import com.darkrockstudios.libraries.mpfilepicker.FilePicker
 import dev.koga.deeplinklauncher.datatransfer.impl.ui.component.JSONBoxViewer
 import dev.koga.deeplinklauncher.date.currentLocalDateTime
 import dev.koga.deeplinklauncher.designsystem.DLLHorizontalDivider
@@ -45,6 +44,8 @@ import dev.koga.deeplinklauncher.designsystem.theme.DeepLinkTheme
 import dev.koga.deeplinklauncher.file.model.FileType
 import dev.koga.deeplinklauncher.file.model.getByLabel
 import dev.koga.deeplinklauncher.file.model.label
+import io.github.vinceglb.filekit.dialogs.FileKitType
+import io.github.vinceglb.filekit.dialogs.compose.rememberFilePickerLauncher
 import kotlinx.collections.immutable.toPersistentList
 import kotlinx.datetime.LocalDateTime
 
@@ -52,21 +53,25 @@ import kotlinx.datetime.LocalDateTime
 fun ImportScreen(
     viewModel: ImportViewModel,
 ) {
-    var showFilePicker by remember { mutableStateOf(false) }
     var selectedType by remember { mutableStateOf(FileType.JSON) }
+    var isPickerOpen by remember { mutableStateOf(false) }
 
-    FilePicker(
-        show = showFilePicker,
-        fileExtensions = FileType.extensions,
+    val filePicker = rememberFilePickerLauncher(
+        type = FileKitType.File(FileType.extensions),
     ) { platformFile ->
-        showFilePicker = false
-        viewModel.import(platformFile ?: return@FilePicker)
+        isPickerOpen = false
+        viewModel.import(platformFile ?: return@rememberFilePickerLauncher)
     }
 
     ImportUI(
         selectedType = selectedType,
         onBack = { viewModel.popBackStack() },
-        onBrowse = { showFilePicker = true },
+        onBrowse = {
+            if (!isPickerOpen) {
+                isPickerOpen = true
+                filePicker.launch()
+            }
+        },
         onOptionSelected = { selectedType = it },
     )
 }
