@@ -7,7 +7,7 @@ This document defines how the DeepLink Launcher codebase is organized at the Gra
 | Type | Gradle path pattern | Responsibility |
 |------|---------------------|----------------|
 | App shell | `:androidApp`, `:desktopApp` | Platform entry points |
-| Composition root | `:shared` | Koin wiring, `AppGraph`, `App.kt` |
+| Composition root | `:shared` | Koin wiring, `AppNavGraph`, `App.kt` |
 | Feature API | `:feature:<name>:api` | Minimum public contracts |
 | Feature impl | `:feature:<name>:impl` | Full feature implementation |
 | Feature UI (optional) | `:feature:<name>:ui-component` | Reusable Compose widgets shared across features |
@@ -116,7 +116,7 @@ dev.koga.deeplinklauncher.<feature>.impl
 1. Each feature api exposes serializable route types under `ui.navigation`.
 2. Each feature impl provides a `*NavigationGraph` implementing `NavigationGraph` from `core:navigation`.
 3. Each feature impl registers Koin bindings in `di/Module.kt`.
-4. `:shared` collects all `NavigationGraph` instances into `AppGraph` and loads all Koin modules.
+4. `:shared` collects all `NavigationGraph` instances into `AppNavGraph` and loads all Koin modules.
 
 ## Visibility conventions
 

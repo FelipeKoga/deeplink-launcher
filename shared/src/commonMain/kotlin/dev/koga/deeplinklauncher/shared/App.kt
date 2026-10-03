@@ -18,7 +18,7 @@ import dev.koga.deeplinklauncher.analytics.api.AnalyticsTracker
 import dev.koga.deeplinklauncher.designsystem.DLLSnackbarHost
 import dev.koga.deeplinklauncher.designsystem.theme.DLLTheme
 import dev.koga.deeplinklauncher.home.impl.ui.navigation.HomeRoute
-import dev.koga.deeplinklauncher.navigation.AppGraph
+import dev.koga.deeplinklauncher.navigation.AppNavGraph
 import dev.koga.deeplinklauncher.navigation.AppNavigator
 import dev.koga.deeplinklauncher.navigation.AppRoute
 import dev.koga.deeplinklauncher.preferences.model.AppTheme
@@ -37,7 +37,7 @@ import org.koin.compose.koinInject
 fun App() {
     val navController = rememberNavController()
     val appNavigator = koinInject<AppNavigator>()
-    val appGraph = koinInject<AppGraph>()
+    val appNavGraph = koinInject<AppNavGraph>()
     val snackBarDispatcher = koinInject<SnackBarDispatcher>()
     val analyticsTracker = koinInject<AnalyticsTracker>()
     val isDarkTheme = isAppThemeInDarkTheme()
@@ -86,7 +86,7 @@ fun App() {
                 exitTransition = { scaleOutExitTransition() },
                 popExitTransition = { scaleOutPopExitTransition() },
             ) {
-                appGraph.appGraphBuilder(this)
+                appNavGraph.appGraphBuilder(this)
             }
         }
     }
