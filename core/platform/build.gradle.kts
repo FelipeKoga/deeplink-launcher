@@ -15,7 +15,6 @@ kotlin {
             api(libs.kotlinx.immutable)
             implementation(libs.kotlinx.coroutines.core)
             implementation(libs.kotlinx.serialization.json)
-            implementation(libs.koin.core)
         }
         jvmTest.dependencies {
             implementation(libs.junit)

@@ -14,8 +14,6 @@ kotlin {
     sourceSets {
         jvmMain.dependencies {
             implementation(projects.shared)
-            implementation(libs.koin.core)
-            implementation(libs.koin.compose)
             implementation(libs.kotlinx.coroutines.swing)
             implementation(compose.desktop.currentOs)
         }

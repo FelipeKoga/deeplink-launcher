@@ -19,7 +19,6 @@ kotlin {
 
         androidMain.dependencies {
             implementation(libs.firebase.analytics)
-            implementation(libs.koin.android)
         }
     }
 }
