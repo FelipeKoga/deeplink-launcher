@@ -5,7 +5,6 @@ import com.skydoves.compose.stability.runtime.RecompositionEvent
 import com.skydoves.compose.stability.runtime.RecompositionLogger
 import dev.koga.deeplinklauncher.analytics.api.AnalyticsTracker
 import dev.koga.deeplinklauncher.analytics.impl.di.analyticsModule
-import dev.koga.deeplinklauncher.coroutines.di.coroutinesModule
 import dev.koga.deeplinklauncher.database.di.databaseModule
 import dev.koga.deeplinklauncher.datatransfer.impl.di.dataTransferModule
 import dev.koga.deeplinklauncher.deeplink.impl.di.deepLinkModule
@@ -43,7 +42,6 @@ internal fun AppInitializer.start(graph: AppGraph, appModule: Module = module { 
             fileModule,
             databaseModule,
             platformModule,
-            coroutinesModule,
             uiEventModule,
         )
     }.koin
