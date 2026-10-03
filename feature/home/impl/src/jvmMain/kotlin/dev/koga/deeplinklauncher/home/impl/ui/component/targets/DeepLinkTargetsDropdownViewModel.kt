@@ -1,20 +1,20 @@
 package dev.koga.deeplinklauncher.home.impl.ui.component.targets
 
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import dev.koga.deeplinklauncher.analytics.api.AnalyticsTracker
 import dev.koga.deeplinklauncher.deeplink.api.domain.manager.DeepLinkTargetStateManager
 import dev.koga.deeplinklauncher.deeplink.api.domain.model.DeepLinkTarget
 import dev.koga.deeplinklauncher.home.impl.analytics.LaunchTargetSelected
 import dev.koga.deeplinklauncher.home.impl.analytics.track
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 
-class DeepLinkTargetsDropdownManager(
+class DeepLinkTargetsDropdownViewModel(
     private val stateManager: DeepLinkTargetStateManager,
     private val analyticsTracker: AnalyticsTracker,
-    coroutineScope: CoroutineScope,
-) {
+) : ViewModel() {
 
     val uiState = combine(
         stateManager.current,
@@ -22,7 +22,7 @@ class DeepLinkTargetsDropdownManager(
     ) { current, targets ->
         targets.toUiState(current)
     }.stateIn(
-        scope = coroutineScope,
+        scope = viewModelScope,
         initialValue = DeepLinkTargetsUiState(),
         started = SharingStarted.WhileSubscribed(),
     )

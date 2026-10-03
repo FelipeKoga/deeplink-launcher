@@ -31,15 +31,15 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.koga.deeplinklauncher.designsystem.theme.DeepLinkTheme
 import dev.koga.deeplinklauncher.home.impl.util.ext.hoverIndication
-import org.koin.compose.koinInject
+import org.koin.compose.viewmodel.koinViewModel
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
 @Composable
 fun DeepLinkTargetsDropDown(
     modifier: Modifier,
-    manager: DeepLinkTargetsDropdownManager = koinInject(),
+    viewModel: DeepLinkTargetsDropdownViewModel = koinViewModel(),
 ) {
-    val uiState by manager.uiState.collectAsStateWithLifecycle()
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     var expanded by remember { mutableStateOf(false) }
     val colors = DeepLinkTheme.colors
     val typography = DeepLinkTheme.typography
@@ -55,8 +55,8 @@ fun DeepLinkTargetsDropDown(
             .onPointerEvent(PointerEventType.Scroll) {
                 val delta = it.changes.first().scrollDelta.y.toInt()
                 when {
-                    delta < 0 -> manager.prev()
-                    delta > 0 -> manager.next()
+                    delta < 0 -> viewModel.prev()
+                    delta > 0 -> viewModel.next()
                 }
             }
             .border(
@@ -129,7 +129,7 @@ fun DeepLinkTargetsDropDown(
                         )
                     },
                     onClick = {
-                        manager.select(target.deeplinkTarget)
+                        viewModel.select(target.deeplinkTarget)
                         expanded = false
                     },
                 )
