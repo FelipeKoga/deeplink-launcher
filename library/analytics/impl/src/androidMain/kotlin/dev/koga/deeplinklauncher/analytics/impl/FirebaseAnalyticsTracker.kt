@@ -6,7 +6,14 @@ import com.google.firebase.Firebase
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.analytics.analytics
 import dev.koga.deeplinklauncher.analytics.api.AnalyticsTracker
+import dev.zacsweers.metro.AppScope
+import dev.zacsweers.metro.ContributesBinding
+import dev.zacsweers.metro.Inject
+import dev.zacsweers.metro.SingleIn
 
+@SingleIn(AppScope::class)
+@ContributesBinding(AppScope::class)
+@Inject
 class FirebaseAnalyticsTracker(
     private val context: Context,
 ) : AnalyticsTracker {

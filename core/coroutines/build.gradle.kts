@@ -1,5 +1,6 @@
 plugins {
     alias(libs.plugins.deeplinkLauncher.multiplatform)
+    alias(libs.plugins.deeplinkLauncher.metro)
 }
 
 kotlin {

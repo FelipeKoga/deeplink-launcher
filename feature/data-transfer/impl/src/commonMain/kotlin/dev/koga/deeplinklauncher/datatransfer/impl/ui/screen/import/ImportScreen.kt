@@ -33,7 +33,6 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
-import com.darkrockstudios.libraries.mpfilepicker.FilePicker
 import dev.koga.deeplinklauncher.datatransfer.impl.ui.component.JSONBoxViewer
 import dev.koga.deeplinklauncher.date.currentLocalDateTime
 import dev.koga.deeplinklauncher.designsystem.DLLHorizontalDivider
@@ -54,14 +53,6 @@ fun ImportScreen(
 ) {
     var showFilePicker by remember { mutableStateOf(false) }
     var selectedType by remember { mutableStateOf(FileType.JSON) }
-
-    FilePicker(
-        show = showFilePicker,
-        fileExtensions = FileType.extensions,
-    ) { platformFile ->
-        showFilePicker = false
-        viewModel.import(platformFile ?: return@FilePicker)
-    }
 
     ImportUI(
         selectedType = selectedType,
