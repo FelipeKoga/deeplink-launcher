@@ -5,9 +5,14 @@ import dev.koga.deeplinklauncher.datatransfer.impl.data.dto.dateFormat
 import dev.koga.deeplinklauncher.date.format
 import dev.koga.deeplinklauncher.deeplink.api.domain.repository.DeepLinkRepository
 import dev.koga.deeplinklauncher.deeplink.api.domain.repository.FolderRepository
+import dev.zacsweers.metro.AppScope
+import dev.zacsweers.metro.ContributesBinding
+import dev.zacsweers.metro.SingleIn
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 
+@SingleIn(AppScope::class)
+@ContributesBinding(AppScope::class)
 internal class GetDeepLinksJsonPreviewImpl(
     private val deepLinkRepository: DeepLinkRepository,
     private val folderRepository: FolderRepository,

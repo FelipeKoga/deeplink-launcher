@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.imePadding
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -14,15 +15,11 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import dev.koga.deeplinklauncher.analytics.api.AnalyticsTracker
 import dev.koga.deeplinklauncher.designsystem.DLLSnackbarHost
 import dev.koga.deeplinklauncher.designsystem.theme.DLLTheme
 import dev.koga.deeplinklauncher.home.impl.ui.navigation.HomeRoute
-import dev.koga.deeplinklauncher.navigation.AppNavGraph
-import dev.koga.deeplinklauncher.navigation.AppNavigator
 import dev.koga.deeplinklauncher.navigation.AppRoute
 import dev.koga.deeplinklauncher.preferences.model.AppTheme
-import dev.koga.deeplinklauncher.preferences.repository.PreferencesDataSource
 import dev.koga.deeplinklauncher.shared.analytics.ScreenViewed
 import dev.koga.deeplinklauncher.shared.analytics.resolveAnalyticsScreenName
 import dev.koga.deeplinklauncher.shared.analytics.track
@@ -30,16 +27,15 @@ import dev.koga.deeplinklauncher.shared.anim.scaleInEnterTransition
 import dev.koga.deeplinklauncher.shared.anim.scaleInPopEnterTransition
 import dev.koga.deeplinklauncher.shared.anim.scaleOutExitTransition
 import dev.koga.deeplinklauncher.shared.anim.scaleOutPopExitTransition
-import dev.koga.deeplinklauncher.uievent.SnackBarDispatcher
-import org.koin.compose.koinInject
+import dev.zacsweers.metrox.viewmodel.LocalMetroViewModelFactory
 
 @Composable
 fun App() {
     val navController = rememberNavController()
-    val appNavigator = koinInject<AppNavigator>()
-    val appNavGraph = koinInject<AppNavGraph>()
-    val snackBarDispatcher = koinInject<SnackBarDispatcher>()
-    val analyticsTracker = koinInject<AnalyticsTracker>()
+    val appNavigator = appGraph.appNavigator
+    val appNavGraph = appGraph.appNavGraph
+    val snackBarDispatcher = appGraph.snackBarDispatcher
+    val analyticsTracker = appGraph.analyticsTracker
     val isDarkTheme = isAppThemeInDarkTheme()
     val snackBarHostState = remember { SnackbarHostState() }
     val currentBackStackEntry by navController.currentBackStackEntryAsState()
@@ -69,33 +65,34 @@ fun App() {
         }
     }
 
-    DLLTheme(
-        isDarkTheme = isDarkTheme,
-    ) {
-        Scaffold(
-            snackbarHost = {
-                DLLSnackbarHost(snackBarHostState)
-            },
+    CompositionLocalProvider(LocalMetroViewModelFactory provides appGraph.metroViewModelFactory) {
+        DLLTheme(
+            isDarkTheme = isDarkTheme,
         ) {
-            NavHost(
-                modifier = Modifier.fillMaxSize().imePadding(),
-                navController = navController,
-                startDestination = HomeRoute.Home,
-                enterTransition = { scaleInEnterTransition() },
-                popEnterTransition = { scaleInPopEnterTransition() },
-                exitTransition = { scaleOutExitTransition() },
-                popExitTransition = { scaleOutPopExitTransition() },
+            Scaffold(
+                snackbarHost = {
+                    DLLSnackbarHost(snackBarHostState)
+                },
             ) {
-                appNavGraph.appGraphBuilder(this)
+                NavHost(
+                    modifier = Modifier.fillMaxSize().imePadding(),
+                    navController = navController,
+                    startDestination = HomeRoute.Home,
+                    enterTransition = { scaleInEnterTransition() },
+                    popEnterTransition = { scaleInPopEnterTransition() },
+                    exitTransition = { scaleOutExitTransition() },
+                    popExitTransition = { scaleOutPopExitTransition() },
+                ) {
+                    appNavGraph.appGraphBuilder(this)
+                }
             }
         }
     }
 }
 
 @Composable
-fun isAppThemeInDarkTheme(
-    preferencesDataSource: PreferencesDataSource = koinInject(),
-): Boolean {
+fun isAppThemeInDarkTheme(): Boolean {
+    val preferencesDataSource = appGraph.preferencesDataSource
     val isSystemDarkTheme = isSystemInDarkTheme()
 
     val preferences by preferencesDataSource.preferencesStream.collectAsStateWithLifecycle(initialValue = null)

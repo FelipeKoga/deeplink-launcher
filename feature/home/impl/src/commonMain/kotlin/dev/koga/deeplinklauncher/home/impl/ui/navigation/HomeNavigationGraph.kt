@@ -9,9 +9,12 @@ import dev.koga.deeplinklauncher.home.impl.ui.onboarding.OnboardingBottomSheet
 import dev.koga.deeplinklauncher.navigation.AppNavigator
 import dev.koga.deeplinklauncher.navigation.NavigationGraph
 import dev.koga.deeplinklauncher.preferences.repository.PreferencesDataSource
+import dev.zacsweers.metro.AppScope
+import dev.zacsweers.metro.ContributesIntoSet
+import dev.zacsweers.metrox.viewmodel.metroViewModel
 import kotlinx.coroutines.launch
-import org.koin.compose.viewmodel.koinViewModel
 
+@ContributesIntoSet(AppScope::class)
 class HomeNavigationGraph(
     private val appNavigator: AppNavigator,
     private val appCoroutineScope: AppCoroutineScope,
@@ -19,7 +22,7 @@ class HomeNavigationGraph(
 ) : NavigationGraph {
     override fun register(navGraphBuilder: NavGraphBuilder) = with(navGraphBuilder) {
         composable<HomeRoute.Home> {
-            HomeScreen(viewModel = koinViewModel(), appNavigator = appNavigator)
+            HomeScreen(viewModel = metroViewModel(), appNavigator = appNavigator)
         }
 
         dialog<HomeRoute.Onboarding> {

@@ -1,6 +1,9 @@
 package dev.koga.deeplinklauncher.uievent
 
 import dev.koga.deeplinklauncher.coroutines.AppCoroutineScope
+import dev.zacsweers.metro.AppScope
+import dev.zacsweers.metro.ContributesBinding
+import dev.zacsweers.metro.SingleIn
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.receiveAsFlow
@@ -23,6 +26,8 @@ data class SnackBar(
     }
 }
 
+@SingleIn(AppScope::class)
+@ContributesBinding(AppScope::class)
 internal class SnackBarDispatcherImpl(
     private val appCoroutineScope: AppCoroutineScope,
 ) : SnackBarDispatcher {

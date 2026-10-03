@@ -7,11 +7,16 @@ import dev.koga.deeplinklauncher.coroutines.AppCoroutineScope
 import dev.koga.deeplinklauncher.preferences.repository.PreferencesDataSource
 import dev.koga.deeplinklauncher.settings.impl.analytics.SuggestionsToggled
 import dev.koga.deeplinklauncher.settings.impl.analytics.track
+import dev.zacsweers.metro.AppScope
+import dev.zacsweers.metro.ContributesIntoMap
+import dev.zacsweers.metrox.viewmodel.ViewModelKey
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
+@ViewModelKey
+@ContributesIntoMap(AppScope::class)
 class SuggestionsOptionViewModel(
     private val preferencesDataSource: PreferencesDataSource,
     private val appCoroutineScope: AppCoroutineScope,

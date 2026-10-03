@@ -1,5 +1,6 @@
 plugins {
     alias(libs.plugins.deeplinkLauncher.multiplatform)
+    alias(libs.plugins.deeplinkLauncher.metro)
 }
 
 kotlin {
@@ -8,7 +9,6 @@ kotlin {
             implementation(projects.core.coroutines)
 
             implementation(libs.kotlinx.coroutines.core)
-            implementation(libs.koin.core)
         }
     }
 }

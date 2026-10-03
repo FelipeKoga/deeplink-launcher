@@ -2,7 +2,12 @@ package dev.koga.deeplinklauncher.deeplink.impl.domain.manager
 
 import dev.koga.deeplinklauncher.deeplink.api.domain.manager.DeepLinkShortcutManager
 import dev.koga.deeplinklauncher.deeplink.api.domain.model.DeepLink
+import dev.zacsweers.metro.AppScope
+import dev.zacsweers.metro.ContributesBinding
+import dev.zacsweers.metro.SingleIn
 
+@SingleIn(AppScope::class)
+@ContributesBinding(AppScope::class)
 internal class DeepLinkShortcutManagerImpl : DeepLinkShortcutManager {
     override suspend fun isAdded(deepLinkId: String): Boolean = false
 

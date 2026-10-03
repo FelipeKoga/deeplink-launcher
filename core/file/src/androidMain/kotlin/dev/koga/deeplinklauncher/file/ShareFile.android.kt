@@ -6,8 +6,13 @@ import android.net.Uri
 import android.os.Build
 import androidx.core.content.FileProvider
 import dev.koga.deeplinklauncher.file.model.FileType
+import dev.zacsweers.metro.AppScope
+import dev.zacsweers.metro.Inject
+import dev.zacsweers.metro.SingleIn
 import java.io.File
 
+@SingleIn(AppScope::class)
+@Inject
 actual class ShareFile(
     private val context: Context,
 ) {

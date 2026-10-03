@@ -14,11 +14,16 @@ import android.os.SystemClock
 import android.util.LruCache
 import androidx.core.graphics.drawable.toBitmap
 import dev.koga.deeplinklauncher.deeplink.api.ui.model.DeepLinkIcon
+import dev.zacsweers.metro.AppScope
+import dev.zacsweers.metro.Inject
+import dev.zacsweers.metro.SingleIn
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.atomic.AtomicInteger
 import java.util.concurrent.atomic.AtomicLong
 import kotlin.math.roundToInt
 
+@SingleIn(AppScope::class)
+@Inject
 internal class AndroidHandlerResolver(context: Context) {
 
     internal class ResolvedHandler(

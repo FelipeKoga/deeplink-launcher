@@ -33,6 +33,9 @@ import dev.koga.deeplinklauncher.home.impl.analytics.track
 import dev.koga.deeplinklauncher.home.impl.ui.state.HomeUiState
 import dev.koga.deeplinklauncher.navigation.AppNavigator
 import dev.koga.deeplinklauncher.preferences.repository.PreferencesDataSource
+import dev.zacsweers.metro.AppScope
+import dev.zacsweers.metro.ContributesIntoMap
+import dev.zacsweers.metrox.viewmodel.ViewModelKey
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.Dispatchers
@@ -50,6 +53,8 @@ import kotlinx.coroutines.launch
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 
+@ViewModelKey
+@ContributesIntoMap(AppScope::class)
 class HomeViewModel(
     getDeepLinksAndFolderStream: GetDeepLinksAndFolderStream,
     private val enrichDeepLinksForList: EnrichDeepLinksForList,

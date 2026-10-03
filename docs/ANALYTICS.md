@@ -12,7 +12,7 @@ Analytics is **product-oriented** — it tracks funnels, activation, retention, 
 - `LaunchSource` enum lives in `feature:deeplink:api` and is reused by home/deeplink events
 - Events are fired from **ViewModels** after business outcomes, not from Compose recompositions
 - **Screen views** are centralized in `shared/App.kt` via type-safe route resolution (`AppRoute.analyticsScreenName` + `resolveAnalyticsScreenName()`)
-- `app_open` is tracked once in `AppInitializer` after Koin startup
+- `app_open` is tracked once in `AppInitializer` after the dependency graph is created
 
 There are **no custom user properties** — cohort segmentation relies on GA4 events and built-in dimensions (platform, app version, etc.).
 

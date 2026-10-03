@@ -7,8 +7,13 @@ import dev.koga.deeplinklauncher.deeplink.api.domain.usecase.GetDeepLinkHandlerI
 import dev.koga.deeplinklauncher.deeplink.api.domain.usecase.GetDeepLinkHandlerInfo
 import dev.koga.deeplinklauncher.deeplink.api.domain.usecase.GetDeepLinkMetadata
 import dev.koga.deeplinklauncher.deeplink.api.ui.model.DeepLinkDetailsModel
+import dev.zacsweers.metro.AppScope
+import dev.zacsweers.metro.ContributesBinding
+import dev.zacsweers.metro.SingleIn
 import kotlinx.coroutines.withContext
 
+@SingleIn(AppScope::class)
+@ContributesBinding(AppScope::class)
 internal class EnrichDeepLinkForDetailsImpl(
     private val getDeepLinkHandlerIcon: GetDeepLinkHandlerIcon,
     private val getDeepLinkMetadata: GetDeepLinkMetadata,

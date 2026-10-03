@@ -4,6 +4,7 @@ plugins {
     alias(libs.plugins.deeplinkLauncher.multiplatform)
     alias(libs.plugins.kotlinSerialization)
     alias(libs.plugins.sqlDelight)
+    alias(libs.plugins.deeplinkLauncher.metro)
 }
 
 kotlin {
@@ -12,7 +13,6 @@ kotlin {
             implementation(libs.kotlinx.coroutines.core)
             implementation(libs.kotlinx.serialization.json)
             implementation(libs.kotlinx.datetime)
-            implementation(libs.koin.core)
             implementation(libs.sqldelight.coroutines.extensions)
         }
 

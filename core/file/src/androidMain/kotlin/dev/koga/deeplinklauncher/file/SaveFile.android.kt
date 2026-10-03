@@ -6,10 +6,15 @@ import android.os.Build
 import android.os.Environment
 import android.provider.MediaStore
 import dev.koga.deeplinklauncher.file.model.FileType
+import dev.zacsweers.metro.AppScope
+import dev.zacsweers.metro.Inject
+import dev.zacsweers.metro.SingleIn
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
 
+@SingleIn(AppScope::class)
+@Inject
 actual class SaveFile(
     private val context: Context,
 ) {

@@ -12,8 +12,14 @@ import dev.koga.deeplinklauncher.file.StoragePermission
 import dev.koga.deeplinklauncher.file.model.FileType
 import dev.koga.deeplinklauncher.navigation.AppNavigator
 import dev.koga.deeplinklauncher.uievent.SnackBarDispatcher
+import dev.zacsweers.metro.AppScope
+import dev.zacsweers.metro.ContributesIntoMap
+import dev.zacsweers.metro.binding
+import dev.zacsweers.metrox.viewmodel.ViewModelKey
 import kotlinx.coroutines.launch
 
+@ViewModelKey
+@ContributesIntoMap(AppScope::class, binding<ViewModel>())
 class ExportViewModel(
     getDeepLinksPlainTextPreview: GetDeepLinksPlainTextPreview,
     getDeepLinksJsonPreview: GetDeepLinksJsonPreview,
