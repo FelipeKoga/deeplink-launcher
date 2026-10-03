@@ -26,6 +26,7 @@ composeIcons = "1.1.1"
 datastorePreferencesCore = "1.2.0"
 detekt = "1.23.8"
 espressoCore = "3.7.0"
+filekit = "0.13.0"
 firebase-bom = "34.9.0"
 firebase-crashlytics-plugin = "3.0.6"
 firebase-perf-plugin = "2.0.2"
@@ -40,7 +41,6 @@ kotlinxCoroutinesCore = "1.10.2"
 kotlinxSerializationJson = "1.10.0"
 ktlint = "0.50.0"
 material3WindowSizeClass = "1.9.0"
-mpfilepicker = "3.1.0"
 nativeDriver = "2.2.1"
 profileinstaller = "1.4.1"
 purchases-kmp = "2.10.2+17.55.1"
@@ -82,6 +82,7 @@ composerules = { module = "com.twitter.compose.rules:detekt", version.ref = "com
 androidx-lifecycle-runtime-compose = { module = "org.jetbrains.androidx.lifecycle:lifecycle-runtime-compose", version.ref = "androidx-lifecycle" }
 androidx-lifecycle-viewmodel-compose = { module = "org.jetbrains.androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "androidx-lifecycle" }
 detekt = { module = "io.gitlab.arturbosch.detekt:detekt-gradle-plugin", version.ref = "detekt" }
+filekit-dialogs-compose = { module = "io.github.vinceglb:filekit-dialogs-compose", version.ref = "filekit" }
 firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebase-bom" }
 firebase-analytics = { module = "com.google.firebase:firebase-analytics", version = "22.4.0" }
 firebase-crashlytics = { module = "com.google.firebase:firebase-crashlytics" }
@@ -102,7 +103,6 @@ kotlinx-immutable = { module = "org.jetbrains.kotlinx:kotlinx-collections-immuta
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinxSerializationJson" }
 ktlint = { module = "com.pinterest:ktlint", version.ref = "ktlint" }
 material3-windowSizeClass = { module = "org.jetbrains.compose.material3:material3-window-size-class", version.ref = "material3WindowSizeClass" }
-mpfilepicker = { module = "com.darkrockstudios:mpfilepicker", version.ref = "mpfilepicker" }
 native-driver = { module = "app.cash.sqldelight:native-driver", version.ref = "nativeDriver" }
 revenuecat-core = { module = "com.revenuecat.purchases:purchases-kmp-core", version.ref = "purchases-kmp" }
 robolectric = { module = "org.robolectric:robolectric", version.ref = "robolectric" }

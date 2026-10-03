@@ -118,7 +118,7 @@ Resized with `sips -Z 1100`.
 - DataStore
 - kotlinx.coroutines, kotlinx.serialization, kotlinx-datetime, kotlinx-collections-immutable
 - Haze, Tabler Icons
-- mpfilepicker
+- FileKit
 - AboutLibraries
 - Firebase (Analytics, Crashlytics, Performance)
 - RevenueCat

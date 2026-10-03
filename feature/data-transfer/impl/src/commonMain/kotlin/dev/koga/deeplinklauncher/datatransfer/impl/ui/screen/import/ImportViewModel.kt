@@ -2,7 +2,6 @@ package dev.koga.deeplinklauncher.datatransfer.impl.ui.screen.import
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.darkrockstudios.libraries.mpfilepicker.MPFile
 import dev.koga.deeplinklauncher.analytics.api.AnalyticsTracker
 import dev.koga.deeplinklauncher.datatransfer.api.domain.usecase.ImportDeepLinks
 import dev.koga.deeplinklauncher.datatransfer.impl.analytics.DataImported
@@ -13,6 +12,8 @@ import dev.koga.deeplinklauncher.file.GetFileRealPath
 import dev.koga.deeplinklauncher.file.model.FileType
 import dev.koga.deeplinklauncher.navigation.AppNavigator
 import dev.koga.deeplinklauncher.uievent.SnackBarDispatcher
+import io.github.vinceglb.filekit.PlatformFile
+import io.github.vinceglb.filekit.path
 import kotlinx.coroutines.launch
 
 class ImportViewModel(
@@ -25,7 +26,7 @@ class ImportViewModel(
     private val analyticsTracker: AnalyticsTracker,
 ) : ViewModel(), AppNavigator by appNavigator {
 
-    fun import(platformFile: MPFile<Any>) = viewModelScope.launch {
+    fun import(platformFile: PlatformFile) = viewModelScope.launch {
         val path = getFileRealPath.get(platformFile.path)
 
         val fileType = when (path.substringAfterLast(".")) {

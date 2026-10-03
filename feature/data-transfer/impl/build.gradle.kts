@@ -28,7 +28,7 @@ kotlin {
             implementation(libs.koin.compose)
             implementation(libs.koin.viewmodel)
 
-            implementation(libs.mpfilepicker)
+            implementation(libs.filekit.dialogs.compose)
             implementation(libs.compose.navigation)
 
             implementation(compose.preview)
