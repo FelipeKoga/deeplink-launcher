@@ -10,9 +10,8 @@ import androidx.core.view.WindowCompat
 import androidx.fragment.app.FragmentActivity
 import dev.koga.deeplinklauncher.shared.App
 import dev.koga.deeplinklauncher.shared.isAppThemeInDarkTheme
-import org.koin.core.component.KoinComponent
 
-class MainActivity : FragmentActivity(), KoinComponent {
+class MainActivity : FragmentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         installSplashScreen()

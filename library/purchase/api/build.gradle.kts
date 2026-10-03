@@ -12,7 +12,6 @@ kotlin {
             implementation(projects.core.navigation)
             implementation(libs.kotlinx.immutable)
             implementation(libs.kotlinx.coroutines.core)
-            implementation(libs.koin.core)
         }
     }
 }
