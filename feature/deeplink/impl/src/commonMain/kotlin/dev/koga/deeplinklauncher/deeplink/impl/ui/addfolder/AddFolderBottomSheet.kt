@@ -1,5 +1,6 @@
 package dev.koga.deeplinklauncher.deeplink.impl.ui.addfolder
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.defaultMinSize
@@ -68,6 +69,18 @@ internal fun AddFolderBottomSheetContent(
             onValueChange = onNameChanged,
             label = "Name",
         )
+
+        AnimatedVisibility(
+            visible = uiState.errorMessage != null,
+        ) {
+            Text(
+                text = uiState.errorMessage.orEmpty(),
+                modifier = Modifier.padding(top = 8.dp),
+                style = typography.label.error.copy(
+                    color = colors.text.error,
+                ),
+            )
+        }
 
         Spacer(modifier = Modifier.height(12.dp))
 

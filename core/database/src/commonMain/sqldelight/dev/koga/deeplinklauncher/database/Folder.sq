@@ -13,8 +13,15 @@ GROUP BY f.id;
 selectAllFoldersIds:
 SELECT id FROM folder;
 
-upsertFolder:
-INSERT OR REPLACE INTO folder (id, name, description)
+updateFolder:
+UPDATE folder SET name = :name, description = :description
+WHERE id = :id AND NOT EXISTS (SELECT 1 FROM folder WHERE name = :name AND id <> :id);
+
+selectOtherFolderIdByName:
+SELECT id FROM folder WHERE name = :name AND id <> :id;
+
+insertFolder:
+INSERT INTO folder (id, name, description)
 VALUES (?, ?, ?);
 
 deleteFolderById:

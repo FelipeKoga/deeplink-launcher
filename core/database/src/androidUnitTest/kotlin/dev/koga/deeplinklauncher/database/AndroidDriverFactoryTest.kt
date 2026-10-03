@@ -2,6 +2,7 @@ package dev.koga.deeplinklauncher.database
 
 import android.content.Context
 import android.database.DatabaseUtils
+import android.database.sqlite.SQLiteConstraintException
 import android.database.sqlite.SQLiteDatabase
 import app.cash.sqldelight.db.SqlDriver
 import kotlinx.datetime.LocalDateTime
@@ -76,7 +77,7 @@ class AndroidDriverFactoryTest {
             }
 
             val database = openDatabase()
-            database.deepLinkQueries.upsertDeeplink(
+            database.deepLinkQueries.insertDeeplink(
                 id = "new",
                 link = "myapp://new",
                 name = null,
@@ -95,6 +96,24 @@ class AndroidDriverFactoryTest {
     }
 
     @Test
+    fun updateDeeplinkCountsOnlyTheRowItChanges() {
+        val queries = openDatabase().deepLinkQueries
+        queries.insertLink(id = "a", link = "myapp://a")
+        queries.insertLink(id = "b", link = "myapp://b")
+
+        assertEquals(1L, queries.updateLink(id = "a", link = "myapp://a"))
+        assertEquals(0L, queries.updateLink(id = "missing", link = "myapp://missing"))
+        assertEquals(0L, queries.updateLink(id = "a", link = "myapp://b"))
+        assertThrows(SQLiteConstraintException::class.java) {
+            queries.insertLink(id = "c", link = "myapp://b")
+        }
+        assertEquals(
+            listOf("a" to "myapp://a", "b" to "myapp://b"),
+            queries.selectAllDeeplinks().executeAsList().map { it.id to it.link }.sortedBy { it.first },
+        )
+    }
+
+    @Test
     fun keepsTheFileWhenItsVersionIsNewerThanTheSchema() {
         createVersion1Database()
         withDatabaseFile { it.version = DeepLinkLauncherDatabase.Schema.version.toInt() + 1 }
@@ -107,6 +126,32 @@ class AndroidDriverFactoryTest {
         withDatabaseFile { rows = DatabaseUtils.queryNumEntries(it, "deeplink") }
         assertEquals(1L, rows)
     }
+
+    private fun DeepLinkQueries.insertLink(id: String, link: String) {
+        insertDeeplink(
+            id = id,
+            link = link,
+            name = null,
+            description = null,
+            createdAt = LocalDateTime(2026, 1, 15, 10, 30),
+            lastLaunchedAt = null,
+            isFavorite = 0,
+            folderId = null,
+            targetPackage = null,
+        )
+    }
+
+    private fun DeepLinkQueries.updateLink(id: String, link: String): Long = updateDeeplink(
+        link = link,
+        name = null,
+        description = null,
+        createdAt = LocalDateTime(2026, 1, 15, 10, 30),
+        lastLaunchedAt = null,
+        isFavorite = 0,
+        folderId = null,
+        targetPackage = null,
+        id = id,
+    ).value
 
     private fun openDatabase(): DeepLinkLauncherDatabase {
         val driverFactory = object : DriverFactory {

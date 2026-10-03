@@ -204,21 +204,25 @@ class HomeViewModel(
 
         when (val result = launchDeepLink.launch(link)) {
             is LaunchDeepLink.Result.Success -> {
-                val id = Uuid.random().toString()
-                deepLinkRepository.upsertDeepLink(
-                    DeepLink(
-                        id = id,
-                        link = link,
-                        name = null,
-                        description = null,
-                        folder = null,
-                        isFavorite = false,
-                        lastLaunchedAt = currentLocalDateTime,
-                    ),
+                val newDeepLink = DeepLink(
+                    id = Uuid.random().toString(),
+                    link = link,
+                    name = null,
+                    description = null,
+                    folder = null,
+                    isFavorite = false,
+                    lastLaunchedAt = currentLocalDateTime,
                 )
-                analyticsTracker.track(DeeplinkCreated(source = LaunchSource.INPUT_BAR))
+                val openedId = when (val upsertResult = deepLinkRepository.upsertDeepLink(newDeepLink)) {
+                    DeepLinkRepository.UpsertResult.Saved -> {
+                        analyticsTracker.track(DeeplinkCreated(source = LaunchSource.INPUT_BAR))
+                        newDeepLink.id
+                    }
+
+                    is DeepLinkRepository.UpsertResult.LinkAlreadyExists -> upsertResult.existingId
+                }
                 trackLaunchResult(source = LaunchSource.INPUT_BAR)
-                onBottomBarLaunchSuccess(id)
+                onBottomBarLaunchSuccess(openedId)
             }
 
             is LaunchDeepLink.Result.Failure -> {

@@ -2,9 +2,13 @@ package dev.koga.deeplinklauncher.database
 
 import app.cash.sqldelight.db.QueryResult
 import app.cash.sqldelight.db.SqlDriver
+import app.cash.sqldelight.driver.native.NativeSqliteDriver
 import co.touchlab.sqliter.DatabaseConfiguration
 import co.touchlab.sqliter.DatabaseFileContext
 import co.touchlab.sqliter.createDatabaseManager
+import co.touchlab.sqliter.interop.Logger
+import dev.koga.deeplinklauncher.database.converter.localDateTimeAdapter
+import kotlinx.datetime.LocalDateTime
 import platform.Foundation.NSApplicationSupportDirectory
 import platform.Foundation.NSFileManager
 import platform.Foundation.NSSearchPathForDirectoriesInDomains
@@ -13,6 +17,7 @@ import kotlin.test.AfterTest
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFails
 import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
@@ -52,6 +57,48 @@ class NativeDriverFactoryTest {
         assertNull(deepLink.targetPackage)
         assertEquals(DeepLinkLauncherDatabase.Schema.version, version)
     }
+
+    @Test
+    fun updateDeeplinkCountsOnlyTheRowItChanges() {
+        val queries = openQuietDatabase().deepLinkQueries
+        queries.insertLink(id = "a", link = "myapp://a")
+        queries.insertLink(id = "b", link = "myapp://b")
+
+        assertEquals(1L, queries.updateLink(id = "a", link = "myapp://a"))
+        assertEquals(0L, queries.updateLink(id = "missing", link = "myapp://missing"))
+        assertEquals(0L, queries.updateLink(id = "a", link = "myapp://b"))
+        assertFails { queries.insertLink(id = "c", link = "myapp://b") }
+        assertEquals(
+            listOf("a" to "myapp://a", "b" to "myapp://b"),
+            queries.selectAllDeeplinks().executeAsList().map { it.id to it.link }.sortedBy { it.first },
+        )
+    }
+
+    private fun DeepLinkQueries.insertLink(id: String, link: String) {
+        insertDeeplink(
+            id = id,
+            link = link,
+            name = null,
+            description = null,
+            createdAt = LocalDateTime(2026, 1, 15, 10, 30),
+            lastLaunchedAt = null,
+            isFavorite = 0,
+            folderId = null,
+            targetPackage = null,
+        )
+    }
+
+    private fun DeepLinkQueries.updateLink(id: String, link: String): Long = updateDeeplink(
+        link = link,
+        name = null,
+        description = null,
+        createdAt = LocalDateTime(2026, 1, 15, 10, 30),
+        lastLaunchedAt = null,
+        isFavorite = 0,
+        folderId = null,
+        targetPackage = null,
+        id = id,
+    ).value
 
     private fun createVersion1Database() {
         val manager = createDatabaseManager(
@@ -104,6 +151,29 @@ class NativeDriverFactoryTest {
         mapper = { cursor -> QueryResult.Value(if (cursor.next().value) cursor.getLong(0) else null) },
         parameters = 0,
     ).value ?: 0L
+
+    private fun openQuietDatabase(): DeepLinkLauncherDatabase {
+        val driver = NativeSqliteDriver(
+            schema = DeepLinkLauncherDatabase.Schema,
+            name = DATABASE_NAME,
+            onConfiguration = { it.copy(loggingConfig = DatabaseConfiguration.Logging(logger = SilentLogger)) },
+        ).also { drivers += it }
+        return DeepLinkLauncherDatabase(
+            driver = driver,
+            deeplinkAdapter = Deeplink.Adapter(
+                createdAtAdapter = localDateTimeAdapter,
+                lastLaunchedAtAdapter = localDateTimeAdapter,
+            ),
+        )
+    }
+
+    private object SilentLogger : Logger {
+        override val vActive: Boolean = false
+        override val eActive: Boolean = false
+        override fun trace(message: String) = Unit
+        override fun vWrite(message: String) = Unit
+        override fun eWrite(message: String, exception: Throwable?) = Unit
+    }
 
     private fun openDatabase(): DeepLinkLauncherDatabase {
         val driverFactory = object : DriverFactory {

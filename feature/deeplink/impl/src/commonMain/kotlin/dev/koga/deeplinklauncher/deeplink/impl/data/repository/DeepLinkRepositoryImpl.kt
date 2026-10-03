@@ -7,7 +7,6 @@ import dev.koga.deeplinklauncher.database.GetDeepLinkByLink
 import dev.koga.deeplinklauncher.database.SelectAllDeeplinks
 import dev.koga.deeplinklauncher.deeplink.api.domain.model.DeepLink
 import dev.koga.deeplinklauncher.deeplink.api.domain.repository.DeepLinkRepository
-import dev.koga.deeplinklauncher.deeplink.api.domain.repository.FolderRepository
 import dev.koga.deeplinklauncher.deeplink.impl.data.mapper.toDomain
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
@@ -17,7 +16,6 @@ import kotlinx.datetime.LocalDateTime
 
 internal class DeepLinkRepositoryImpl(
     private val database: DeepLinkLauncherDatabase,
-    private val folderRepository: FolderRepository,
 ) : DeepLinkRepository {
 
     override fun getDeepLinksStream(): Flow<List<DeepLink>> {
@@ -57,25 +55,42 @@ internal class DeepLinkRepositoryImpl(
             ?.let(GetDeepLinkByLink::toDomain)
     }
 
-    override fun upsertDeepLink(deepLink: DeepLink) {
-        database.transaction {
-            deepLink.folder?.let {
-                folderRepository.upsertFolder(it)
+    override fun upsertDeepLink(deepLink: DeepLink): DeepLinkRepository.UpsertResult =
+        database.transactionWithResult {
+            val queries = database.deepLinkQueries
+            val isFavorite = if (deepLink.isFavorite) 1L else 0L
+            val updatedRows = queries.updateDeeplink(
+                link = deepLink.link,
+                name = deepLink.name,
+                description = deepLink.description,
+                createdAt = deepLink.createdAt,
+                lastLaunchedAt = deepLink.lastLaunchedAt,
+                isFavorite = isFavorite,
+                folderId = deepLink.folder?.id,
+                targetPackage = deepLink.targetPackage,
+                id = deepLink.id,
+            ).value
+            if (updatedRows > 0L) return@transactionWithResult DeepLinkRepository.UpsertResult.Saved
+
+            val existingId = queries.selectOtherDeeplinkIdByLink(link = deepLink.link, id = deepLink.id)
+                .executeAsOneOrNull()
+            if (existingId != null) {
+                return@transactionWithResult DeepLinkRepository.UpsertResult.LinkAlreadyExists(existingId)
             }
 
-            database.deepLinkQueries.upsertDeeplink(
+            queries.insertDeeplink(
                 id = deepLink.id,
                 link = deepLink.link,
                 name = deepLink.name,
                 description = deepLink.description,
                 createdAt = deepLink.createdAt,
-                isFavorite = if (deepLink.isFavorite) 1L else 0L,
                 lastLaunchedAt = deepLink.lastLaunchedAt,
+                isFavorite = isFavorite,
                 folderId = deepLink.folder?.id,
                 targetPackage = deepLink.targetPackage,
             )
+            DeepLinkRepository.UpsertResult.Saved
         }
-    }
 
     override fun updateLastLaunchedAt(id: String, lastLaunchedAt: LocalDateTime) {
         database.deepLinkQueries.updateLastLaunchedAt(lastLaunchedAt = lastLaunchedAt, id = id)

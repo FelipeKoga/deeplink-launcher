@@ -9,6 +9,7 @@ import androidx.navigation.toRoute
 import dev.koga.deeplinklauncher.analytics.api.AnalyticsTracker
 import dev.koga.deeplinklauncher.deeplink.api.application.EnrichDeepLinksForList
 import dev.koga.deeplinklauncher.deeplink.api.domain.model.DeepLink
+import dev.koga.deeplinklauncher.deeplink.api.domain.model.Folder
 import dev.koga.deeplinklauncher.deeplink.api.domain.model.LaunchSource
 import dev.koga.deeplinklauncher.deeplink.api.domain.repository.FolderRepository
 import dev.koga.deeplinklauncher.deeplink.api.domain.usecase.LaunchDeepLink
@@ -21,6 +22,8 @@ import dev.koga.deeplinklauncher.deeplink.impl.analytics.track
 import dev.koga.deeplinklauncher.deeplink.impl.ui.folderdetails.state.FolderDetailsAction
 import dev.koga.deeplinklauncher.deeplink.impl.ui.folderdetails.state.FolderDetailsUiState
 import dev.koga.deeplinklauncher.navigation.AppNavigator
+import dev.koga.deeplinklauncher.uievent.SnackBar
+import dev.koga.deeplinklauncher.uievent.SnackBarDispatcher
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -30,8 +33,6 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -43,8 +44,10 @@ internal class FolderDetailsViewModel(
     private val launchDeepLink: LaunchDeepLink,
     private val appNavigator: AppNavigator,
     private val analyticsTracker: AnalyticsTracker,
+    private val snackBarDispatcher: SnackBarDispatcher,
 ) : ViewModel() {
     private val folderId = savedStateHandle.toRoute<DeepLinkRouteEntryPoint.FolderDetails>().id
+    private var loadedFolder: Folder? = null
 
     private val folder = repository.getFolderByIdStream(folderId)
         .stateIn(
@@ -92,24 +95,16 @@ internal class FolderDetailsViewModel(
 
     init {
         viewModelScope.launch {
-            when (val loadedFolder = repository.getFolderByIdStream(folderId).first()) {
+            when (val loaded = repository.getFolderByIdStream(folderId).first()) {
                 null -> appNavigator.popBackStack()
                 else -> {
                     form.update {
                         it.copy(
-                            name = loadedFolder.name,
-                            description = loadedFolder.description.orEmpty(),
+                            name = loaded.name,
+                            description = loaded.description.orEmpty(),
                         )
                     }
-
-                    form.onEach { state ->
-                        repository.upsertFolder(
-                            loadedFolder.copy(
-                                name = state.name,
-                                description = state.description.ifBlank { null },
-                            ),
-                        )
-                    }.launchIn(this)
+                    loadedFolder = loaded
                 }
             }
         }
@@ -132,11 +127,37 @@ internal class FolderDetailsViewModel(
     }
 
     private fun updateName(value: String) {
-        form.update { it.copy(name = value) }
+        save(name = value, description = form.value.description)
     }
 
     private fun updateDescription(value: String) {
-        form.update { it.copy(description = value) }
+        save(name = form.value.name, description = value)
+    }
+
+    private fun save(name: String, description: String) {
+        val id = loadedFolder?.id ?: return
+        val result = repository.upsertFolder(
+            Folder(
+                id = id,
+                name = name,
+                description = description.ifBlank { null },
+            ),
+        )
+
+        when (result) {
+            FolderRepository.UpsertResult.Saved -> {
+                form.update { it.copy(name = name, description = description) }
+            }
+
+            is FolderRepository.UpsertResult.NameAlreadyExists -> {
+                snackBarDispatcher.show(
+                    SnackBar(
+                        message = "A folder with this name already exists",
+                        variant = SnackBar.Variant.ERROR,
+                    ),
+                )
+            }
+        }
     }
 
     private fun launch(deepLink: DeepLink) {

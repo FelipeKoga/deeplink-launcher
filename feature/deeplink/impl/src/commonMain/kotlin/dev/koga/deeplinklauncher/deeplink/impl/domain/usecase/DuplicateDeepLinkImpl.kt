@@ -30,10 +30,6 @@ internal class DuplicateDeepLinkImpl(
             return DuplicateDeepLink.Result.Error.InvalidLink
         }
 
-        if (repository.getDeepLinkByLink(newLink) != null) {
-            return DuplicateDeepLink.Result.Error.LinkAlreadyExists
-        }
-
         val id = Uuid.random().toString()
 
         val duplicatedDeepLink = deepLink.copy(
@@ -48,8 +44,9 @@ internal class DuplicateDeepLinkImpl(
             targetPackage = if (copyAllFields) deepLink.targetPackage else null,
         )
 
-        repository.upsertDeepLink(duplicatedDeepLink)
-
-        return DuplicateDeepLink.Result.Success(duplicatedDeepLink)
+        return when (repository.upsertDeepLink(duplicatedDeepLink)) {
+            DeepLinkRepository.UpsertResult.Saved -> DuplicateDeepLink.Result.Success(duplicatedDeepLink)
+            is DeepLinkRepository.UpsertResult.LinkAlreadyExists -> DuplicateDeepLink.Result.Error.LinkAlreadyExists
+        }
     }
 }

@@ -21,3 +21,21 @@ internal fun AddFolderBottomSheetContentPreview() {
         )
     }
 }
+
+@PreviewLightDark
+@Composable
+internal fun AddFolderBottomSheetContentErrorPreview() {
+    DLLPreviewTheme {
+        AddFolderBottomSheetContent(
+            uiState = AddFolderUiState(
+                name = "Work",
+                description = "Folder Description",
+                isSubmitEnabled = true,
+                errorMessage = "A folder with this name already exists",
+            ),
+            onNameChanged = {},
+            onDescriptionChanged = {},
+            onSubmit = {},
+        )
+    }
+}

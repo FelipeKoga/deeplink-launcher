@@ -10,8 +10,13 @@ public interface DeepLinkRepository {
     public fun getDeepLinkByIdStream(id: String): Flow<DeepLink?>
     public fun getDeepLinkById(id: String): DeepLink?
     public fun getDeepLinkByLink(link: String): DeepLink?
-    public fun upsertDeepLink(deepLink: DeepLink)
+    public fun upsertDeepLink(deepLink: DeepLink): UpsertResult
     public fun updateLastLaunchedAt(id: String, lastLaunchedAt: LocalDateTime)
     public fun deleteDeepLink(id: String)
     public fun deleteAll()
+
+    public sealed interface UpsertResult {
+        public data object Saved : UpsertResult
+        public data class LinkAlreadyExists(val existingId: String) : UpsertResult
+    }
 }

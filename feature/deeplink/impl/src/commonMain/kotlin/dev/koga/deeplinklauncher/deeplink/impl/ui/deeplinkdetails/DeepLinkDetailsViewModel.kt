@@ -208,7 +208,11 @@ internal class DeepLinkDetailsViewModel(
     private fun onLaunchAction(action: LaunchAction) {
         when (action) {
             LaunchAction.Duplicate -> mode.update { Mode.DUPLICATE }
-            LaunchAction.Edit -> mode.update { Mode.EDIT }
+            LaunchAction.Edit -> {
+                deepLinkErrorMessage.update { null }
+                mode.update { Mode.EDIT }
+            }
+
             LaunchAction.Launch -> launch()
             LaunchAction.Share -> share()
             LaunchAction.PinToHomeScreen -> pinToHomeScreen()
@@ -252,13 +256,19 @@ internal class DeepLinkDetailsViewModel(
     }
 
     private fun updateLink(link: String) {
-        deepLinkErrorMessage.update { null }
-
         coroutineDebouncer.debounce(viewModelScope, "link") {
-            saveDeepLink(deepLink.value.copy(link = link))
+            val result = saveDeepLink(deepLink.value.copy(link = link))
+            val error = when {
+                result is DeepLinkRepository.UpsertResult.LinkAlreadyExists -> "Link already exists"
+                !validateDeepLink.isValid(link) -> "Invalid deeplink"
+                else -> null
+            }
 
-            if (!validateDeepLink.isValid(link)) {
-                deepLinkErrorMessage.update { "Invalid deeplink" }
+            when {
+                mode.value == Mode.EDIT -> deepLinkErrorMessage.update { error }
+                result is DeepLinkRepository.UpsertResult.LinkAlreadyExists -> {
+                    messageDispatcher.trySend("Link already exists")
+                }
             }
         }
     }
@@ -281,9 +291,12 @@ internal class DeepLinkDetailsViewModel(
         }
     }
 
-    private suspend fun saveDeepLink(updated: DeepLink) {
-        deepLinkRepository.upsertDeepLink(updated)
-        if (validateDeepLink.isValid(updated.link)) shortcutManager.update(updated)
+    private suspend fun saveDeepLink(updated: DeepLink): DeepLinkRepository.UpsertResult {
+        val result = deepLinkRepository.upsertDeepLink(updated)
+        if (result == DeepLinkRepository.UpsertResult.Saved && validateDeepLink.isValid(updated.link)) {
+            shortcutManager.update(updated)
+        }
+        return result
     }
 
     private fun toggleFavorite() {

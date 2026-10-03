@@ -59,13 +59,29 @@ internal class FolderRepositoryImpl(
             ?.toDomain()
     }
 
-    override fun upsertFolder(folder: Folder) {
-        database.folderQueries.upsertFolder(
-            id = folder.id,
-            name = folder.name,
-            description = folder.description,
-        )
-    }
+    override fun upsertFolder(folder: Folder): FolderRepository.UpsertResult =
+        database.transactionWithResult {
+            val queries = database.folderQueries
+            val updatedRows = queries.updateFolder(
+                name = folder.name,
+                description = folder.description,
+                id = folder.id,
+            ).value
+            if (updatedRows > 0L) return@transactionWithResult FolderRepository.UpsertResult.Saved
+
+            val existingId = queries.selectOtherFolderIdByName(name = folder.name, id = folder.id)
+                .executeAsOneOrNull()
+            if (existingId != null) {
+                return@transactionWithResult FolderRepository.UpsertResult.NameAlreadyExists(existingId)
+            }
+
+            queries.insertFolder(
+                id = folder.id,
+                name = folder.name,
+                description = folder.description,
+            )
+            FolderRepository.UpsertResult.Saved
+        }
 
     override fun deleteFolder(id: String) {
         database.transaction {
