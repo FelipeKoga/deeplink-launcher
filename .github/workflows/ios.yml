@@ -46,10 +46,12 @@ jobs:
           key: ${{ runner.os }}-konan-${{ hashFiles('gradle/libs.versions.toml') }}
           restore-keys: ${{ runner.os }}-konan-
 
-      - name: Set up JDK 17
+      - name: Set up JDK 17 and 21
         uses: actions/setup-java@v5
         with:
-          java-version: '17'
+          java-version: |
+            17
+            21
           distribution: 'zulu'
           cache: gradle
 

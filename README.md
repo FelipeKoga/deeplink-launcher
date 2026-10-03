@@ -132,7 +132,7 @@ Resized with `sips -Z 1100`.
 
 ## Building
 
-You need JDK 17 and an Android Studio version that supports AGP 8.13. Xcode is only needed for the iOS app.
+You need JDK 17 and an Android Studio version that supports AGP 8.13. Gradle itself runs on JDK 21 and downloads it when it is missing. Xcode is only needed for the iOS app.
 
 Create the local config files first:
 
