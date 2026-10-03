@@ -10,7 +10,6 @@ import dev.koga.deeplinklauncher.deeplink.impl.ui.folderdetails.FolderDetailsScr
 import dev.koga.deeplinklauncher.deeplink.impl.ui.linkdeeplinkforfolder.LinkDeepLinkForFolderScreen
 import dev.koga.deeplinklauncher.navigation.AppNavigator
 import dev.koga.deeplinklauncher.navigation.NavigationGraph
-import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
 
 internal class DeepLinkNavigationGraph(
@@ -26,14 +25,14 @@ internal class DeepLinkNavigationGraph(
         composable<DeepLinkRouteEntryPoint.FolderDetails> {
             FolderDetailsScreen(
                 viewModel = koinViewModel(),
-                appNavigator = koinInject(),
+                appNavigator = appNavigator,
             )
         }
 
         composable<DeepLinkRouteEntryPoint.PickDeepLinkForFolder> {
             LinkDeepLinkForFolderScreen(
                 viewModel = koinViewModel(),
-                appNavigator = koinInject(),
+                appNavigator = appNavigator,
             )
         }
 

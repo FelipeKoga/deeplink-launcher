@@ -10,12 +10,12 @@ import dev.koga.deeplinklauncher.navigation.AppNavigator
 import dev.koga.deeplinklauncher.navigation.NavigationGraph
 import dev.koga.deeplinklauncher.preferences.repository.PreferencesDataSource
 import kotlinx.coroutines.launch
-import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
 
 class HomeNavigationGraph(
     private val appNavigator: AppNavigator,
     private val appCoroutineScope: AppCoroutineScope,
+    private val preferencesDataSource: PreferencesDataSource,
 ) : NavigationGraph {
     override fun register(navGraphBuilder: NavGraphBuilder) = with(navGraphBuilder) {
         composable<HomeRoute.Home> {
@@ -23,7 +23,6 @@ class HomeNavigationGraph(
         }
 
         dialog<HomeRoute.Onboarding> {
-            val preferencesDataSource = koinInject<PreferencesDataSource>()
             OnboardingBottomSheet(onDismiss = {
                 appCoroutineScope.launch {
                     preferencesDataSource.setShouldHideOnboarding(true)
