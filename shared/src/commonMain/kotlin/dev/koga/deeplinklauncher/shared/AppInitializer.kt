@@ -18,46 +18,45 @@ import dev.koga.deeplinklauncher.purchase.impl.di.purchaseModule
 import dev.koga.deeplinklauncher.settings.impl.di.settingsModule
 import dev.koga.deeplinklauncher.shared.analytics.AppOpen
 import dev.koga.deeplinklauncher.shared.analytics.track
+import dev.koga.deeplinklauncher.shared.di.AppGraph
+import dev.koga.deeplinklauncher.shared.di.koinBridgeModule
 import dev.koga.deeplinklauncher.uievent.di.uiEventModule
 import org.koin.core.context.startKoin
 import org.koin.core.module.Module
 import org.koin.dsl.module
 
-object AppInitializer {
+expect object AppInitializer
 
-    fun init() {
-        init(appModule = module { })
-    }
+internal fun AppInitializer.start(graph: AppGraph, appModule: Module = module { }) {
+    val koin = startKoin {
+        modules(
+            appModule,
+            graph.koinBridgeModule(),
+            analyticsModule,
+            deepLinkModule,
+            preferencesModule,
+            purchaseModule,
+            dataTransferModule,
+            homeModule,
+            navigationModule,
+            settingsModule,
+            fileModule,
+            databaseModule,
+            platformModule,
+            coroutinesModule,
+            uiEventModule,
+        )
+    }.koin
 
-    fun init(appModule: Module) {
-        val koin = startKoin {
-            modules(
-                appModule,
-                analyticsModule,
-                deepLinkModule,
-                preferencesModule,
-                purchaseModule,
-                dataTransferModule,
-                homeModule,
-                navigationModule,
-                settingsModule,
-                fileModule,
-                databaseModule,
-                platformModule,
-                coroutinesModule,
-                uiEventModule,
-            )
-        }.koin
+    val purchaseApi = koin.get<PurchaseApi>()
+    purchaseApi.init()
 
-        val purchaseApi = koin.get<PurchaseApi>()
-        purchaseApi.init()
+    val analyticsTracker = koin.get<AnalyticsTracker>()
+    analyticsTracker.track(AppOpen)
 
-        val analyticsTracker = koin.get<AnalyticsTracker>()
-        analyticsTracker.track(AppOpen)
-
-        ComposeStabilityAnalyzer.setLogger(object : RecompositionLogger {
-            override fun log(event: RecompositionEvent) {
-                println("################ RECOMPOSITION: $${event.tag} - ${event.composableName} - ${event.recompositionCount} - ${event.unstableParameters}")
+    ComposeStabilityAnalyzer.setLogger(object : RecompositionLogger {
+        override fun log(event: RecompositionEvent) {
+            println("################ RECOMPOSITION: $${event.tag} - ${event.composableName} - ${event.recompositionCount} - ${event.unstableParameters}")
 
 //                if (event.recompositionCount >= 10) {
 //                    // Example: Send to Firebase Analytics
@@ -68,7 +67,6 @@ object AppInitializer {
 //                        param("unstable_params", event.unstableParameters.joinToString())
 //                    }
 //                }
-            }
-        })
-    }
+        }
+    })
 }
