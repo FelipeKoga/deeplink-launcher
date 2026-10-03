@@ -79,7 +79,6 @@ dependencies {
 
     implementation(libs.splashscreen)
     implementation(libs.androidx.activity.compose)
-    implementation(libs.koin.core)
     implementation(libs.billing)
     implementation(libs.revenuecat.core)
     implementation(platform(libs.firebase.bom))

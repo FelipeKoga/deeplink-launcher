@@ -113,7 +113,7 @@ Resized with `sips -Z 1100`.
 - Kotlin Multiplatform
 - Compose Multiplatform, Material 3
 - Navigation Compose
-- Koin
+- Metro (dependency injection)
 - SQLDelight
 - DataStore
 - kotlinx.coroutines, kotlinx.serialization, kotlinx-datetime, kotlinx-collections-immutable

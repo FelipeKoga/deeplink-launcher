@@ -3,6 +3,7 @@
 plugins {
     alias(libs.plugins.deeplinkLauncher.screenshotTesting)
     alias(libs.plugins.kotlinSerialization)
+    alias(libs.plugins.deeplinkLauncher.metro)
 }
 
 kotlin {
@@ -26,8 +27,7 @@ kotlin {
             implementation(libs.compose.navigation)
 
             implementation(libs.kotlinx.coroutines.core)
-            implementation(libs.koin.compose)
-            implementation(libs.koin.viewmodel)
+            implementation(libs.metrox.viewmodel.compose)
             implementation(libs.kotlinx.immutable)
             implementation(libs.kotlinx.serialization.json)
             implementation(libs.material3.windowSizeClass)

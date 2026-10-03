@@ -4,11 +4,16 @@ import dev.koga.deeplinklauncher.deeplink.api.domain.manager.DeepLinkShortcutMan
 import dev.koga.deeplinklauncher.deeplink.api.domain.model.DeepLink
 import dev.koga.deeplinklauncher.deeplink.api.domain.repository.DeepLinkRepository
 import dev.koga.deeplinklauncher.deeplink.api.domain.usecase.DeleteAllDeepLinks
+import dev.zacsweers.metro.AppScope
+import dev.zacsweers.metro.ContributesBinding
+import dev.zacsweers.metro.SingleIn
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.withContext
 
+@SingleIn(AppScope::class)
+@ContributesBinding(AppScope::class)
 internal class DeleteAllDeepLinksImpl(
     private val repository: DeepLinkRepository,
     private val shortcutManager: DeepLinkShortcutManager,

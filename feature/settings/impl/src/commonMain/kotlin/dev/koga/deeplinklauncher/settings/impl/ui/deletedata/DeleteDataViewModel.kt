@@ -7,6 +7,9 @@ import dev.koga.deeplinklauncher.deeplink.api.domain.repository.FolderRepository
 import dev.koga.deeplinklauncher.deeplink.api.domain.usecase.DeleteAllDeepLinks
 import dev.koga.deeplinklauncher.settings.impl.analytics.DataDeleted
 import dev.koga.deeplinklauncher.settings.impl.analytics.track
+import dev.zacsweers.metro.AppScope
+import dev.zacsweers.metro.ContributesIntoMap
+import dev.zacsweers.metrox.viewmodel.ViewModelKey
 import kotlinx.coroutines.launch
 
 enum class DeletionType {
@@ -15,6 +18,8 @@ enum class DeletionType {
     FOLDERS,
 }
 
+@ViewModelKey
+@ContributesIntoMap(AppScope::class)
 class DeleteDataViewModel(
     private val deleteAllDeepLinks: DeleteAllDeepLinks,
     private val folderRepository: FolderRepository,

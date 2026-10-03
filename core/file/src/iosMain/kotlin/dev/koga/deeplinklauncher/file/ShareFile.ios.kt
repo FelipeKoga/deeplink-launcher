@@ -1,11 +1,16 @@
 package dev.koga.deeplinklauncher.file
 
 import dev.koga.deeplinklauncher.file.model.FileType
+import dev.zacsweers.metro.AppScope
+import dev.zacsweers.metro.Inject
+import dev.zacsweers.metro.SingleIn
 import kotlinx.cinterop.ExperimentalForeignApi
 import platform.Foundation.NSURL
 import platform.UIKit.UIApplication
 import platform.UIKit.UIDocumentInteractionController
 
+@SingleIn(AppScope::class)
+@Inject
 actual class ShareFile {
     @OptIn(ExperimentalForeignApi::class)
     actual operator fun invoke(filePath: String, fileType: FileType) {

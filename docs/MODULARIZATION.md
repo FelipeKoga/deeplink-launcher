@@ -7,7 +7,7 @@ This document defines how the DeepLink Launcher codebase is organized at the Gra
 | Type | Gradle path pattern | Responsibility |
 |------|---------------------|----------------|
 | App shell | `:androidApp`, `:desktopApp` | Platform entry points |
-| Composition root | `:shared` | Koin wiring, `AppNavGraph`, `App.kt` |
+| Composition root | `:shared` | Metro dependency graphs, `AppInitializer`, `App.kt` |
 | Feature API | `:feature:<name>:api` | Minimum public contracts |
 | Feature impl | `:feature:<name>:impl` | Full feature implementation |
 | Feature UI (optional) | `:feature:<name>:ui-component` | Reusable Compose widgets shared across features |
@@ -40,7 +40,7 @@ Use `explicitApi()` and mark public API with `public`.
 - `domain/` — use case implementations, internal managers
 - `ui/` — screens, ViewModels, components, navigation graphs
 - `platform/` — platform-specific helpers (e.g. Android utilities)
-- `di/` — Koin modules
+- `di/` — Metro binding containers, for bindings that need a `@Provides` function
 
 ### ui-component (when needed)
 
@@ -115,8 +115,10 @@ dev.koga.deeplinklauncher.<feature>.impl
 
 1. Each feature api exposes serializable route types under `ui.navigation`.
 2. Each feature impl provides a `*NavigationGraph` implementing `NavigationGraph` from `core:navigation`.
-3. Each feature impl registers Koin bindings in `di/Module.kt`.
-4. `:shared` collects all `NavigationGraph` instances into `AppNavGraph` and loads all Koin modules.
+3. Each feature impl contributes its bindings to `AppScope` with Metro: `@ContributesBinding` on implementations, `@ContributesIntoSet` on its `NavigationGraph`, `@ContributesIntoMap` on ViewModels.
+4. `:shared` declares one `@DependencyGraph(AppScope::class)` per platform. Metro merges every contribution on its classpath, and `AppNavGraph` receives all `NavigationGraph`s as a `Set`.
+
+See `.claude/skills/metro-di/SKILL.md` for the patterns and pitfalls.
 
 ## Visibility conventions
 
@@ -124,14 +126,14 @@ dev.koga.deeplinklauncher.<feature>.impl
 |------|------------|
 | api contracts | `public` |
 | Screens, ViewModels, mappers | `internal` |
-| NavigationGraph, Koin module | `public` (consumed by `:shared`) |
+| NavigationGraph, contributed implementations | `internal` (Metro generates contribution providers) |
 
 ## Adding a new feature
 
 1. Create `:feature:<name>:api` with `explicitApi()` and only contracts.
 2. Create `:feature:<name>:impl` with data/domain/ui/di packages.
 3. Register the module in `settings.gradle.kts`.
-4. Add Koin module and `NavigationGraph` to `:shared`.
+4. Annotate the bindings and `NavigationGraph` for Metro, and add the impl module to `:shared`'s dependencies.
 5. Depend on other features through their `api` modules only.
 
 ## Current features

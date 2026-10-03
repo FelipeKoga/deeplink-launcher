@@ -4,6 +4,7 @@ import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
 plugins {
     alias(libs.plugins.deeplinkLauncher.composeMultiplatform)
     alias(libs.plugins.stability.analyzer)
+    alias(libs.plugins.deeplinkLauncher.metro)
 }
 
 kotlin {
@@ -42,13 +43,13 @@ kotlin {
             implementation(projects.core.uiEvent)
             implementation(projects.core.preferences)
 
-            implementation(libs.koin.core)
             implementation(libs.kotlinx.coroutines.core)
-            implementation(libs.koin.compose)
+            implementation(libs.metrox.viewmodel.compose)
             implementation(libs.compose.navigation)
         }
 
         jvmMain.dependencies {
+            implementation(projects.library.deviceBridge.api)
             implementation(projects.library.deviceBridge.impl)
         }
     }

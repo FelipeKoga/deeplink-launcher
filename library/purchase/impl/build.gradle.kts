@@ -6,6 +6,7 @@ plugins {
     alias(libs.plugins.deeplinkLauncher.multiplatform)
     alias(libs.plugins.kotlinSerialization)
     id("com.codingfeline.buildkonfig")
+    alias(libs.plugins.deeplinkLauncher.metro)
 }
 
 val envProperties = rootProject.envProperties()
@@ -24,7 +25,6 @@ kotlin {
 
             implementation(libs.kotlinx.immutable)
             implementation(libs.kotlinx.coroutines.core)
-            implementation(libs.koin.core)
         }
 
         androidMain.dependencies {

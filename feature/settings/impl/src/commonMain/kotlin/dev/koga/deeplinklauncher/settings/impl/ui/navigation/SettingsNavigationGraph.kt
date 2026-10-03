@@ -12,14 +12,17 @@ import dev.koga.deeplinklauncher.settings.impl.ui.deletedata.DeleteDataBottomShe
 import dev.koga.deeplinklauncher.settings.impl.ui.opensource.OpenSourceLicensesScreen
 import dev.koga.deeplinklauncher.settings.impl.ui.products.ProductsBottomSheet
 import dev.koga.deeplinklauncher.settings.impl.ui.suggestions.SuggestionsOptionBottomSheet
-import org.koin.compose.viewmodel.koinViewModel
+import dev.zacsweers.metro.AppScope
+import dev.zacsweers.metro.ContributesIntoSet
+import dev.zacsweers.metrox.viewmodel.metroViewModel
 
+@ContributesIntoSet(AppScope::class)
 internal class SettingsNavigationGraph(
     private val appNavigator: AppNavigator,
 ) : NavigationGraph {
     override fun register(navGraphBuilder: NavGraphBuilder) = with(navGraphBuilder) {
         composable<SettingsRouteEntryPoint> {
-            SettingsScreen(viewmodel = koinViewModel())
+            SettingsScreen(viewmodel = metroViewModel())
         }
 
         composable<SettingsRoute.OpenSourceLicenses> {
@@ -30,28 +33,28 @@ internal class SettingsNavigationGraph(
 
         dialog<SettingsRoute.AppThemeBottomSheet> {
             AppThemeBottomSheet(
-                viewModel = koinViewModel(),
+                viewModel = metroViewModel(),
                 onDismissRequest = appNavigator::popBackStack,
             )
         }
 
         dialog<SettingsRoute.SuggestionsOptionBottomSheet> {
             SuggestionsOptionBottomSheet(
-                viewModel = koinViewModel(),
+                viewModel = metroViewModel(),
                 onDismissRequest = appNavigator::popBackStack,
             )
         }
 
         dialog<SettingsRoute.DeleteDataBottomSheet> {
             DeleteDataBottomSheet(
-                viewModel = koinViewModel(),
+                viewModel = metroViewModel(),
                 onDismissRequest = appNavigator::popBackStack,
             )
         }
 
         dialog<SettingsRoute.ProductsBottomSheet> {
             ProductsBottomSheet(
-                viewModel = koinViewModel(),
+                viewModel = metroViewModel(),
                 onDismissRequest = appNavigator::popBackStack,
             )
         }

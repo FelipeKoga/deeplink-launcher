@@ -3,6 +3,7 @@
 plugins {
     alias(libs.plugins.deeplinkLauncher.screenshotTesting)
     alias(libs.plugins.stability.analyzer)
+    alias(libs.plugins.deeplinkLauncher.metro)
 }
 
 kotlin {
@@ -24,8 +25,7 @@ kotlin {
 
             implementation(projects.library.analytics.api)
 
-            implementation(libs.koin.core)
-            implementation(libs.koin.viewmodel)
+            implementation(libs.metrox.viewmodel.compose)
             implementation(libs.sqldelight.coroutines.extensions)
             implementation(libs.kotlinx.coroutines.core)
             implementation(libs.kotlinx.immutable)

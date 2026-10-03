@@ -1,5 +1,6 @@
 plugins {
     alias(libs.plugins.deeplinkLauncher.multiplatform)
+    alias(libs.plugins.deeplinkLauncher.metro)
 }
 
 kotlin {
@@ -14,7 +15,6 @@ kotlin {
         commonMain.dependencies {
             implementation(projects.library.analytics.api)
 
-            implementation(libs.koin.core)
         }
 
         androidMain.dependencies {

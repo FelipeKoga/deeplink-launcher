@@ -7,11 +7,16 @@ import dev.koga.deeplinklauncher.deeplink.api.domain.repository.DeepLinkReposito
 import dev.koga.deeplinklauncher.deeplink.api.domain.usecase.GetAutoSuggestionLinks
 import dev.koga.deeplinklauncher.deeplink.api.domain.usecase.GetDeepLinkMetadata
 import dev.koga.deeplinklauncher.preferences.repository.PreferencesDataSource
+import dev.zacsweers.metro.AppScope
+import dev.zacsweers.metro.ContributesBinding
+import dev.zacsweers.metro.SingleIn
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.withContext
 import kotlin.concurrent.Volatile
 
+@SingleIn(AppScope::class)
+@ContributesBinding(AppScope::class)
 internal class GetAutoSuggestionLinksImpl(
     private val repository: DeepLinkRepository,
     private val getDeepLinkMetadata: GetDeepLinkMetadata,

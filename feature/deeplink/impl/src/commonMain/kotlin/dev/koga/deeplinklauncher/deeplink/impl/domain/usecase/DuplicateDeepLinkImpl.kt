@@ -6,10 +6,15 @@ import dev.koga.deeplinklauncher.date.currentLocalDateTime
 import dev.koga.deeplinklauncher.deeplink.api.domain.repository.DeepLinkRepository
 import dev.koga.deeplinklauncher.deeplink.api.domain.usecase.DuplicateDeepLink
 import dev.koga.deeplinklauncher.deeplink.api.domain.usecase.ValidateDeepLink
+import dev.zacsweers.metro.AppScope
+import dev.zacsweers.metro.ContributesBinding
+import dev.zacsweers.metro.SingleIn
 import kotlinx.coroutines.flow.first
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 
+@SingleIn(AppScope::class)
+@ContributesBinding(AppScope::class)
 internal class DuplicateDeepLinkImpl(
     private val repository: DeepLinkRepository,
     private val validateDeepLink: ValidateDeepLink,
