@@ -6,19 +6,21 @@ import androidx.compose.ui.window.rememberWindowState
 import dev.koga.deeplinklauncher.shared.App
 import dev.koga.deeplinklauncher.shared.AppInitializer
 
-fun main() = application {
+fun main() {
     AppInitializer.init()
 
-    val windowState = rememberWindowState(
-        placement = WindowPlacement.Floating,
-    )
+    application {
+        val windowState = rememberWindowState(
+            placement = WindowPlacement.Floating,
+        )
 
-    Window(
-        onCloseRequest = ::exitApplication,
-        state = windowState,
-        title = "DeepLink Launcher",
-        icon = painterResource("ic_launcher_round.webp"),
-    ) {
-        App()
+        Window(
+            onCloseRequest = ::exitApplication,
+            state = windowState,
+            title = "DeepLink Launcher",
+            icon = painterResource("ic_launcher_round.webp"),
+        ) {
+            App()
+        }
     }
 }
