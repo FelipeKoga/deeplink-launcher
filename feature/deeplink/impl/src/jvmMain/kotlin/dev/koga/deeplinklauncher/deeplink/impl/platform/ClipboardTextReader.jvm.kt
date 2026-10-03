@@ -10,10 +10,9 @@ import java.awt.datatransfer.DataFlavor
 @SingleIn(AppScope::class)
 @Inject
 internal actual class ClipboardTextReader {
-    private val clipboard: Clipboard = Toolkit.getDefaultToolkit().systemClipboard
-
     actual fun read(): String? {
         try {
+            val clipboard: Clipboard = Toolkit.getDefaultToolkit().systemClipboard
             if (!clipboard.isDataFlavorAvailable(DataFlavor.stringFlavor)) {
                 return null
             }
