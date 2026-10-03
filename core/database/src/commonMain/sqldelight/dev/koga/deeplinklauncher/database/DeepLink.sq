@@ -22,8 +22,18 @@ ORDER BY d.lastLaunchedAt DESC, d.createdAt DESC, d.name ASC;
 deleteDeeplinkById:
 DELETE FROM deeplink WHERE id = ?;
 
-upsertDeeplink:
-INSERT OR REPLACE INTO deeplink (id, link, name, description, createdAt, lastLaunchedAt, isFavorite, folderId, targetPackage)
+updateDeeplink:
+UPDATE deeplink
+SET link = :link, name = :name, description = :description, createdAt = :createdAt,
+    lastLaunchedAt = :lastLaunchedAt, isFavorite = :isFavorite, folderId = :folderId,
+    targetPackage = :targetPackage
+WHERE id = :id AND NOT EXISTS (SELECT 1 FROM deeplink WHERE link = :link AND id <> :id);
+
+selectOtherDeeplinkIdByLink:
+SELECT id FROM deeplink WHERE link = :link AND id <> :id;
+
+insertDeeplink:
+INSERT INTO deeplink (id, link, name, description, createdAt, lastLaunchedAt, isFavorite, folderId, targetPackage)
 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);
 
 updateLastLaunchedAt:

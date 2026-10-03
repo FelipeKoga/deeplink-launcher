@@ -186,8 +186,9 @@ internal class LinkDeepLinkForFolderViewModel(
 
         when (launchDeepLink.launch(link)) {
             is LaunchDeepLink.Result.Success -> {
-                insertDeepLinkWithFolder(link)
-                analyticsTracker.track(DeeplinkCreated(source = LaunchSource.LINK_FLOW))
+                if (insertDeepLinkWithFolder(link) == DeepLinkRepository.UpsertResult.Saved) {
+                    analyticsTracker.track(DeeplinkCreated(source = LaunchSource.LINK_FLOW))
+                }
                 appNavigator.popBackStack()
             }
 
@@ -201,10 +202,10 @@ internal class LinkDeepLinkForFolderViewModel(
         }
     }
 
-    private fun insertDeepLinkWithFolder(link: String) {
-        val currentFolder = folder.value ?: return
+    private fun insertDeepLinkWithFolder(link: String): DeepLinkRepository.UpsertResult? {
+        val currentFolder = folder.value ?: return null
 
-        deepLinkRepository.upsertDeepLink(
+        return deepLinkRepository.upsertDeepLink(
             DeepLink(
                 id = Uuid.random().toString(),
                 link = link,

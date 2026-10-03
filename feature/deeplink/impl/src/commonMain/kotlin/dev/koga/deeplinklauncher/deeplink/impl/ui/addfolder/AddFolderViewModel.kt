@@ -10,9 +10,11 @@ import dev.koga.deeplinklauncher.deeplink.impl.analytics.FolderCreated
 import dev.koga.deeplinklauncher.deeplink.impl.analytics.track
 import dev.koga.deeplinklauncher.deeplink.impl.ui.addfolder.state.AddFolderUiState
 import dev.koga.deeplinklauncher.navigation.AppNavigator
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.update
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 
@@ -25,15 +27,18 @@ internal class AddFolderViewModel(
 ) : ViewModel() {
     private val name = savedStateHandle.getStateFlow("name", "")
     private val description = savedStateHandle.getStateFlow("description", "")
+    private val errorMessage = MutableStateFlow<String?>(null)
 
     val uiState = combine(
         name,
         description,
-    ) { name, description ->
+        errorMessage,
+    ) { name, description, errorMessage ->
         AddFolderUiState(
             name = name,
             description = description,
             isSubmitEnabled = name.isNotBlank(),
+            errorMessage = errorMessage,
         )
     }.stateIn(
         scope = viewModelScope,
@@ -47,6 +52,7 @@ internal class AddFolderViewModel(
 
     fun onNameChanged(text: String) {
         savedStateHandle["name"] = text
+        errorMessage.update { null }
     }
 
     fun onDescriptionChanged(text: String) {
@@ -60,8 +66,15 @@ internal class AddFolderViewModel(
             description = description.value,
         )
 
-        repository.upsertFolder(folder)
-        analyticsTracker.track(FolderCreated)
-        appNavigator.popBackStack()
+        when (repository.upsertFolder(folder)) {
+            FolderRepository.UpsertResult.Saved -> {
+                analyticsTracker.track(FolderCreated)
+                appNavigator.popBackStack()
+            }
+
+            is FolderRepository.UpsertResult.NameAlreadyExists -> {
+                errorMessage.update { "A folder with this name already exists" }
+            }
+        }
     }
 }

@@ -55,7 +55,7 @@ class JvmDriverFactoryTest {
     @Test
     fun reopensDatabaseWithoutLosingData() {
         val firstDriver = createJvmDriver(databaseFile)
-        firstDriver.database().deepLinkQueries.upsertDeeplink(
+        firstDriver.database().deepLinkQueries.insertDeeplink(
             id = "id",
             link = "myapp://home",
             name = null,
@@ -89,8 +89,8 @@ class JvmDriverFactoryTest {
 
             val driver = createJvmDriver(file)
             val database = driver.database()
-            database.folderQueries.upsertFolder(id = "folder", name = "Folder", description = null)
-            database.deepLinkQueries.upsertDeeplink(
+            database.folderQueries.insertFolder(id = "folder", name = "Folder", description = null)
+            database.deepLinkQueries.insertDeeplink(
                 id = "id",
                 link = "myapp://home",
                 name = null,

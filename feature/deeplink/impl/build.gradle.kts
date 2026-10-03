@@ -44,6 +44,10 @@ kotlin {
         jvmMain.dependencies {
             implementation(projects.library.deviceBridge.api)
         }
+
+        jvmTest.dependencies {
+            implementation(libs.sqldelight.jvm)
+        }
     }
 }
 

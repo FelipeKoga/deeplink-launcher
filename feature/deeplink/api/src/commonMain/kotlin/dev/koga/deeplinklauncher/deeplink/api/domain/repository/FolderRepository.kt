@@ -10,7 +10,12 @@ public interface FolderRepository {
     public fun getFolderDeepLinksStream(id: String): Flow<List<DeepLink>>
     public fun getFolderByIdStream(id: String): Flow<Folder?>
     public fun getFolderById(id: String): Folder?
-    public fun upsertFolder(folder: Folder)
+    public fun upsertFolder(folder: Folder): UpsertResult
     public fun deleteFolder(id: String)
     public fun deleteAll()
+
+    public sealed interface UpsertResult {
+        public data object Saved : UpsertResult
+        public data class NameAlreadyExists(val existingId: String) : UpsertResult
+    }
 }

@@ -6,6 +6,7 @@ import dev.koga.deeplinklauncher.datatransfer.impl.data.dto.toModel
 import dev.koga.deeplinklauncher.date.currentLocalDateTime
 import dev.koga.deeplinklauncher.deeplink.api.domain.manager.DeepLinkShortcutManager
 import dev.koga.deeplinklauncher.deeplink.api.domain.model.DeepLink
+import dev.koga.deeplinklauncher.deeplink.api.domain.model.Folder
 import dev.koga.deeplinklauncher.deeplink.api.domain.repository.DeepLinkRepository
 import dev.koga.deeplinklauncher.deeplink.api.domain.repository.FolderRepository
 import dev.koga.deeplinklauncher.deeplink.api.domain.usecase.ValidateDeepLink
@@ -53,52 +54,20 @@ internal class ImportDeepLinksImpl(
                         )
                     }
 
-                    val folders = importExportDto.folders
-                        ?.map(Payload.Folder::toModel)
-                        ?: emptyList()
+                    val folders = importFolders(
+                        importExportDto.folders.orEmpty().map(Payload.Folder::toModel),
+                    )
 
-                    folders.forEach {
-                        folderRepository.upsertFolder(it)
-                    }
+                    val createdIds = deepLinksFromDto
+                        .associateBy { it.link }
+                        .values
+                        .mapNotNull { importDeepLink(it, it.folderId?.let(folders::get)) }
 
-                    val databaseDeepLinks = deepLinksFromDto.mapNotNull {
-                        deepLinkRepository.getDeepLinkByLink(it.link)
-                    }
-
-                    val newDeepLinks = deepLinksFromDto.filter {
-                        databaseDeepLinks.none { databaseDeepLink -> databaseDeepLink.link == it.link }
-                    }.map {
-                        it.toModel(folders.find { folder -> folder.id == it.folderId })
-                    }
-
-                    val updatedDeepLinks = deepLinksFromDto.mapNotNull { newDeepLinkDto ->
-                        val databaseDeepLink = databaseDeepLinks.find { databaseDeepLink ->
-                            databaseDeepLink.link == newDeepLinkDto.link
-                        } ?: return@mapNotNull null
-
-                        databaseDeepLink.copy(
-                            id = databaseDeepLink.id,
-                            name = newDeepLinkDto.name ?: databaseDeepLink.name,
-                            description = newDeepLinkDto.description
-                                ?: databaseDeepLink.description,
-                            isFavorite = newDeepLinkDto.isFavorite ?: databaseDeepLink.isFavorite,
-                            createdAt = newDeepLinkDto.createdAt?.let { LocalDateTime.parse(it) }
-                                ?: databaseDeepLink.createdAt,
-                            folder = folders.find { folder -> folder.id == newDeepLinkDto.folderId }
-                                ?: databaseDeepLink.folder,
-                            targetPackage = newDeepLinkDto.targetPackage ?: databaseDeepLink.targetPackage,
-                        )
-                    }
-
-                    (newDeepLinks + updatedDeepLinks).forEach {
-                        deepLinkRepository.upsertDeepLink(it)
-                    }
-
-                    shortcutManager.enable(newDeepLinks.map(DeepLink::id))
+                    shortcutManager.enable(createdIds)
                 }
 
                 FileType.TXT -> {
-                    val deepLinksTexts = fileContents.split("\n")
+                    val deepLinksTexts = fileContents.split("\n").distinct()
 
                     val databaseDeepLinks = deepLinksTexts.mapNotNull {
                         deepLinkRepository.getDeepLinkByLink(it)
@@ -127,6 +96,64 @@ internal class ImportDeepLinksImpl(
             ImportDeepLinks.Result.Success
         } catch (e: Exception) {
             ImportDeepLinks.Result.Error.Unknown
+        }
+    }
+
+    @OptIn(ExperimentalUuidApi::class)
+    private fun importFolders(fileFolders: List<Folder>): Map<String, Folder> {
+        val localFolders = folderRepository.getFolders()
+        val localByName = localFolders.associateBy { it.name }
+        val localById = localFolders.associateBy { it.id }
+        val fileFoldersByName = fileFolders.groupBy { it.name }
+        val takenIds = fileFoldersByName.keys.mapNotNull { localByName[it]?.id }.toMutableSet()
+
+        return fileFoldersByName.flatMap { (name, sameNameFolders) ->
+            val candidateIds = sameNameFolders.map { it.id }.distinct()
+            val id = localByName[name]?.id
+                ?: candidateIds.firstOrNull { it !in takenIds && (candidateIds.size == 1 || it !in localById) }
+                ?: Uuid.random().toString()
+            takenIds += id
+            val folder = Folder(
+                id = id,
+                name = name,
+                description = sameNameFolders.mapNotNull { it.description }.lastOrNull()
+                    ?: localById[id]?.description,
+            )
+            val savedFolder = when (val result = folderRepository.upsertFolder(folder)) {
+                FolderRepository.UpsertResult.Saved -> folder
+                is FolderRepository.UpsertResult.NameAlreadyExists -> folder.copy(id = result.existingId)
+            }
+            sameNameFolders.map { it.id to savedFolder }
+        }.toMap()
+    }
+
+    @OptIn(ExperimentalUuidApi::class)
+    private fun importDeepLink(dto: Payload.DeepLink, folder: Folder?): String? {
+        val local = deepLinkRepository.getDeepLinkByLink(dto.link)
+        if (local != null) {
+            deepLinkRepository.upsertDeepLink(
+                local.copy(
+                    name = dto.name ?: local.name,
+                    description = dto.description ?: local.description,
+                    isFavorite = dto.isFavorite ?: local.isFavorite,
+                    createdAt = dto.createdAt?.let { LocalDateTime.parse(it) } ?: local.createdAt,
+                    folder = folder ?: local.folder,
+                    targetPackage = dto.targetPackage ?: local.targetPackage,
+                ),
+            )
+            return null
+        }
+
+        val imported = dto.toModel(folder)
+        val deepLink = if (deepLinkRepository.getDeepLinkById(imported.id) == null) {
+            imported
+        } else {
+            imported.copy(id = Uuid.random().toString())
+        }
+
+        return when (deepLinkRepository.upsertDeepLink(deepLink)) {
+            DeepLinkRepository.UpsertResult.Saved -> deepLink.id
+            is DeepLinkRepository.UpsertResult.LinkAlreadyExists -> null
         }
     }
 
