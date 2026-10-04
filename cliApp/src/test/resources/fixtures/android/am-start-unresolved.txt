@@ -1,0 +1,2 @@
+Starting: Intent { act=android.intent.action.VIEW cat=[android.intent.category.BROWSABLE] dat=nosuchscheme://x/... }
+Error: Activity not started, unable to resolve Intent { act=android.intent.action.VIEW cat=[android.intent.category.BROWSABLE] dat=nosuchscheme://x/... flg=0x10000000 }

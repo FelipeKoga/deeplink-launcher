@@ -1,0 +1,30 @@
+{
+  "com.apple.mobilesafari": {
+    "CFBundleIdentifier": "com.apple.mobilesafari",
+    "CFBundleName": "MobileSafari",
+    "CFBundleDisplayName": "Safari",
+    "Path": "/Library/Developer/CoreSimulator/Volumes/iOS_22C150/Library/Developer/CoreSimulator/Profiles/Runtimes/iOS 18.2.simruntime/Contents/Resources/RuntimeRoot/Applications/MobileSafari.app",
+    "ApplicationType": "System"
+  },
+  "com.apple.Preferences": {
+    "CFBundleIdentifier": "com.apple.Preferences",
+    "CFBundleName": "Settings",
+    "CFBundleDisplayName": "Settings",
+    "Path": "/Library/Developer/CoreSimulator/Volumes/iOS_22C150/Library/Developer/CoreSimulator/Profiles/Runtimes/iOS 18.2.simruntime/Contents/Resources/RuntimeRoot/Applications/Preferences.app",
+    "ApplicationType": "System"
+  },
+  "com.apple.MobileSMS": {
+    "CFBundleIdentifier": "com.apple.MobileSMS",
+    "CFBundleName": "MobileSMS",
+    "CFBundleDisplayName": "Messages",
+    "Path": "/Library/Developer/CoreSimulator/Volumes/iOS_22C150/Library/Developer/CoreSimulator/Profiles/Runtimes/iOS 18.2.simruntime/Contents/Resources/RuntimeRoot/Applications/MobileSMS.app",
+    "ApplicationType": "System"
+  },
+  "com.apple.mobilecal": {
+    "CFBundleIdentifier": "com.apple.mobilecal",
+    "CFBundleName": "MobileCal",
+    "CFBundleDisplayName": "Calendar",
+    "Path": "/Library/Developer/CoreSimulator/Volumes/iOS_22C150/Library/Developer/CoreSimulator/Profiles/Runtimes/iOS 18.2.simruntime/Contents/Resources/RuntimeRoot/Applications/MobileCal.app",
+    "ApplicationType": "System"
+  }
+}

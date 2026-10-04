@@ -1,0 +1,4 @@
+1 activities found:
+  Activity #0:
+    priority=0 preferredOrder=0 match=0x208000 specificIndex=-1 isDefault=true
+    com.android.chrome/com.google.android.apps.chrome.IntentDispatcher
