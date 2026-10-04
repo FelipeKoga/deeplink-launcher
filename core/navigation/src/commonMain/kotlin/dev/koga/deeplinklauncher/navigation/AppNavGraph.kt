@@ -12,7 +12,6 @@ public class AppNavGraph(
 ) {
     public val appGraphBuilder: NavGraphBuilder.() -> Unit = {
         graphs.forEach { graph ->
-            println(graph)
             graph.register(this)
         }
     }
