@@ -1,3 +1,5 @@
+require "base64"
+
 default_platform(:android)
 
 TRACKS = %w[internal alpha beta production].freeze
@@ -70,7 +72,10 @@ platform :android do
 end
 
 def play_json_key
-  ENV.fetch("PLAY_SERVICE_ACCOUNT_JSON") { UI.user_error!("PLAY_SERVICE_ACCOUNT_JSON is not set") }
+  encoded = ENV.fetch("PLAY_SERVICE_ACCOUNT_JSON") { UI.user_error!("PLAY_SERVICE_ACCOUNT_JSON is not set") }
+  Base64.strict_decode64(encoded.gsub(/\s/, ""))
+rescue ArgumentError
+  UI.user_error!("PLAY_SERVICE_ACCOUNT_JSON must be the service account JSON encoded in base64")
 end
 
 def play_track(track)
