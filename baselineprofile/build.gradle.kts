@@ -10,11 +10,6 @@ android {
     namespace = "dev.koga.deeplinklauncher.baselineprofile"
     compileSdk = libs.versions.android.compileSdk.get().toInt()
 
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
-    }
-
     defaultConfig {
         minSdk = 28
         targetSdk = libs.versions.android.targetSdk.get().toInt()
@@ -34,6 +29,10 @@ android {
             systemImageSource = "google"
         }
     }
+}
+
+kotlin {
+    jvmToolchain(17)
 }
 
 // This is the configuration block for the Baseline Profile plugin.
