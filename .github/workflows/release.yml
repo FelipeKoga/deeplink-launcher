@@ -30,6 +30,11 @@ jobs:
   build-apk:
     needs: create-tag
     runs-on: ubuntu-latest
+    env:
+      KEYSTORE_FILE_NAME: release.jks
+      KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+      KEYSTORE_ALIAS: ${{ secrets.KEYSTORE_ALIAS }}
+      KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
     steps:
       - name: Checkout
         uses: actions/checkout@v6
@@ -69,13 +74,18 @@ jobs:
       - name: Update dependencies
         run: ./gradlew dependencies
 
-      - name: Set up release keystore
-        uses: ./.github/actions/release-keystore-action
-        with:
+      - name: Create release keystore
+        env:
           KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
-          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
-          KEYSTORE_ALIAS: ${{ secrets.KEYSTORE_ALIAS }}
-          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+        run: |
+          for name in KEYSTORE_BASE64 KEYSTORE_PASSWORD KEYSTORE_ALIAS KEY_PASSWORD; do
+            if [ -z "${!name}" ]; then
+              echo "::error::$name is empty. Without it the build would sign with the committed testing keystore."
+              exit 1
+            fi
+          done
+          echo "$KEYSTORE_BASE64" | base64 --decode > "androidApp/$KEYSTORE_FILE_NAME"
+          keytool -list -keystore "androidApp/$KEYSTORE_FILE_NAME" -storepass "$KEYSTORE_PASSWORD" -alias "$KEYSTORE_ALIAS" > /dev/null
 
       - name: Create Environment File
         uses: ./.github/actions/create-env-action
