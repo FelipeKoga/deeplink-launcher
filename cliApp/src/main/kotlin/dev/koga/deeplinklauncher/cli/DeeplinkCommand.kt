@@ -14,7 +14,7 @@ internal class DeeplinkCommand : CliktCommand(name = "deeplink") {
     }
 
     override fun help(context: Context): String =
-        "Open and inspect deeplinks on Android devices and iOS simulators. " +
+        "Open and inspect deeplinks on Android devices, iOS simulators and iPhones. " +
             "Built for scripts and AI agents: every command takes --json, never prompts, " +
             "and exits with a code that tells what happened."
 

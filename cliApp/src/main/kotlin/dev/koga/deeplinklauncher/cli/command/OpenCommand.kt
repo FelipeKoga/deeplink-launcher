@@ -22,6 +22,11 @@ internal class OpenCommand(private val toolchain: () -> Toolchain) : ReportingCo
 ) {
     private val url by argument("URL", help = "The deeplink to open")
     private val target by TargetOptions()
+    private val app by option(
+        "--app",
+        metavar = "BUNDLE_ID",
+        help = "App to open the link in. Required on physical iPhones, where devicectl opens links inside a given app",
+    )
     private val watchMs by option(
         "--watch",
         metavar = "MS",
@@ -34,7 +39,7 @@ internal class OpenCommand(private val toolchain: () -> Toolchain) : ReportingCo
     override fun execute(): Outcome<OpenReport> {
         val toolchain = toolchain()
         val link = requireLink(url)
-        val report = LinkActions(toolchain).open(target.select(toolchain), link, watchMs)
+        val report = LinkActions(toolchain).open(target.select(toolchain), link, watchMs, app)
         return Outcome(report, if (report.status == OpenStatus.OPENED) ExitCode.OK else ExitCode.FAILED)
     }
 

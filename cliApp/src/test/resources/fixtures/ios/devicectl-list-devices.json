@@ -1,0 +1,65 @@
+{
+  "info" : {
+    "commandType" : "devicectl.list.devices",
+    "jsonVersion" : 2,
+    "outcome" : "success",
+    "version" : "397.28"
+  },
+  "result" : {
+    "devices" : [
+      {
+        "connectionProperties" : {
+          "pairingState" : "paired",
+          "transportType" : "wired",
+          "tunnelState" : "connected"
+        },
+        "deviceProperties" : {
+          "bootState" : "booted",
+          "developerModeStatus" : "enabled",
+          "name" : "Felipe's iPhone",
+          "osVersionNumber" : "18.1"
+        },
+        "hardwareProperties" : {
+          "deviceType" : "iPhone",
+          "marketingName" : "iPhone 15 Pro",
+          "platform" : "iOS",
+          "udid" : "00008130-000A1234ABCD001C"
+        },
+        "identifier" : "4F1E2D3C-AAAA-BBBB-CCCC-1234567890AB"
+      },
+      {
+        "connectionProperties" : {
+          "pairingState" : "paired",
+          "tunnelState" : "unavailable"
+        },
+        "deviceProperties" : {
+          "name" : "Old iPad",
+          "osVersionNumber" : "17.5"
+        },
+        "hardwareProperties" : {
+          "deviceType" : "iPad",
+          "platform" : "iOS",
+          "udid" : "00001234-0001234A3C03401E"
+        },
+        "identifier" : "123456BB5-AEDE-7A22-B890-1234567890DD"
+      },
+      {
+        "connectionProperties" : {
+          "pairingState" : "paired",
+          "transportType" : "localNetwork",
+          "tunnelState" : "connected"
+        },
+        "deviceProperties" : {
+          "name" : "Apple Watch",
+          "osVersionNumber" : "11.1"
+        },
+        "hardwareProperties" : {
+          "deviceType" : "appleWatch",
+          "platform" : "watchOS",
+          "udid" : "00008301-000E12345678901E"
+        },
+        "identifier" : "9A8B7C6D-1111-2222-3333-444455556666"
+      }
+    ]
+  }
+}

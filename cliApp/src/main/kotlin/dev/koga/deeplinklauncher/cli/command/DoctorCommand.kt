@@ -17,7 +17,7 @@ internal class DoctorCommand(private val toolchain: () -> Toolchain) : Reporting
         val toolchain = toolchain()
         val checks = androidChecks(toolchain) + iosChecks(toolchain)
         val toolsFound = toolchain.adb != null || toolchain.simctl != null
-        val deviceFound = checks.any { it.name.endsWith("devices") && it.ok }
+        val deviceFound = checks.any { it.name in DEVICE_CHECKS && it.ok }
         val exitCode = when {
             !toolsFound -> ExitCode.TOOLING
             !deviceFound -> ExitCode.DEVICE
@@ -73,15 +73,39 @@ internal class DoctorCommand(private val toolchain: () -> Toolchain) : Reporting
         return listOf(
             Check(name = "xcrun simctl", ok = true, detail = simctl.xcrunPath),
             Check(
-                name = "iOS devices",
+                name = "iOS simulators",
                 ok = booted.isNotEmpty(),
                 detail = booted.joinToString { "${it.name} (${it.id})" }.ifEmpty { "no simulator booted" },
                 fix = BOOT_SIMULATOR.takeIf { booted.isEmpty() },
+            ),
+        ) + physicalIosChecks(toolchain)
+    }
+
+    private fun physicalIosChecks(toolchain: Toolchain): List<Check> {
+        val deviceCtl = toolchain.deviceCtl?.takeIf { it.isAvailable() } ?: return listOf(
+            Check(name = "iPhones", ok = false, detail = "xcrun devicectl not available", fix = "Install Xcode 15 or newer"),
+        )
+        val devices = deviceCtl.connectedDevices()
+        val developerModeOff = devices.filter { it.developerMode != null && it.developerMode != "enabled" }
+        return listOf(
+            Check(
+                name = "iPhones",
+                ok = devices.isNotEmpty() && developerModeOff.isEmpty(),
+                detail = devices.joinToString { "${it.name} (${it.udid}, developer mode ${it.developerMode ?: "unknown"})" }
+                    .ifEmpty { "none connected" },
+                fix = when {
+                    developerModeOff.isNotEmpty() -> "Turn on Settings › Privacy & Security › Developer Mode on the iPhone"
+                    devices.isEmpty() -> CONNECT_IPHONE
+                    else -> null
+                },
             ),
         )
     }
 
     private companion object {
+        val DEVICE_CHECKS = setOf("Android devices", "iOS simulators", "iPhones")
+        const val CONNECT_IPHONE = "Connect it with a cable, tap Trust, and enable Developer Mode " +
+            "(Settings › Privacy & Security). Optional: only needed to test on a physical iPhone"
         const val START_EMULATOR = "Start one with `emulator -list-avds` then `emulator -avd <name>`, " +
             "or plug in a device with USB debugging"
         const val BOOT_SIMULATOR = "Boot one with `xcrun simctl boot \"iPhone 16\"` or `open -a Simulator`"

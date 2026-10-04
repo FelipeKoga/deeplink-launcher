@@ -1,6 +1,6 @@
 ---
 name: deeplink
-description: Open, resolve and test deeplinks on Android devices, Android emulators and iOS simulators with the `deeplink` CLI, and read the result as JSON. Use when the user wants to check that a deeplink, app link, universal link or custom URL scheme opens the right app or screen, debug why a link opens the browser or nothing, verify deeplink routing after changing intent filters, AndroidManifest, Info.plist or a router, or run a list of links as a regression suite.
+description: Open, resolve and test deeplinks on Android devices and emulators, iOS simulators and physical iPhones with the `deeplink` CLI, and read the result as JSON. Use when the user wants to check that a deeplink, app link, universal link or custom URL scheme opens the right app or screen, debug why a link opens the browser or nothing, verify deeplink routing after changing intent filters, AndroidManifest, Info.plist or a router, or run a list of links as a regression suite.
 ---
 
 # deeplink CLI
@@ -60,6 +60,6 @@ To assert the handler, write an export with expectations:
 
 ## Limits
 
-- **Android:** links go out with the `BROWSABLE` category, as from a browser. An activity that is only reachable internally reports `unhandled`; that is the expected behavior for an external link.
-- **iOS:** simulators only. Physical iPhones aren't supported.
+- **Android:** emulators and physical devices both work. Links go out with the `BROWSABLE` category, as from a browser. An activity that is only reachable internally reports `unhandled`; that is the expected behavior for an external link.
+- **Physical iPhones:** they go through `xcrun devicectl`, which opens a link *inside a given app*. Pass `--app <bundle id>` to `open`, and give each suite link an `expect.ios` (or pass `--app` to `test`). The app is relaunched with the URL as an open-URL request, so Universal Link (`continueUserActivity`) handling isn't exercised. `resolve` returns `unknown`. After a crash, read the log in Xcode.
 - **Shared state:** `open` doesn't reset app state. Rerun with a fresh install when the result depends on login or onboarding.
