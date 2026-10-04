@@ -11,6 +11,7 @@ on:
 
 permissions:
   contents: write
+  pull-requests: write
 
 jobs:
   create-tag:
@@ -27,8 +28,15 @@ jobs:
               sha: context.sha
             })
 
+  baseline-profile:
+    uses: ./.github/workflows/baseline-profile.yml
+    secrets: inherit
+    with:
+      open-pr: true
+
   build-apk:
-    needs: create-tag
+    needs: [create-tag, baseline-profile]
+    if: ${{ !cancelled() && needs.create-tag.result == 'success' }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -92,6 +100,17 @@ jobs:
         uses: ./.github/actions/create-env-action
         with:
           REVENUECAT_API_KEY: ${{ secrets.REVENUECAT_API_KEY }}
+
+      - name: Download baseline profiles
+        if: ${{ needs.baseline-profile.result == 'success' }}
+        uses: actions/download-artifact@v7
+        with:
+          name: baseline-profiles
+          path: androidApp/src/release/generated/baselineProfiles
+
+      - name: Warn about committed baseline profiles
+        if: ${{ needs.baseline-profile.result != 'success' }}
+        run: echo "::warning::Baseline profile generation failed; the APK uses the committed profiles."
 
       - name: Build APK
         run: ./gradlew assembleRelease --stacktrace
