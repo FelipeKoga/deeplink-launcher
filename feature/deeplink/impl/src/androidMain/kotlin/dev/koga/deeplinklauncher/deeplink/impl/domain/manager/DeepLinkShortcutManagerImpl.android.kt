@@ -9,9 +9,14 @@ import dev.koga.deeplinklauncher.deeplink.api.domain.manager.DeepLinkShortcutMan
 import dev.koga.deeplinklauncher.deeplink.api.domain.model.DeepLink
 import dev.koga.deeplinklauncher.deeplink.impl.platform.android.createDeepLinkViewIntent
 import dev.koga.deeplinklauncher.deeplink.impl.platform.android.resolveShortcutIconCompat
+import dev.zacsweers.metro.AppScope
+import dev.zacsweers.metro.ContributesBinding
+import dev.zacsweers.metro.SingleIn
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
+@SingleIn(AppScope::class)
+@ContributesBinding(AppScope::class)
 internal class DeepLinkShortcutManagerImpl(
     private val context: Context,
 ) : DeepLinkShortcutManager {

@@ -2,7 +2,12 @@ package dev.koga.deeplinklauncher.deeplink.impl.platform
 
 import android.content.ClipboardManager
 import android.content.Context
+import dev.zacsweers.metro.AppScope
+import dev.zacsweers.metro.Inject
+import dev.zacsweers.metro.SingleIn
 
+@SingleIn(AppScope::class)
+@Inject
 internal actual class ClipboardTextReader(
     private val context: Context,
 ) {

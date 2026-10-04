@@ -4,7 +4,9 @@ package dev.koga.deeplinklauncher.deeplink.impl.ui.folderdetails
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.createSavedStateHandle
 import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.CreationExtras
 import androidx.navigation.toRoute
 import dev.koga.deeplinklauncher.analytics.api.AnalyticsTracker
 import dev.koga.deeplinklauncher.deeplink.api.application.EnrichDeepLinksForList
@@ -24,6 +26,13 @@ import dev.koga.deeplinklauncher.deeplink.impl.ui.folderdetails.state.FolderDeta
 import dev.koga.deeplinklauncher.navigation.AppNavigator
 import dev.koga.deeplinklauncher.uievent.SnackBar
 import dev.koga.deeplinklauncher.uievent.SnackBarDispatcher
+import dev.zacsweers.metro.AppScope
+import dev.zacsweers.metro.Assisted
+import dev.zacsweers.metro.AssistedFactory
+import dev.zacsweers.metro.AssistedInject
+import dev.zacsweers.metro.ContributesIntoMap
+import dev.zacsweers.metrox.viewmodel.ViewModelAssistedFactory
+import dev.zacsweers.metrox.viewmodel.ViewModelAssistedFactoryKey
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -37,8 +46,9 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
+@AssistedInject
 internal class FolderDetailsViewModel(
-    savedStateHandle: SavedStateHandle,
+    @Assisted savedStateHandle: SavedStateHandle,
     private val repository: FolderRepository,
     private val enrichDeepLinksForList: EnrichDeepLinksForList,
     private val launchDeepLink: LaunchDeepLink,
@@ -46,6 +56,16 @@ internal class FolderDetailsViewModel(
     private val analyticsTracker: AnalyticsTracker,
     private val snackBarDispatcher: SnackBarDispatcher,
 ) : ViewModel() {
+
+    @AssistedFactory
+    @ViewModelAssistedFactoryKey(FolderDetailsViewModel::class)
+    @ContributesIntoMap(AppScope::class)
+    fun interface Factory : ViewModelAssistedFactory {
+        override fun create(extras: CreationExtras): FolderDetailsViewModel = create(extras.createSavedStateHandle())
+
+        fun create(@Assisted savedStateHandle: SavedStateHandle): FolderDetailsViewModel
+    }
+
     private val folderId = savedStateHandle.toRoute<DeepLinkRouteEntryPoint.FolderDetails>().id
     private var loadedFolder: Folder? = null
 

@@ -10,28 +10,31 @@ import dev.koga.deeplinklauncher.deeplink.impl.ui.folderdetails.FolderDetailsScr
 import dev.koga.deeplinklauncher.deeplink.impl.ui.linkdeeplinkforfolder.LinkDeepLinkForFolderScreen
 import dev.koga.deeplinklauncher.navigation.AppNavigator
 import dev.koga.deeplinklauncher.navigation.NavigationGraph
-import org.koin.compose.viewmodel.koinViewModel
+import dev.zacsweers.metro.AppScope
+import dev.zacsweers.metro.ContributesIntoSet
+import dev.zacsweers.metrox.viewmodel.assistedMetroViewModel
 
+@ContributesIntoSet(AppScope::class)
 internal class DeepLinkNavigationGraph(
     private val appNavigator: AppNavigator,
 ) : NavigationGraph {
     override fun register(navGraphBuilder: NavGraphBuilder) = with(navGraphBuilder) {
         dialog<DeepLinkRouteEntryPoint.DeepLinkDetails> {
             DeepLinkDetailsBottomSheet(
-                viewModel = koinViewModel(),
+                viewModel = assistedMetroViewModel(),
             )
         }
 
         composable<DeepLinkRouteEntryPoint.FolderDetails> {
             FolderDetailsScreen(
-                viewModel = koinViewModel(),
+                viewModel = assistedMetroViewModel(),
                 appNavigator = appNavigator,
             )
         }
 
         composable<DeepLinkRouteEntryPoint.PickDeepLinkForFolder> {
             LinkDeepLinkForFolderScreen(
-                viewModel = koinViewModel(),
+                viewModel = assistedMetroViewModel(),
                 appNavigator = appNavigator,
             )
         }
@@ -39,7 +42,7 @@ internal class DeepLinkNavigationGraph(
         dialog<DeepLinkRouteEntryPoint.AddFolder> {
             AddFolderBottomSheet(
                 onDismiss = appNavigator::popBackStack,
-                viewModel = koinViewModel(),
+                viewModel = assistedMetroViewModel(),
             )
         }
     }

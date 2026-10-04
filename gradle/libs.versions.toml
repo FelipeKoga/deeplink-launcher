@@ -34,7 +34,6 @@ google-services = "4.4.4"
 haze = "1.7.2"
 junit = "4.13.2"
 junitVersion = "1.3.0"
-koin = "4.1.1"
 kotlin = "2.4.20"
 kotlinx-immutable = "0.4.0"
 kotlinxCoroutinesCore = "1.10.2"
@@ -53,6 +52,7 @@ uiautomator = "2.3.0"
 jetbrains-kotlinxDatetime = "0.7.1-0.6.x-compat"
 uitoolingandroid = "1.10.2"
 stabilityAnalyzer = "0.15.0"
+metro = "1.4.5"
 
 [libraries]
 aboutlibraries_compose = { module = "com.mikepenz:aboutlibraries-compose-m3", version.ref = "aboutlibraries" }
@@ -90,11 +90,9 @@ firebase-perf = { module = "com.google.firebase:firebase-perf" }
 haze = { module = "dev.chrisbanes.haze:haze", version.ref = "haze" }
 haze-materials = { module = "dev.chrisbanes.haze:haze-materials", version.ref = "haze" }
 junit = { module = "junit:junit", version.ref = "junit" }
-koin-android = { module = "io.insert-koin:koin-android", version.ref = "koin" }
-koin-compose = { module = "io.insert-koin:koin-compose", version.ref = "koin" }
-koin-core = { module = "io.insert-koin:koin-core", version.ref = "koin" }
-koin-viewmodel = { module = "io.insert-koin:koin-compose-viewmodel", version.ref = "koin" }
 kotlin-gradle-plugin = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin" }
+metro-gradlePlugin = { module = "dev.zacsweers.metro:gradle-plugin", version.ref = "metro" }
+metrox-viewmodel-compose = { module = "dev.zacsweers.metro:metrox-viewmodel-compose", version.ref = "metro" }
 kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinxCoroutinesCore" }
 kotlinx-coroutines-swing = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-swing", version.ref = "kotlinxCoroutinesCore" }
 kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "kotlinxCoroutinesCore" }
@@ -120,6 +118,7 @@ deeplinkLauncher-composeMultiplatform = { id = "dev.koga.deeplinklauncher.compos
 deeplinkLauncher-multiplatform = { id = "dev.koga.deeplinklauncher.multiplatform" }
 deeplinkLauncher-codeAnalysis = { id = "dev.koga.deeplinklauncher.code-analysis" }
 deeplinkLauncher-screenshotTesting = { id = "dev.koga.deeplinklauncher.screenshot-testing" }
+deeplinkLauncher-metro = { id = "dev.koga.deeplinklauncher.metro" }
 
 aboutLibraries = { id = "com.mikepenz.aboutlibraries.plugin", version.ref = "aboutlibraries" }
 androidApplication = { id = "com.android.application", version.ref = "androidGradlePlugin" }

@@ -6,9 +6,14 @@ import dev.koga.deeplinklauncher.deeplink.api.domain.model.DeepLinkTarget
 import dev.koga.deeplinklauncher.deeplink.api.domain.repository.DeepLinkRepository
 import dev.koga.deeplinklauncher.deeplink.api.domain.usecase.LaunchDeepLink
 import dev.koga.deeplinklauncher.devicebridge.api.DeviceBridge
+import dev.zacsweers.metro.AppScope
+import dev.zacsweers.metro.ContributesBinding
+import dev.zacsweers.metro.SingleIn
 import java.awt.Desktop
 import java.net.URI
 
+@SingleIn(AppScope::class)
+@ContributesBinding(AppScope::class)
 internal class LaunchDeepLinkImpl(
     private val repository: DeepLinkRepository,
     private val deviceBridge: DeviceBridge,

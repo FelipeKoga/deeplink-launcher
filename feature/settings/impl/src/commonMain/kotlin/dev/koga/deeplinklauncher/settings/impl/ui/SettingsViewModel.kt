@@ -8,10 +8,16 @@ import dev.koga.deeplinklauncher.navigation.AppNavigator
 import dev.koga.deeplinklauncher.purchase.api.PurchaseApi
 import dev.koga.deeplinklauncher.settings.impl.analytics.ExternalLinkOpened
 import dev.koga.deeplinklauncher.settings.impl.analytics.track
+import dev.zacsweers.metro.AppScope
+import dev.zacsweers.metro.ContributesIntoMap
+import dev.zacsweers.metro.binding
+import dev.zacsweers.metrox.viewmodel.ViewModelKey
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 
+@ViewModelKey
+@ContributesIntoMap(AppScope::class, binding<ViewModel>())
 class SettingsViewModel(
     private val launchDeepLink: LaunchDeepLink,
     private val purchaseApi: PurchaseApi,

@@ -3,6 +3,7 @@
 plugins {
     alias(libs.plugins.deeplinkLauncher.screenshotTesting)
     alias(libs.plugins.kotlinSerialization)
+    alias(libs.plugins.deeplinkLauncher.metro)
 }
 
 kotlin {
@@ -24,9 +25,7 @@ kotlin {
             implementation(libs.kotlinx.immutable)
             implementation(libs.kotlinx.serialization.json)
 
-            implementation(libs.koin.core)
-            implementation(libs.koin.compose)
-            implementation(libs.koin.viewmodel)
+            implementation(libs.metrox.viewmodel.compose)
 
             implementation(libs.filekit.dialogs.compose)
             implementation(libs.compose.navigation)

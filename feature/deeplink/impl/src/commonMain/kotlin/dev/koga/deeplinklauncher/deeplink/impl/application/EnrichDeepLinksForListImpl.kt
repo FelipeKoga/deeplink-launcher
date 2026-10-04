@@ -6,6 +6,9 @@ import dev.koga.deeplinklauncher.deeplink.api.domain.model.DeepLinkHandlerInfo
 import dev.koga.deeplinklauncher.deeplink.api.domain.usecase.GetDeepLinkHandlerIcon
 import dev.koga.deeplinklauncher.deeplink.api.domain.usecase.GetDeepLinkHandlerInfo
 import dev.koga.deeplinklauncher.deeplink.api.ui.model.DeepLinkListItem
+import dev.zacsweers.metro.AppScope
+import dev.zacsweers.metro.ContributesBinding
+import dev.zacsweers.metro.SingleIn
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.async
@@ -14,6 +17,8 @@ import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.coroutines.ensureActive
 import kotlinx.coroutines.withContext
 
+@SingleIn(AppScope::class)
+@ContributesBinding(AppScope::class)
 internal class EnrichDeepLinksForListImpl(
     private val getDeepLinkHandlerIcon: GetDeepLinkHandlerIcon,
     private val getDeepLinkHandlerInfo: GetDeepLinkHandlerInfo,

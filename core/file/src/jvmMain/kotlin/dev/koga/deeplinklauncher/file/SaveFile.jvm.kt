@@ -1,10 +1,15 @@
 package dev.koga.deeplinklauncher.file
 
 import dev.koga.deeplinklauncher.file.model.FileType
+import dev.zacsweers.metro.AppScope
+import dev.zacsweers.metro.Inject
+import dev.zacsweers.metro.SingleIn
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
 
+@SingleIn(AppScope::class)
+@Inject
 actual class SaveFile {
     actual operator fun invoke(
         fileName: String,

@@ -3,6 +3,9 @@
 package dev.koga.deeplinklauncher.file
 
 import dev.koga.deeplinklauncher.file.model.FileType
+import dev.zacsweers.metro.AppScope
+import dev.zacsweers.metro.Inject
+import dev.zacsweers.metro.SingleIn
 import kotlinx.cinterop.BetaInteropApi
 import kotlinx.cinterop.ExperimentalForeignApi
 import platform.Foundation.NSDocumentDirectory
@@ -14,6 +17,8 @@ import platform.Foundation.NSUserDomainMask
 import platform.Foundation.create
 import platform.Foundation.writeToURL
 
+@SingleIn(AppScope::class)
+@Inject
 actual class SaveFile {
     @OptIn(ExperimentalForeignApi::class)
     actual operator fun invoke(

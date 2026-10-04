@@ -10,8 +10,13 @@ import dev.koga.deeplinklauncher.file.SaveFile
 import dev.koga.deeplinklauncher.file.ShareFile
 import dev.koga.deeplinklauncher.file.model.FileType
 import dev.koga.deeplinklauncher.platform.canShareContent
+import dev.zacsweers.metro.AppScope
+import dev.zacsweers.metro.ContributesBinding
+import dev.zacsweers.metro.SingleIn
 import kotlinx.serialization.json.Json
 
+@SingleIn(AppScope::class)
+@ContributesBinding(AppScope::class)
 internal class ExportDeepLinksImpl(
     private val repository: DeepLinkRepository,
     private val saveFile: SaveFile,

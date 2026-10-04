@@ -13,11 +13,16 @@ import dev.koga.deeplinklauncher.settings.impl.analytics.PurchaseStarted
 import dev.koga.deeplinklauncher.settings.impl.analytics.track
 import dev.koga.deeplinklauncher.uievent.SnackBar
 import dev.koga.deeplinklauncher.uievent.SnackBarDispatcher
+import dev.zacsweers.metro.AppScope
+import dev.zacsweers.metro.ContributesIntoMap
+import dev.zacsweers.metrox.viewmodel.ViewModelKey
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
+@ViewModelKey
+@ContributesIntoMap(AppScope::class)
 class ProductsViewModel(
     private val purchaseApi: PurchaseApi,
     private val appNavigator: AppNavigator,
