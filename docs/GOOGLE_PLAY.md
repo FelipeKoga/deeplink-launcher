@@ -40,7 +40,7 @@ The usual path: Release to `internal`, then promote `internal → alpha`, `alpha
 
 1. In Google Cloud, create a service account and a JSON key for it.
 2. In Play Console, open **Users and permissions** and invite the service account's email with release permissions for this app.
-3. In GitHub, add the repository secret `PLAY_SERVICE_ACCOUNT_JSON` with the raw JSON key.
+3. In GitHub, add the repository secret `PLAY_SERVICE_ACCOUNT_JSON` with the JSON key encoded in base64 (`base64 -i key.json | pbcopy`).
 
 ## Constraints
 
@@ -53,7 +53,7 @@ The usual path: Release to `internal`, then promote `internal → alpha`, `alpha
 
 ```bash
 bundle install
-export PLAY_SERVICE_ACCOUNT_JSON="$(cat path/to/key.json)"
+export PLAY_SERVICE_ACCOUNT_JSON="$(base64 -i path/to/key.json)"
 bundle exec fastlane android promote from:internal to:alpha
 bundle exec fastlane android rollout track:production rollout:0.5
 bundle exec fastlane android deploy track:internal aab:androidApp/build/outputs/bundle/release/androidApp-release.aab
