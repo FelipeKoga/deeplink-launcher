@@ -28,20 +28,4 @@ fun Project.getVersionName(): String {
     return "$majorVersion.$minorVersion.$patchVersion"
 }
 
-fun Project.getAndroidVersionCode(): Int {
-    // Latest version code on Google Play
-    val versionCodeBase = 1_800_000_000
-
-    val patchVersion = libs.versions.android.patchVersion.get().toInt()
-    val minorVersion = libs.versions.android.minorVersion.get().toInt()
-    val majorVersion = libs.versions.android.majorVersion.get().toInt()
-
-    val versionCode = (majorVersion * 10_000) +
-            (minorVersion * 100) +
-            patchVersion +
-            versionCodeBase
-
-    require(versionCode < Int.MAX_VALUE)
-
-    return versionCode
-}
+fun Project.getAndroidVersionCode(): Int = libs.versions.android.versionCode.get().toInt()
