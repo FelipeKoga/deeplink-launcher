@@ -1,8 +1,6 @@
 name: Baseline Profile
 
 on:
-  push:
-    branches: [ "ci/baseline-profile-workflow" ]
   workflow_call:
     inputs:
       open-pr:
