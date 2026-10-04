@@ -16,6 +16,11 @@ application {
     mainClass.set("dev.koga.deeplinklauncher.cli.MainKt")
 }
 
+tasks.distTar {
+    compression = Compression.GZIP
+    archiveExtension.set("tar.gz")
+}
+
 tasks.jar {
     manifest {
         attributes("Implementation-Version" to project.version)

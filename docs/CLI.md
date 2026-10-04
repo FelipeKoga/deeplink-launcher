@@ -6,6 +6,14 @@
 - it never prompts;
 - its exit code tells what happened.
 
+## Install
+
+```
+brew install felipekoga/tap/deeplink
+```
+
+Or download `deeplink-<version>.tar.gz` from a `cli-v*` release and run `bin/deeplink` (needs Java 17+).
+
 ## Commands
 
 | Command | What it does |
@@ -45,6 +53,14 @@ With `--json`, stdout is exactly one JSON object, even on failure. Every object 
 
 - **Android:** the link is sent as a `VIEW` intent with the `BROWSABLE` category, like a tap in a browser. Activities without `BROWSABLE` in their intent filter are reported as not handling the link.
 - **iOS:** custom schemes are resolved from each installed app's `Info.plist`. Universal Links (`https`) cannot be resolved from the host, so `resolve` reports `unknown`. `open` still opens them, but can't name the app. Crash detection checks that the app is still running after `--watch` ms.
+
+## Releasing
+
+The CLI has its own version, `version` in `cliApp/build.gradle.kts`, independent of the app.
+
+1. Bump `version` in `cliApp/build.gradle.kts`.
+2. Run **Actions → CLI Release**. It tests and packages the CLI, smoke-tests the archive, and publishes a `cli-v<version>` release (not marked as latest, so the app release stays on top).
+3. Copy the formula from the job summary (or the `homebrew-formula` artifact) to `Formula/deeplink.rb` in `FelipeKoga/homebrew-tap`.
 
 ## Building from source
 
