@@ -21,7 +21,8 @@ internal class ResolveCommand(private val toolchain: () -> Toolchain) : Reportin
 
     override fun execute(): Outcome<ResolveReport> {
         val toolchain = toolchain()
-        val report = LinkActions(toolchain).resolve(target.select(toolchain), url)
+        val link = requireLink(url)
+        val report = LinkActions(toolchain).resolve(target.select(toolchain), link)
         return Outcome(report, if (report.status == ResolveStatus.UNHANDLED) ExitCode.FAILED else ExitCode.OK)
     }
 

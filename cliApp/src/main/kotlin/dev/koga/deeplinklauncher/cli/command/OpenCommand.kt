@@ -33,7 +33,8 @@ internal class OpenCommand(private val toolchain: () -> Toolchain) : ReportingCo
 
     override fun execute(): Outcome<OpenReport> {
         val toolchain = toolchain()
-        val report = LinkActions(toolchain).open(target.select(toolchain), url, watchMs)
+        val link = requireLink(url)
+        val report = LinkActions(toolchain).open(target.select(toolchain), link, watchMs)
         return Outcome(report, if (report.status == OpenStatus.OPENED) ExitCode.OK else ExitCode.FAILED)
     }
 

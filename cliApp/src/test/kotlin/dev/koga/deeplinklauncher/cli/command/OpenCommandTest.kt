@@ -120,4 +120,15 @@ class OpenCommandTest {
         assertEquals("3", error["exitCode"]!!.jsonPrimitive.content)
         assertTrue(error["hint"]!!.jsonPrimitive.content.contains("--device emulator-5556"))
     }
+
+    @Test
+    fun rejectsTextThatIsNotALinkBeforeTouchingADevice() {
+        val runner = FakeRunner { success() }
+
+        val result = deeplinkCli { androidOnly(runner) }.test(listOf("open", "not a link"))
+
+        assertEquals(2, result.statusCode)
+        assertTrue(result.stderr.contains("Not a link: not a link"))
+        assertEquals(emptyList(), runner.calls)
+    }
 }

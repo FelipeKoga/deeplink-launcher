@@ -2,38 +2,19 @@
   "devices": {
     "com.apple.CoreSimulator.SimRuntime.iOS-18-2": [
       {
-        "lastBootedAt": "2026-10-04T21:15:12Z",
-        "dataPath": "/Users/koga/Library/Developer/CoreSimulator/Devices/564FC45E-8A89-41A7-B88F-5E755E1A6EB6/data",
-        "dataPathSize": 964452352,
-        "logPath": "/Users/koga/Library/Logs/CoreSimulator/564FC45E-8A89-41A7-B88F-5E755E1A6EB6",
         "udid": "564FC45E-8A89-41A7-B88F-5E755E1A6EB6",
-        "isAvailable": true,
-        "logPathSize": 94208,
-        "deviceTypeIdentifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-16-Pro",
-        "state": "Booted",
-        "name": "iPhone 16 Pro"
+        "name": "iPhone 16 Pro",
+        "state": "Booted"
       },
       {
-        "dataPath": "/Users/koga/Library/Developer/CoreSimulator/Devices/BDF5F251-FC59-4EE3-8031-31586B8BBBA3/data",
-        "dataPathSize": 18337792,
-        "logPath": "/Users/koga/Library/Logs/CoreSimulator/BDF5F251-FC59-4EE3-8031-31586B8BBBA3",
         "udid": "BDF5F251-FC59-4EE3-8031-31586B8BBBA3",
-        "isAvailable": true,
-        "deviceTypeIdentifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-16-Pro-Max",
-        "state": "Shutdown",
-        "name": "iPhone 16 Pro Max"
+        "name": "iPhone 16 Pro Max",
+        "state": "Shutdown"
       },
       {
-        "lastBootedAt": "2026-10-03T16:29:35Z",
-        "dataPath": "/Users/koga/Library/Developer/CoreSimulator/Devices/90E767A1-5F25-4E8E-B1B2-D1A8F53295FA/data",
-        "dataPathSize": 1436147712,
-        "logPath": "/Users/koga/Library/Logs/CoreSimulator/90E767A1-5F25-4E8E-B1B2-D1A8F53295FA",
         "udid": "90E767A1-5F25-4E8E-B1B2-D1A8F53295FA",
-        "isAvailable": true,
-        "logPathSize": 401408,
-        "deviceTypeIdentifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-16",
-        "state": "Shutdown",
-        "name": "iPhone 16"
+        "name": "iPhone 16",
+        "state": "Shutdown"
       }
     ]
   }

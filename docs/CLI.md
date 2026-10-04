@@ -37,7 +37,7 @@ With `--json`, stdout is exactly one JSON object, even on failure. Every object 
 |------|---------|
 | 0 | Success |
 | 1 | The link was not handled, the app crashed, or a check failed |
-| 2 | Invalid arguments |
+| 2 | Invalid arguments or text that is not a link. Running `deeplink` with no command prints the help and also exits with 2 |
 | 3 | No usable device, an ambiguous device, or a device that did not respond |
 | 4 | adb or xcrun is missing |
 
@@ -53,4 +53,4 @@ With `--json`, stdout is exactly one JSON object, even on failure. Every object 
 cliApp/build/install/deeplink/bin/deeplink doctor
 ```
 
-Requires a JDK 17+ at runtime.
+Requires a JDK 17+ at runtime. Supported hosts are macOS and Linux; iOS simulators need macOS.
