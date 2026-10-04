@@ -69,6 +69,7 @@ jobs:
           emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
           script: |
             adb shell settings put global hide_error_dialogs 1
+            adb shell pm disable-user --user 0 com.android.vending
             adb install -r androidApp/build/outputs/apk/debug/androidApp-debug.apk
             maestro test maestro/ --format junit --output maestro-report.xml --debug-output maestro-debug --flatten-debug-output
 
