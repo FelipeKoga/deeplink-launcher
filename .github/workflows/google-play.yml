@@ -1,0 +1,70 @@
+name: Google Play
+
+on:
+  workflow_dispatch:
+    inputs:
+      action:
+        description: 'promote: copy the latest build of from-track to to-track. rollout: change the staged rollout on to-track'
+        required: true
+        default: 'promote'
+        type: choice
+        options:
+          - promote
+          - rollout
+      from-track:
+        description: 'Track to promote from (promote only)'
+        required: true
+        default: 'internal'
+        type: choice
+        options:
+          - internal
+          - alpha
+          - beta
+      to-track:
+        description: 'Track to promote to, or whose rollout changes'
+        required: true
+        default: 'alpha'
+        type: choice
+        options:
+          - alpha
+          - beta
+          - production
+      rollout:
+        description: 'Rollout fraction, 0 < x <= 1 (1 completes the rollout)'
+        required: true
+        default: '1'
+        type: string
+
+concurrency:
+  group: google-play
+  cancel-in-progress: false
+
+jobs:
+  google-play:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.3'
+          bundler-cache: true
+
+      - name: Promote
+        if: ${{ inputs.action == 'promote' }}
+        env:
+          PLAY_SERVICE_ACCOUNT_JSON: ${{ secrets.PLAY_SERVICE_ACCOUNT_JSON }}
+          FROM_TRACK: ${{ inputs.from-track }}
+          TO_TRACK: ${{ inputs.to-track }}
+          PLAY_ROLLOUT: ${{ inputs.rollout }}
+        run: bundle exec fastlane android promote from:"$FROM_TRACK" to:"$TO_TRACK" rollout:"$PLAY_ROLLOUT"
+
+      - name: Change rollout
+        if: ${{ inputs.action == 'rollout' }}
+        env:
+          PLAY_SERVICE_ACCOUNT_JSON: ${{ secrets.PLAY_SERVICE_ACCOUNT_JSON }}
+          TO_TRACK: ${{ inputs.to-track }}
+          PLAY_ROLLOUT: ${{ inputs.rollout }}
+        run: bundle exec fastlane android rollout track:"$TO_TRACK" rollout:"$PLAY_ROLLOUT"
