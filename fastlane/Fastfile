@@ -1,0 +1,101 @@
+default_platform(:android)
+
+TRACKS = %w[internal alpha beta production].freeze
+
+platform :android do
+  desc "Upload the release AAB to a Google Play track"
+  desc "Options: track, aab, mapping (optional), rollout (optional, 0 < rollout <= 1)"
+  lane :deploy do |options|
+    rollout = rollout_fraction(options[:rollout])
+
+    upload_to_play_store(
+      json_key_data: play_json_key,
+      track: play_track(options[:track]),
+      aab: options.fetch(:aab),
+      mapping: options[:mapping],
+      release_status: release_status(rollout),
+      rollout: rollout_param(rollout),
+      skip_upload_apk: true,
+      skip_upload_metadata: true,
+      skip_upload_changelogs: true,
+      skip_upload_images: true,
+      skip_upload_screenshots: true,
+    )
+  end
+
+  desc "Promote the latest build of one track to another without rebuilding"
+  desc "Options: from, to, rollout (optional, 0 < rollout <= 1)"
+  lane :promote do |options|
+    from = play_track(options[:from])
+    to = play_track(options[:to])
+    UI.user_error!("from and to must be different tracks") if from == to
+    rollout = rollout_fraction(options[:rollout])
+
+    upload_to_play_store(
+      json_key_data: play_json_key,
+      track: from,
+      track_promote_to: to,
+      track_promote_release_status: release_status(rollout),
+      version_code: latest_version_code(from),
+      rollout: rollout_param(rollout),
+      skip_upload_aab: true,
+      skip_upload_apk: true,
+      skip_upload_metadata: true,
+      skip_upload_changelogs: true,
+      skip_upload_images: true,
+      skip_upload_screenshots: true,
+    )
+  end
+
+  desc "Change the staged rollout of the latest build on a track (1 completes it)"
+  desc "Options: track, rollout (0 < rollout <= 1)"
+  lane :rollout do |options|
+    track = play_track(options[:track])
+    rollout = rollout_fraction(options.fetch(:rollout))
+
+    upload_to_play_store(
+      json_key_data: play_json_key,
+      track: track,
+      version_code: latest_version_code(track),
+      release_status: release_status(rollout),
+      rollout: rollout.to_s,
+      skip_upload_aab: true,
+      skip_upload_apk: true,
+      skip_upload_metadata: true,
+      skip_upload_changelogs: true,
+      skip_upload_images: true,
+      skip_upload_screenshots: true,
+    )
+  end
+end
+
+def play_json_key
+  ENV.fetch("PLAY_SERVICE_ACCOUNT_JSON") { UI.user_error!("PLAY_SERVICE_ACCOUNT_JSON is not set") }
+end
+
+def play_track(track)
+  UI.user_error!("track must be one of #{TRACKS.join(', ')}, got #{track.inspect}") unless TRACKS.include?(track)
+  track
+end
+
+def rollout_fraction(value)
+  return 1.0 if value.nil? || value.to_s.strip.empty?
+
+  fraction = Float(value.to_s)
+  UI.user_error!("rollout must be in (0, 1], got #{value}") unless fraction > 0 && fraction <= 1
+  fraction
+end
+
+def release_status(rollout)
+  rollout < 1 ? "inProgress" : "completed"
+end
+
+def rollout_param(rollout)
+  rollout < 1 ? rollout.to_s : nil
+end
+
+def latest_version_code(track)
+  codes = google_play_track_version_codes(json_key_data: play_json_key, track: track)
+  UI.user_error!("No build on the #{track} track") if codes.empty?
+  codes.max
+end

@@ -8,6 +8,22 @@ on:
         required: true
         default: 'v1.0.0'
         type: string
+      play-track:
+        description: 'Google Play track to upload the AAB to'
+        required: true
+        default: 'internal'
+        type: choice
+        options:
+          - none
+          - internal
+          - alpha
+          - beta
+          - production
+      play-rollout:
+        description: 'Google Play rollout fraction, 0 < x <= 1 (below 1 starts a staged rollout)'
+        required: true
+        default: '1'
+        type: string
 
 permissions:
   contents: write
@@ -112,8 +128,8 @@ jobs:
         if: ${{ needs.baseline-profile.result != 'success' }}
         run: echo "::warning::Baseline profile generation failed; the APK uses the committed profiles."
 
-      - name: Build APK
-        run: ./gradlew assembleRelease --stacktrace
+      - name: Build APK and AAB
+        run: ./gradlew assembleRelease bundleRelease --stacktrace
 
       - name: Check if APK exists
         run: |
@@ -131,6 +147,51 @@ jobs:
           name: android-apk
           path: |
             ./androidApp/build/outputs/apk/release/*.apk
+
+      - name: Upload AAB
+        uses: actions/upload-artifact@v6
+        with:
+          name: android-aab
+          if-no-files-found: error
+          path: |
+            ./androidApp/build/outputs/bundle/release/*.aab
+            ./androidApp/build/outputs/mapping/release/mapping.txt
+
+  publish-google-play:
+    needs: build-apk
+    if: ${{ inputs.play-track != 'none' }}
+    runs-on: ubuntu-latest
+    environment: google-play-${{ inputs.play-track }}
+    concurrency:
+      group: google-play
+      cancel-in-progress: false
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.3'
+          bundler-cache: true
+
+      - name: Download AAB
+        uses: actions/download-artifact@v7
+        with:
+          name: android-aab
+          path: play
+
+      - name: Upload to Google Play
+        env:
+          PLAY_SERVICE_ACCOUNT_JSON: ${{ secrets.PLAY_SERVICE_ACCOUNT_JSON }}
+          PLAY_TRACK: ${{ inputs.play-track }}
+          PLAY_ROLLOUT: ${{ inputs.play-rollout }}
+        run: >
+          bundle exec fastlane android deploy
+          track:"$PLAY_TRACK"
+          rollout:"$PLAY_ROLLOUT"
+          aab:"$(ls play/bundle/release/*.aab)"
+          mapping:play/mapping/release/mapping.txt
 
   build-deb:
     needs: create-tag
