@@ -13,3 +13,6 @@ xcuserdata
 env.properties
 keystore.properties
 trace_processor
+
+fastlane/report.xml
+fastlane/README.md
