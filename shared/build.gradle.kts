@@ -52,6 +52,11 @@ kotlin {
             implementation(projects.library.deviceBridge.api)
             implementation(projects.library.deviceBridge.impl)
         }
+
+        androidUnitTest.dependencies {
+            implementation(libs.junit)
+            implementation(libs.robolectric)
+        }
     }
 }
 

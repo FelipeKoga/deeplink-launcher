@@ -38,7 +38,7 @@ class DesktopAppGraphRuntimeTest {
         assertSame(graph.preferencesDataSource, graph.preferencesDataSource)
         assertSame(graph.appNavGraph, graph.appNavGraph)
 
-        val created = graph.viewModelProviders.map { (key, provider) -> key.simpleName to provider()::class.simpleName }
+        val created = graph.createViewModels(graph.viewModelProviders.keys + graph.assistedFactoryProviders.keys)
         assertEquals(created.map { it.first }, created.map { it.second })
     }
 }
