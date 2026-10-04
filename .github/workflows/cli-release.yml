@@ -11,8 +11,91 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  release:
+  version:
     runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.version.outputs.version }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Read the CLI version
+        id: version
+        run: |
+          version=$(sed -n 's/^version = "\(.*\)"$/\1/p' cliApp/build.gradle.kts)
+          test -n "$version"
+          if git ls-remote --exit-code --tags origin "refs/tags/cli-v$version" > /dev/null; then
+            echo "::error::cli-v$version already exists. Bump version in cliApp/build.gradle.kts first."
+            exit 1
+          fi
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+
+  native:
+    needs: version
+    strategy:
+      fail-fast: true
+      matrix:
+        include:
+          - target: macos-arm64
+            runner: macos-latest
+          - target: macos-x64
+            runner: macos-15-intel
+          - target: linux-x64
+            runner: ubuntu-latest
+    runs-on: ${{ matrix.runner }}
+    env:
+      ARCHIVE: deeplink-${{ needs.version.outputs.version }}-${{ matrix.target }}.tar.gz
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Set up JDK 17 and 21
+        uses: actions/setup-java@v5
+        with:
+          java-version: |
+            17
+            21
+          distribution: 'zulu'
+          cache: gradle
+
+      - name: Set up GraalVM
+        uses: graalvm/setup-graalvm@v1
+        with:
+          java-version: '21'
+          distribution: 'graalvm-community'
+          set-java-home: 'false'
+
+      - name: Create Environment File
+        uses: ./.github/actions/create-env-action
+        with:
+          REVENUECAT_API_KEY: ${{ secrets.REVENUECAT_API_KEY }}
+
+      - name: Build the native binary
+        run: ./gradlew :cliApp:test :cliApp:nativeImage
+
+      - name: Smoke test the binary
+        env:
+          VERSION: ${{ needs.version.outputs.version }}
+        run: |
+          binary=cliApp/build/native/deeplink
+          "$binary" --version | grep -F "$VERSION"
+          "$binary" parse "myapp://product/42?ref=email" --json | grep -F '"query": "ref=email"'
+
+      - name: Package
+        run: tar -czf "$ARCHIVE" -C cliApp/build/native deeplink
+
+      - name: Upload
+        uses: actions/upload-artifact@v6
+        with:
+          name: native-${{ matrix.target }}
+          path: ${{ env.ARCHIVE }}
+          if-no-files-found: error
+
+  release:
+    needs: [version, native]
+    runs-on: ubuntu-latest
+    env:
+      VERSION: ${{ needs.version.outputs.version }}
     steps:
       - name: Checkout
         uses: actions/checkout@v6
@@ -31,46 +114,37 @@ jobs:
         with:
           REVENUECAT_API_KEY: ${{ secrets.REVENUECAT_API_KEY }}
 
-      - name: Read the CLI version
-        id: version
+      - name: Package the JVM build
         run: |
-          version=$(sed -n 's/^version = "\(.*\)"$/\1/p' cliApp/build.gradle.kts)
-          test -n "$version"
-          if git ls-remote --exit-code --tags origin "refs/tags/cli-v$version" > /dev/null; then
-            echo "::error::cli-v$version already exists. Bump version in cliApp/build.gradle.kts first."
-            exit 1
-          fi
-          echo "version=$version" >> "$GITHUB_OUTPUT"
+          ./gradlew :cliApp:distTar
+          mkdir -p dist
+          cp "cliApp/build/distributions/deeplink-$VERSION.tar.gz" "dist/deeplink-$VERSION-jvm.tar.gz"
 
-      - name: Test and package
-        run: ./gradlew :cliApp:test :cliApp:distTar
-
-      - name: Smoke test the package
-        env:
-          VERSION: ${{ steps.version.outputs.version }}
-        run: |
-          mkdir smoke
-          tar xzf "cliApp/build/distributions/deeplink-$VERSION.tar.gz" -C smoke
-          "smoke/deeplink-$VERSION/bin/deeplink" --version | grep -F "$VERSION"
-          "smoke/deeplink-$VERSION/bin/deeplink" parse "myapp://product/42?ref=email"
+      - name: Download the native binaries
+        uses: actions/download-artifact@v7
+        with:
+          pattern: native-*
+          path: dist
+          merge-multiple: true
 
       - name: Create the GitHub release
         env:
           GH_TOKEN: ${{ github.token }}
-          VERSION: ${{ steps.version.outputs.version }}
         run: >
-          gh release create "cli-v$VERSION" "cliApp/build/distributions/deeplink-$VERSION.tar.gz"
+          gh release create "cli-v$VERSION" dist/*.tar.gz
           --target "$GITHUB_SHA"
           --title "deeplink CLI $VERSION"
-          --notes "Install with \`brew install felipekoga/tap/deeplink\`, or download the archive and run \`bin/deeplink\` (needs Java 17+). See docs/CLI.md."
+          --notes "Install with \`brew install felipekoga/tap/deeplink\`, or download the archive for your platform and run \`deeplink\`. The \`-jvm\` archive runs anywhere with Java 17+. See docs/CLI.md."
           --latest=false
 
       - name: Write the Homebrew formula
-        env:
-          VERSION: ${{ steps.version.outputs.version }}
         run: |
-          sha=$(sha256sum "cliApp/build/distributions/deeplink-$VERSION.tar.gz" | cut -d' ' -f1)
-          sed -e "s/{{VERSION}}/$VERSION/g" -e "s/{{SHA256}}/$sha/g" cliApp/homebrew/deeplink.rb.template > deeplink.rb
+          sha() { sha256sum "dist/deeplink-$VERSION-$1.tar.gz" | cut -d' ' -f1; }
+          sed -e "s/{{VERSION}}/$VERSION/g" \
+            -e "s/{{SHA256_MACOS_ARM64}}/$(sha macos-arm64)/" \
+            -e "s/{{SHA256_MACOS_X64}}/$(sha macos-x64)/" \
+            -e "s/{{SHA256_LINUX_X64}}/$(sha linux-x64)/" \
+            cliApp/homebrew/deeplink.rb.template > deeplink.rb
           {
             echo "### Homebrew formula for deeplink $VERSION"
             echo

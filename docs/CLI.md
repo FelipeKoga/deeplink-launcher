@@ -12,7 +12,12 @@
 brew install felipekoga/tap/deeplink
 ```
 
-Or download `deeplink-<version>.tar.gz` from a `cli-v*` release and run `bin/deeplink` (needs Java 17+).
+This installs a native binary, with no Java needed, for macOS (Apple Silicon and Intel) and Linux x64. Each `cli-v*` release also attaches the archives:
+
+| Archive | Contents |
+|---------|----------|
+| `deeplink-<version>-macos-arm64.tar.gz`, `-macos-x64`, `-linux-x64` | The native binary. A download from a browser on macOS is quarantined by Gatekeeper; clear it with `xattr -d com.apple.quarantine deeplink` |
+| `deeplink-<version>-jvm.tar.gz` | `bin/deeplink` plus jars, for any other platform with Java 17+ |
 
 ## Commands
 
@@ -59,14 +64,17 @@ With `--json`, stdout is exactly one JSON object, even on failure. Every object 
 The CLI has its own version, `version` in `cliApp/build.gradle.kts`, independent of the app.
 
 1. Bump `version` in `cliApp/build.gradle.kts`.
-2. Run **Actions → CLI Release**. It tests and packages the CLI, smoke-tests the archive, and publishes a `cli-v<version>` release (not marked as latest, so the app release stays on top).
+2. Run **Actions → CLI Release**. It:
+   - builds and smoke-tests the native binary on macOS arm64, macOS Intel and Linux x64 with GraalVM 21;
+   - packages the JVM build;
+   - publishes a `cli-v<version>` release, not marked as latest, so the app release stays on top.
 3. Copy the formula from the job summary (or the `homebrew-formula` artifact) to `Formula/deeplink.rb` in `FelipeKoga/homebrew-tap`.
 
 ## Building from source
 
 ```
-./gradlew :cliApp:installDist
-cliApp/build/install/deeplink/bin/deeplink doctor
+./gradlew :cliApp:installDist          # JVM build: cliApp/build/install/deeplink/bin/deeplink
+GRAALVM_HOME=/path/to/graalvm-21 ./gradlew :cliApp:nativeImage   # native: cliApp/build/native/deeplink
 ```
 
-Requires a JDK 17+ at runtime. Supported hosts are macOS and Linux; iOS simulators need macOS.
+The native binary starts in about 10 ms, against about 0.5 s on the JVM. Supported hosts are macOS and Linux; iOS simulators need macOS.
