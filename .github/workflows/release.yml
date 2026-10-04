@@ -30,6 +30,11 @@ jobs:
   build-apk:
     needs: create-tag
     runs-on: ubuntu-latest
+    env:
+      KEYSTORE_FILE_NAME: release.jks
+      KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+      KEYSTORE_ALIAS: ${{ secrets.KEYSTORE_ALIAS }}
+      KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
     steps:
       - name: Checkout
         uses: actions/checkout@v6
@@ -69,24 +74,18 @@ jobs:
       - name: Update dependencies
         run: ./gradlew dependencies
 
-      - name: Decode Release Key
+      - name: Create release keystore
+        env:
+          KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
         run: |
-          echo "${{ secrets.KEYSTORE_DECRYPT_SECRET }}" > ./androidApp/${{ vars.KEYSTORE_FILE_NAME }}.asc &&
-          echo "Decrypting file: ./androidApp/${{ vars.KEYSTORE_FILE_NAME }}.asc" &&
-          echo "Output file will be: ./androidApp/${{ vars.KEYSTORE_FILE_NAME }}" &&
-          gpg --batch --yes --decrypt --passphrase "${{ secrets.KEYSTORE_DECRYPT_PASSWORD }}" ./androidApp/${{ vars.KEYSTORE_FILE_NAME }}.asc > ./androidApp/${{ vars.KEYSTORE_FILE_NAME }} &&
-          rm ./androidApp/${{ vars.KEYSTORE_FILE_NAME }}.asc
-        continue-on-error: false
-
-      - name: Check Release Key is created
-        run: |
-          if [ -f ./androidApp/${{ vars.KEYSTORE_FILE_NAME }} ]; then
-          echo "Release key exists."
-          else
-          echo "Release key does not exist." >&2
-          exit 1
-          fi
-        continue-on-error: false
+          for name in KEYSTORE_BASE64 KEYSTORE_PASSWORD KEYSTORE_ALIAS KEY_PASSWORD; do
+            if [ -z "${!name}" ]; then
+              echo "::error::$name is empty. Without it the build would sign with the committed testing keystore."
+              exit 1
+            fi
+          done
+          echo "$KEYSTORE_BASE64" | base64 --decode > "androidApp/$KEYSTORE_FILE_NAME"
+          keytool -list -keystore "androidApp/$KEYSTORE_FILE_NAME" -storepass "$KEYSTORE_PASSWORD" -alias "$KEYSTORE_ALIAS" > /dev/null
 
       - name: Create Environment File
         uses: ./.github/actions/create-env-action
