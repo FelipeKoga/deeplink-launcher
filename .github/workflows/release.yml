@@ -104,10 +104,6 @@ jobs:
           exit 1
           fi
 
-      - name: Print APK signing certificate
-        run: |
-          "$(ls -d "$ANDROID_HOME"/build-tools/* | sort -V | tail -1)/apksigner" verify --print-certs ./androidApp/build/outputs/apk/release/*.apk | grep -E 'DN|SHA-256'
-
       - name: Upload APK
         if: always()
         uses: actions/upload-artifact@v6
