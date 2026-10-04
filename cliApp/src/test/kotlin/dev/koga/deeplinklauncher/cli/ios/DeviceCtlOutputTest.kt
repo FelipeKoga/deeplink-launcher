@@ -9,7 +9,7 @@ class DeviceCtlOutputTest {
     @Test
     fun keepsOnlyPairedAndConnectedIosDevices() {
         assertEquals(
-            listOf(PhysicalDevice("00008130-000A1234ABCD001C", "Felipe's iPhone", "18.1", "enabled")),
+            listOf(PhysicalDevice("00008130-000A1234ABCD001C", "Koga's iPhone", "18.1", "enabled")),
             DeviceCtlOutput.devices(fixture("ios/devicectl-list-devices.json")),
         )
     }

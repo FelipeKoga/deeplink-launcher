@@ -50,7 +50,7 @@ class PhysicalIphoneTest {
         val result = deeplinkCli { physicalOnly(iphone(processes = gone)) }.test("open myapp://cart --app com.acme")
 
         assertEquals(1, result.statusCode)
-        assertTrue(result.stdout.startsWith("✗ Crashed on Felipe's iPhone"))
+        assertTrue(result.stdout.startsWith("✗ Crashed on Koga's iPhone"))
     }
 
     @Test
