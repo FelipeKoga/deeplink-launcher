@@ -44,7 +44,7 @@ The usual path: Release to `internal`, then promote `internal → alpha`, `alpha
 
 ## Constraints
 
-- **Version codes:** `versionCode` is derived from the version in `gradle/libs.versions.toml` (`android-majorVersion`, `android-minorVersion`, `android-patchVersion`). Google Play rejects a second upload with the same code, so bump the version before each Release that uploads, and use promotion to move an existing build to another track.
+- **Version codes:** `android-versionCode` in `gradle/libs.versions.toml` is the Android `versionCode`. Add one to it together with the version name before each Release that uploads. Google Play rejects a code it has already seen, so use promotion to move an existing build to another track.
 - **Upload key:** the AAB is signed with the release keystore from the `KEYSTORE_BASE64` secret. Google Play accepts it only if that key is the app's upload key in Play App Signing.
 - **Staged rollouts:** the internal testing track has no staged rollouts, so keep `rollout` at `1` there. Use a value below `1` only on tracks where Play Console offers staged rollouts, typically `production`.
 - **Release notes:** metadata, changelogs, images and screenshots are not uploaded. Edit them in Play Console.
