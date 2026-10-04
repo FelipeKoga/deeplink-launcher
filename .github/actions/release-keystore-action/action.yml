@@ -1,0 +1,44 @@
+name: Release Keystore
+description: Decodes the release keystore from base64 and exports the signing env that androidApp's release signingConfig reads.
+
+inputs:
+  KEYSTORE_BASE64:
+    description: Release keystore (.jks) encoded in base64
+    required: true
+  KEYSTORE_PASSWORD:
+    description: Keystore password
+    required: true
+  KEYSTORE_ALIAS:
+    description: Key alias
+    required: true
+  KEY_PASSWORD:
+    description: Key password
+    required: true
+
+runs:
+  using: "composite"
+  steps:
+    - name: Decode release keystore
+      shell: bash
+      env:
+        KEYSTORE_BASE64: ${{ inputs.KEYSTORE_BASE64 }}
+        KEYSTORE_PASSWORD: ${{ inputs.KEYSTORE_PASSWORD }}
+        KEYSTORE_ALIAS: ${{ inputs.KEYSTORE_ALIAS }}
+        KEY_PASSWORD: ${{ inputs.KEY_PASSWORD }}
+      run: |
+        for name in KEYSTORE_BASE64 KEYSTORE_PASSWORD KEYSTORE_ALIAS KEY_PASSWORD; do
+          if [ -z "${!name}" ]; then
+            echo "::error::$name is empty. Without it the build would sign with the committed testing keystore."
+            exit 1
+          fi
+        done
+
+        echo "$KEYSTORE_BASE64" | base64 --decode > androidApp/release.jks
+        keytool -list -keystore androidApp/release.jks -storepass "$KEYSTORE_PASSWORD" -alias "$KEYSTORE_ALIAS" > /dev/null
+
+        {
+          echo "KEYSTORE_FILE_NAME=release.jks"
+          echo "KEYSTORE_PASSWORD=$KEYSTORE_PASSWORD"
+          echo "KEYSTORE_ALIAS=$KEYSTORE_ALIAS"
+          echo "KEY_PASSWORD=$KEY_PASSWORD"
+        } >> "$GITHUB_ENV"
