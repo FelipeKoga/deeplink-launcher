@@ -7,7 +7,7 @@ description: Open, resolve and test deeplinks on Android devices and emulators, 
 
 `deeplink` sends a link to a running device the way a tap in a browser would, and reports which app handled it, how long it took on Android, and whether the app crashed. Every command takes `--json`, never prompts, and exits with a meaningful code.
 
-Install: `brew install felipekoga/tap/deeplink` (needs adb for Android, Xcode for iOS).
+Get it from the CLI Build workflow artifacts or build it with `./gradlew :cliApp:installDist` (see docs/CLI.md). Needs adb for Android and Xcode for iOS.
 
 ## Workflow
 
