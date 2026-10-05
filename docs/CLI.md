@@ -8,16 +8,14 @@
 
 ## Install
 
-```
-brew install felipekoga/tap/deeplink
-```
+The CLI isn't published to a package manager yet. Get it from the **CLI Build** workflow (Actions → CLI Build → Run workflow), which attaches these artifacts to the run:
 
-This installs a native binary, with no Java needed, for macOS (Apple Silicon and Intel) and Linux x64. Each `cli-v*` release also attaches the archives:
+| Artifact | Contents |
+|----------|----------|
+| `native-macos-arm64`, `native-macos-x64`, `native-linux-x64` | `deeplink-<version>-<os>-<arch>.tar.gz` with the native binary, no Java needed. A download from a browser on macOS is quarantined by Gatekeeper; clear it with `xattr -d com.apple.quarantine deeplink` |
+| `jvm` | `deeplink-<version>-jvm.tar.gz` with `bin/deeplink` plus jars, for any platform with Java 17+ |
 
-| Archive | Contents |
-|---------|----------|
-| `deeplink-<version>-macos-arm64.tar.gz`, `-macos-x64`, `-linux-x64` | The native binary. A download from a browser on macOS is quarantined by Gatekeeper; clear it with `xattr -d com.apple.quarantine deeplink` |
-| `deeplink-<version>-jvm.tar.gz` | `bin/deeplink` plus jars, for any other platform with Java 17+ |
+Or build it from source (see below).
 
 ## Commands
 
@@ -59,16 +57,11 @@ With `--json`, stdout is exactly one JSON object, even on failure. Every object 
 - **Android:** the link is sent as a `VIEW` intent with the `BROWSABLE` category, like a tap in a browser. Activities without `BROWSABLE` in their intent filter are reported as not handling the link.
 - **iOS:** custom schemes are resolved from each installed app's `Info.plist`. Universal Links (`https`) cannot be resolved from the host, so `resolve` reports `unknown`. `open` still opens them, but can't name the app. Crash detection checks that the app is still running after `--watch` ms.
 
-## Releasing
+## Versioning
 
-The CLI has its own version, `version` in `cliApp/build.gradle.kts`, independent of the app.
-
-1. Bump `version` in `cliApp/build.gradle.kts`.
-2. Run **Actions → CLI Release**. It:
-   - builds and smoke-tests the native binary on macOS arm64, macOS Intel and Linux x64 with GraalVM 21;
-   - packages the JVM build;
-   - publishes a `cli-v<version>` release, not marked as latest, so the app release stays on top.
-3. Copy the formula from the job summary (or the `homebrew-formula` artifact) to `Formula/deeplink.rb` in `FelipeKoga/homebrew-tap`.
+The CLI has its own version, `version` in `cliApp/build.gradle.kts`, independent of the app. The CLI Build workflow:
+- builds and smoke-tests the native binary on macOS arm64, macOS Intel and Linux x64 with GraalVM 21;
+- packages the JVM build.
 
 ## Building from source
 

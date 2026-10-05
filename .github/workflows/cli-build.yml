@@ -1,13 +1,13 @@
-name: CLI Release
+name: CLI Build
 
 on:
   workflow_dispatch:
 
 permissions:
-  contents: write
+  contents: read
 
 concurrency:
-  group: cli-release
+  group: cli-build
   cancel-in-progress: false
 
 jobs:
@@ -24,10 +24,6 @@ jobs:
         run: |
           version=$(sed -n 's/^version = "\(.*\)"$/\1/p' cliApp/build.gradle.kts)
           test -n "$version"
-          if git ls-remote --exit-code --tags origin "refs/tags/cli-v$version" > /dev/null; then
-            echo "::error::cli-v$version already exists. Bump version in cliApp/build.gradle.kts first."
-            exit 1
-          fi
           echo "version=$version" >> "$GITHUB_OUTPUT"
 
   native:
@@ -91,11 +87,9 @@ jobs:
           path: ${{ env.ARCHIVE }}
           if-no-files-found: error
 
-  release:
-    needs: [version, native]
+  jvm:
+    needs: version
     runs-on: ubuntu-latest
-    env:
-      VERSION: ${{ needs.version.outputs.version }}
     steps:
       - name: Checkout
         uses: actions/checkout@v6
@@ -115,48 +109,15 @@ jobs:
           REVENUECAT_API_KEY: ${{ secrets.REVENUECAT_API_KEY }}
 
       - name: Package the JVM build
+        env:
+          VERSION: ${{ needs.version.outputs.version }}
         run: |
           ./gradlew :cliApp:distTar
-          mkdir -p dist
-          cp "cliApp/build/distributions/deeplink-$VERSION.tar.gz" "dist/deeplink-$VERSION-jvm.tar.gz"
+          cp "cliApp/build/distributions/deeplink-$VERSION.tar.gz" "deeplink-$VERSION-jvm.tar.gz"
 
-      - name: Download the native binaries
-        uses: actions/download-artifact@v7
-        with:
-          pattern: native-*
-          path: dist
-          merge-multiple: true
-
-      - name: Create the GitHub release
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: >
-          gh release create "cli-v$VERSION" dist/*.tar.gz
-          --target "$GITHUB_SHA"
-          --title "deeplink CLI $VERSION"
-          --notes "Install with \`brew install felipekoga/tap/deeplink\`, or download the archive for your platform and run \`deeplink\`. The \`-jvm\` archive runs anywhere with Java 17+. See docs/CLI.md."
-          --latest=false
-
-      - name: Write the Homebrew formula
-        run: |
-          sha() { sha256sum "dist/deeplink-$VERSION-$1.tar.gz" | cut -d' ' -f1; }
-          sed -e "s/{{VERSION}}/$VERSION/g" \
-            -e "s/{{SHA256_MACOS_ARM64}}/$(sha macos-arm64)/" \
-            -e "s/{{SHA256_MACOS_X64}}/$(sha macos-x64)/" \
-            -e "s/{{SHA256_LINUX_X64}}/$(sha linux-x64)/" \
-            cliApp/homebrew/deeplink.rb.template > deeplink.rb
-          {
-            echo "### Homebrew formula for deeplink $VERSION"
-            echo
-            echo "Commit this as \`Formula/deeplink.rb\` in \`FelipeKoga/homebrew-tap\`:"
-            echo
-            echo '```ruby'
-            cat deeplink.rb
-            echo '```'
-          } >> "$GITHUB_STEP_SUMMARY"
-
-      - name: Upload the Homebrew formula
+      - name: Upload
         uses: actions/upload-artifact@v6
         with:
-          name: homebrew-formula
-          path: deeplink.rb
+          name: jvm
+          path: deeplink-${{ needs.version.outputs.version }}-jvm.tar.gz
+          if-no-files-found: error
