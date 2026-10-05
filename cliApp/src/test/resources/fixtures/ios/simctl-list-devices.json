@@ -1,0 +1,21 @@
+{
+  "devices": {
+    "com.apple.CoreSimulator.SimRuntime.iOS-18-2": [
+      {
+        "udid": "564FC45E-8A89-41A7-B88F-5E755E1A6EB6",
+        "name": "iPhone 16 Pro",
+        "state": "Booted"
+      },
+      {
+        "udid": "BDF5F251-FC59-4EE3-8031-31586B8BBBA3",
+        "name": "iPhone 16 Pro Max",
+        "state": "Shutdown"
+      },
+      {
+        "udid": "90E767A1-5F25-4E8E-B1B2-D1A8F53295FA",
+        "name": "iPhone 16",
+        "state": "Shutdown"
+      }
+    ]
+  }
+}

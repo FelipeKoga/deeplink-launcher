@@ -1,0 +1,6 @@
+47379	0	UIKitApplication:com.apple.iMessageAppsViewService[b033][rb-legacy]
+47201	0	UIKitApplication:com.apple.family[4482][rb-legacy]
+47204	0	UIKitApplication:com.apple.Spotlight[62cd][rb-legacy]
+47341	0	UIKitApplication:com.apple.mobilesafari[f0d7][rb-legacy]
+47652	0	UIKitApplication:com.apple.mobilecal[ae46][rb-legacy]
+47200	0	UIKitApplication:com.apple.chrono.WidgetRenderer-Default[4106][rb-legacy]

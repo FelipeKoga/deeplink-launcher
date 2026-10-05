@@ -1,0 +1,30 @@
+[
+    {
+        "CFBundleURLSchemes": [
+            "calshow",
+            "x-apple-calevent"
+        ],
+        "CFBundleURLName": "com.apple.mobilecal.event",
+        "CFBundleURLIsPrivate": false
+    },
+    {
+        "CFBundleURLSchemes": [
+            "calinvitelist"
+        ],
+        "CFBundleURLName": "com.apple.mobilecal.invitelist",
+        "CFBundleURLIsPrivate": true
+    },
+    {
+        "CFBundleURLSchemes": [
+            "calinvite"
+        ],
+        "CFBundleURLName": "com.apple.mobilecal.invite",
+        "CFBundleURLIsPrivate": true
+    },
+    {
+        "CFBundleURLName": "com.apple.mobilecal.webcal",
+        "CFBundleURLSchemes": [
+            "webcal"
+        ]
+    }
+]

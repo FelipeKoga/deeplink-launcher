@@ -46,7 +46,7 @@ jobs:
           REVENUECAT_API_KEY: ${{ secrets.REVENUECAT_API_KEY }}
 
       - name: Run Unit tests
-        run: ./gradlew testDebugUnitTest jvmTest :library:device-bridge:impl:test -PexcludeScreenshotTests
+        run: ./gradlew testDebugUnitTest jvmTest :library:device-bridge:impl:test :cliApp:test -PexcludeScreenshotTests
 
   run-code-analysis:
     runs-on: ubuntu-latest
