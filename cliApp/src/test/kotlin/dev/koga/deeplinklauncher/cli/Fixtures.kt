@@ -32,3 +32,13 @@ internal fun androidEmulator(extra: (String) -> CommandResult?): FakeRunner = Fa
         else -> success()
     }
 }
+
+internal fun physicalIphone(json: (String) -> String?): FakeRunner = FakeRunner { command ->
+    val output = command.substringAfter("--json-output ", "").substringBefore(" ")
+    val content = json(command)
+    if (output.isNotEmpty() && content != null) java.io.File(output).writeText(content)
+    success()
+}
+
+internal fun physicalOnly(runner: FakeRunner) =
+    Toolchain(adb = null, simctl = null, deviceCtl = dev.koga.deeplinklauncher.cli.ios.DeviceCtl("xcrun", runner), sleep = {})

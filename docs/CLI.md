@@ -1,6 +1,6 @@
 # deeplink CLI
 
-`deeplink` opens and inspects deeplinks on Android devices, Android emulators and booted iOS simulators. It is built for scripts and AI agents:
+`deeplink` opens and inspects deeplinks on Android devices and emulators, booted iOS simulators and connected iPhones. It is built for scripts and AI agents:
 
 - every command takes `--json`;
 - it never prompts;
@@ -13,7 +13,7 @@ AI agents can load the usage guide as a skill: `npx skills add FelipeKoga/deepli
 | Command | What it does |
 |---------|--------------|
 | `deeplink doctor` | Checks adb, xcrun and the running devices, and prints the command that fixes each failed check |
-| `deeplink devices` | Lists the running Android devices and emulators and the booted iOS simulators |
+| `deeplink devices` | Lists the running Android devices and emulators, booted iOS simulators and connected iPhones |
 | `deeplink open <url>` | Opens the link the way a browser tap would, then reports the handler, the launch time (Android), whether the app is still alive after `--watch` ms, and the crash log if it died |
 | `deeplink resolve <url>` | Lists the apps that would handle the link without opening it |
 | `deeplink test <suite>` | Opens every link of a suite and checks each one against its expectation |
@@ -82,7 +82,13 @@ With `--json`, stdout is exactly one JSON object, even on failure. Every object 
 ## Platform notes
 
 - **Android:** the link is sent as a `VIEW` intent with the `BROWSABLE` category, like a tap in a browser. Activities without `BROWSABLE` in their intent filter are reported as not handling the link.
-- **iOS:** custom schemes are resolved from each installed app's `Info.plist`. Universal Links (`https`) cannot be resolved from the host, so `resolve` reports `unknown`. `open` still opens them, but can't name the app. Crash detection checks that the app is still running after `--watch` ms.
+- **Android:** emulators and physical devices (USB or wireless debugging) work the same way through adb.
+- **iOS simulators:** custom schemes are resolved from each installed app's `Info.plist`. Universal Links (`https`) cannot be resolved from the host, so `resolve` reports `unknown`. `open` still opens them, but can't name the app. Crash detection checks that the app is still running after `--watch` ms.
+- **Physical iPhones** (Xcode 15+, paired, Developer Mode on) go through `xcrun devicectl`. It opens a link inside a given app instead of routing it through the system, so:
+  - `open` needs `--app <bundle id>`, and `test` needs `expect.ios` per link or a default `--app`;
+  - the app is relaunched with the link as an open-URL request (`--terminate-existing --payload-url`), so `continueUserActivity`-based Universal Link handling is not exercised;
+  - `resolve` reports `unknown`, because installed apps' URL schemes aren't visible from the host;
+  - a crash is detected when the launched process is gone after `--watch` ms. The log is in Xcode › Devices and Simulators.
 
 ## Building from source
 

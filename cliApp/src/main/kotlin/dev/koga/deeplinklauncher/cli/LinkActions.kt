@@ -3,6 +3,8 @@ package dev.koga.deeplinklauncher.cli
 import dev.koga.deeplinklauncher.cli.android.Component
 import dev.koga.deeplinklauncher.cli.device.Device
 import dev.koga.deeplinklauncher.cli.device.Platform
+import dev.koga.deeplinklauncher.cli.ios.DeviceCtl
+import dev.koga.deeplinklauncher.cli.ios.DeviceCtlLaunch
 import dev.koga.deeplinklauncher.cli.ios.Simctl
 import dev.koga.deeplinklauncher.cli.link.ParsedLink
 import dev.koga.deeplinklauncher.cli.output.Handler
@@ -13,14 +15,23 @@ import dev.koga.deeplinklauncher.cli.output.ResolveStatus
 
 internal class LinkActions(private val toolchain: Toolchain) {
 
-    fun resolve(device: Device, url: String): ResolveReport = when (device.platform) {
-        Platform.ANDROID -> resolveOnAndroid(device, url)
-        Platform.IOS -> resolveOnIos(device, url)
+    fun resolve(device: Device, url: String): ResolveReport = when {
+        device.platform == Platform.ANDROID -> resolveOnAndroid(device, url)
+        device.virtual -> resolveOnIos(device, url)
+        else -> ResolveReport(
+            url = url,
+            device = device,
+            status = ResolveStatus.UNKNOWN,
+            defaultHandler = null,
+            handlers = emptyList(),
+            note = PHYSICAL_IOS_RESOLVE_NOTE,
+        )
     }
 
-    fun open(device: Device, url: String, watchMs: Long): OpenReport = when (device.platform) {
-        Platform.ANDROID -> openOnAndroid(device, url, watchMs)
-        Platform.IOS -> openOnIos(device, url, watchMs)
+    fun open(device: Device, url: String, watchMs: Long, app: String? = null): OpenReport = when {
+        device.platform == Platform.ANDROID -> openOnAndroid(device, url, watchMs)
+        device.virtual -> openOnIos(device, url, watchMs)
+        else -> openOnPhysicalIos(device, url, watchMs, DeviceCtl.requireApp(app))
     }
 
     private fun resolveOnAndroid(device: Device, url: String): ResolveReport {
@@ -141,10 +152,43 @@ internal class LinkActions(private val toolchain: Toolchain) {
         )
     }
 
+    private fun openOnPhysicalIos(device: Device, url: String, watchMs: Long, app: String): OpenReport {
+        val deviceCtl = toolchain.requireDeviceCtl()
+        return when (val launch = deviceCtl.launch(device.id, app, url)) {
+            is DeviceCtlLaunch.Failed -> OpenReport(
+                url = url,
+                device = device,
+                status = OpenStatus.UNHANDLED,
+                handler = null,
+                watchMs = watchMs,
+                note = launch.message,
+            )
+            is DeviceCtlLaunch.Started -> {
+                toolchain.sleep(watchMs)
+                val alive = launch.processId in deviceCtl.runningProcessIds(device.id)
+                OpenReport(
+                    url = url,
+                    device = device,
+                    status = if (alive) OpenStatus.OPENED else OpenStatus.CRASHED,
+                    handler = Handler(id = app),
+                    launch = "cold",
+                    alive = alive,
+                    watchMs = watchMs,
+                    note = if (alive) PHYSICAL_IOS_OPEN_NOTE else "$app is not running after $watchMs ms. $PHYSICAL_IOS_CRASH_NOTE",
+                )
+            }
+        }
+    }
+
     private fun Component.toHandler() = Handler(id = flattened)
 
     private companion object {
         val WEB_SCHEMES = setOf("http", "https")
+        const val PHYSICAL_IOS_RESOLVE_NOTE = "Physical iPhones don't expose installed apps' URL schemes to the host. " +
+            "Use `deeplink open <url> --app <bundle id>` to check a specific app."
+        const val PHYSICAL_IOS_OPEN_NOTE = "Delivered to the app as an open-URL request; " +
+            "Universal Link routing (continueUserActivity) is not exercised on physical iPhones."
+        const val PHYSICAL_IOS_CRASH_NOTE = "Find the crash in Xcode › Window › Devices and Simulators › View Device Logs."
         const val UNRESOLVED_ANDROID_NOTE = "No app accepts this link from a browser " +
             "(no activity has a matching VIEW + BROWSABLE intent filter)."
         const val WEB_LINK_NOTE = "Web links open in Safari unless an app claims the domain with Universal Links, " +

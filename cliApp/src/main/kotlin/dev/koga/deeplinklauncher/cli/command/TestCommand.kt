@@ -34,6 +34,11 @@ internal class TestCommand(
     private val source by argument("SUITE", help = "Path to the suite file, or - for stdin")
     private val folder by option("--folder", help = "Only run links from this folder of the export")
     private val target by TargetOptions()
+    private val app by option(
+        "--app",
+        metavar = "BUNDLE_ID",
+        help = "On physical iPhones, the app to open links in when a link has no expect.ios",
+    )
     private val watchMs by option("--watch", metavar = "MS", help = "How long to watch each app after opening (default 1500)")
         .long()
         .restrictTo(min = 0)
@@ -44,10 +49,11 @@ internal class TestCommand(
         cases.forEach { requireLink(it.url) }
         val toolchain = toolchain()
         val device = target.select(toolchain)
+        if (device.platform == Platform.IOS && !device.virtual) requireTargetApps(cases)
         val actions = LinkActions(toolchain)
 
         val results = cases.map { case ->
-            val open = actions.open(device, case.url, watchMs)
+            val open = actions.open(device, case.url, watchMs, case.expect.ios ?: app)
             val verdict = Verdicts.judge(case, device.platform, open)
             TestReport.CaseResult(
                 name = case.name,
@@ -124,6 +130,19 @@ internal class TestCommand(
         reason != null -> reason
         !expected.opens -> "not handled, as expected"
         else -> listOfNotNull(actual.handler, actual.timeMs?.let { "$it ms" }).joinToString(" · ").ifEmpty { "opened" }
+    }
+
+    private fun requireTargetApps(cases: List<SuiteCase>) {
+        val missing = cases.filter { it.expect.ios == null && app == null }
+        if (missing.isNotEmpty()) {
+            throw CliFailure(
+                exitCode = ExitCode.USAGE,
+                message = "Physical iPhones open links inside a given app, and ${Text.count(missing.size, "link")} " +
+                    "${if (missing.size == 1) "has" else "have"} none.",
+                hint = "Pass --app <bundle id>, or set \"expect\": { \"ios\": \"<bundle id>\" } on: " +
+                    missing.joinToString { it.name ?: it.url },
+            )
+        }
     }
 
     private fun SuiteCase.expectedHandler(platform: Platform): String? = when (platform) {
