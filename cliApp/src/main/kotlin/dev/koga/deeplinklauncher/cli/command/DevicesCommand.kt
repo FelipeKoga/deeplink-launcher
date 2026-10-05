@@ -5,7 +5,7 @@ import dev.koga.deeplinklauncher.cli.output.DevicesReport
 
 internal class DevicesCommand(private val toolchain: () -> Toolchain) : ReportingCommand<DevicesReport>(
     name = "devices",
-    summary = "List running Android devices, emulators and booted iOS simulators.",
+    summary = "List running Android devices and emulators, booted iOS simulators and connected iPhones.",
     details = "Use the id with --device in other commands.",
     serializer = DevicesReport.serializer(),
 ) {

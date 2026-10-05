@@ -11,6 +11,7 @@ import dev.koga.deeplinklauncher.cli.command.DoctorCommand
 import dev.koga.deeplinklauncher.cli.command.OpenCommand
 import dev.koga.deeplinklauncher.cli.command.ParseCommand
 import dev.koga.deeplinklauncher.cli.command.ResolveCommand
+import dev.koga.deeplinklauncher.cli.command.TestCommand
 import kotlin.system.exitProcess
 
 internal fun deeplinkCli(toolchain: () -> Toolchain = Toolchain::system): CliktCommand =
@@ -19,6 +20,7 @@ internal fun deeplinkCli(toolchain: () -> Toolchain = Toolchain::system): CliktC
         DevicesCommand(toolchain),
         OpenCommand(toolchain),
         ResolveCommand(toolchain),
+        TestCommand(toolchain),
         ParseCommand(),
     )
 
