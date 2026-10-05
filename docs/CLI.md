@@ -6,6 +6,8 @@
 - it never prompts;
 - its exit code tells what happened.
 
+AI agents can load the usage guide as a skill: `npx skills add FelipeKoga/deeplink-launcher --skill deeplink` (source: `skills/deeplink/SKILL.md`).
+
 ## Commands
 
 | Command | What it does |
