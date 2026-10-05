@@ -1,0 +1,15 @@
+{
+  "info" : {
+    "commandType" : "devicectl.device.process.launch",
+    "jsonVersion" : 2,
+    "outcome" : "success",
+    "version" : "397.28"
+  },
+  "result" : {
+    "deviceIdentifier" : "4F1E2D3C-AAAA-BBBB-CCCC-1234567890AB",
+    "process" : {
+      "executable" : "file:///private/var/containers/Bundle/Application/12345E6A-7F89-0C12-345E-F6A7E890CFF1/Acme.app/Acme",
+      "processIdentifier" : 1234
+    }
+  }
+}

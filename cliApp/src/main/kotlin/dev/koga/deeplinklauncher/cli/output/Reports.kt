@@ -102,3 +102,44 @@ internal data class DoctorReport(
     @Serializable
     data class Check(val name: String, val ok: Boolean, val detail: String, val fix: String? = null)
 }
+
+@Serializable
+internal enum class TestStatus {
+    @SerialName("passed")
+    PASSED,
+
+    @SerialName("failed")
+    FAILED,
+
+    @SerialName("unverified")
+    UNVERIFIED,
+}
+
+@Serializable
+internal data class TestReport(
+    val schemaVersion: Int = SCHEMA_VERSION,
+    val command: String = "test",
+    val device: Device,
+    val summary: Summary,
+    val results: List<CaseResult>,
+) {
+    @Serializable
+    data class Summary(val total: Int, val passed: Int, val failed: Int, val unverified: Int)
+
+    @Serializable
+    data class CaseResult(
+        val name: String?,
+        val url: String,
+        val folder: String?,
+        val status: TestStatus,
+        val reason: String?,
+        val expected: Expected,
+        val actual: Actual,
+    )
+
+    @Serializable
+    data class Expected(val opens: Boolean, val handler: String?)
+
+    @Serializable
+    data class Actual(val status: OpenStatus, val handler: String?, val timeMs: Long?, val crash: String?)
+}

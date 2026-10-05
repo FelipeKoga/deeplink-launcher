@@ -1,0 +1,17 @@
+{
+  "error" : {
+    "code" : 10002,
+    "domain" : "com.apple.dt.CoreDeviceError",
+    "userInfo" : {
+      "NSLocalizedDescription" : {
+        "string" : "The requested application com.acme.missing is not installed."
+      }
+    }
+  },
+  "info" : {
+    "commandType" : "devicectl.device.process.launch",
+    "jsonVersion" : 2,
+    "outcome" : "failed",
+    "version" : "397.28"
+  }
+}
