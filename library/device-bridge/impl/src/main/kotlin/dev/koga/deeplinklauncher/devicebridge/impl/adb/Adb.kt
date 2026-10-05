@@ -28,14 +28,7 @@ internal class Adb private constructor(
         link: String,
     ): Process {
         return withContext(dispatcher) {
-            ProcessBuilder(
-                path,
-                "-s", id,
-                "shell",
-                "am", "start",
-                "-a", "android.intent.action.VIEW",
-                "-d", link,
-            ).start().apply {
+            ProcessBuilder(launchCommand(path, id, link)).start().apply {
                 waitFor()
             }
         }
@@ -153,6 +146,14 @@ internal class Adb private constructor(
     }
 
     companion object {
+        internal fun launchCommand(path: String, id: String, link: String): List<String> = listOf(
+            path,
+            "-s",
+            id,
+            "shell",
+            "am start -a android.intent.action.VIEW -d '${link.replace("'", "'\\''")}'",
+        )
+
         fun build(dispatcher: CoroutineDispatcher): Adb {
             val userHome = System.getProperty("user.home")
 
