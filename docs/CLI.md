@@ -6,6 +6,17 @@
 - it never prompts;
 - its exit code tells what happened.
 
+## Install
+
+The CLI isn't published to a package manager yet. Get it from the **CLI Build** workflow (Actions → CLI Build → Run workflow), which attaches these artifacts to the run:
+
+| Artifact | Contents |
+|----------|----------|
+| `native-macos-arm64`, `native-macos-x64`, `native-linux-x64` | `deeplink-<version>-<os>-<arch>.tar.gz` with the native binary, no Java needed. A download from a browser on macOS is quarantined by Gatekeeper; clear it with `xattr -d com.apple.quarantine deeplink` |
+| `jvm` | `deeplink-<version>-jvm.tar.gz` with `bin/deeplink` plus jars, for any platform with Java 17+ |
+
+Or build it from source (see below).
+
 ## Commands
 
 | Command | What it does |
@@ -82,11 +93,17 @@ With `--json`, stdout is exactly one JSON object, even on failure. Every object 
 - **Android:** the link is sent as a `VIEW` intent with the `BROWSABLE` category, like a tap in a browser. Activities without `BROWSABLE` in their intent filter are reported as not handling the link.
 - **iOS:** custom schemes are resolved from each installed app's `Info.plist`. Universal Links (`https`) cannot be resolved from the host, so `resolve` reports `unknown`. `open` still opens them, but can't name the app. Crash detection checks that the app is still running after `--watch` ms.
 
+## Versioning
+
+The CLI has its own version, `version` in `cliApp/build.gradle.kts`, independent of the app. The CLI Build workflow:
+- builds and smoke-tests the native binary on macOS arm64, macOS Intel and Linux x64 with GraalVM 21;
+- packages the JVM build.
+
 ## Building from source
 
 ```
-./gradlew :cliApp:installDist
-cliApp/build/install/deeplink/bin/deeplink doctor
+./gradlew :cliApp:installDist          # JVM build: cliApp/build/install/deeplink/bin/deeplink
+GRAALVM_HOME=/path/to/graalvm-21 ./gradlew :cliApp:nativeImage   # native: cliApp/build/native/deeplink
 ```
 
-Requires a JDK 17+ at runtime. Supported hosts are macOS and Linux; iOS simulators need macOS.
+The native binary starts in about 10 ms, against about 0.5 s on the JVM. Supported hosts are macOS and Linux; iOS simulators need macOS.
