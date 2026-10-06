@@ -276,12 +276,13 @@ internal class DeepLinkDetailsViewModel(
 
     private fun updateLink(link: String) {
         coroutineDebouncer.debounce(viewModelScope, "link") {
-            val result = saveDeepLink(deepLink.value.copy(link = link))
-            val error = when {
-                result is DeepLinkRepository.UpsertResult.LinkAlreadyExists -> "Link already exists"
-                !validateDeepLink.isValid(link) -> "Invalid deeplink"
-                else -> null
+            if (!validateDeepLink.isValid(link)) {
+                if (mode.value == Mode.EDIT) deepLinkErrorMessage.update { "Invalid deeplink" }
+                return@debounce
             }
+
+            val result = saveDeepLink(deepLink.value.copy(link = link))
+            val error = if (result is DeepLinkRepository.UpsertResult.LinkAlreadyExists) "Link already exists" else null
 
             when {
                 mode.value == Mode.EDIT -> deepLinkErrorMessage.update { error }
