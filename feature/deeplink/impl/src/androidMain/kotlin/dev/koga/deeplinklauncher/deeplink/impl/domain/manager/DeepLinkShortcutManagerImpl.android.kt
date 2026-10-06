@@ -47,7 +47,13 @@ internal class DeepLinkShortcutManagerImpl(
         if (deepLink.id.isEmpty()) return
         withContext(Dispatchers.IO) {
             runCatching {
-                ShortcutManagerCompat.updateShortcuts(context, listOf(buildShortcut(deepLink)))
+                val existing = ShortcutManagerCompat.getShortcuts(
+                    context,
+                    ShortcutManagerCompat.FLAG_MATCH_DYNAMIC or ShortcutManagerCompat.FLAG_MATCH_PINNED,
+                )
+                if (existing.any { it.id == deepLink.id }) {
+                    ShortcutManagerCompat.updateShortcuts(context, listOf(buildShortcut(deepLink)))
+                }
             }
         }
     }

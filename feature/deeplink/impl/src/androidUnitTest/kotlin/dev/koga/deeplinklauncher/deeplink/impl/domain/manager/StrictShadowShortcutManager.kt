@@ -1,5 +1,6 @@
 package dev.koga.deeplinklauncher.deeplink.impl.domain.manager
 
+import android.content.pm.ShortcutInfo
 import android.content.pm.ShortcutManager
 import org.robolectric.annotation.Implementation
 import org.robolectric.annotation.Implements
@@ -24,6 +25,12 @@ class StrictShadowShortcutManager : ShadowShortcutManager() {
     override fun removeDynamicShortcuts(shortcutIds: List<String>) {
         record("remove", shortcutIds)
         super.removeDynamicShortcuts(shortcutIds)
+    }
+
+    @Implementation
+    override fun updateShortcuts(shortcutInfoList: List<ShortcutInfo>): Boolean {
+        record("update", shortcutInfoList.map { it.id })
+        return super.updateShortcuts(shortcutInfoList)
     }
 
     private fun record(call: String, shortcutIds: List<String>) {
