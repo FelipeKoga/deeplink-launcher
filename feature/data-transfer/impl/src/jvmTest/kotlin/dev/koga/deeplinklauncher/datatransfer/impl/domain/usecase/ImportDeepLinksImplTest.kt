@@ -146,6 +146,34 @@ class ImportDeepLinksImplTest {
     }
 
     @Test
+    fun refreshesTheShortcutOfAnExistingLinkWithTheImportedFields() = runTest {
+        fixture.deepLinks.upsertDeepLink(localDeepLink(id = "pinned", link = "myapp://x").copy(name = "Foo"))
+
+        fixture.importJson(
+            Payload(
+                deepLinks = listOf(
+                    Payload.DeepLink(link = "myapp://x", name = "Bar", description = "From backup", targetPackage = "com.b"),
+                ),
+            ),
+        )
+
+        val refreshed = fixture.shortcuts.updated.single()
+        assertEquals("pinned", refreshed.id)
+        assertEquals(Triple("Bar", "From backup", "com.b"), Triple(refreshed.name, refreshed.description, refreshed.targetPackage))
+        assertEquals(emptyList(), fixture.shortcuts.enabled)
+    }
+
+    @Test
+    fun refreshesARecreatedShortcutAfterEnablingIt() = runTest {
+        fixture.importJson(
+            Payload(deepLinks = listOf(Payload.DeepLink(link = "myapp://old", id = "x", name = "Restored"))),
+        )
+
+        assertEquals(listOf("enable:x", "update:x"), fixture.shortcuts.events)
+        assertEquals("Restored", fixture.shortcuts.updated.single().name)
+    }
+
+    @Test
     fun importDoesNotRenameAFolderAlreadyMergedByName() = runTest {
         val fileFolders = listOf(
             Payload.Folder(id = "f", name = "B"),
@@ -320,18 +348,24 @@ class ImportDeepLinksImplTest {
 
     private class FakeShortcutManager : DeepLinkShortcutManager {
         val enabled = mutableListOf<String>()
+        val events = mutableListOf<String>()
+        val updated = mutableListOf<DeepLink>()
 
         override suspend fun isAdded(deepLinkId: String): Boolean = false
 
         override suspend fun add(deepLink: DeepLink): DeepLinkShortcutManager.AddResult =
             DeepLinkShortcutManager.AddResult.NotSupported
 
-        override suspend fun update(deepLink: DeepLink) = Unit
+        override suspend fun update(deepLink: DeepLink) {
+            updated += deepLink
+            events += "update:${deepLink.id}"
+        }
 
         override suspend fun remove(deepLinkId: String) = Unit
 
         override suspend fun enable(deepLinkIds: List<String>) {
             enabled += deepLinkIds
+            events += deepLinkIds.map { "enable:$it" }
         }
 
         override suspend fun disable(deepLinkIds: List<String>) = Unit

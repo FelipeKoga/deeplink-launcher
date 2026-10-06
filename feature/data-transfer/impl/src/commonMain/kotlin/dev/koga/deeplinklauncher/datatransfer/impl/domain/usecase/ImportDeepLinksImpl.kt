@@ -63,12 +63,13 @@ internal class ImportDeepLinksImpl(
                         importExportDto.folders.orEmpty().map(Payload.Folder::toModel),
                     )
 
-                    val createdIds = deepLinksFromDto
+                    val imported = deepLinksFromDto
                         .associateBy { it.link }
                         .values
                         .mapNotNull { importDeepLink(it, it.folderId?.let(folders::get)) }
 
-                    shortcutManager.enable(createdIds)
+                    shortcutManager.enable(imported.filter(ImportedDeepLink::isNew).map { it.deepLink.id })
+                    imported.forEach { shortcutManager.update(it.deepLink) }
                 }
 
                 FileType.TXT -> {
@@ -133,20 +134,19 @@ internal class ImportDeepLinksImpl(
     }
 
     @OptIn(ExperimentalUuidApi::class)
-    private fun importDeepLink(dto: Payload.DeepLink, folder: Folder?): String? {
+    private fun importDeepLink(dto: Payload.DeepLink, folder: Folder?): ImportedDeepLink? {
         val local = deepLinkRepository.getDeepLinkByLink(dto.link)
         if (local != null) {
-            deepLinkRepository.upsertDeepLink(
-                local.copy(
-                    name = dto.name ?: local.name,
-                    description = dto.description ?: local.description,
-                    isFavorite = dto.isFavorite ?: local.isFavorite,
-                    createdAt = dto.createdAt?.let { LocalDateTime.parse(it) } ?: local.createdAt,
-                    folder = folder ?: local.folder,
-                    targetPackage = dto.targetPackage ?: local.targetPackage,
-                ),
+            val updated = local.copy(
+                name = dto.name ?: local.name,
+                description = dto.description ?: local.description,
+                isFavorite = dto.isFavorite ?: local.isFavorite,
+                createdAt = dto.createdAt?.let { LocalDateTime.parse(it) } ?: local.createdAt,
+                folder = folder ?: local.folder,
+                targetPackage = dto.targetPackage ?: local.targetPackage,
             )
-            return null
+            deepLinkRepository.upsertDeepLink(updated)
+            return ImportedDeepLink(updated, isNew = false)
         }
 
         val imported = dto.toModel(folder)
@@ -157,10 +157,12 @@ internal class ImportDeepLinksImpl(
         }
 
         return when (deepLinkRepository.upsertDeepLink(deepLink)) {
-            DeepLinkRepository.UpsertResult.Saved -> deepLink.id
+            DeepLinkRepository.UpsertResult.Saved -> ImportedDeepLink(deepLink, isNew = true)
             is DeepLinkRepository.UpsertResult.LinkAlreadyExists -> null
         }
     }
+
+    private data class ImportedDeepLink(val deepLink: DeepLink, val isNew: Boolean)
 
     @OptIn(ExperimentalUuidApi::class)
     internal fun String.toDeepLink(): DeepLink {

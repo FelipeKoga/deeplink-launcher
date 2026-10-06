@@ -1,6 +1,7 @@
 package dev.koga.deeplinklauncher.deeplink.impl.domain.manager
 
 import android.content.Context
+import androidx.core.content.pm.ShortcutManagerCompat
 import dev.koga.deeplinklauncher.deeplink.api.domain.manager.DeepLinkShortcutManager
 import dev.koga.deeplinklauncher.deeplink.api.domain.model.DeepLink
 import kotlinx.coroutines.runBlocking
@@ -74,6 +75,27 @@ class DeepLinkShortcutManagerImplTest {
         manager.update(deepLink(id = "id", link = ""))
 
         assertTrue(manager.isAdded("id"))
+    }
+
+    @Test
+    fun updatesAnExistingShortcutWithTheNewLabel() = runBlocking {
+        manager.add(deepLink(id = "id", link = "myapp://home"))
+        StrictShadowShortcutManager.calls.clear()
+
+        manager.update(deepLink(id = "id", link = "myapp://home").copy(name = "Home"))
+
+        assertEquals(listOf("update" to listOf("id")), StrictShadowShortcutManager.calls)
+        assertEquals(
+            "Home",
+            ShortcutManagerCompat.getShortcuts(context, ShortcutManagerCompat.FLAG_MATCH_DYNAMIC).single().shortLabel,
+        )
+    }
+
+    @Test
+    fun skipsTheUpdateWhenTheDeepLinkHasNoShortcut() = runBlocking {
+        manager.update(deepLink(id = "never-added", link = "myapp://home"))
+
+        assertEquals(emptyList<Pair<String, List<String>>>(), StrictShadowShortcutManager.calls)
     }
 
     private fun deepLink(id: String, link: String) = DeepLink(
