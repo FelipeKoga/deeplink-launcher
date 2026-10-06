@@ -2,12 +2,8 @@
 
 package dev.koga.deeplinklauncher.deeplink.impl.ui.deeplinkdetails
 
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.createSavedStateHandle
 import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.CreationExtras
-import androidx.navigation.toRoute
 import dev.koga.deeplinklauncher.analytics.api.AnalyticsTracker
 import dev.koga.deeplinklauncher.coroutines.CoroutineDebouncer
 import dev.koga.deeplinklauncher.deeplink.api.application.EnrichDeepLinkForDetails
@@ -50,8 +46,8 @@ import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedFactory
 import dev.zacsweers.metro.AssistedInject
 import dev.zacsweers.metro.ContributesIntoMap
-import dev.zacsweers.metrox.viewmodel.ViewModelAssistedFactory
-import dev.zacsweers.metrox.viewmodel.ViewModelAssistedFactoryKey
+import dev.zacsweers.metrox.viewmodel.ManualViewModelAssistedFactory
+import dev.zacsweers.metrox.viewmodel.ManualViewModelAssistedFactoryKey
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toPersistentList
@@ -76,7 +72,7 @@ import kotlinx.coroutines.sync.withLock
 
 @AssistedInject
 internal class DeepLinkDetailsViewModel(
-    @Assisted savedStateHandle: SavedStateHandle,
+    @Assisted private val route: DeepLinkRouteEntryPoint.DeepLinkDetails,
     folderRepository: FolderRepository,
     private val deepLinkRepository: DeepLinkRepository,
     private val enrichDeepLinkForDetails: EnrichDeepLinkForDetails,
@@ -95,15 +91,12 @@ internal class DeepLinkDetailsViewModel(
 ) : ViewModel(), AppNavigator by appNavigator {
 
     @AssistedFactory
-    @ViewModelAssistedFactoryKey(DeepLinkDetailsViewModel::class)
+    @ManualViewModelAssistedFactoryKey(Factory::class)
     @ContributesIntoMap(AppScope::class)
-    fun interface Factory : ViewModelAssistedFactory {
-        override fun create(extras: CreationExtras): DeepLinkDetailsViewModel = create(extras.createSavedStateHandle())
-
-        fun create(@Assisted savedStateHandle: SavedStateHandle): DeepLinkDetailsViewModel
+    fun interface Factory : ManualViewModelAssistedFactory {
+        fun create(@Assisted route: DeepLinkRouteEntryPoint.DeepLinkDetails): DeepLinkDetailsViewModel
     }
 
-    private val route = savedStateHandle.toRoute<DeepLinkRouteEntryPoint.DeepLinkDetails>()
     private val deepLink = deepLinkRepository.getDeepLinkByIdStream(route.id)
         .filterNotNull()
         .stateIn(

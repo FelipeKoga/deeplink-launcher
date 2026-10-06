@@ -9,13 +9,16 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 
-public interface AppNavigator {
-    public val destination: Flow<AppRoute>
-    public fun navigate(route: AppRoute)
+public sealed interface NavigationCommand {
+    public data class Navigate(val route: AppRoute) : NavigationCommand
 
-    public fun popBackStack() {
-        navigate(AppRoute.PopBackStack)
-    }
+    public data object Back : NavigationCommand
+}
+
+public interface AppNavigator {
+    public val commands: Flow<NavigationCommand>
+    public fun navigate(route: AppRoute)
+    public fun popBackStack()
 }
 
 @SingleIn(AppScope::class)
@@ -23,13 +26,20 @@ public interface AppNavigator {
 internal class AppNavigatorImpl(
     private val appCoroutineScope: AppCoroutineScope,
 ) : AppNavigator {
-    private val dispatcher = Channel<AppRoute>(Channel.UNLIMITED)
-    override val destination: Flow<AppRoute> =
-        dispatcher.receiveAsFlow()
+    private val dispatcher = Channel<NavigationCommand>(Channel.UNLIMITED)
+    override val commands: Flow<NavigationCommand> = dispatcher.receiveAsFlow()
 
     override fun navigate(route: AppRoute) {
+        send(NavigationCommand.Navigate(route))
+    }
+
+    override fun popBackStack() {
+        send(NavigationCommand.Back)
+    }
+
+    private fun send(command: NavigationCommand) {
         appCoroutineScope.launch {
-            dispatcher.send(route)
+            dispatcher.send(command)
         }
     }
 }

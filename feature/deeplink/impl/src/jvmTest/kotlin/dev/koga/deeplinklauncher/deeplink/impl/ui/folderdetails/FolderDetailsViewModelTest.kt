@@ -1,6 +1,5 @@
 package dev.koga.deeplinklauncher.deeplink.impl.ui.folderdetails
 
-import androidx.lifecycle.SavedStateHandle
 import dev.koga.deeplinklauncher.analytics.api.AnalyticsTracker
 import dev.koga.deeplinklauncher.deeplink.api.application.EnrichDeepLinksForList
 import dev.koga.deeplinklauncher.deeplink.api.domain.model.DeepLink
@@ -8,9 +7,11 @@ import dev.koga.deeplinklauncher.deeplink.api.domain.model.Folder
 import dev.koga.deeplinklauncher.deeplink.api.domain.repository.FolderRepository
 import dev.koga.deeplinklauncher.deeplink.api.domain.usecase.LaunchDeepLink
 import dev.koga.deeplinklauncher.deeplink.api.ui.model.DeepLinkListItem
+import dev.koga.deeplinklauncher.deeplink.api.ui.navigation.DeepLinkRouteEntryPoint
 import dev.koga.deeplinklauncher.deeplink.impl.ui.folderdetails.state.FolderDetailsAction
 import dev.koga.deeplinklauncher.navigation.AppNavigator
 import dev.koga.deeplinklauncher.navigation.AppRoute
+import dev.koga.deeplinklauncher.navigation.NavigationCommand
 import dev.koga.deeplinklauncher.uievent.SnackBar
 import dev.koga.deeplinklauncher.uievent.SnackBarDispatcher
 import kotlinx.coroutines.Dispatchers
@@ -72,7 +73,7 @@ class FolderDetailsViewModelTest {
     }
 
     private fun viewModel() = FolderDetailsViewModel(
-        savedStateHandle = SavedStateHandle(mapOf("id" to "f")),
+        route = DeepLinkRouteEntryPoint.FolderDetails(id = "f"),
         repository = repository,
         enrichDeepLinksForList = object : EnrichDeepLinksForList {
             override suspend fun invoke(links: List<DeepLink>): List<DeepLinkListItem> = emptyList()
@@ -82,8 +83,9 @@ class FolderDetailsViewModelTest {
             override suspend fun launch(deepLink: DeepLink) = throw UnsupportedOperationException()
         },
         appNavigator = object : AppNavigator {
-            override val destination: Flow<AppRoute> = emptyFlow()
+            override val commands: Flow<NavigationCommand> = emptyFlow()
             override fun navigate(route: AppRoute) = Unit
+            override fun popBackStack() = Unit
         },
         analyticsTracker = object : AnalyticsTracker {
             override fun logEvent(name: String, parameters: Map<String, String>) = Unit

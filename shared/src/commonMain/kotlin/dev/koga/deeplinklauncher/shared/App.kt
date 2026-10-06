@@ -1,5 +1,6 @@
 package dev.koga.deeplinklauncher.shared
 
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.imePadding
@@ -12,16 +13,20 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.currentBackStackEntryAsState
-import androidx.navigation.compose.rememberNavController
+import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDecorator
+import androidx.navigation3.runtime.entryProvider
+import androidx.navigation3.runtime.rememberNavBackStack
+import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
+import androidx.navigation3.scene.DialogSceneStrategy
+import androidx.navigation3.ui.NavDisplay
 import dev.koga.deeplinklauncher.designsystem.DLLSnackbarHost
 import dev.koga.deeplinklauncher.designsystem.theme.DLLTheme
 import dev.koga.deeplinklauncher.home.impl.ui.navigation.HomeRoute
 import dev.koga.deeplinklauncher.navigation.AppRoute
+import dev.koga.deeplinklauncher.navigation.handle
+import dev.koga.deeplinklauncher.navigation.pop
 import dev.koga.deeplinklauncher.preferences.model.AppTheme
 import dev.koga.deeplinklauncher.shared.analytics.ScreenViewed
-import dev.koga.deeplinklauncher.shared.analytics.resolveAnalyticsScreenName
 import dev.koga.deeplinklauncher.shared.analytics.track
 import dev.koga.deeplinklauncher.shared.anim.scaleInEnterTransition
 import dev.koga.deeplinklauncher.shared.anim.scaleInPopEnterTransition
@@ -31,30 +36,23 @@ import dev.zacsweers.metrox.viewmodel.LocalMetroViewModelFactory
 
 @Composable
 fun App() {
-    val navController = rememberNavController()
     val appNavigator = appGraph.appNavigator
     val appNavGraph = appGraph.appNavGraph
     val snackBarDispatcher = appGraph.snackBarDispatcher
     val analyticsTracker = appGraph.analyticsTracker
     val isDarkTheme = isAppThemeInDarkTheme()
     val snackBarHostState = remember { SnackbarHostState() }
-    val currentBackStackEntry by navController.currentBackStackEntryAsState()
+    val backStack = rememberNavBackStack(appNavGraph.savedStateConfiguration, HomeRoute.Home)
+    val currentRoute = backStack.lastOrNull()
 
-    LaunchedEffect(currentBackStackEntry) {
-        currentBackStackEntry.resolveAnalyticsScreenName()?.let { screenName ->
+    LaunchedEffect(currentRoute) {
+        (currentRoute as? AppRoute)?.analyticsScreenName?.let { screenName ->
             analyticsTracker.track(ScreenViewed(screenName))
         }
     }
 
     LaunchedEffect(Unit) {
-        appNavigator.destination.collect { route ->
-            when (route) {
-                AppRoute.PopBackStack -> navController.popBackStack()
-                else -> navController.navigate(route) {
-                    launchSingleTop = true
-                }
-            }
-        }
+        appNavigator.commands.collect { command -> backStack.handle(command) }
     }
 
     LaunchedEffect(Unit) {
@@ -74,17 +72,20 @@ fun App() {
                     DLLSnackbarHost(snackBarHostState)
                 },
             ) {
-                NavHost(
+                NavDisplay(
+                    backStack = backStack,
                     modifier = Modifier.fillMaxSize().imePadding(),
-                    navController = navController,
-                    startDestination = HomeRoute.Home,
-                    enterTransition = { scaleInEnterTransition() },
-                    popEnterTransition = { scaleInPopEnterTransition() },
-                    exitTransition = { scaleOutExitTransition() },
-                    popExitTransition = { scaleOutPopExitTransition() },
-                ) {
-                    appNavGraph.appGraphBuilder(this)
-                }
+                    onBack = { backStack.pop() },
+                    entryDecorators = listOf(
+                        rememberSaveableStateHolderNavEntryDecorator(),
+                        rememberViewModelStoreNavEntryDecorator(),
+                    ),
+                    sceneStrategies = listOf(DialogSceneStrategy()),
+                    transitionSpec = { scaleInEnterTransition() togetherWith scaleOutExitTransition() },
+                    popTransitionSpec = { scaleInPopEnterTransition() togetherWith scaleOutPopExitTransition() },
+                    predictivePopTransitionSpec = { scaleInPopEnterTransition() togetherWith scaleOutPopExitTransition() },
+                    entryProvider = entryProvider { with(appNavGraph) { entries() } },
+                )
             }
         }
     }

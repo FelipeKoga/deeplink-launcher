@@ -62,6 +62,7 @@ internal fun LinkDeepLinkForFolderScreen(
         uiState = uiState,
         onAction = viewModel::onAction,
         onNavigate = appNavigator::navigate,
+        onBack = appNavigator::popBackStack,
     )
 }
 
@@ -71,6 +72,7 @@ internal fun LinkDeepLinkForFolderUI(
     uiState: LinkDeepLinkForFolderUiState,
     onAction: (LinkDeepLinkForFolderAction) -> Unit,
     onNavigate: (AppRoute) -> Unit,
+    onBack: () -> Unit,
     hazeState: HazeState = remember { HazeState() },
     now: () -> LocalDateTime = { currentLocalDateTime },
 ) {
@@ -90,7 +92,7 @@ internal fun LinkDeepLinkForFolderUI(
                 },
                 navigationIcon = {
                     DLLTopBarDefaults.NavigationIcon(
-                        onClicked = { onNavigate(AppRoute.PopBackStack) },
+                        onClicked = onBack,
                     )
                 },
                 modifier = Modifier.barHazeEffect(

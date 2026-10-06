@@ -1,10 +1,7 @@
 package dev.koga.deeplinklauncher.navigation
 
-import kotlinx.serialization.Serializable
+import androidx.navigation3.runtime.NavKey
 
-public interface AppRoute {
+public interface AppRoute : NavKey {
     public val analyticsScreenName: String? get() = null
-
-    @Serializable
-    public data object PopBackStack : AppRoute
 }
