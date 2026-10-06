@@ -13,7 +13,7 @@
   <a href="https://github.com/FelipeKoga/deeplink-launcher/releases/latest"><img src="https://img.shields.io/github/v/release/FelipeKoga/deeplink-launcher?label=release" alt="Latest release" /></a>
 </p>
 
-For developers and QA who test deeplinks.
+For developers and QA who test deeplinks, with a `deeplink` CLI for scripts and AI agents.
 
 ## Screenshots
 
@@ -102,17 +102,29 @@ Resized with `sips -Z 1100`.
 - Light and dark theme
 - Donate to support the project (Android)
 
+## CLI
+
+`deeplink` opens, resolves and tests deeplinks on Android devices and emulators, iOS simulators and connected iPhones. Every command takes `--json` and never prompts.
+
+```
+$ deeplink open "myapp://product/42" --platform android
+$ deeplink test checkout.json
+```
+
+See [docs/CLI.md](docs/CLI.md).
+
 ## Download
 
 - Android: [Google Play](https://play.google.com/store/apps/details?id=dev.koga.deeplinklauncher.android)
 - Desktop: [GitHub releases](https://github.com/FelipeKoga/deeplink-launcher/releases/latest) (DMG for macOS, EXE for Windows, DEB for Debian and Ubuntu)
 - iOS: not on the App Store yet; build it from `iosApp/` with Xcode
+- CLI: artifacts of the **CLI Build** workflow, or build it from source (see [docs/CLI.md](docs/CLI.md))
 
 ## Tech stack
 
 - Kotlin Multiplatform
 - Compose Multiplatform, Material 3
-- Navigation Compose
+- Navigation 3
 - Metro (dependency injection)
 - SQLDelight
 - DataStore
@@ -122,6 +134,9 @@ Resized with `sips -Z 1100`.
 - AboutLibraries
 - Firebase (Analytics, Crashlytics, Performance)
 - RevenueCat
+- Clikt, GraalVM Native Image
+- Baseline Profiles
+- fastlane
 - ktlint, Detekt
 
 ## Tests
@@ -146,13 +161,17 @@ The Android build also needs a Firebase config at `androidApp/google-services.js
 ```bash
 ./gradlew :androidApp:installDebug   # Android device or emulator
 ./gradlew :desktopApp:run            # desktop
+./gradlew :cliApp:installDist        # CLI, at cliApp/build/install/deeplink/bin/deeplink
 ```
 
 For iOS, open `iosApp/deeplinklauncher.xcodeproj` in Xcode and run the app.
 
 ## Docs
 
+- [CLI](docs/CLI.md)
+- [Modularization](docs/MODULARIZATION.md)
 - [Design system](docs/DESIGN_SYSTEM.md)
+- [Google Play publishing](docs/GOOGLE_PLAY.md)
 - [Analytics](docs/ANALYTICS.md)
 - [Privacy policy](PRIVACY_POLICY.md)
 
