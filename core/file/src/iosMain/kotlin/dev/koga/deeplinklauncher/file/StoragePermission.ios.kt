@@ -8,9 +8,6 @@ import dev.zacsweers.metro.SingleIn
 @Inject
 actual class StoragePermission {
 
-    actual fun request() {
-    }
-
     actual fun isGranted(): Boolean {
         return true
     }

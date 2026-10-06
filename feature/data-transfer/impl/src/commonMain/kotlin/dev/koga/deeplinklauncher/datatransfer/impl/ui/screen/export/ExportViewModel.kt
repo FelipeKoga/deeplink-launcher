@@ -16,6 +16,9 @@ import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesIntoMap
 import dev.zacsweers.metro.binding
 import dev.zacsweers.metrox.viewmodel.ViewModelKey
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 
 @ViewModelKey
@@ -38,9 +41,12 @@ class ExportViewModel(
         jsonFormat = jsonPreview,
     )
 
+    private val permissionRequestChannel = Channel<FileType>(Channel.CONFLATED)
+    val permissionRequests: Flow<FileType> = permissionRequestChannel.receiveAsFlow()
+
     fun export(fileType: FileType) {
         if (!storagePermission.isGranted()) {
-            storagePermission.request()
+            permissionRequestChannel.trySend(fileType)
             return
         }
 
@@ -65,8 +71,15 @@ class ExportViewModel(
         }
     }
 
-    fun requestPermission() {
-        storagePermission.request()
+    fun onPermissionResult(fileType: FileType, granted: Boolean) {
+        if (granted) {
+            export(fileType)
+        } else {
+            snackBarDispatcher.show(
+                "Allow storage access to save the export in your downloads folder. " +
+                    "If you chose not to be asked again, enable it in the app settings.",
+            )
+        }
     }
 }
 

@@ -45,8 +45,17 @@ fun ExportScreen(
 ) {
     var selectedExportType by remember { mutableStateOf(FileType.JSON) }
 
-    LaunchedEffect(Unit) {
-        viewModel.requestPermission()
+    var pendingExport by remember { mutableStateOf<FileType?>(null) }
+    val requestStoragePermission = rememberStoragePermissionRequest { granted ->
+        pendingExport?.let { viewModel.onPermissionResult(it, granted) }
+        pendingExport = null
+    }
+
+    LaunchedEffect(viewModel) {
+        viewModel.permissionRequests.collect { fileType ->
+            pendingExport = fileType
+            requestStoragePermission()
+        }
     }
 
     ExportUI(
