@@ -69,19 +69,23 @@ internal class ExportDeepLinksImpl(
         val sanitizedTimestamp = currentLocalDateTime.toString().replace(':', '_')
         val fileName = "deeplinks-$sanitizedTimestamp.${type.extension}"
 
-        val filePath = saveFile(
-            fileName = fileName,
-            fileContent = serializedData,
-            type = type,
-        ) ?: return ExportDeepLinks.Result.Error(Exception("Failed to save file"))
+        return try {
+            val filePath = saveFile(
+                fileName = fileName,
+                fileContent = serializedData,
+                type = type,
+            ) ?: return ExportDeepLinks.Result.Error(Exception("Failed to save file"))
 
-        if (canShareContent) {
-            shareFile(
-                filePath = filePath,
-                fileType = type,
-            )
+            if (canShareContent) {
+                shareFile(
+                    filePath = filePath,
+                    fileType = type,
+                )
+            }
+
+            ExportDeepLinks.Result.Success(fileName = fileName)
+        } catch (e: Exception) {
+            ExportDeepLinks.Result.Error(e)
         }
-
-        return ExportDeepLinks.Result.Success(fileName = fileName)
     }
 }
