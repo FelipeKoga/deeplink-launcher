@@ -54,6 +54,12 @@ kotlin {
             implementation(projects.library.deviceBridge.impl)
         }
 
+        jvmTest.dependencies {
+            implementation(libs.compose.ui.test.junit4)
+            implementation(libs.kotlinx.coroutines.swing)
+            implementation(compose.desktop.currentOs)
+        }
+
         androidUnitTest.dependencies {
             implementation(libs.junit)
             implementation(libs.robolectric)
@@ -66,4 +72,7 @@ project.extensions.findByType(KotlinMultiplatformExtension::class.java)?.apply {
         .filterIsInstance<KotlinNativeTarget>()
         .flatMap { it.binaries }
         .forEach { compilationUnit -> compilationUnit.linkerOpts("-lsqlite3") }
+}
+tasks.named<Test>("jvmTest") {
+    javaLauncher.set(javaToolchains.launcherFor { languageVersion.set(JavaLanguageVersion.of(21)) })
 }
