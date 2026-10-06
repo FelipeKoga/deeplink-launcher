@@ -2,12 +2,8 @@
 
 package dev.koga.deeplinklauncher.deeplink.impl.ui.linkdeeplinkforfolder
 
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.createSavedStateHandle
 import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.CreationExtras
-import androidx.navigation.toRoute
 import dev.koga.deeplinklauncher.analytics.api.AnalyticsTracker
 import dev.koga.deeplinklauncher.date.currentLocalDateTime
 import dev.koga.deeplinklauncher.deeplink.api.application.EnrichDeepLinksForList
@@ -35,8 +31,8 @@ import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedFactory
 import dev.zacsweers.metro.AssistedInject
 import dev.zacsweers.metro.ContributesIntoMap
-import dev.zacsweers.metrox.viewmodel.ViewModelAssistedFactory
-import dev.zacsweers.metrox.viewmodel.ViewModelAssistedFactoryKey
+import dev.zacsweers.metrox.viewmodel.ManualViewModelAssistedFactory
+import dev.zacsweers.metrox.viewmodel.ManualViewModelAssistedFactoryKey
 import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -54,7 +50,7 @@ import kotlin.uuid.Uuid
 
 @AssistedInject
 internal class LinkDeepLinkForFolderViewModel(
-    @Assisted savedStateHandle: SavedStateHandle,
+    @Assisted private val route: DeepLinkRouteEntryPoint.PickDeepLinkForFolder,
     private val folderRepository: FolderRepository,
     private val deepLinkRepository: DeepLinkRepository,
     private val enrichDeepLinksForList: EnrichDeepLinksForList,
@@ -68,18 +64,13 @@ internal class LinkDeepLinkForFolderViewModel(
 ) : ViewModel() {
 
     @AssistedFactory
-    @ViewModelAssistedFactoryKey(LinkDeepLinkForFolderViewModel::class)
+    @ManualViewModelAssistedFactoryKey(Factory::class)
     @ContributesIntoMap(AppScope::class)
-    fun interface Factory : ViewModelAssistedFactory {
-        override fun create(extras: CreationExtras): LinkDeepLinkForFolderViewModel = create(extras.createSavedStateHandle())
-
-        fun create(@Assisted savedStateHandle: SavedStateHandle): LinkDeepLinkForFolderViewModel
+    fun interface Factory : ManualViewModelAssistedFactory {
+        fun create(@Assisted route: DeepLinkRouteEntryPoint.PickDeepLinkForFolder): LinkDeepLinkForFolderViewModel
     }
 
-    private val folderId =
-        savedStateHandle.toRoute<DeepLinkRouteEntryPoint.PickDeepLinkForFolder>().folderId
-
-    private val folder = folderRepository.getFolderByIdStream(folderId)
+    private val folder = folderRepository.getFolderByIdStream(route.folderId)
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.Eagerly,
@@ -106,7 +97,7 @@ internal class LinkDeepLinkForFolderViewModel(
     private val deepLinkInputState =
         combine(launchInput, errorMessage, suggestions, ::DeepLinkInputState)
 
-    private val folderDeepLinkIds = folderRepository.getFolderDeepLinksStream(folderId)
+    private val folderDeepLinkIds = folderRepository.getFolderDeepLinksStream(route.folderId)
         .map { links -> links.map { it.id }.toSet() }
 
     private val linkableDeepLinks = combine(
@@ -154,7 +145,7 @@ internal class LinkDeepLinkForFolderViewModel(
 
     init {
         viewModelScope.launch {
-            if (folderRepository.getFolderByIdStream(folderId).first() == null) {
+            if (folderRepository.getFolderByIdStream(route.folderId).first() == null) {
                 appNavigator.popBackStack()
             }
         }
@@ -189,7 +180,7 @@ internal class LinkDeepLinkForFolderViewModel(
             when (val result = launchDeepLink.launch(existing)) {
                 is LaunchDeepLink.Result.Success -> {
                     trackLaunchResult(result = result)
-                    if (existing.folder?.id != folderId) {
+                    if (existing.folder?.id != route.folderId) {
                         pendingLinkConfirmation.update { existing }
                     }
                 }
@@ -242,7 +233,7 @@ internal class LinkDeepLinkForFolderViewModel(
         val pendingDeepLink = uiState.value.pendingLinkConfirmation ?: return
 
         viewModelScope.launch {
-            when (linkDeepLinkToFolder(pendingDeepLink.id, folderId)) {
+            when (linkDeepLinkToFolder(pendingDeepLink.id, route.folderId)) {
                 LinkDeepLinkToFolder.Result.Linked,
                 LinkDeepLinkToFolder.Result.AlreadyLinked,
                 -> {
@@ -261,7 +252,7 @@ internal class LinkDeepLinkForFolderViewModel(
 
     private fun linkDeepLinkSelected(deepLinkId: String) {
         viewModelScope.launch {
-            when (linkDeepLinkToFolder(deepLinkId, folderId)) {
+            when (linkDeepLinkToFolder(deepLinkId, route.folderId)) {
                 LinkDeepLinkToFolder.Result.Linked,
                 LinkDeepLinkToFolder.Result.AlreadyLinked,
                 -> {

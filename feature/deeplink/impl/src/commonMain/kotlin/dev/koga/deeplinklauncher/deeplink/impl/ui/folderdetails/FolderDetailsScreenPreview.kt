@@ -24,6 +24,7 @@ internal fun FolderDetailsUIEmptyPreview() {
             ),
             onAction = {},
             onNavigate = {},
+            onBack = {},
             onShowDeleteConfirmation = {},
             now = { previewNow },
         )
@@ -45,6 +46,7 @@ internal fun FolderDetailsUIPopulatedPreview() {
             ),
             onAction = {},
             onNavigate = {},
+            onBack = {},
             onShowDeleteConfirmation = {},
             now = { previewNow },
         )

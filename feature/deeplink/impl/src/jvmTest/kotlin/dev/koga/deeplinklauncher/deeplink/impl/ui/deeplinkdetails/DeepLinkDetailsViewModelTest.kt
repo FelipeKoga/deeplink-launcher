@@ -1,6 +1,5 @@
 package dev.koga.deeplinklauncher.deeplink.impl.ui.deeplinkdetails
 
-import androidx.lifecycle.SavedStateHandle
 import dev.koga.deeplinklauncher.analytics.api.AnalyticsTracker
 import dev.koga.deeplinklauncher.coroutines.CoroutineDebouncer
 import dev.koga.deeplinklauncher.deeplink.api.application.EnrichDeepLinkForDetails
@@ -14,12 +13,14 @@ import dev.koga.deeplinklauncher.deeplink.api.domain.usecase.LinkDeepLinkToFolde
 import dev.koga.deeplinklauncher.deeplink.api.domain.usecase.PinDeepLinkToHomeScreen
 import dev.koga.deeplinklauncher.deeplink.api.domain.usecase.ShareDeepLink
 import dev.koga.deeplinklauncher.deeplink.api.domain.usecase.ValidateDeepLink
+import dev.koga.deeplinklauncher.deeplink.api.ui.navigation.DeepLinkRouteEntryPoint
 import dev.koga.deeplinklauncher.deeplink.impl.data.repository.RepositoryFixture
 import dev.koga.deeplinklauncher.deeplink.impl.ui.deeplinkdetails.state.DeepLinkDetailsUiState
 import dev.koga.deeplinklauncher.deeplink.impl.ui.deeplinkdetails.state.EditAction
 import dev.koga.deeplinklauncher.deeplink.impl.ui.deeplinkdetails.state.LaunchAction
 import dev.koga.deeplinklauncher.navigation.AppNavigator
 import dev.koga.deeplinklauncher.navigation.AppRoute
+import dev.koga.deeplinklauncher.navigation.NavigationCommand
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
@@ -89,7 +90,7 @@ class DeepLinkDetailsViewModelTest {
     }
 
     private fun viewModel() = DeepLinkDetailsViewModel(
-        savedStateHandle = SavedStateHandle(mapOf("id" to "a", "showFolder" to false)),
+        route = DeepLinkRouteEntryPoint.DeepLinkDetails(id = "a", showFolder = false),
         folderRepository = fixture.folders,
         deepLinkRepository = fixture.deepLinks,
         enrichDeepLinkForDetails = object : EnrichDeepLinkForDetails {
@@ -132,8 +133,9 @@ class DeepLinkDetailsViewModelTest {
         },
         coroutineDebouncer = CoroutineDebouncer(),
         appNavigator = object : AppNavigator {
-            override val destination: Flow<AppRoute> = emptyFlow()
+            override val commands: Flow<NavigationCommand> = emptyFlow()
             override fun navigate(route: AppRoute) = Unit
+            override fun popBackStack() = Unit
         },
         analyticsTracker = object : AnalyticsTracker {
             override fun logEvent(name: String, parameters: Map<String, String>) = Unit

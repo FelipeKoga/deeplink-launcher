@@ -24,7 +24,7 @@ kotlin {
 
             implementation(projects.library.analytics.api)
 
-            implementation(libs.compose.navigation)
+            implementation(libs.navigation3.ui)
 
             implementation(libs.kotlinx.coroutines.core)
             implementation(libs.metrox.viewmodel.compose)

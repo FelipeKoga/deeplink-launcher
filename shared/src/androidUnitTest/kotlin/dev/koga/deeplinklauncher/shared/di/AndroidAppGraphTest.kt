@@ -41,13 +41,16 @@ class AndroidAppGraphTest {
             graph.viewModelProviders.keys.map { it.simpleName }.toSet(),
         )
         assertEquals(
-            setOf(
-                "AddFolderViewModel",
-                "DeepLinkDetailsViewModel",
-                "FolderDetailsViewModel",
-                "LinkDeepLinkForFolderViewModel",
-            ),
+            setOf("AddFolderViewModel"),
             graph.assistedFactoryProviders.keys.map { it.simpleName }.toSet(),
+        )
+        assertEquals(
+            setOf(
+                "DeepLinkDetailsViewModel.Factory",
+                "FolderDetailsViewModel.Factory",
+                "LinkDeepLinkForFolderViewModel.Factory",
+            ),
+            graph.manualAssistedFactoryProviders.keys.map { it.qualifiedName?.split('.')?.takeLast(2)?.joinToString(".") }.toSet(),
         )
 
         val created = graph.createViewModels(graph.viewModelProviders.keys + graph.assistedFactoryProviders.keys)

@@ -45,7 +45,8 @@ kotlin {
 
             implementation(libs.kotlinx.coroutines.core)
             implementation(libs.metrox.viewmodel.compose)
-            implementation(libs.compose.navigation)
+            implementation(libs.navigation3.ui)
+            implementation(libs.lifecycle.viewmodel.navigation3)
         }
 
         jvmMain.dependencies {

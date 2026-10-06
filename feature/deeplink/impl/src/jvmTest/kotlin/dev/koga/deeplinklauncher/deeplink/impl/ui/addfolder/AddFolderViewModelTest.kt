@@ -7,6 +7,7 @@ import dev.koga.deeplinklauncher.deeplink.api.domain.model.Folder
 import dev.koga.deeplinklauncher.deeplink.api.domain.repository.FolderRepository
 import dev.koga.deeplinklauncher.navigation.AppNavigator
 import dev.koga.deeplinklauncher.navigation.AppRoute
+import dev.koga.deeplinklauncher.navigation.NavigationCommand
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
@@ -23,12 +24,16 @@ import kotlin.test.assertEquals
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class AddFolderViewModelTest {
-    private val routes = mutableListOf<AppRoute>()
+    private val sentCommands = mutableListOf<NavigationCommand>()
     private val events = mutableListOf<String>()
     private val navigator = object : AppNavigator {
-        override val destination: Flow<AppRoute> = emptyFlow()
+        override val commands: Flow<NavigationCommand> = emptyFlow()
         override fun navigate(route: AppRoute) {
-            routes += route
+            sentCommands += NavigationCommand.Navigate(route)
+        }
+
+        override fun popBackStack() {
+            sentCommands += NavigationCommand.Back
         }
     }
     private val analytics = object : AnalyticsTracker {
@@ -55,7 +60,7 @@ class AddFolderViewModelTest {
         viewModel.add()
 
         assertEquals("A folder with this name already exists", viewModel.uiState.value.errorMessage)
-        assertEquals(emptyList(), routes)
+        assertEquals(emptyList(), sentCommands)
         assertEquals(emptyList(), events)
 
         viewModel.onNameChanged("Work 2")

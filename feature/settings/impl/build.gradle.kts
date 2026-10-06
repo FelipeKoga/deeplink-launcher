@@ -28,7 +28,7 @@ kotlin {
             implementation(libs.kotlinx.serialization.json)
             implementation(libs.aboutlibraries.compose)
 
-            implementation(libs.compose.navigation)
+            implementation(libs.navigation3.ui)
 
             implementation(compose.preview)
             implementation(libs.roborazzi.annotations)

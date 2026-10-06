@@ -2,12 +2,8 @@
 
 package dev.koga.deeplinklauncher.deeplink.impl.ui.folderdetails
 
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.createSavedStateHandle
 import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.CreationExtras
-import androidx.navigation.toRoute
 import dev.koga.deeplinklauncher.analytics.api.AnalyticsTracker
 import dev.koga.deeplinklauncher.deeplink.api.application.EnrichDeepLinksForList
 import dev.koga.deeplinklauncher.deeplink.api.domain.model.DeepLink
@@ -31,8 +27,8 @@ import dev.zacsweers.metro.Assisted
 import dev.zacsweers.metro.AssistedFactory
 import dev.zacsweers.metro.AssistedInject
 import dev.zacsweers.metro.ContributesIntoMap
-import dev.zacsweers.metrox.viewmodel.ViewModelAssistedFactory
-import dev.zacsweers.metrox.viewmodel.ViewModelAssistedFactoryKey
+import dev.zacsweers.metrox.viewmodel.ManualViewModelAssistedFactory
+import dev.zacsweers.metrox.viewmodel.ManualViewModelAssistedFactoryKey
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -48,7 +44,7 @@ import kotlinx.coroutines.launch
 
 @AssistedInject
 internal class FolderDetailsViewModel(
-    @Assisted savedStateHandle: SavedStateHandle,
+    @Assisted private val route: DeepLinkRouteEntryPoint.FolderDetails,
     private val repository: FolderRepository,
     private val enrichDeepLinksForList: EnrichDeepLinksForList,
     private val launchDeepLink: LaunchDeepLink,
@@ -58,18 +54,15 @@ internal class FolderDetailsViewModel(
 ) : ViewModel() {
 
     @AssistedFactory
-    @ViewModelAssistedFactoryKey(FolderDetailsViewModel::class)
+    @ManualViewModelAssistedFactoryKey(Factory::class)
     @ContributesIntoMap(AppScope::class)
-    fun interface Factory : ViewModelAssistedFactory {
-        override fun create(extras: CreationExtras): FolderDetailsViewModel = create(extras.createSavedStateHandle())
-
-        fun create(@Assisted savedStateHandle: SavedStateHandle): FolderDetailsViewModel
+    fun interface Factory : ManualViewModelAssistedFactory {
+        fun create(@Assisted route: DeepLinkRouteEntryPoint.FolderDetails): FolderDetailsViewModel
     }
 
-    private val folderId = savedStateHandle.toRoute<DeepLinkRouteEntryPoint.FolderDetails>().id
     private var loadedFolder: Folder? = null
 
-    private val folder = repository.getFolderByIdStream(folderId)
+    private val folder = repository.getFolderByIdStream(route.id)
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.Eagerly,
@@ -84,7 +77,7 @@ internal class FolderDetailsViewModel(
         ),
     )
 
-    private val deepLinksState = repository.getFolderDeepLinksStream(folderId)
+    private val deepLinksState = repository.getFolderDeepLinksStream(route.id)
         .flatMapLatest { links ->
             flow {
                 emit(
@@ -115,7 +108,7 @@ internal class FolderDetailsViewModel(
 
     init {
         viewModelScope.launch {
-            when (val loaded = repository.getFolderByIdStream(folderId).first()) {
+            when (val loaded = repository.getFolderByIdStream(route.id).first()) {
                 null -> appNavigator.popBackStack()
                 else -> {
                     form.update {
@@ -141,7 +134,7 @@ internal class FolderDetailsViewModel(
     }
 
     private fun delete() {
-        repository.deleteFolder(folderId)
+        repository.deleteFolder(route.id)
         analyticsTracker.track(FolderDeleted)
         appNavigator.popBackStack()
     }
@@ -199,7 +192,7 @@ internal class FolderDetailsViewModel(
     }
 
     private fun openLinkDeepLinkScreen() {
-        appNavigator.navigate(DeepLinkRouteEntryPoint.PickDeepLinkForFolder(folderId))
+        appNavigator.navigate(DeepLinkRouteEntryPoint.PickDeepLinkForFolder(route.id))
     }
 
     private data class DeepLinksState(

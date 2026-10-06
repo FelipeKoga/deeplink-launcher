@@ -12,7 +12,7 @@ kotlin {
     sourceSets {
         commonMain.dependencies {
             implementation(projects.core.coroutines)
-            implementation(libs.compose.navigation)
+            api(libs.navigation3.ui)
             implementation(libs.kotlinx.serialization.json)
         }
     }

@@ -30,7 +30,7 @@ kotlin {
             implementation(libs.kotlinx.coroutines.core)
             implementation(libs.kotlinx.immutable)
 
-            implementation(libs.compose.navigation)
+            implementation(libs.navigation3.ui)
             implementation(libs.compose.runtime)
             implementation(libs.navigationevent.compose)
 

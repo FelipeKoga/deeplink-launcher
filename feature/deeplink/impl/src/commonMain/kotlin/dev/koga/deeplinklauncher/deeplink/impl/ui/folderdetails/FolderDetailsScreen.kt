@@ -74,6 +74,7 @@ internal fun FolderDetailsScreen(
         uiState = uiState,
         onAction = viewModel::onAction,
         onNavigate = appNavigator::navigate,
+        onBack = appNavigator::popBackStack,
         onShowDeleteConfirmation = { showDeleteDialog = true },
     )
 }
@@ -84,6 +85,7 @@ internal fun FolderDetailsUI(
     uiState: FolderDetailsUiState,
     onAction: (FolderDetailsAction) -> Unit,
     onNavigate: (AppRoute) -> Unit,
+    onBack: () -> Unit,
     onShowDeleteConfirmation: () -> Unit,
     now: () -> LocalDateTime = { currentLocalDateTime },
 ) {
@@ -96,7 +98,7 @@ internal fun FolderDetailsUI(
                 title = {},
                 navigationIcon = {
                     DLLTopBarDefaults.NavigationIcon(
-                        onClicked = { onNavigate(AppRoute.PopBackStack) },
+                        onClicked = onBack,
                     )
                 },
                 actions = {

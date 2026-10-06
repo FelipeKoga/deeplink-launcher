@@ -28,7 +28,7 @@ kotlin {
             implementation(libs.metrox.viewmodel.compose)
 
             implementation(libs.filekit.dialogs.compose)
-            implementation(libs.compose.navigation)
+            implementation(libs.navigation3.ui)
 
             implementation(compose.preview)
         }

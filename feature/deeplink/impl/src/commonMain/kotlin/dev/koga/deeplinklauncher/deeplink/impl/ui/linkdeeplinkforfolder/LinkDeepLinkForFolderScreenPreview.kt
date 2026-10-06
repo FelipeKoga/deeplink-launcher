@@ -21,6 +21,7 @@ internal fun LinkDeepLinkForFolderUIPopulatedPreview() {
             ),
             onAction = {},
             onNavigate = {},
+            onBack = {},
             now = { previewNow },
         )
     }
@@ -38,6 +39,7 @@ internal fun LinkDeepLinkForFolderUIEmptyPreview() {
             ),
             onAction = {},
             onNavigate = {},
+            onBack = {},
             now = { previewNow },
         )
     }

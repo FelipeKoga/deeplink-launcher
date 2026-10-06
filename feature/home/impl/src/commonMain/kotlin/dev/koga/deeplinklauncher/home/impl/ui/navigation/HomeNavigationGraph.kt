@@ -1,8 +1,8 @@
 package dev.koga.deeplinklauncher.home.impl.ui.navigation
 
-import androidx.navigation.NavGraphBuilder
-import androidx.navigation.compose.composable
-import androidx.navigation.compose.dialog
+import androidx.navigation3.runtime.EntryProviderScope
+import androidx.navigation3.runtime.NavKey
+import androidx.navigation3.scene.DialogSceneStrategy
 import dev.koga.deeplinklauncher.coroutines.AppCoroutineScope
 import dev.koga.deeplinklauncher.home.impl.ui.HomeScreen
 import dev.koga.deeplinklauncher.home.impl.ui.onboarding.OnboardingBottomSheet
@@ -13,6 +13,7 @@ import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesIntoSet
 import dev.zacsweers.metrox.viewmodel.metroViewModel
 import kotlinx.coroutines.launch
+import kotlinx.serialization.modules.PolymorphicModuleBuilder
 
 @ContributesIntoSet(AppScope::class)
 class HomeNavigationGraph(
@@ -20,12 +21,12 @@ class HomeNavigationGraph(
     private val appCoroutineScope: AppCoroutineScope,
     private val preferencesDataSource: PreferencesDataSource,
 ) : NavigationGraph {
-    override fun register(navGraphBuilder: NavGraphBuilder) = with(navGraphBuilder) {
-        composable<HomeRoute.Home> {
+    override fun EntryProviderScope<NavKey>.entries() {
+        entry<HomeRoute.Home> {
             HomeScreen(viewModel = metroViewModel(), appNavigator = appNavigator)
         }
 
-        dialog<HomeRoute.Onboarding> {
+        entry<HomeRoute.Onboarding>(metadata = DialogSceneStrategy.dialog()) {
             OnboardingBottomSheet(onDismiss = {
                 appCoroutineScope.launch {
                     preferencesDataSource.setShouldHideOnboarding(true)
@@ -33,5 +34,10 @@ class HomeNavigationGraph(
                 appNavigator.popBackStack()
             })
         }
+    }
+
+    override fun PolymorphicModuleBuilder<NavKey>.routes() {
+        subclass(HomeRoute.Home::class, HomeRoute.Home.serializer())
+        subclass(HomeRoute.Onboarding::class, HomeRoute.Onboarding.serializer())
     }
 }
