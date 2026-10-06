@@ -1,5 +1,6 @@
 package dev.koga.deeplinklauncher.deeplink.impl.ui.deeplinkdetails
 
+import androidx.lifecycle.viewModelScope
 import dev.koga.deeplinklauncher.analytics.api.AnalyticsTracker
 import dev.koga.deeplinklauncher.coroutines.CoroutineDebouncer
 import dev.koga.deeplinklauncher.deeplink.api.application.EnrichDeepLinkForDetails
@@ -23,10 +24,13 @@ import dev.koga.deeplinklauncher.navigation.AppRoute
 import dev.koga.deeplinklauncher.navigation.NavigationCommand
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.job
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.advanceUntilIdle
@@ -42,6 +46,7 @@ import kotlin.test.assertEquals
 class DeepLinkDetailsViewModelTest {
     private val fixture = RepositoryFixture()
     private val updatedShortcuts = mutableListOf<DeepLink>()
+    private val viewModels = mutableListOf<DeepLinkDetailsViewModel>()
 
     @BeforeTest
     fun setUp() {
@@ -50,6 +55,7 @@ class DeepLinkDetailsViewModelTest {
 
     @AfterTest
     fun tearDown() {
+        runBlocking { viewModels.forEach { it.viewModelScope.coroutineContext.job.cancelAndJoin() } }
         Dispatchers.resetMain()
         fixture.close()
     }
@@ -60,9 +66,9 @@ class DeepLinkDetailsViewModelTest {
 
         viewModel.onAction(EditAction.OnLinkChanged("my app://x"))
         advanceUntilIdle()
+        viewModel.uiState.first { (it as? DeepLinkDetailsUiState.Edit)?.errorMessage == "Invalid deeplink" }
 
         assertEquals("myapp://a", fixture.deepLinks.getDeepLinkById("a")?.link)
-        assertEquals("Invalid deeplink", (viewModel.uiState.value as DeepLinkDetailsUiState.Edit).errorMessage)
         assertEquals(emptyList(), updatedShortcuts)
     }
 
@@ -140,5 +146,5 @@ class DeepLinkDetailsViewModelTest {
         analyticsTracker = object : AnalyticsTracker {
             override fun logEvent(name: String, parameters: Map<String, String>) = Unit
         },
-    )
+    ).also(viewModels::add)
 }
