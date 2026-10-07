@@ -5,6 +5,7 @@ import dev.koga.deeplinklauncher.deeplink.api.domain.repository.FolderRepository
 import kotlin.test.AfterTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertNull
 
 class FolderRepositoryImplTest {
 
@@ -71,5 +72,12 @@ class FolderRepositoryImplTest {
 
         assertEquals(listOf(initialFolders[1]), fixture.sortedFolders())
         assertEquals(fixture.a.copy(folder = null), fixture.deepLinks.getDeepLinkById("a"))
+    }
+
+    @Test
+    fun deletedFolderIsNotFound() {
+        folders.deleteFolder("f")
+
+        assertNull(folders.getFolderById("f"))
     }
 }

@@ -31,7 +31,8 @@ getFolderById:
 SELECT f.*, COUNT(d.id) AS deeplinkCount
 FROM folder f
 LEFT JOIN deeplink d ON f.id = d.folderId
-WHERE f.id = ?;
+WHERE f.id = ?
+GROUP BY f.id;
 
 getFolderDeepLinks:
 SELECT d.*, f.*
