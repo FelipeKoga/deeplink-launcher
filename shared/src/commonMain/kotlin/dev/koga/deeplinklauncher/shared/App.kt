@@ -12,7 +12,10 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDecorator
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.runtime.rememberNavBackStack
@@ -44,6 +47,7 @@ fun App() {
     val snackBarHostState = remember { SnackbarHostState() }
     val backStack = rememberNavBackStack(appNavGraph.savedStateConfiguration, HomeRoute.Home)
     val currentRoute = backStack.lastOrNull()
+    val lifecycle = LocalLifecycleOwner.current.lifecycle
 
     LaunchedEffect(currentRoute) {
         (currentRoute as? AppRoute)?.analyticsScreenName?.let { screenName ->
@@ -51,8 +55,10 @@ fun App() {
         }
     }
 
-    LaunchedEffect(Unit) {
-        appNavigator.commands.collect { command -> backStack.handle(command) }
+    LaunchedEffect(lifecycle) {
+        lifecycle.repeatOnLifecycle(Lifecycle.State.RESUMED) {
+            appNavigator.commands.collect { command -> backStack.handle(command) }
+        }
     }
 
     LaunchedEffect(Unit) {
