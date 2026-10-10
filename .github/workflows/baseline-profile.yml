@@ -68,7 +68,7 @@ jobs:
           git diff --stat -- androidApp/src/release/generated/baselineProfiles
 
       - name: Upload baseline profiles
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: baseline-profiles
           path: androidApp/src/release/generated/baselineProfiles/*.txt
