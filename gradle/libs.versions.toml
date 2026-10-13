@@ -53,7 +53,7 @@ sqlDelight = "2.2.1"
 stately = "2.1.0"
 uiautomator = "2.3.0"
 jetbrains-kotlinxDatetime = "0.7.1-0.6.x-compat"
-uitoolingandroid = "1.11.4"
+uitoolingandroid = "1.12.1"
 stabilityAnalyzer = "0.15.0"
 metro = "1.4.5"
 
