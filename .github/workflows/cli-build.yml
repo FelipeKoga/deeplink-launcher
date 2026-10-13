@@ -81,7 +81,7 @@ jobs:
         run: tar -czf "$ARCHIVE" -C cliApp/build/native deeplink
 
       - name: Upload
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: native-${{ matrix.target }}
           path: ${{ env.ARCHIVE }}
@@ -116,7 +116,7 @@ jobs:
           cp "cliApp/build/distributions/deeplink-$VERSION.tar.gz" "deeplink-$VERSION-jvm.tar.gz"
 
       - name: Upload
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: jvm
           path: deeplink-${{ needs.version.outputs.version }}-jvm.tar.gz
